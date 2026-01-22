@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <AssemblyName>QuikGraph.Petri.Benchmarks</AssemblyName>
+    <RootNamespace>QuikGraph.Petri.Benchmarks</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" Version="0.13.12" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\QuikGraph\QuikGraph.csproj" />
+    <ProjectReference Include="..\..\src\QuikGraph.Petri\QuikGraph.Petri.csproj" />
+  </ItemGroup>
+</Project>

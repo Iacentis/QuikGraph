@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <AssemblyName>QuikGraph.MSAGL.Benchmarks</AssemblyName>
+    <RootNamespace>QuikGraph.MSAGL.Benchmarks</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" Version="0.13.12" />
+    <PackageReference Include="AutomaticGraphLayout" Version="1.1.11" />
+    <PackageReference Include="AutomaticGraphLayout.Drawing" Version="1.1.11" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\QuikGraph\QuikGraph.csproj" />
+    <ProjectReference Include="..\..\src\QuikGraph.MSAGL\QuikGraph.MSAGL.csproj" />
+  </ItemGroup>
+</Project>

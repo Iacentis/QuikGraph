@@ -1,0 +1,38 @@
+﻿name: Build and Test
+
+on:
+  push:
+    branches:
+      - "master"
+  pull_request:
+    branches:
+      - "master"
+
+env:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+  DOTNET_NOLOGO: true
+
+jobs:
+  build:
+    name: Build & Test
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            3.1.x
+            6.0.x
+            8.0.x
+            9.0.x
+            10.0.x
+      - name: Restore dependencies
+        run: dotnet restore QuikGraph.sln
+      - name: Build
+        run: dotnet build QuikGraph.sln --configuration Release --no-restore
+      - name: Test
+        run: dotnet test QuikGraph.sln --configuration Release --no-build --verbosity normal
+      - name: Pack
+        run: dotnet pack QuikGraph.sln --configuration Release --no-build --output ./nupkgs

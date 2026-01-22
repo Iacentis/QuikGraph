@@ -1,0 +1,113 @@
+﻿on:
+  push:
+    branches:
+      - "master"
+
+env:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+  DOTNET_NOLOGO: true
+
+permissions:
+  deployments: write
+  contents: write
+
+jobs:
+  benchmark:
+    name: Performance regression check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+      
+      - name: Run Core benchmarks
+        run: dotnet run -c Release --project benchmarks/QuikGraph.Benchmarks/QuikGraph.Benchmarks.csproj -- --exporters json --filter '*'
+      
+      - name: Store Core benchmark results
+        uses: rhysd/github-action-benchmark@v1
+        with:
+          name: QuikGraph Core Benchmarks
+          tool: 'benchmarkdotnet'
+          output-file-path: BenchmarkDotNet.Artifacts/results/QuikGraph.Benchmarks.AdjacencyGraphBenchmarks-report-full-compressed.json
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          auto-push: true
+          summary-always: true
+          alert-threshold: '200%'
+          comment-on-alert: true
+
+      - name: Run Serialization benchmarks
+        run: dotnet run -c Release --project benchmarks/QuikGraph.Serialization.Benchmarks/QuikGraph.Serialization.Benchmarks.csproj -- --exporters json --filter '*'
+      
+      - name: Store Serialization benchmark results
+        uses: rhysd/github-action-benchmark@v1
+        with:
+          name: QuikGraph Serialization Benchmarks
+          tool: 'benchmarkdotnet'
+          output-file-path: BenchmarkDotNet.Artifacts/results/QuikGraph.Serialization.Benchmarks.GraphMLBenchmarks-report-full-compressed.json
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          auto-push: true
+          summary-always: true
+          alert-threshold: '200%'
+          comment-on-alert: true
+
+      - name: Run Graphviz benchmarks
+        run: dotnet run -c Release --project benchmarks/QuikGraph.Graphviz.Benchmarks/QuikGraph.Graphviz.Benchmarks.csproj -- --exporters json --filter '*'
+      
+      - name: Store Graphviz benchmark results
+        uses: rhysd/github-action-benchmark@v1
+        with:
+          name: QuikGraph Graphviz Benchmarks
+          tool: 'benchmarkdotnet'
+          output-file-path: BenchmarkDotNet.Artifacts/results/QuikGraph.Graphviz.Benchmarks.GraphvizBenchmarks-report-full-compressed.json
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          auto-push: true
+          summary-always: true
+          alert-threshold: '200%'
+          comment-on-alert: true
+
+      - name: Run Data benchmarks
+        run: dotnet run -c Release --project benchmarks/QuikGraph.Data.Benchmarks/QuikGraph.Data.Benchmarks.csproj -- --exporters json --filter '*'
+      
+      - name: Store Data benchmark results
+        uses: rhysd/github-action-benchmark@v1
+        with:
+          name: QuikGraph Data Benchmarks
+          tool: 'benchmarkdotnet'
+          output-file-path: BenchmarkDotNet.Artifacts/results/QuikGraph.Data.Benchmarks.DataSetBenchmarks-report-full-compressed.json
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          auto-push: true
+          summary-always: true
+          alert-threshold: '200%'
+          comment-on-alert: true
+
+      - name: Run MSAGL benchmarks
+        run: dotnet run -c Release --project benchmarks/QuikGraph.MSAGL.Benchmarks/QuikGraph.MSAGL.Benchmarks.csproj -- --exporters json --filter '*'
+      
+      - name: Store MSAGL benchmark results
+        uses: rhysd/github-action-benchmark@v1
+        with:
+          name: QuikGraph MSAGL Benchmarks
+          tool: 'benchmarkdotnet'
+          output-file-path: BenchmarkDotNet.Artifacts/results/QuikGraph.MSAGL.Benchmarks.MsaglBenchmarks-report-full-compressed.json
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          auto-push: true
+          summary-always: true
+          alert-threshold: '200%'
+          comment-on-alert: true
+
+      - name: Run Petri benchmarks
+        run: dotnet run -c Release --project benchmarks/QuikGraph.Petri.Benchmarks/QuikGraph.Petri.Benchmarks.csproj -- --exporters json --filter '*'
+      
+      - name: Store Petri benchmark results
+        uses: rhysd/github-action-benchmark@v1
+        with:
+          name: QuikGraph Petri Benchmarks
+          tool: 'benchmarkdotnet'
+          output-file-path: BenchmarkDotNet.Artifacts/results/QuikGraph.Petri.Benchmarks.PetriBenchmarks-report-full-compressed.json
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          auto-push: true
+          summary-always: true
+          alert-threshold: '200%'
+          comment-on-alert: true
