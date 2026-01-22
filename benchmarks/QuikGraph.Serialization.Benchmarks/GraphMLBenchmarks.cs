@@ -13,8 +13,7 @@ namespace QuikGraph.Serialization.Benchmarks
         private AdjacencyGraph<int, Edge<int>> _graph;
         private string _graphXml;
 
-        [Params(10, 100)]
-        public int VertexCount;
+        [Params(10, 100)] public int VertexCount;
 
         [GlobalSetup]
         public void Setup()
@@ -35,6 +34,7 @@ namespace QuikGraph.Serialization.Benchmarks
             {
                 _graph.SerializeToGraphML<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(writer);
             }
+
             _graphXml = sb.ToString();
         }
 
@@ -46,6 +46,7 @@ namespace QuikGraph.Serialization.Benchmarks
             {
                 _graph.SerializeToGraphML<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(writer);
             }
+
             return sb.ToString();
         }
 
@@ -57,9 +58,10 @@ namespace QuikGraph.Serialization.Benchmarks
             using (var xmlReader = XmlReader.Create(reader))
             {
                 graph.DeserializeFromGraphML(xmlReader,
-                    id => int.Parse(id),
+                    int.Parse,
                     (source, target, id) => new Edge<int>(source, target));
             }
+
             return graph;
         }
     }
