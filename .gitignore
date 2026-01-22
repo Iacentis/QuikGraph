@@ -253,7 +253,9 @@ User_*/Out/*
 *.trx
 *.orig
 
+# BenchmarkDotNet
+BenchmarkDotNet.Artifacts/
+
 .paket/
 .vs/
-1
-2
+
