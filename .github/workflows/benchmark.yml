@@ -30,7 +30,7 @@ jobs:
         with:
           name: QuikGraph Core Benchmarks
           tool: 'benchmarkdotnet'
-          output-file-path: BenchmarkDotNet.Artifacts/results/QuikGraph.Benchmarks.AdjacencyGraphBenchmarks-report-full-compressed.json
+          output-file-path: benchmarks/QuikGraph.Benchmarks/BenchmarkDotNet.Artifacts/results/QuikGraph.Benchmarks.AdjacencyGraphBenchmarks-report-full-compressed.json
           github-token: ${{ secrets.GITHUB_TOKEN }}
           auto-push: true
           summary-always: true
@@ -45,7 +45,7 @@ jobs:
         with:
           name: QuikGraph Serialization Benchmarks
           tool: 'benchmarkdotnet'
-          output-file-path: BenchmarkDotNet.Artifacts/results/QuikGraph.Serialization.Benchmarks.GraphMLBenchmarks-report-full-compressed.json
+          output-file-path: benchmarks/QuikGraph.Serialization.Benchmarks/BenchmarkDotNet.Artifacts/results/QuikGraph.Serialization.Benchmarks.GraphMLBenchmarks-report-full-compressed.json
           github-token: ${{ secrets.GITHUB_TOKEN }}
           auto-push: true
           summary-always: true
@@ -60,7 +60,7 @@ jobs:
         with:
           name: QuikGraph Graphviz Benchmarks
           tool: 'benchmarkdotnet'
-          output-file-path: BenchmarkDotNet.Artifacts/results/QuikGraph.Graphviz.Benchmarks.GraphvizBenchmarks-report-full-compressed.json
+          output-file-path: benchmarks/QuikGraph.Graphviz.Benchmarks/BenchmarkDotNet.Artifacts/results/QuikGraph.Graphviz.Benchmarks.GraphvizBenchmarks-report-full-compressed.json
           github-token: ${{ secrets.GITHUB_TOKEN }}
           auto-push: true
           summary-always: true
@@ -75,7 +75,7 @@ jobs:
         with:
           name: QuikGraph Data Benchmarks
           tool: 'benchmarkdotnet'
-          output-file-path: BenchmarkDotNet.Artifacts/results/QuikGraph.Data.Benchmarks.DataSetBenchmarks-report-full-compressed.json
+          output-file-path: benchmarks/QuikGraph.Data.Benchmarks/BenchmarkDotNet.Artifacts/results/QuikGraph.Data.Benchmarks.DataSetBenchmarks-report-full-compressed.json
           github-token: ${{ secrets.GITHUB_TOKEN }}
           auto-push: true
           summary-always: true
@@ -90,7 +90,7 @@ jobs:
         with:
           name: QuikGraph MSAGL Benchmarks
           tool: 'benchmarkdotnet'
-          output-file-path: BenchmarkDotNet.Artifacts/results/QuikGraph.MSAGL.Benchmarks.MsaglBenchmarks-report-full-compressed.json
+          output-file-path: benchmarks/QuikGraph.MSAGL.Benchmarks/BenchmarkDotNet.Artifacts/results/QuikGraph.MSAGL.Benchmarks.MsaglBenchmarks-report-full-compressed.json
           github-token: ${{ secrets.GITHUB_TOKEN }}
           auto-push: true
           summary-always: true
@@ -105,7 +105,7 @@ jobs:
         with:
           name: QuikGraph Petri Benchmarks
           tool: 'benchmarkdotnet'
-          output-file-path: BenchmarkDotNet.Artifacts/results/QuikGraph.Petri.Benchmarks.PetriBenchmarks-report-full-compressed.json
+          output-file-path: benchmarks/QuikGraph.Petri.Benchmarks/BenchmarkDotNet.Artifacts/results/QuikGraph.Petri.Benchmarks.PetriBenchmarks-report-full-compressed.json
           github-token: ${{ secrets.GITHUB_TOKEN }}
           auto-push: true
           summary-always: true
