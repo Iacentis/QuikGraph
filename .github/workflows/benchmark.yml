@@ -26,14 +26,14 @@ jobs:
         run: dotnet run -c Release --project benchmarks/QuikGraph.Benchmarks/QuikGraph.Benchmarks.csproj -- --exporters json --filter '*'
         
       - name: List BenchmarkDotNet results
-        run: ls -R benchmarks/**/BenchmarkDotNet.Artifacts/results
+        run: ls -R BenchmarkDotNet.Artifacts/results
       
       - name: Store Core benchmark results
         uses: rhysd/github-action-benchmark@v1
         with:
           name: QuikGraph Core Benchmarks
           tool: 'benchmarkdotnet'
-          output-file-path: benchmarks/QuikGraph.Benchmarks/BenchmarkDotNet.Artifacts/results/*.json
+          output-file-path: BenchmarkDotNet.Artifacts/results/*.json
           github-token: ${{ secrets.GITHUB_TOKEN }}
           auto-push: true
           summary-always: true
