@@ -1,22 +1,22 @@
-﻿#if SUPPORTS_SERIALIZATION
+﻿
 using System;
-#endif
+
 
 namespace QuikGraph.Graphviz.Dot
 {
     /// <summary>
     /// Graphviz point.
     /// </summary>
-#if SUPPORTS_SERIALIZATION
+
     [Serializable]
-#endif
+
     public sealed class GraphvizPoint
     {
         /// <summary>
         /// X.
         /// </summary>
         public int X { get; }
-        
+
         /// <summary>
         /// Y.
         /// </summary>

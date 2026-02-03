@@ -15,6 +15,7 @@ namespace QuikGraph.Petri.Tests
         {
             public string Name => "PlaceName";
             public IList<int> Marking { get; } = new List<int>();
+
             public string ToStringWithMarking()
             {
                 return string.Empty;
@@ -44,22 +45,22 @@ namespace QuikGraph.Petri.Tests
         {
             var place = new TestPlace();
             var transition = new TestTransition();
-            
+
             var arc = new Arc<int>(place, transition);
-            Assert.IsTrue(arc.IsInputArc);
-            Assert.AreSame(place, arc.Source);
-            Assert.AreSame(place, arc.Place);
-            Assert.AreSame(transition, arc.Target);
-            Assert.AreSame(transition, arc.Transition);
-            Assert.IsNotNull(arc.Annotation);
+            Assert.That(arc.IsInputArc, Is.True);
+            Assert.That(place, Is.SameAs(arc.Source));
+            Assert.That(place, Is.SameAs(arc.Place));
+            Assert.That(transition, Is.SameAs(arc.Target));
+            Assert.That(transition, Is.SameAs(arc.Transition));
+            Assert.That(arc.Annotation, Is.Not.Null);
 
             arc = new Arc<int>(transition, place);
-            Assert.IsFalse(arc.IsInputArc);
-            Assert.AreSame(place, arc.Source);
-            Assert.AreSame(place, arc.Place);
-            Assert.AreSame(transition, arc.Target);
-            Assert.AreSame(transition, arc.Transition);
-            Assert.IsNotNull(arc.Annotation);
+            Assert.That(arc.IsInputArc, Is.False);
+            Assert.That(place, Is.SameAs(arc.Source));
+            Assert.That(place, Is.SameAs(arc.Place));
+            Assert.That(transition, Is.SameAs(arc.Target));
+            Assert.That(transition, Is.SameAs(arc.Transition));
+            Assert.That(arc.Annotation, Is.Not.Null);
         }
 
         [Test]
@@ -88,10 +89,10 @@ namespace QuikGraph.Petri.Tests
             var transition = new TestTransition();
 
             var arc = new Arc<int>(place, transition);
-            Assert.AreEqual("PlaceName -> TransitionName", arc.ToString());
+            Assert.That("PlaceName -> TransitionName", Is.EqualTo(arc.ToString()));
 
             arc = new Arc<int>(transition, place);
-            Assert.AreEqual("TransitionName -> PlaceName", arc.ToString());
+            Assert.That("TransitionName -> PlaceName", Is.EqualTo(arc.ToString()));
         }
     }
 }

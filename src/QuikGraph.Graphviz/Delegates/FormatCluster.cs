@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations;
+﻿
 
 namespace QuikGraph.Graphviz
 {
@@ -10,7 +10,7 @@ namespace QuikGraph.Graphviz
     /// <param name="sender">Event sender.</param>
     /// <param name="args">Event arguments.</param>
     public delegate void FormatClusterEventHandler<TVertex, TEdge>(
-        [NotNull] object sender,
-        [NotNull] FormatClusterEventArgs<TVertex, TEdge> args)
+         object sender,
+         FormatClusterEventArgs<TVertex, TEdge> args)
         where TEdge : IEdge<TVertex>;
 }

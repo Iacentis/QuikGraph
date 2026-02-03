@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using QuikGraph.Algorithms;
 using QuikGraph.Algorithms.ShortestPath;
 using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
@@ -91,15 +92,15 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
 
             var algorithm = new FloydWarshallAllShortestPathAlgorithm<int, Edge<int>>(graph, _ => 1.0);
 
-            Assert.IsFalse(algorithm.TryGetDistance(vertex1, vertex2, out _));
-            Assert.IsFalse(algorithm.TryGetDistance(vertex1, vertex3, out _));
+            Assert.That(algorithm.TryGetDistance(vertex1, vertex2, out _),Is.False);
+            Assert.That(algorithm.TryGetDistance(vertex1, vertex3, out _),Is.False);
 
             algorithm.Compute();
 
-            Assert.IsTrue(algorithm.TryGetDistance(vertex1, vertex2, out double distance));
-            Assert.AreEqual(1, distance);
+            Assert.That(algorithm.TryGetDistance(vertex1, vertex2, out double distance),Is.True);
+            Assert.That(1,Is.EqualTo(distance));
 
-            Assert.IsFalse(algorithm.TryGetDistance(vertex1, vertex3, out _));
+            Assert.That(algorithm.TryGetDistance(vertex1, vertex3, out _),Is.False);
         }
 
         [Test]
@@ -134,26 +135,26 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
 
             var algorithm = new FloydWarshallAllShortestPathAlgorithm<int, Edge<int>>(graph, _ => 1.0);
 
-            Assert.IsFalse(algorithm.TryGetPath(vertex1, vertex1, out _));
-            Assert.IsFalse(algorithm.TryGetPath(vertex1, vertex2, out _));
-            Assert.IsFalse(algorithm.TryGetPath(vertex1, vertex4, out _));
-            Assert.IsFalse(algorithm.TryGetPath(vertex1, vertex3, out _));
+            Assert.That(algorithm.TryGetPath(vertex1, vertex1, out _),Is.False);
+            Assert.That(algorithm.TryGetPath(vertex1, vertex2, out _),Is.False);
+            Assert.That(algorithm.TryGetPath(vertex1, vertex4, out _),Is.False);
+            Assert.That(algorithm.TryGetPath(vertex1, vertex3, out _),Is.False);
 
             algorithm.Compute();
 
-            Assert.IsFalse(algorithm.TryGetPath(vertex1, vertex1, out _));
+            Assert.That(algorithm.TryGetPath(vertex1, vertex1, out _),Is.False);
 
-            Assert.IsTrue(algorithm.TryGetPath(vertex1, vertex2, out IEnumerable<Edge<int>> path));
+            Assert.That(algorithm.TryGetPath(vertex1, vertex2, out IEnumerable<Edge<int>> path),Is.True);
             CollectionAssert.AreEqual(
                 new[] { edge12 },
                 path);
 
-            Assert.IsTrue(algorithm.TryGetPath(vertex1, vertex4, out path));
+            Assert.That(algorithm.TryGetPath(vertex1, vertex4, out path),Is.True);
             CollectionAssert.AreEqual(
                 new[] { edge12, edge24 },
                 path);
 
-            Assert.IsFalse(algorithm.TryGetPath(vertex1, vertex3, out _));
+            Assert.That(algorithm.TryGetPath(vertex1, vertex3, out _),Is.False);
         }
 
         [Test]
@@ -178,20 +179,20 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
             var algorithm = new FloydWarshallAllShortestPathAlgorithm<char, Edge<char>>(graph, e => distances[e]);
             algorithm.Compute();
 
-            Assert.IsTrue(algorithm.TryGetDistance('A', 'A', out double distance));
-            Assert.AreEqual(0, distance);
+            Assert.That(algorithm.TryGetDistance('A', 'A', out double distance),Is.True);
+            Assert.That(0,Is.EqualTo(distance));
 
-            Assert.IsTrue(algorithm.TryGetDistance('A', 'B', out distance));
-            Assert.AreEqual(6, distance);
+            Assert.That(algorithm.TryGetDistance('A', 'B', out distance),Is.True);
+            Assert.That(6,Is.EqualTo(distance));
 
-            Assert.IsTrue(algorithm.TryGetDistance('A', 'C', out distance));
-            Assert.AreEqual(1, distance);
+            Assert.That(algorithm.TryGetDistance('A', 'C', out distance),Is.True);
+            Assert.That(1,Is.EqualTo(distance));
 
-            Assert.IsTrue(algorithm.TryGetDistance('A', 'D', out distance));
-            Assert.AreEqual(4, distance);
+            Assert.That(algorithm.TryGetDistance('A', 'D', out distance),Is.True);
+            Assert.That(4,Is.EqualTo(distance));
 
-            Assert.IsTrue(algorithm.TryGetDistance('A', 'E', out distance));
-            Assert.AreEqual(5, distance);
+            Assert.That(algorithm.TryGetDistance('A', 'E', out distance),Is.True);
+            Assert.That(5,Is.EqualTo(distance));
         }
 
         [Test]
@@ -203,10 +204,9 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
             var edge34 = new Edge<int>(3, 4);
 
             var negativeWeightGraph = new AdjacencyGraph<int, Edge<int>>();
-            negativeWeightGraph.AddVerticesAndEdgeRange(new[]
-            {
+            negativeWeightGraph.AddVerticesAndEdgeRange([
                 edge12, edge23, edge34
-            });
+            ]);
 
             var algorithm = new FloydWarshallAllShortestPathAlgorithm<int, Edge<int>>(
                 negativeWeightGraph,
@@ -226,10 +226,9 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
             var edge41 = new Edge<int>(4, 1);
 
             var negativeCycleGraph = new AdjacencyGraph<int, Edge<int>>();
-            negativeCycleGraph.AddVerticesAndEdgeRange(new[]
-            {
+            negativeCycleGraph.AddVerticesAndEdgeRange([
                 edge12, edge23, edge34, edge41
-            });
+            ]);
 
             algorithm = new FloydWarshallAllShortestPathAlgorithm<int, Edge<int>>(
                 negativeCycleGraph,

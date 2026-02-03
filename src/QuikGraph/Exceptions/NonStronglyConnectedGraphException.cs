@@ -1,17 +1,17 @@
 ﻿using System;
-#if SUPPORTS_SERIALIZATION
+
 using System.Runtime.Serialization;
-#endif
-using JetBrains.Annotations;
+
+
 
 namespace QuikGraph
 {
     /// <summary>
     /// Exception raised when an algorithm detected a non-strongly connected graph.
     /// </summary>
-#if SUPPORTS_SERIALIZATION
+
     [Serializable]
-#endif
+
     public class NonStronglyConnectedGraphException : QuikGraphException
     {
         /// <summary>
@@ -25,19 +25,20 @@ namespace QuikGraph
         /// <summary>
         /// Initializes a new instance of <see cref="NonStronglyConnectedGraphException"/> class.
         /// </summary>
-        public NonStronglyConnectedGraphException([NotNull] string message, [CanBeNull] Exception innerException = null)
+        public NonStronglyConnectedGraphException( string message,  Exception innerException = null)
             : base(message, innerException)
         {
         }
 
-#if SUPPORTS_SERIALIZATION
+
         /// <summary>
         /// Constructor used during runtime serialization.
         /// </summary>
+        [Obsolete("Obsolete")]
         protected NonStronglyConnectedGraphException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }
-#endif
+
     }
 }

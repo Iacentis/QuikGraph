@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph.Algorithms
 {
@@ -21,7 +21,7 @@ namespace QuikGraph.Algorithms
         /// <summary>
         /// Graph components.
         /// </summary>
-        [NotNull]
+
         IDictionary<TVertex, int> Components { get; }
     }
 }

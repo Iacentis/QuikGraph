@@ -14,10 +14,10 @@ namespace QuikGraph.Petri.Tests
             var expression = new AlwaysTrueConditionExpression<int>();
 
             var emptyTokens = new List<int>();
-            Assert.IsTrue(expression.IsEnabled(emptyTokens));
+            Assert.That(expression.IsEnabled(emptyTokens),Is.True);
 
             var tokens = new List<int> { 1, 5, 16 };
-            Assert.IsTrue(expression.IsEnabled(tokens));
+            Assert.That(expression.IsEnabled(tokens),Is.True);
         }
     }
 }

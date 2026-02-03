@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using JetBrains.Annotations;
 using QuikGraph.Constants;
 
 namespace QuikGraph
@@ -9,9 +8,9 @@ namespace QuikGraph
     /// The default <see cref="IEdge{TVertex}"/> implementation (directed edge).
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
-#if SUPPORTS_SERIALIZATION
+
     [Serializable]
-#endif
+
     [DebuggerDisplay("{" + nameof(Source) + "}->{" + nameof(Target) + "}")]
     public class Edge<TVertex> : IEdge<TVertex>
     {
@@ -22,7 +21,7 @@ namespace QuikGraph
         /// <param name="target">The target vertex.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
-        public Edge([NotNull] TVertex source, [NotNull] TVertex target)
+        public Edge( TVertex source,  TVertex target)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));

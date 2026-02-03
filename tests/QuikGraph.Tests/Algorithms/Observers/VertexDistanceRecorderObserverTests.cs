@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using QuikGraph.Algorithms;
 using QuikGraph.Algorithms.Observers;
 using QuikGraph.Algorithms.Search;
@@ -18,18 +19,18 @@ namespace QuikGraph.Tests.Algorithms.Observers
         {
             Func<Edge<int>, double> edgeWeights = _ => 1.0;
             var recorder = new VertexDistanceRecorderObserver<int, Edge<int>>(edgeWeights);
-            Assert.AreSame(edgeWeights, recorder.EdgeWeights);
-            Assert.IsNotNull(recorder.DistanceRelaxer);
-            Assert.IsNotNull(recorder.Distances);
+            Assert.That(edgeWeights, Is.SameAs(recorder.EdgeWeights));
+            Assert.That(recorder.DistanceRelaxer, Is.Not.Null);
+            Assert.That(recorder.Distances, Is.Not.Null);
 
             var distances = new Dictionary<int, double>();
             recorder = new VertexDistanceRecorderObserver<int, Edge<int>>(
                 edgeWeights,
                 DistanceRelaxers.ShortestDistance,
                 distances);
-            Assert.AreSame(edgeWeights, recorder.EdgeWeights);
-            Assert.AreSame(DistanceRelaxers.ShortestDistance,recorder.DistanceRelaxer);
-            Assert.AreSame(distances, recorder.Distances);
+            Assert.That(edgeWeights, Is.SameAs(recorder.EdgeWeights));
+            Assert.That(DistanceRelaxers.ShortestDistance, Is.SameAs(recorder.DistanceRelaxer));
+            Assert.That(distances, Is.SameAs(recorder.Distances));
         }
 
         [Test]
@@ -37,21 +38,21 @@ namespace QuikGraph.Tests.Algorithms.Observers
         {
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(
-                () => new VertexDistanceRecorderObserver<int, Edge<int>>(null));
+            Assert.Throws<ArgumentNullException>(() => new VertexDistanceRecorderObserver<int, Edge<int>>(null));
 
-            Assert.Throws<ArgumentNullException>(
-                () => new VertexDistanceRecorderObserver<int, Edge<int>>(null, DistanceRelaxers.ShortestDistance, new Dictionary<int, double>()));
-            Assert.Throws<ArgumentNullException>(
-                () => new VertexDistanceRecorderObserver<int, Edge<int>>(_ => 1.0, null, new Dictionary<int, double>()));
-            Assert.Throws<ArgumentNullException>(
-                () => new VertexDistanceRecorderObserver<int, Edge<int>>(_ => 1.0, DistanceRelaxers.ShortestDistance, null));
-            Assert.Throws<ArgumentNullException>(
-                () => new VertexDistanceRecorderObserver<int, Edge<int>>(null, null, new Dictionary<int, double>()));
-            Assert.Throws<ArgumentNullException>(
-                () => new VertexDistanceRecorderObserver<int, Edge<int>>(_ => 1.0, null, null));
-            Assert.Throws<ArgumentNullException>(
-                () => new VertexDistanceRecorderObserver<int, Edge<int>>(null, null, null));
+            Assert.Throws<ArgumentNullException>(() =>
+                new VertexDistanceRecorderObserver<int, Edge<int>>(null, DistanceRelaxers.ShortestDistance,
+                    new Dictionary<int, double>()));
+            Assert.Throws<ArgumentNullException>(() =>
+                new VertexDistanceRecorderObserver<int, Edge<int>>(_ => 1.0, null, new Dictionary<int, double>()));
+            Assert.Throws<ArgumentNullException>(() =>
+                new VertexDistanceRecorderObserver<int, Edge<int>>(_ => 1.0, DistanceRelaxers.ShortestDistance, null));
+            Assert.Throws<ArgumentNullException>(() =>
+                new VertexDistanceRecorderObserver<int, Edge<int>>(null, null, new Dictionary<int, double>()));
+            Assert.Throws<ArgumentNullException>(() =>
+                new VertexDistanceRecorderObserver<int, Edge<int>>(_ => 1.0, null, null));
+            Assert.Throws<ArgumentNullException>(() =>
+                new VertexDistanceRecorderObserver<int, Edge<int>>(null, null, null));
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }
@@ -79,7 +80,7 @@ namespace QuikGraph.Tests.Algorithms.Observers
                 var recorder = new VertexDistanceRecorderObserver<int, Edge<int>>(_ => 1.0);
 
                 var graph = new AdjacencyGraph<int, Edge<int>>();
-                graph.AddVertexRange(new[] { 1, 2 });
+                graph.AddVertexRange([1, 2]);
 
                 var dfs = new DepthFirstSearchAlgorithm<int, Edge<int>>(graph);
                 using (recorder.Attach(dfs))
@@ -102,10 +103,9 @@ namespace QuikGraph.Tests.Algorithms.Observers
                 var edge33 = new Edge<int>(3, 3);
                 var edge34 = new Edge<int>(3, 4);
                 var graph = new AdjacencyGraph<int, Edge<int>>();
-                graph.AddVerticesAndEdgeRange(new[]
-                {
+                graph.AddVerticesAndEdgeRange([
                     edge12, edge13, edge14, edge24, edge31, edge33, edge34
-                });
+                ]);
 
                 var dfs = new DepthFirstSearchAlgorithm<int, Edge<int>>(graph);
                 using (recorder.Attach(dfs))
@@ -113,13 +113,7 @@ namespace QuikGraph.Tests.Algorithms.Observers
                     dfs.Compute();
 
                     CollectionAssert.AreEqual(
-                        new Dictionary<int, double>
-                        {
-                            [1] = 0,
-                            [2] = 1,
-                            [3] = 1,
-                            [4] = 2
-                        },
+                        new Dictionary<int, double> { [1] = 0, [2] = 1, [3] = 1, [4] = 2 },
                         recorder.Distances);
                 }
             }
@@ -137,10 +131,9 @@ namespace QuikGraph.Tests.Algorithms.Observers
                 var edge34 = new Edge<int>(3, 4);
                 var edge41 = new Edge<int>(4, 1);
                 var graph = new AdjacencyGraph<int, Edge<int>>();
-                graph.AddVerticesAndEdgeRange(new[]
-                {
+                graph.AddVerticesAndEdgeRange([
                     edge12, edge13, edge14, edge24, edge31, edge33, edge34, edge41
-                });
+                ]);
 
                 var dfs = new DepthFirstSearchAlgorithm<int, Edge<int>>(graph);
                 using (recorder.Attach(dfs))
@@ -148,13 +141,7 @@ namespace QuikGraph.Tests.Algorithms.Observers
                     dfs.Compute();
 
                     CollectionAssert.AreEqual(
-                        new Dictionary<int, double>
-                        {
-                            [1] = 0,
-                            [2] = 1,
-                            [3] = 1,
-                            [4] = 2
-                        },
+                        new Dictionary<int, double> { [1] = 0, [2] = 1, [3] = 1, [4] = 2 },
                         recorder.Distances);
                 }
             }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using NUnit.Framework;
 using QuikGraph.Collections;
 
@@ -34,7 +33,7 @@ namespace QuikGraph.Tests.Collections
             AssertQueueProperties(
                 new FibonacciQueue<int, double>(
                     0,
-                    new[] { 1, 2 }, // Marked as removed
+                    [1, 2], // Marked as removed
                     _ => 1.0));
 
 
@@ -55,7 +54,7 @@ namespace QuikGraph.Tests.Collections
             AssertQueueProperties(
                 new FibonacciQueue<int, double>(
                     0,
-                    new[] { 1, 2, 3 }, // Marked as removed
+                    [1, 2, 3], // Marked as removed
                     _ => 1.0,
                     (dist1, dist2) => dist1.CompareTo(dist2)));
 
@@ -84,7 +83,7 @@ namespace QuikGraph.Tests.Collections
             void AssertQueueProperties<TVertex, TDistance>(
                 FibonacciQueue<TVertex, TDistance> queue)
             {
-                Assert.AreEqual(0, queue.Count);
+                Assert.That(0,Is.EqualTo(queue.Count));
             }
 
             #endregion
@@ -100,29 +99,29 @@ namespace QuikGraph.Tests.Collections
 
 
             Assert.Throws<ArgumentOutOfRangeException>(
-                () => new FibonacciQueue<int, double>(-1, Enumerable.Empty<int>(), _ => 1.0));
+                () => new FibonacciQueue<int, double>(-1, [], _ => 1.0));
             Assert.Throws<ArgumentOutOfRangeException>(
-                () => new FibonacciQueue<int, double>(-1, Enumerable.Empty<int>(), null));
+                () => new FibonacciQueue<int, double>(-1, [], null));
             Assert.Throws<ArgumentNullException>(
-                () => new FibonacciQueue<int, double>(12, Enumerable.Empty<int>(), null));
+                () => new FibonacciQueue<int, double>(12, [], null));
             Assert.Throws<ArgumentNullException>(
                 () => new FibonacciQueue<int, double>(12, null, null));
 
 
             Assert.Throws<ArgumentOutOfRangeException>(
-                () => new FibonacciQueue<int, double>(-1, Enumerable.Empty<int>(), _ => 1.0, (dist1, dist2) => dist1.CompareTo(dist2)));
+                () => new FibonacciQueue<int, double>(-1, [], _ => 1.0, (dist1, dist2) => dist1.CompareTo(dist2)));
             Assert.Throws<ArgumentOutOfRangeException>(
-                () => new FibonacciQueue<int, double>(-1, Enumerable.Empty<int>(), null, (dist1, dist2) => dist1.CompareTo(dist2)));
+                () => new FibonacciQueue<int, double>(-1, [], null, (dist1, dist2) => dist1.CompareTo(dist2)));
             Assert.Throws<ArgumentOutOfRangeException>(
-                () => new FibonacciQueue<int, double>(-1, Enumerable.Empty<int>(), _ => 1.0, null));
+                () => new FibonacciQueue<int, double>(-1, [], _ => 1.0, null));
             Assert.Throws<ArgumentOutOfRangeException>(
-                () => new FibonacciQueue<int, double>(-1, Enumerable.Empty<int>(), null, null));
+                () => new FibonacciQueue<int, double>(-1, [], null, null));
             Assert.Throws<ArgumentNullException>(
-                () => new FibonacciQueue<int, double>(12, Enumerable.Empty<int>(), _ => 1.0, null));
+                () => new FibonacciQueue<int, double>(12, [], _ => 1.0, null));
             Assert.Throws<ArgumentNullException>(
-                () => new FibonacciQueue<int, double>(12, Enumerable.Empty<int>(), null, (dist1, dist2) => dist1.CompareTo(dist2)));
+                () => new FibonacciQueue<int, double>(12, [], null, (dist1, dist2) => dist1.CompareTo(dist2)));
             Assert.Throws<ArgumentNullException>(
-                () => new FibonacciQueue<int, double>(12, Enumerable.Empty<int>(), null, null));
+                () => new FibonacciQueue<int, double>(12, [], null, null));
             Assert.Throws<ArgumentNullException>(
                 () => new FibonacciQueue<int, double>(12, null, null, null));
 
@@ -159,7 +158,7 @@ namespace QuikGraph.Tests.Collections
 
             // Special case
             Contains_Test(
-                new FibonacciQueue<int, double>(12, new[] { 1, 2 }, _ => 1.0),
+                new FibonacciQueue<int, double>(12, [1, 2], _ => 1.0),
                 1,
                 2);
         }

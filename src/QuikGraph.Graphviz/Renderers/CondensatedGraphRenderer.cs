@@ -1,5 +1,5 @@
 ﻿using System.Text;
-using JetBrains.Annotations;
+
 using QuikGraph.Algorithms.Condensation;
 
 namespace QuikGraph.Graphviz
@@ -20,7 +20,7 @@ namespace QuikGraph.Graphviz
         /// <param name="graph">Graph to convert to DOT.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         public CondensatedGraphRenderer(
-            [NotNull] IEdgeListGraph<TGraph, CondensedEdge<TVertex, TEdge, TGraph>> graph)
+             IEdgeListGraph<TGraph, CondensedEdge<TVertex, TEdge, TGraph>> graph)
             : base(graph)
         {
         }
@@ -43,7 +43,7 @@ namespace QuikGraph.Graphviz
             base.Clean();
         }
 
-        private static void OnFormatVertex([NotNull] object sender, [NotNull] FormatVertexEventArgs<TGraph> args)
+        private static void OnFormatVertex( object sender,  FormatVertexEventArgs<TGraph> args)
         {
             var builder = new StringBuilder();
             builder.AppendLine($"{args.Vertex.VertexCount}-{args.Vertex.EdgeCount}");
@@ -61,8 +61,8 @@ namespace QuikGraph.Graphviz
         }
 
         private static void OnFormatEdge(
-            [NotNull] object sender,
-            [NotNull] FormatEdgeEventArgs<TGraph, CondensedEdge<TVertex, TEdge, TGraph>> args)
+             object sender,
+             FormatEdgeEventArgs<TGraph, CondensedEdge<TVertex, TEdge, TGraph>> args)
         {
             var builder = new StringBuilder();
             builder.AppendLine(args.Edge.Edges.Count.ToString());

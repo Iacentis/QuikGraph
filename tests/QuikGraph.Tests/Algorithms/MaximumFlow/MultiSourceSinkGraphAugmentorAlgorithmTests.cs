@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Linq;
-using JetBrains.Annotations;
+
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using QuikGraph.Algorithms.MaximumFlow;
 using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
 
@@ -16,7 +17,7 @@ namespace QuikGraph.Tests.Algorithms.MaximumFlow
         #region Test helpers
 
         private static void RunAugmentationAndCheck(
-            [NotNull] IMutableBidirectionalGraph<string, Edge<string>> graph)
+             IMutableBidirectionalGraph<string, Edge<string>> graph)
         {
             int vertexCount = graph.VertexCount;
             int edgeCount = graph.EdgeCount;
@@ -34,38 +35,38 @@ namespace QuikGraph.Tests.Algorithms.MaximumFlow
                 augmentor.EdgeAdded += _ => { added = true; };
 
                 augmentor.Compute();
-                Assert.IsTrue(added);
+                Assert.That(added,Is.True);
                 VerifyVertexCount(graph, augmentor, vertexCount);
                 VerifySourceConnector(graph, augmentor, noInEdgesVertices);
                 VerifySinkConnector(graph, augmentor, noOutEdgesVertices);
             }
 
-            Assert.AreEqual(graph.VertexCount, vertexCount);
-            Assert.AreEqual(graph.EdgeCount, edgeCount);
+            Assert.That(graph.VertexCount,Is.EqualTo(vertexCount));
+            Assert.That(graph.EdgeCount,Is.EqualTo(edgeCount));
         }
 
         private static void VerifyVertexCount<TVertex, TEdge>(
-            [NotNull] IVertexSet<TVertex> graph,
+             IVertexSet<TVertex> graph,
             // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
-            [NotNull] MultiSourceSinkGraphAugmentorAlgorithm<TVertex, TEdge> augmentor,
+             MultiSourceSinkGraphAugmentorAlgorithm<TVertex, TEdge> augmentor,
             int vertexCount)
             where TEdge : IEdge<TVertex>
         {
-            Assert.AreEqual(vertexCount + 2 /* Source + Sink */, graph.VertexCount);
-            Assert.IsTrue(graph.ContainsVertex(augmentor.SuperSource));
-            Assert.IsTrue(graph.ContainsVertex(augmentor.SuperSink));
+            Assert.That(vertexCount + 2 /* Source + Sink */,Is.EqualTo(graph.VertexCount));
+            Assert.That(graph.ContainsVertex(augmentor.SuperSource),Is.True);
+            Assert.That(graph.ContainsVertex(augmentor.SuperSink),Is.True);
         }
 
         private static void VerifySourceConnector<TVertex, TEdge>(
-            [NotNull] IVertexListGraph<TVertex, TEdge> graph,
+             IVertexListGraph<TVertex, TEdge> graph,
             // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
-            [NotNull] MultiSourceSinkGraphAugmentorAlgorithm<TVertex, TEdge> augmentor,
-            [NotNull, ItemNotNull] TVertex[] noInEdgesVertices)
+             MultiSourceSinkGraphAugmentorAlgorithm<TVertex, TEdge> augmentor,
+             TVertex[] noInEdgesVertices)
             where TEdge : IEdge<TVertex>
         {
             foreach (TVertex vertex in noInEdgesVertices)
             {
-                Assert.IsTrue(graph.ContainsEdge(augmentor.SuperSource, vertex));
+                Assert.That(graph.ContainsEdge(augmentor.SuperSource, vertex),Is.True);
             }
 
             foreach (TVertex vertex in graph.Vertices.Except(noInEdgesVertices))
@@ -74,20 +75,20 @@ namespace QuikGraph.Tests.Algorithms.MaximumFlow
                     continue;
                 if (vertex.Equals(augmentor.SuperSink))
                     continue;
-                Assert.IsFalse(graph.ContainsEdge(augmentor.SuperSource, vertex));
+                Assert.That(graph.ContainsEdge(augmentor.SuperSource, vertex),Is.False);
             }
         }
 
         private static void VerifySinkConnector<TVertex, TEdge>(
-            [NotNull] IVertexListGraph<TVertex, TEdge> graph,
+             IVertexListGraph<TVertex, TEdge> graph,
             // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
-            [NotNull] MultiSourceSinkGraphAugmentorAlgorithm<TVertex, TEdge> augmentor,
-            [NotNull, ItemNotNull] TVertex[] noOutEdgesVertices)
+             MultiSourceSinkGraphAugmentorAlgorithm<TVertex, TEdge> augmentor,
+             TVertex[] noOutEdgesVertices)
             where TEdge : IEdge<TVertex>
         {
             foreach (TVertex vertex in noOutEdgesVertices)
             {
-                Assert.IsTrue(graph.ContainsEdge(vertex, augmentor.SuperSink));
+                Assert.That(graph.ContainsEdge(vertex, augmentor.SuperSink),Is.True);
             }
 
             foreach (TVertex vertex in graph.Vertices.Except(noOutEdgesVertices))
@@ -96,7 +97,7 @@ namespace QuikGraph.Tests.Algorithms.MaximumFlow
                     continue;
                 if (vertex.Equals(augmentor.SuperSink))
                     continue;
-                Assert.IsFalse(graph.ContainsEdge(vertex, augmentor.SuperSink));
+                Assert.That(graph.ContainsEdge(vertex, augmentor.SuperSink),Is.False);
             }
         }
 
@@ -125,12 +126,12 @@ namespace QuikGraph.Tests.Algorithms.MaximumFlow
                 where TEdge : IEdge<TVertex>
             {
                 AssertAlgorithmState(algo, g);
-                Assert.IsFalse(algo.Augmented);
+                Assert.That(algo.Augmented,Is.False);
                 CollectionAssert.IsEmpty(algo.AugmentedEdges);
-                Assert.AreSame(vFactory, algo.VertexFactory);
-                Assert.AreSame(eFactory, algo.EdgeFactory);
-                Assert.AreEqual(default(TVertex), algo.SuperSource);
-                Assert.AreEqual(default(TVertex), algo.SuperSink);
+                Assert.That(vFactory,Is.SameAs(algo.VertexFactory));
+                Assert.That(eFactory,Is.SameAs(algo.EdgeFactory));
+                Assert.That(default(TVertex),Is.EqualTo(algo.SuperSource));
+                Assert.That(default(TVertex),Is.EqualTo(algo.SuperSink));
             }
 
             #endregion

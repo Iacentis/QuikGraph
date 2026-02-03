@@ -1,8 +1,9 @@
-﻿#if SUPPORTS_SERIALIZATION
+﻿
 using System;
-#endif
+
 using System.Collections.Generic;
-using JetBrains.Annotations;
+using System.Diagnostics.Contracts;
+
 
 namespace QuikGraph.Collections
 {
@@ -11,9 +12,9 @@ namespace QuikGraph.Collections
     /// </summary>
     /// <typeparam name="TPriority">Priority type.</typeparam>
     /// <typeparam name="TValue">Value type.</typeparam>
-#if SUPPORTS_SERIALIZATION
+
     [Serializable]
-#endif
+
     public sealed class FibonacciHeapCell<TPriority, TValue>
     {
         /// <summary>
@@ -44,25 +45,25 @@ namespace QuikGraph.Collections
         /// <summary>
         /// Parent cell.
         /// </summary>
-        [CanBeNull]
+
         public FibonacciHeapCell<TPriority, TValue> Parent { get; internal set; }
 
         /// <summary>
         /// Children cells.
         /// </summary>
-        [CanBeNull]
+
         public FibonacciHeapLinkedList<TPriority, TValue> Children { get; internal set; }
 
         /// <summary>
         /// Previous cell.
         /// </summary>
-        [CanBeNull]
+
         public FibonacciHeapCell<TPriority, TValue> Previous { get; internal set; }
 
         /// <summary>
         /// Next cell.
         /// </summary>
-        [CanBeNull]
+
         public FibonacciHeapCell<TPriority, TValue> Next { get; internal set; }
 
         /// <summary>

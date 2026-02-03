@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using JetBrains.Annotations;
 using static QuikGraph.Utils.DisposableHelpers;
 
 namespace QuikGraph.Algorithms.Observers
@@ -10,9 +9,9 @@ namespace QuikGraph.Algorithms.Observers
     /// Recorder of vertices discover timestamps.
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
-#if SUPPORTS_SERIALIZATION
+
     [Serializable]
-#endif
+
     public sealed class VertexTimeStamperObserver<TVertex> : IObserver<IVertexTimeStamperAlgorithm<TVertex>>
     {
         private int _currentTime;
@@ -30,7 +29,7 @@ namespace QuikGraph.Algorithms.Observers
         /// </summary>
         /// <param name="discoverTimes">Vertices discover times.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="discoverTimes"/> is <see langword="null"/>.</exception>
-        public VertexTimeStamperObserver([NotNull] IDictionary<TVertex, int> discoverTimes)
+        public VertexTimeStamperObserver( IDictionary<TVertex, int> discoverTimes)
         {
             DiscoverTimes = discoverTimes ?? throw new ArgumentNullException(nameof(discoverTimes));
             FinishTimes = null;
@@ -44,8 +43,8 @@ namespace QuikGraph.Algorithms.Observers
         /// <exception cref="T:System.ArgumentNullException"><paramref name="discoverTimes"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="finishTimes"/> is <see langword="null"/>.</exception>
         public VertexTimeStamperObserver(
-            [NotNull] IDictionary<TVertex, int> discoverTimes,
-            [NotNull] IDictionary<TVertex, int> finishTimes)
+             IDictionary<TVertex, int> discoverTimes,
+             IDictionary<TVertex, int> finishTimes)
         {
             DiscoverTimes = discoverTimes ?? throw new ArgumentNullException(nameof(discoverTimes));
             FinishTimes = finishTimes ?? throw new ArgumentNullException(nameof(finishTimes));
@@ -54,13 +53,13 @@ namespace QuikGraph.Algorithms.Observers
         /// <summary>
         /// Times of vertices discover.
         /// </summary>
-        [NotNull]
+
         public IDictionary<TVertex, int> DiscoverTimes { get; }
 
         /// <summary>
         /// Times of vertices fully treated.
         /// </summary>
-        [CanBeNull]
+
         public IDictionary<TVertex, int> FinishTimes { get; }
 
         #region IObserver<TAlgorithm>
@@ -68,8 +67,7 @@ namespace QuikGraph.Algorithms.Observers
         /// <inheritdoc />
         public IDisposable Attach(IVertexTimeStamperAlgorithm<TVertex> algorithm)
         {
-            if (algorithm is null)
-                throw new ArgumentNullException(nameof(algorithm));
+            ArgumentNullException.ThrowIfNull(algorithm);
 
             algorithm.DiscoverVertex += OnVertexDiscovered;
             if (FinishTimes != null)
@@ -89,14 +87,14 @@ namespace QuikGraph.Algorithms.Observers
 
         #endregion
 
-        private void OnVertexDiscovered([NotNull] TVertex vertex)
+        private void OnVertexDiscovered( TVertex vertex)
         {
             Debug.Assert(vertex != null);
 
             DiscoverTimes[vertex] = _currentTime++;
         }
 
-        private void OnVertexFinished([NotNull] TVertex vertex)
+        private void OnVertexFinished( TVertex vertex)
         {
             Debug.Assert(vertex != null);
 

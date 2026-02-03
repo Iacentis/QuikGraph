@@ -33,9 +33,9 @@ namespace QuikGraph.Tests.Utils
         public void NextWithMax()
         {
             var rng = new CryptoRandom();
-            Assert.LessOrEqual(rng.Next(int.MaxValue), int.MaxValue);
-            Assert.LessOrEqual(rng.Next(10), 10);
-            Assert.AreEqual(0, rng.Next(0));
+            Assert.That(rng.Next(int.MaxValue), Is.LessThanOrEqualTo(int.MaxValue));
+            Assert.That(rng.Next(10), Is.LessThanOrEqualTo(10));
+            Assert.That(0, Is.EqualTo(rng.Next(0)));
         }
 
         [Test]
@@ -58,14 +58,14 @@ namespace QuikGraph.Tests.Utils
             AssertBetween(rng.Next(-10, 10), -10, 10);
             AssertBetween(rng.Next(-10, 0), -10, 0);
             AssertBetween(rng.Next(-10, -1), -10, -1);
-            Assert.AreEqual(10, rng.Next(10, 10));
+            Assert.That(10, Is.EqualTo(rng.Next(10, 10)));
 
             #region Local function
 
             void AssertBetween(int value, int min, int max)
             {
-                Assert.LessOrEqual(value, max);
-                Assert.GreaterOrEqual(value, min);
+                Assert.That(value, Is.LessThanOrEqualTo(max));
+                Assert.That(value, Is.LessThanOrEqualTo(min));
             }
 
             #endregion

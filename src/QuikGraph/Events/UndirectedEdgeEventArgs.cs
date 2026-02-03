@@ -1,7 +1,7 @@
-﻿#if SUPPORTS_SERIALIZATION
+﻿
 using System;
-#endif
-using JetBrains.Annotations;
+
+
 
 namespace QuikGraph
 {
@@ -10,9 +10,9 @@ namespace QuikGraph
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
-#if SUPPORTS_SERIALIZATION
+
     [Serializable]
-#endif
+
     public class UndirectedEdgeEventArgs<TVertex, TEdge> : EdgeEventArgs<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
@@ -22,7 +22,7 @@ namespace QuikGraph
         /// <param name="edge">The edge.</param>
         /// <param name="reversed">Indicates if the edge should be reversed or not.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edge"/> is <see langword="null"/>.</exception>
-        public UndirectedEdgeEventArgs([NotNull] TEdge edge, bool reversed)
+        public UndirectedEdgeEventArgs( TEdge edge, bool reversed)
             : base(edge)
         {
             Reversed = reversed;
@@ -36,13 +36,13 @@ namespace QuikGraph
         /// <summary>
         /// Edge source.
         /// </summary>
-        [NotNull]
+
         public TVertex Source => Reversed ? Edge.Target : Edge.Source;
 
         /// <summary>
         /// Edge target.
         /// </summary>
-        [NotNull]
+
         public TVertex Target => Reversed ? Edge.Source : Edge.Target;
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using JetBrains.Annotations;
 using QuikGraph.Constants;
 
 namespace QuikGraph
@@ -9,9 +8,9 @@ namespace QuikGraph
     /// The default <see cref="ITermEdge{TVertex}"/> implementation (directed edge).
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
-#if SUPPORTS_SERIALIZATION
+
     [Serializable]
-#endif
+
     [DebuggerDisplay("{" + nameof(Source) + "}->{" + nameof(Target) + "}")]
     public class TermEdge<TVertex> : ITermEdge<TVertex>
     {
@@ -23,7 +22,7 @@ namespace QuikGraph
         /// <param name="target">The target vertex.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
-        public TermEdge([NotNull] TVertex source, [NotNull] TVertex target)
+        public TermEdge( TVertex source,  TVertex target)
             : this(source, target, 0, 0)
         {
         }
@@ -40,7 +39,7 @@ namespace QuikGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="sourceTerminal"/> is negative.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="targetTerminal"/> is negative.</exception>
-        public TermEdge([NotNull] TVertex source, [NotNull] TVertex target, int sourceTerminal, int targetTerminal)
+        public TermEdge( TVertex source,  TVertex target, int sourceTerminal, int targetTerminal)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));

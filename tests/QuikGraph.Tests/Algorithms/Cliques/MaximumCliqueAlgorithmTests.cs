@@ -1,5 +1,4 @@
 using System;
-using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Algorithms.Cliques;
 using QuikGraph.Algorithms.Services;
@@ -18,12 +17,12 @@ namespace QuikGraph.Tests.Algorithms.Cliques
         private class TestMaximumCliqueAlgorithm<TVertex, TEdge> : MaximumCliqueAlgorithmBase<TVertex, TEdge>
             where TEdge : IEdge<TVertex>
         {
-            public TestMaximumCliqueAlgorithm([NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph)
+            public TestMaximumCliqueAlgorithm( IUndirectedGraph<TVertex, TEdge> visitedGraph)
                 : base(visitedGraph)
             {
             }
 
-            public TestMaximumCliqueAlgorithm([CanBeNull] IAlgorithmComponent host, [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph)
+            public TestMaximumCliqueAlgorithm( IAlgorithmComponent host,  IUndirectedGraph<TVertex, TEdge> visitedGraph)
                 : base(host, visitedGraph)
             {
             }

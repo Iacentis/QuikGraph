@@ -1,7 +1,7 @@
 ﻿using System.Data;
 using System.Diagnostics;
 using System.Text;
-using JetBrains.Annotations;
+
 using QuikGraph.Graphviz;
 using QuikGraph.Graphviz.Dot;
 
@@ -17,7 +17,7 @@ namespace QuikGraph.Data
         /// </summary>
         /// <param name="visitedGraph">Graph to convert to DOT.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
-        public DataSetGraphvizAlgorithm([NotNull] DataSetGraph visitedGraph)
+        public DataSetGraphvizAlgorithm( DataSetGraph visitedGraph)
             : base(visitedGraph)
         {
             InitializeFormat();
@@ -30,8 +30,8 @@ namespace QuikGraph.Data
         /// <param name="imageType">Target output image type.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public DataSetGraphvizAlgorithm(
-            [NotNull] DataSetGraph visitedGraph,
-            GraphvizImageType imageType)
+             DataSetGraph visitedGraph,
+             GraphvizImageType imageType)
             : base(visitedGraph, imageType)
         {
             InitializeFormat();
@@ -51,7 +51,7 @@ namespace QuikGraph.Data
         /// </summary>
         /// <param name="sender">The <see cref="GraphvizAlgorithm{TVertex,TEdge}"/> performing the formatting.</param>
         /// <param name="args">Vertex event arguments.</param>
-        protected virtual void FormatTable([NotNull] object sender, [NotNull] FormatVertexEventArgs<DataTable> args)
+        protected virtual void FormatTable( object sender,  FormatVertexEventArgs<DataTable> args)
         {
             Debug.Assert(sender != null);
             Debug.Assert(args != null);
@@ -99,7 +99,7 @@ namespace QuikGraph.Data
         /// </summary>
         /// <param name="sender">The <see cref="GraphvizAlgorithm{TVertex,TEdge}"/> performing the formatting.</param>
         /// <param name="args">Edge event arguments.</param>
-        protected virtual void FormatRelation([NotNull] object sender, [NotNull] FormatEdgeEventArgs<DataTable, DataRelationEdge> args)
+        protected virtual void FormatRelation( object sender,  FormatEdgeEventArgs<DataTable, DataRelationEdge> args)
         {
             Debug.Assert(sender != null);
             Debug.Assert(args != null);

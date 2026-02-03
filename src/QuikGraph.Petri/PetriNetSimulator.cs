@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph.Petri
 {
@@ -9,12 +9,12 @@ namespace QuikGraph.Petri
     /// Petri Net simulator.
     /// </summary>
     /// <typeparam name="TToken">Token type.</typeparam>
-#if SUPPORTS_SERIALIZATION
+
     [Serializable]
-#endif
+
     public sealed class PetriNetSimulator<TToken>
     {
-        [NotNull]
+
         private Dictionary<ITransition<TToken>, TransitionBuffer> _transitionBuffers = new Dictionary<ITransition<TToken>, TransitionBuffer>();
 
         /// <summary>
@@ -22,7 +22,7 @@ namespace QuikGraph.Petri
         /// </summary>
         /// <param name="net">Petri net to simulate.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="net"/> is <see langword="null"/>.</exception>
-        public PetriNetSimulator([NotNull] IPetriNet<TToken> net)
+        public PetriNetSimulator( IPetriNet<TToken> net)
         {
             Net = net ?? throw new ArgumentNullException(nameof(net));
         }
@@ -30,7 +30,7 @@ namespace QuikGraph.Petri
         /// <summary>
         /// Petri Net.
         /// </summary>
-        [NotNull]
+
         public IPetriNet<TToken> Net { get; }
 
         /// <summary>
@@ -134,7 +134,7 @@ namespace QuikGraph.Petri
 
         private sealed class TransitionBuffer
         {
-            [NotNull, ItemNotNull]
+
             public IList<TToken> Tokens { get; } = new List<TToken>();
 
             public bool Enabled { get; set; } = true;

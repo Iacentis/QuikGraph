@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using QuikGraph.Graphviz.Dot;
 
 namespace QuikGraph.Graphviz.Tests
@@ -16,10 +16,10 @@ namespace QuikGraph.Graphviz.Tests
         public void Constructor()
         {
             var cell = new GraphvizRecordCell();
-            Assert.IsFalse(cell.HasPort);
-            Assert.IsNull(cell.Port);
-            Assert.IsFalse(cell.HasText);
-            Assert.IsNull(cell.Text);
+            Assert.That(cell.HasPort, Is.False);
+            Assert.That(cell.Port, Is.Null);
+            Assert.That(cell.HasText, Is.False);
+            Assert.That(cell.Text, Is.Null);
             CollectionAssert.IsEmpty(cell.Cells);
         }
 
@@ -29,23 +29,23 @@ namespace QuikGraph.Graphviz.Tests
             var cell = new GraphvizRecordCell();
             if (cell.Port != null)
                 throw new InvalidOperationException($"Cell has not null {nameof(GraphvizRecordCell.Port)}.");
-            Assert.IsFalse(cell.HasPort);
+            Assert.That(cell.HasPort, Is.False);
 
             cell.Port = null;
 
-            Assert.IsFalse(cell.HasPort);
-            Assert.IsNull(cell.Port);
+            Assert.That(cell.HasPort, Is.False);
+            Assert.That(cell.Port, Is.Null);
 
             cell.Port = string.Empty;
 
-            Assert.IsFalse(cell.HasPort);
-            Assert.IsEmpty(cell.Port);
+            Assert.That(cell.HasPort, Is.False);
+            Assert.That(cell.Port, Is.Empty);
 
             const string port = "TestPort";
             cell.Port = port;
 
-            Assert.IsTrue(cell.HasPort);
-            Assert.AreEqual(port, cell.Port);
+            Assert.That(cell.HasPort, Is.True);
+            Assert.That(port, Is.EqualTo(cell.Port));
         }
 
         [Test]
@@ -54,23 +54,23 @@ namespace QuikGraph.Graphviz.Tests
             var cell = new GraphvizRecordCell();
             if (cell.Text != null)
                 throw new InvalidOperationException($"Cell has not null {nameof(GraphvizRecordCell.Text)}.");
-            Assert.IsFalse(cell.HasText);
+            Assert.That(cell.HasText, Is.False);
 
             cell.Port = null;
 
-            Assert.IsFalse(cell.HasText);
-            Assert.IsNull(cell.Text);
+            Assert.That(cell.HasText, Is.False);
+            Assert.That(cell.Text, Is.Null);
 
             cell.Text = string.Empty;
 
-            Assert.IsFalse(cell.HasText);
-            Assert.IsEmpty(cell.Text);
+            Assert.That(cell.HasText, Is.False);
+            Assert.That(cell.Text, Is.Empty);
 
             const string text = "TestText";
             cell.Text = text;
 
-            Assert.IsTrue(cell.HasText);
-            Assert.AreEqual(text, cell.Text);
+            Assert.That(cell.HasText, Is.True);
+            Assert.That(text, Is.EqualTo(cell.Text));
         }
 
         [Test]
@@ -82,7 +82,7 @@ namespace QuikGraph.Graphviz.Tests
 
             var recordCollection = new GraphvizRecordCellCollection();
             cell.Cells = recordCollection;
-            Assert.AreSame(recordCollection, cell.Cells);
+            Assert.That(recordCollection, Is.SameAs(cell.Cells));
         }
 
         [Test]
@@ -93,7 +93,7 @@ namespace QuikGraph.Graphviz.Tests
             Assert.Throws<ArgumentNullException>(() => cell.Cells = null);
         }
 
-        [NotNull, ItemNotNull]
+
         private static IEnumerable<TestCaseData> ToDotTestCases
         {
             get
@@ -106,72 +106,36 @@ namespace QuikGraph.Graphviz.Tests
 
                 var cellWithPort = new GraphvizRecordCell { Port = "SomePort" };
                 yield return new TestCaseData(cellWithPort, "<SomePort> ");
-                
-                var cellWithBoth = new GraphvizRecordCell
-                {
-                    Port = "Port",
-                    Text = "Text"
-                };
+
+                var cellWithBoth = new GraphvizRecordCell { Port = "Port", Text = "Text" };
                 yield return new TestCaseData(cellWithBoth, "<Port> Text");
 
-                var cellWithSpaceToEscape = new GraphvizRecordCell
-                {
-                    Port = "Some Port",
-                    Text = "Some Text"
-                };
+                var cellWithSpaceToEscape = new GraphvizRecordCell { Port = "Some Port", Text = "Some Text" };
                 yield return new TestCaseData(cellWithSpaceToEscape, @"<Some_Port> Some\ Text");
 
-                var cellWithBackslashToEscape = new GraphvizRecordCell
-                {
-                    Port = @"Some\Port",
-                    Text = @"Some\Text"
-                };
+                var cellWithBackslashToEscape = new GraphvizRecordCell { Port = @"Some\Port", Text = @"Some\Text" };
                 yield return new TestCaseData(cellWithBackslashToEscape, @"<Some_Port> Some\\Text");
 
-                var cellWithDoubleQuoteToEscape = new GraphvizRecordCell
-                {
-                    Port = "Some\"Port",
-                    Text = "Some\"Text"
-                };
+                var cellWithDoubleQuoteToEscape = new GraphvizRecordCell { Port = "Some\"Port", Text = "Some\"Text" };
                 yield return new TestCaseData(cellWithDoubleQuoteToEscape, @"<Some_Port> Some\""Text");
 
-                var cellWithLessToEscape = new GraphvizRecordCell
-                {
-                    Port = "Some<Port",
-                    Text = "Some<Text"
-                };
+                var cellWithLessToEscape = new GraphvizRecordCell { Port = "Some<Port", Text = "Some<Text" };
                 yield return new TestCaseData(cellWithLessToEscape, @"<Some_Port> Some\<Text");
 
-                var cellWithGreaterToEscape = new GraphvizRecordCell
-                {
-                    Port = "Some>Port",
-                    Text = "Some>Text"
-                };
+                var cellWithGreaterToEscape = new GraphvizRecordCell { Port = "Some>Port", Text = "Some>Text" };
                 yield return new TestCaseData(cellWithGreaterToEscape, @"<Some_Port> Some\>Text");
 
-                var cellWithPipeToEscape = new GraphvizRecordCell
-                {
-                    Port = "Some|Port",
-                    Text = "Some|Text"
-                };
+                var cellWithPipeToEscape = new GraphvizRecordCell { Port = "Some|Port", Text = "Some|Text" };
                 yield return new TestCaseData(cellWithPipeToEscape, @"<Some_Port> Some\|Text");
 
-                var cellWithLineBreakToEscape = new GraphvizRecordCell
-                {
-                    Port = "Some\nPort",
-                    Text = "Some\nText"
-                };
+                var cellWithLineBreakToEscape = new GraphvizRecordCell { Port = "Some\nPort", Text = "Some\nText" };
                 yield return new TestCaseData(cellWithLineBreakToEscape, @"<Some_Port> Some\nText");
 
                 var cellWithChildCell = new GraphvizRecordCell
                 {
                     Cells = new GraphvizRecordCellCollection(new[]
                     {
-                        new GraphvizRecordCell
-                        {
-                            Port = "SubPort",
-                            Text = "SubText"
-                        }
+                        new GraphvizRecordCell { Port = "SubPort", Text = "SubText" }
                     })
                 };
                 yield return new TestCaseData(cellWithChildCell, @"{ <SubPort> SubText }");
@@ -182,32 +146,19 @@ namespace QuikGraph.Graphviz.Tests
                     Text = "SomeText",
                     Cells = new GraphvizRecordCellCollection(new[]
                     {
-                        new GraphvizRecordCell
-                        {
-                            Port = "SubPort",
-                            Text = "SubText"
-                        }
+                        new GraphvizRecordCell { Port = "SubPort", Text = "SubText" }
                     })
                 };
-                yield return new TestCaseData(cellMultiPatternWithChildCell, @"<SomePort> SomeText | { <SubPort> SubText }");
+                yield return new TestCaseData(cellMultiPatternWithChildCell,
+                    @"<SomePort> SomeText | { <SubPort> SubText }");
 
                 var cellWithChildrenCells = new GraphvizRecordCell
                 {
                     Cells = new GraphvizRecordCellCollection(new[]
                     {
-                        new GraphvizRecordCell
-                        {
-                            Port = "SubPort1"
-                        },
-                        new GraphvizRecordCell
-                        {
-                            Port = "SubPort2",
-                            Text = "SubText2"
-                        },
-                        new GraphvizRecordCell
-                        {
-                            Text = "SubText3"
-                        }
+                        new GraphvizRecordCell { Port = "SubPort1" },
+                        new GraphvizRecordCell { Port = "SubPort2", Text = "SubText2" },
+                        new GraphvizRecordCell { Text = "SubText3" }
                     })
                 };
                 yield return new TestCaseData(
@@ -220,19 +171,9 @@ namespace QuikGraph.Graphviz.Tests
                     Text = "SomeText",
                     Cells = new GraphvizRecordCellCollection(new[]
                     {
-                        new GraphvizRecordCell
-                        {
-                            Port = "SubPort1"
-                        },
-                        new GraphvizRecordCell
-                        {
-                            Port = "SubPort2",
-                            Text = "SubText2"
-                        },
-                        new GraphvizRecordCell
-                        {
-                            Text = "SubText3"
-                        }
+                        new GraphvizRecordCell { Port = "SubPort1" },
+                        new GraphvizRecordCell { Port = "SubPort2", Text = "SubText2" },
+                        new GraphvizRecordCell { Text = "SubText3" }
                     })
                 };
                 yield return new TestCaseData(
@@ -243,33 +184,17 @@ namespace QuikGraph.Graphviz.Tests
                 {
                     Cells = new GraphvizRecordCellCollection(new[]
                     {
-                        new GraphvizRecordCell
-                        {
-                            Port = "SubPort1"
-                        },
+                        new GraphvizRecordCell { Port = "SubPort1" },
                         new GraphvizRecordCell
                         {
                             Cells = new GraphvizRecordCellCollection(new[]
                             {
-                                new GraphvizRecordCell
-                                {
-                                    Text = "NestedText1"
-                                },
-                                new GraphvizRecordCell
-                                {
-                                    Port = "NestedPort2",
-                                    Text = "NestedText2"
-                                },
-                                new GraphvizRecordCell
-                                {
-                                    Text = "NestedText3"
-                                }
+                                new GraphvizRecordCell { Text = "NestedText1" },
+                                new GraphvizRecordCell { Port = "NestedPort2", Text = "NestedText2" },
+                                new GraphvizRecordCell { Text = "NestedText3" }
                             })
                         },
-                        new GraphvizRecordCell
-                        {
-                            Text = "SubText3"
-                        }
+                        new GraphvizRecordCell { Text = "SubText3" }
                     })
                 };
                 yield return new TestCaseData(
@@ -280,35 +205,19 @@ namespace QuikGraph.Graphviz.Tests
                 {
                     Cells = new GraphvizRecordCellCollection(new[]
                     {
-                        new GraphvizRecordCell
-                        {
-                            Port = "SubPort1"
-                        },
+                        new GraphvizRecordCell { Port = "SubPort1" },
                         new GraphvizRecordCell
                         {
                             Port = "SubPort2",
                             Text = "SubText2",
                             Cells = new GraphvizRecordCellCollection(new[]
                             {
-                                new GraphvizRecordCell
-                                {
-                                    Text = "NestedText1"
-                                },
-                                new GraphvizRecordCell
-                                {
-                                    Port = "NestedPort2",
-                                    Text = "NestedText2"
-                                },
-                                new GraphvizRecordCell
-                                {
-                                    Text = "NestedText3"
-                                }
+                                new GraphvizRecordCell { Text = "NestedText1" },
+                                new GraphvizRecordCell { Port = "NestedPort2", Text = "NestedText2" },
+                                new GraphvizRecordCell { Text = "NestedText3" }
                             })
                         },
-                        new GraphvizRecordCell
-                        {
-                            Text = "SubText3"
-                        }
+                        new GraphvizRecordCell { Text = "SubText3" }
                     })
                 };
                 yield return new TestCaseData(
@@ -321,33 +230,17 @@ namespace QuikGraph.Graphviz.Tests
                     Text = "SomeText",
                     Cells = new GraphvizRecordCellCollection(new[]
                     {
-                        new GraphvizRecordCell
-                        {
-                            Port = "SubPort1"
-                        },
+                        new GraphvizRecordCell { Port = "SubPort1" },
                         new GraphvizRecordCell
                         {
                             Cells = new GraphvizRecordCellCollection(new[]
                             {
-                                new GraphvizRecordCell
-                                {
-                                    Text = "NestedText1"
-                                },
-                                new GraphvizRecordCell
-                                {
-                                    Port = "NestedPort2",
-                                    Text = "NestedText2"
-                                },
-                                new GraphvizRecordCell
-                                {
-                                    Text = "NestedText3"
-                                }
+                                new GraphvizRecordCell { Text = "NestedText1" },
+                                new GraphvizRecordCell { Port = "NestedPort2", Text = "NestedText2" },
+                                new GraphvizRecordCell { Text = "NestedText3" }
                             })
                         },
-                        new GraphvizRecordCell
-                        {
-                            Text = "SubText3"
-                        }
+                        new GraphvizRecordCell { Text = "SubText3" }
                     })
                 };
                 yield return new TestCaseData(
@@ -357,10 +250,10 @@ namespace QuikGraph.Graphviz.Tests
         }
 
         [TestCaseSource(nameof(ToDotTestCases))]
-        public void ToDot([NotNull] GraphvizRecordCell recordCell, [NotNull] string expectedDot)
+        public void ToDot(GraphvizRecordCell recordCell, string expectedDot)
         {
-            Assert.AreEqual(expectedDot, recordCell.ToDot());
-            Assert.AreEqual(expectedDot, recordCell.ToString());
+            Assert.That(expectedDot, Is.EqualTo(recordCell.ToDot()));
+            Assert.That(expectedDot, Is.EqualTo(recordCell.ToString()));
         }
     }
 }

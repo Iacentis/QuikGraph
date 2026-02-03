@@ -1,10 +1,8 @@
-#if SUPPORTS_SERIALIZATION
 using System;
-#endif
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph.Collections
 {
@@ -13,21 +11,21 @@ namespace QuikGraph.Collections
     /// </summary>
     /// <typeparam name="TPriority">Priority type.</typeparam>
     /// <typeparam name="TValue">Value type.</typeparam>
-#if SUPPORTS_SERIALIZATION
     [Serializable]
-#endif
     public sealed class FibonacciHeapLinkedList<TPriority, TValue> : IEnumerable<FibonacciHeapCell<TPriority, TValue>>
     {
-        [CanBeNull]
         private FibonacciHeapCell<TPriority, TValue> _last;
 
         /// <summary>
         /// First <see cref="FibonacciHeapCell{TPriority,TValue}"/>.
         /// </summary>
-        [CanBeNull]
+
         public FibonacciHeapCell<TPriority, TValue> First { get; private set; }
 
-        internal FibonacciHeapLinkedList()
+        /// <summary>
+        ///
+        /// </summary>
+        public FibonacciHeapLinkedList()
         {
             First = null;
             _last = null;
@@ -37,7 +35,7 @@ namespace QuikGraph.Collections
         /// Merges the given <paramref name="cells"/> at the end of this cells list.
         /// </summary>
         /// <param name="cells">Cells to merge.</param>
-        internal void MergeLists([NotNull] FibonacciHeapLinkedList<TPriority, TValue> cells)
+        internal void MergeLists(FibonacciHeapLinkedList<TPriority, TValue> cells)
         {
             Debug.Assert(cells != null);
 
@@ -62,7 +60,7 @@ namespace QuikGraph.Collections
         /// Adds the given <paramref name="cell"/> at the end of this cells list.
         /// </summary>
         /// <param name="cell">Cell to add.</param>
-        internal void AddLast([NotNull] FibonacciHeapCell<TPriority, TValue> cell)
+        public void AddLast(FibonacciHeapCell<TPriority, TValue> cell)
         {
             Debug.Assert(cell != null);
 
@@ -84,7 +82,7 @@ namespace QuikGraph.Collections
         /// Removes the given <paramref name="cell"/> from this cells list.
         /// </summary>
         /// <param name="cell">Cell to remove.</param>
-        internal void Remove([NotNull] FibonacciHeapCell<TPriority, TValue> cell)
+        public void Remove(FibonacciHeapCell<TPriority, TValue> cell)
         {
             Debug.Assert(cell != null);
 

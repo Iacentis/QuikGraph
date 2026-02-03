@@ -1,5 +1,6 @@
 using System.Collections.Generic;
-using JetBrains.Annotations;
+using System.Diagnostics.Contracts;
+
 
 namespace QuikGraph.Petri
 {
@@ -13,6 +14,6 @@ namespace QuikGraph.Petri
         /// Checks if the condition is true (enabled), or not.
         /// </summary>
         [Pure]
-        bool IsEnabled([NotNull, ItemNotNull] IList<TToken> tokens);
+        bool IsEnabled( IList<TToken> tokens);
     }
 }

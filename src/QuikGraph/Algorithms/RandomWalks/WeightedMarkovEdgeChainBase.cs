@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph.Algorithms.RandomWalks
 {
@@ -19,7 +19,7 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// </summary>
         /// <param name="edgeWeights">Map that contains edge weights.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
-        protected WeightedMarkovEdgeChainBase([NotNull] IDictionary<TEdge, double> edgeWeights)
+        protected WeightedMarkovEdgeChainBase( IDictionary<TEdge, double> edgeWeights)
         {
             Weights = edgeWeights ?? throw new ArgumentNullException(nameof(edgeWeights));
         }
@@ -27,7 +27,7 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// <summary>
         /// Map of edge weights.
         /// </summary>
-        [NotNull]
+
         public IDictionary<TEdge, double> Weights { get; }
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// <param name="graph">Graph to consider.</param>
         /// <param name="vertex">Vertex to get out weight.</param>
         /// <returns>Out weight.</returns>
-        protected double GetOutWeight([NotNull] IImplicitGraph<TVertex, TEdge> graph, [NotNull] TVertex vertex)
+        protected double GetOutWeight( IImplicitGraph<TVertex, TEdge> graph,  TVertex vertex)
         {
             IEnumerable<TEdge> edges = graph.OutEdges(vertex);
             return GetWeights(edges);
@@ -47,7 +47,7 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// </summary>
         /// <param name="edges">Edges to get total weight.</param>
         /// <returns>Edges weight.</returns>
-        protected double GetWeights([NotNull, ItemNotNull] IEnumerable<TEdge> edges)
+        protected double GetWeights( IEnumerable<TEdge> edges)
         {
             return edges.Sum(edge => Weights[edge]);
         }
@@ -60,7 +60,7 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// <param name="position">The position.</param>
         /// <param name="successor">Found successor, otherwise <see langword="null"/>.</param>
         /// <returns>True if a successor was found, false otherwise.</returns>
-        protected bool TryGetSuccessor([NotNull] IImplicitGraph<TVertex, TEdge> graph, [NotNull] TVertex vertex, double position, out TEdge successor)
+        protected bool TryGetSuccessor( IImplicitGraph<TVertex, TEdge> graph,  TVertex vertex, double position, out TEdge successor)
         {
             Debug.Assert(graph != null);
             Debug.Assert(vertex != null);
@@ -76,7 +76,7 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// <param name="position">The position.</param>
         /// <param name="successor">Found successor, otherwise <see langword="null"/>.</param>
         /// <returns>True if a successor was found, false otherwise.</returns>
-        protected bool TryGetSuccessor([NotNull, ItemNotNull] IEnumerable<TEdge> edges, double position, out TEdge successor)
+        protected bool TryGetSuccessor( IEnumerable<TEdge> edges, double position, out TEdge successor)
         {
             Debug.Assert(edges != null);
 

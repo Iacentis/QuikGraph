@@ -32,9 +32,9 @@ namespace QuikGraph.Tests.Structures
                 bool parallelEdges = true)
                 where TEdge : IEdge<TVertex>
             {
-                Assert.IsTrue(g.IsDirected);
-                Assert.AreEqual(parallelEdges, g.AllowParallelEdges);
-                Assert.IsNotNull(g.OriginalGraph);
+                Assert.That(g.IsDirected,Is.True);
+                Assert.That(parallelEdges,Is.EqualTo(g.AllowParallelEdges));
+                Assert.That(g.OriginalGraph,Is.Not.Null);
                 AssertEmptyGraph(g);
             }
 
@@ -75,7 +75,7 @@ namespace QuikGraph.Tests.Structures
             wrappedGraph.AddVertex(2);
             wrappedGraph.AddEdge(edge);
 
-            AssertHasEdges(graph, new[] { edge });  // Graph is updated
+            AssertHasEdges(graph, [edge]);  // Graph is updated
         }
 
         #endregion

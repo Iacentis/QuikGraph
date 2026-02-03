@@ -1,4 +1,4 @@
-using JetBrains.Annotations;
+
 
 namespace QuikGraph
 {
@@ -11,13 +11,13 @@ namespace QuikGraph
         /// <summary>
         /// Gets the source vertex.
         /// </summary>
-        [NotNull]
+
         TVertex Source { get; }
 
         /// <summary>
         /// Gets the target vertex.
         /// </summary>
-        [NotNull]
+
         TVertex Target { get; }
     }
 }

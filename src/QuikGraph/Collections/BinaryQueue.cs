@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using JetBrains.Annotations;
+using System.Diagnostics.Contracts;
+
 
 namespace QuikGraph.Collections
 {
@@ -10,16 +11,16 @@ namespace QuikGraph.Collections
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TDistance">Distance type.</typeparam>
-#if SUPPORTS_SERIALIZATION
+
     [Serializable]
-#endif
+
     [DebuggerDisplay("Count = {" + nameof(Count) + "}")]
     public sealed class BinaryQueue<TVertex, TDistance> : IPriorityQueue<TVertex>
     {
-        [NotNull]
+
         private readonly Func<TVertex, TDistance> _distanceFunc;
 
-        [NotNull]
+
         private readonly BinaryHeap<TDistance, TVertex> _heap;
 
         /// <summary>
@@ -27,7 +28,7 @@ namespace QuikGraph.Collections
         /// </summary>
         /// <param name="distanceFunc">Function that compute the distance for a given vertex.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceFunc"/> is <see langword="null"/>.</exception>
-        public BinaryQueue([NotNull] Func<TVertex, TDistance> distanceFunc)
+        public BinaryQueue( Func<TVertex, TDistance> distanceFunc)
             : this(distanceFunc, Comparer<TDistance>.Default.Compare)
         {
         }
@@ -40,11 +41,10 @@ namespace QuikGraph.Collections
         /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceFunc"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceComparison"/> is <see langword="null"/>.</exception>
         public BinaryQueue(
-            [NotNull] Func<TVertex, TDistance> distanceFunc, 
-            [NotNull] Comparison<TDistance> distanceComparison)
+             Func<TVertex, TDistance> distanceFunc,
+             Comparison<TDistance> distanceComparison)
         {
-            if (distanceComparison is null)
-                throw new ArgumentNullException(nameof(distanceComparison));
+            ArgumentNullException.ThrowIfNull(distanceComparison);
 
             _distanceFunc = distanceFunc ?? throw new ArgumentNullException(nameof(distanceFunc));
             _heap = new BinaryHeap<TDistance, TVertex>(distanceComparison);
@@ -62,20 +62,20 @@ namespace QuikGraph.Collections
         }
 
         /// <inheritdoc />
-        public void Enqueue([NotNull] TVertex value)
+        public void Enqueue( TVertex value)
         {
             _heap.Add(_distanceFunc(value), value);
         }
 
         /// <inheritdoc />
-        [NotNull]
+
         public TVertex Dequeue()
         {
             return _heap.RemoveMinimum().Value;
         }
 
         /// <inheritdoc />
-        [NotNull]
+
         public TVertex Peek()
         {
             return _heap.Minimum().Value;
@@ -92,7 +92,7 @@ namespace QuikGraph.Collections
         #region IPriorityQueue
 
         /// <inheritdoc />
-        public void Update([NotNull] TVertex value)
+        public void Update( TVertex value)
         {
             _heap.Update(_distanceFunc(value), value);
         }
@@ -104,7 +104,7 @@ namespace QuikGraph.Collections
         /// </summary>
         /// <returns>Array composed of elements.</returns>
         [Pure]
-        [NotNull]
+
         public KeyValuePair<TDistance, TVertex>[] ToPairsArray()
         {
             return _heap.ToPairsArray();
@@ -115,7 +115,7 @@ namespace QuikGraph.Collections
         /// </summary>
         /// <returns>String representation.</returns>
         [Pure]
-        [NotNull]
+
         public string ToString2()
         {
             return _heap.ToString2();

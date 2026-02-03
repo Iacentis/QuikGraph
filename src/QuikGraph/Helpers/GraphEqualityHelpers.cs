@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph
 {
@@ -26,16 +27,14 @@ namespace QuikGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeEquality"/> is <see langword="null"/>.</exception>
         [Pure]
         public static bool Equate<TVertex, TEdge>(
-            [CanBeNull] IEdgeListGraph<TVertex, TEdge> g,
-            [CanBeNull] IEdgeListGraph<TVertex, TEdge> h,
-            [NotNull] IEqualityComparer<TVertex> vertexEquality,
-            [NotNull] IEqualityComparer<TEdge> edgeEquality)
+             IEdgeListGraph<TVertex, TEdge> g,
+             IEdgeListGraph<TVertex, TEdge> h,
+             IEqualityComparer<TVertex> vertexEquality,
+             IEqualityComparer<TEdge> edgeEquality)
             where TEdge : IEdge<TVertex>
         {
-            if (vertexEquality is null)
-                throw new ArgumentNullException(nameof(vertexEquality));
-            if (edgeEquality is null)
-                throw new ArgumentNullException(nameof(edgeEquality));
+            ArgumentNullException.ThrowIfNull(vertexEquality);
+            ArgumentNullException.ThrowIfNull(edgeEquality);
 
             if (g is null)
                 return h is null;
@@ -80,8 +79,8 @@ namespace QuikGraph
         /// <returns>True if both graphs are equal, false otherwise.</returns>
         [Pure]
         public static bool Equate<TVertex, TEdge>(
-            [CanBeNull] IEdgeListGraph<TVertex, TEdge> g,
-            [CanBeNull] IEdgeListGraph<TVertex, TEdge> h)
+             IEdgeListGraph<TVertex, TEdge> g,
+             IEdgeListGraph<TVertex, TEdge> h)
             where TEdge : IEdge<TVertex>
         {
             return Equate(g, h, EqualityComparer<TVertex>.Default, EqualityComparer<TEdge>.Default);

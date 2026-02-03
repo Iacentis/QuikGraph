@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
+
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace QuikGraph.Petri.Tests
 {
@@ -104,10 +105,10 @@ namespace QuikGraph.Petri.Tests
 
         private abstract class Person
         {
-            [NotNull]
-            public string Name { [UsedImplicitly] get; }
 
-            public Person([NotNull] string name)
+            public string Name {  get; }
+
+            public Person( string name)
             {
                 Name = name;
             }
@@ -115,7 +116,7 @@ namespace QuikGraph.Petri.Tests
 
         private class Barber : Person
         {
-            public Barber([NotNull] string name)
+            public Barber( string name)
                 : base(name)
             {
             }
@@ -123,7 +124,7 @@ namespace QuikGraph.Petri.Tests
 
         private class Customer : Person
         {
-            public Customer([NotNull] string name)
+            public Customer( string name)
                 : base(name)
             {
             }
@@ -138,7 +139,7 @@ namespace QuikGraph.Petri.Tests
         {
             var net = new PetriNet<int>();
             var simulator = new PetriNetSimulator<int>(net);
-            Assert.AreSame(net, simulator.Net);
+            Assert.That(net,Is.SameAs(simulator.Net));
         }
 
         [Test]

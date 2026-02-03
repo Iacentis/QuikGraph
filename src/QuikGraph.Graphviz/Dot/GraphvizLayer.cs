@@ -1,14 +1,14 @@
 ﻿using System;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph.Graphviz.Dot
 {
     /// <summary>
     /// Graphviz layer.
     /// </summary>
-#if SUPPORTS_SERIALIZATION
+
     [Serializable]
-#endif
+
     public class GraphvizLayer
     {
         /// <summary>
@@ -16,12 +16,12 @@ namespace QuikGraph.Graphviz.Dot
         /// </summary>
         /// <param name="name">Layer name.</param>
         /// <exception cref="T:System.ArgumentException"><paramref name="name"/> is <see langword="null"/> or empty.</exception>
-        public GraphvizLayer([NotNull] string name)
+        public GraphvizLayer( string name)
         {
             SetName(name);
         }
 
-        private void SetName([NotNull] string name)
+        private void SetName( string name)
         {
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentException("Name cannot be null or empty.", nameof(name));

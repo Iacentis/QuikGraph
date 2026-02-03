@@ -1,4 +1,4 @@
-using JetBrains.Annotations;
+
 
 namespace QuikGraph.MSAGL
 {
@@ -10,7 +10,7 @@ namespace QuikGraph.MSAGL
     /// <param name="sender">Event sender.</param>
     /// <param name="args">Event arguments.</param>
     public delegate void MsaglEdgeEventHandler<TVertex, TEdge>(
-        [NotNull] object sender,
-        [NotNull] MsaglEdgeEventArgs<TVertex, TEdge> args)
+         object sender,
+         MsaglEdgeEventArgs<TVertex, TEdge> args)
         where TEdge : IEdge<TVertex>;
 }

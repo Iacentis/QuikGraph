@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using JetBrains.Annotations;
+using System.Diagnostics.Contracts;
 using QuikGraph.Algorithms.Services;
 
 namespace QuikGraph.Algorithms
@@ -12,13 +12,12 @@ namespace QuikGraph.Algorithms
     /// <remarks>Requires a starting vertex (root) and an ending vertex (target).</remarks>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TGraph">Graph type.</typeparam>
-#if SUPPORTS_SERIALIZATION
+
     [Serializable]
-#endif
+
     public abstract class RootedSearchAlgorithmBase<TVertex, TGraph> : RootedAlgorithmBase<TVertex, TGraph>
         where TGraph : IImplicitVertexSet<TVertex>
     {
-        [CanBeNull]
         private TVertex _target;
 
         private bool _hasTargetVertex;
@@ -30,8 +29,8 @@ namespace QuikGraph.Algorithms
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         protected RootedSearchAlgorithmBase(
-            [CanBeNull] IAlgorithmComponent host,
-            [NotNull] TGraph visitedGraph)
+            IAlgorithmComponent host,
+            TGraph visitedGraph)
             : base(host, visitedGraph)
         {
         }
@@ -42,7 +41,6 @@ namespace QuikGraph.Algorithms
         /// <param name="target">Target vertex if set, otherwise <see langword="null"/>.</param>
         /// <returns>True if the target vertex was set, false otherwise.</returns>
         [Pure]
-        [ContractAnnotation("=> true, target:notnull;=> false, target:null")]
         public bool TryGetTargetVertex(out TVertex target)
         {
             if (_hasTargetVertex)
@@ -60,7 +58,7 @@ namespace QuikGraph.Algorithms
         /// </summary>
         /// <param name="target">Target vertex.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
-        public void SetTargetVertex([NotNull] TVertex target)
+        public void SetTargetVertex(TVertex target)
         {
             if (target == null)
                 throw new ArgumentNullException(nameof(target));
@@ -100,7 +98,7 @@ namespace QuikGraph.Algorithms
         /// Called on each target vertex change.
         /// </summary>
         /// <param name="args"><see cref="F:EventArgs.Empty"/>.</param>
-        protected virtual void OnTargetVertexChanged([NotNull] EventArgs args)
+        protected virtual void OnTargetVertexChanged(EventArgs args)
         {
             Debug.Assert(args != null);
 
@@ -130,7 +128,7 @@ namespace QuikGraph.Algorithms
         /// <exception cref="T:System.ArgumentException"><paramref name="root"/> is not part of <see cref="AlgorithmBase{TGraph}.VisitedGraph"/>.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="target"/> is not part of <see cref="AlgorithmBase{TGraph}.VisitedGraph"/>.</exception>
         /// <exception cref="T:System.InvalidOperationException">Something went wrong when running the algorithm.</exception>
-        public void Compute([NotNull] TVertex root, [NotNull] TVertex target)
+        public void Compute(TVertex root, TVertex target)
         {
             if (root == null)
                 throw new ArgumentNullException(nameof(root));

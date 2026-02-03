@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using JetBrains.Annotations;
 using Microsoft.Msagl.Drawing;
 
 namespace QuikGraph.MSAGL
@@ -21,7 +20,7 @@ namespace QuikGraph.MSAGL
         /// </summary>
         /// <param name="visitedGraph">Graph to convert to MSAGL graph.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
-        public MsaglDefaultGraphPopulator([NotNull] IEdgeListGraph<TVertex, TEdge> visitedGraph)
+        public MsaglDefaultGraphPopulator( IEdgeListGraph<TVertex, TEdge> visitedGraph)
             : base(visitedGraph)
         {
         }
@@ -65,7 +64,7 @@ namespace QuikGraph.MSAGL
         /// </summary>
         /// <param name="vertex">Vertex to get id.</param>
         /// <returns>Vertex id.</returns>
-        protected virtual string GetVertexId([NotNull] TVertex vertex)
+        protected virtual string GetVertexId( TVertex vertex)
         {
             return _verticesIds.Count.ToString();
         }
@@ -76,7 +75,7 @@ namespace QuikGraph.MSAGL
         /// <param name="id">Vertex id.</param>
         /// <param name="vertex">Vertex to get label.</param>
         /// <returns>Vertex label.</returns>
-        protected virtual string GetVertexLabel([NotNull] string id, [NotNull] TVertex vertex)
+        protected virtual string GetVertexLabel( string id,  TVertex vertex)
         {
             return $"{id}: {vertex}";
         }

@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Linq;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph
 {
@@ -15,30 +16,30 @@ namespace QuikGraph
     /// </remarks>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type</typeparam>
-#if SUPPORTS_SERIALIZATION
+
     [Serializable]
-#endif
+
     [DebuggerDisplay("VertexCount = {" + nameof(VertexCount) + "}, EdgeCount = {" + nameof(EdgeCount) + "}")]
     public sealed class ArrayBidirectionalGraph<TVertex, TEdge> : IBidirectionalGraph<TVertex, TEdge>
-#if SUPPORTS_CLONEABLE
+
         , ICloneable
-#endif
+
         where TEdge : IEdge<TVertex>
     {
-#if SUPPORTS_SERIALIZATION
+
         [Serializable]
-#endif
+
         private sealed class InOutEdges
         {
-            [NotNull, ItemNotNull]
+
             public TEdge[] OutEdges { get; }
 
-            [NotNull, ItemNotNull]
+
             public TEdge[] InEdges { get; }
 
             public InOutEdges(
-                [NotNull, ItemNotNull] TEdge[] outEdges,
-                [NotNull, ItemNotNull] TEdge[] inEdges)
+                 TEdge[] outEdges,
+                 TEdge[] inEdges)
             {
                 OutEdges = outEdges;
                 InEdges = inEdges;
@@ -50,10 +51,9 @@ namespace QuikGraph
         /// </summary>
         /// <param name="baseGraph">Wrapped graph.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="baseGraph"/> is <see langword="null"/>.</exception>
-        public ArrayBidirectionalGraph([NotNull] IBidirectionalGraph<TVertex, TEdge> baseGraph)
+        public ArrayBidirectionalGraph( IBidirectionalGraph<TVertex, TEdge> baseGraph)
         {
-            if (baseGraph is null)
-                throw new ArgumentNullException(nameof(baseGraph));
+            ArgumentNullException.ThrowIfNull(baseGraph);
 
             AllowParallelEdges = baseGraph.AllowParallelEdges;
             _vertexEdges = new Dictionary<TVertex, InOutEdges>(baseGraph.VertexCount);
@@ -84,7 +84,7 @@ namespace QuikGraph
         /// <inheritdoc />
         public int VertexCount => _vertexEdges.Count;
 
-        [NotNull]
+
         private readonly IDictionary<TVertex, InOutEdges> _vertexEdges;
 
         /// <inheritdoc />
@@ -309,19 +309,19 @@ namespace QuikGraph
         /// </summary>
         /// <returns>This graph.</returns>
         [Pure]
-        [NotNull]
+
         public ArrayBidirectionalGraph<TVertex, TEdge> Clone()
         {
             return this;
         }
 
-#if SUPPORTS_CLONEABLE
+
         /// <inheritdoc />
         object ICloneable.Clone()
         {
             return Clone();
         }
-#endif
+
 
         #endregion
     }

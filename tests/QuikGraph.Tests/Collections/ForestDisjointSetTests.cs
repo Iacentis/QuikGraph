@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Collections;
 using static QuikGraph.Tests.AssertHelpers;
@@ -16,12 +15,12 @@ namespace QuikGraph.Tests.Collections
         #region Test helpers
 
         private static void AssertSetSizes<T>(
-            [NotNull] ForestDisjointSet<T> set,
+             ForestDisjointSet<T> set,
             int expectedSetCount,
             int expectedCount)
         {
-            Assert.AreEqual(expectedSetCount, set.SetCount);
-            Assert.AreEqual(expectedCount, set.ElementCount);
+            Assert.That(expectedSetCount,Is.EqualTo(set.SetCount));
+            Assert.That(expectedCount,Is.EqualTo(set.ElementCount));
         }
 
         #endregion
@@ -159,19 +158,19 @@ namespace QuikGraph.Tests.Collections
                 AssertSetSizes(set, 0, 0);
 
                 set.MakeSet(value1);
-                Assert.IsTrue(set.AreInSameSet(value1, value1));
+                Assert.That(set.AreInSameSet(value1, value1),Is.True);
 
                 set.MakeSet(value2);
-                Assert.IsTrue(set.AreInSameSet(value1, value1));
-                Assert.IsFalse(set.AreInSameSet(value1, value2));
-                Assert.IsFalse(set.AreInSameSet(value2, value1));
-                Assert.IsTrue(set.AreInSameSet(value2, value2));
+                Assert.That(set.AreInSameSet(value1, value1),Is.True);
+                Assert.That(set.AreInSameSet(value1, value2),Is.False);
+                Assert.That(set.AreInSameSet(value2, value1),Is.False);
+                Assert.That(set.AreInSameSet(value2, value2),Is.True);
 
                 set.Union(value1, value2);
-                Assert.IsTrue(set.AreInSameSet(value1, value1));
-                Assert.IsTrue(set.AreInSameSet(value1, value2));
-                Assert.IsTrue(set.AreInSameSet(value2, value1));
-                Assert.IsTrue(set.AreInSameSet(value2, value2));
+                Assert.That(set.AreInSameSet(value1, value1),Is.True);
+                Assert.That(set.AreInSameSet(value1, value2),Is.True);
+                Assert.That(set.AreInSameSet(value2, value1),Is.True);
+                Assert.That(set.AreInSameSet(value2, value2),Is.True);
             }
 
             #endregion
@@ -232,63 +231,63 @@ namespace QuikGraph.Tests.Collections
                 ForestDisjointSet<TValue> set = MakeAndFillSet();
                 set.Union(value1, value2);
                 AssertSetSizes(set, 4, 5);
-                Assert.IsTrue(set.AreInSameSet(value1, value2));
+                Assert.That(set.AreInSameSet(value1, value2),Is.True);
 
                 set.Union(value4, value3);
                 AssertSetSizes(set, 3, 5);
-                Assert.IsTrue(set.AreInSameSet(value3, value4));
+                Assert.That(set.AreInSameSet(value3, value4),Is.True);
 
                 set.Union(value1, value4);
                 AssertSetSizes(set, 2, 5);
-                Assert.IsTrue(set.AreInSameSet(value1, value2));
-                Assert.IsTrue(set.AreInSameSet(value1, value3));
-                Assert.IsTrue(set.AreInSameSet(value1, value4));
+                Assert.That(set.AreInSameSet(value1, value2),Is.True);
+                Assert.That(set.AreInSameSet(value1, value3),Is.True);
+                Assert.That(set.AreInSameSet(value1, value4),Is.True);
 
                 set.Union(value1, value5);
                 AssertSetSizes(set, 1, 5);
-                Assert.IsTrue(set.AreInSameSet(value1, value2));
-                Assert.IsTrue(set.AreInSameSet(value1, value3));
-                Assert.IsTrue(set.AreInSameSet(value1, value4));
-                Assert.IsTrue(set.AreInSameSet(value1, value5));
+                Assert.That(set.AreInSameSet(value1, value2),Is.True);
+                Assert.That(set.AreInSameSet(value1, value3),Is.True);
+                Assert.That(set.AreInSameSet(value1, value4),Is.True);
+                Assert.That(set.AreInSameSet(value1, value5),Is.True);
 
                 // Already merged
                 set.Union(value1, value1);
                 AssertSetSizes(set, 1, 5);
-                Assert.IsTrue(set.AreInSameSet(value1, value2));
-                Assert.IsTrue(set.AreInSameSet(value1, value3));
-                Assert.IsTrue(set.AreInSameSet(value1, value4));
-                Assert.IsTrue(set.AreInSameSet(value1, value5));
+                Assert.That(set.AreInSameSet(value1, value2),Is.True);
+                Assert.That(set.AreInSameSet(value1, value3),Is.True);
+                Assert.That(set.AreInSameSet(value1, value4),Is.True);
+                Assert.That(set.AreInSameSet(value1, value5),Is.True);
 
                 set.Union(value1, value4);
                 AssertSetSizes(set, 1, 5);
-                Assert.IsTrue(set.AreInSameSet(value1, value2));
-                Assert.IsTrue(set.AreInSameSet(value1, value3));
-                Assert.IsTrue(set.AreInSameSet(value1, value4));
-                Assert.IsTrue(set.AreInSameSet(value1, value5));
+                Assert.That(set.AreInSameSet(value1, value2),Is.True);
+                Assert.That(set.AreInSameSet(value1, value3),Is.True);
+                Assert.That(set.AreInSameSet(value1, value4),Is.True);
+                Assert.That(set.AreInSameSet(value1, value5),Is.True);
 
                 set.Union(value4, value1);
                 AssertSetSizes(set, 1, 5);
-                Assert.IsTrue(set.AreInSameSet(value1, value2));
-                Assert.IsTrue(set.AreInSameSet(value1, value3));
-                Assert.IsTrue(set.AreInSameSet(value1, value4));
-                Assert.IsTrue(set.AreInSameSet(value1, value5));
+                Assert.That(set.AreInSameSet(value1, value2),Is.True);
+                Assert.That(set.AreInSameSet(value1, value3),Is.True);
+                Assert.That(set.AreInSameSet(value1, value4),Is.True);
+                Assert.That(set.AreInSameSet(value1, value5),Is.True);
 
 
                 set = MakeAndFillSet();
                 set.Union(value1, value2);
                 AssertSetSizes(set, 4, 5);
-                Assert.IsTrue(set.AreInSameSet(value1, value2));
+                Assert.That(set.AreInSameSet(value1, value2),Is.True);
 
                 set.Union(value2, value4);
                 AssertSetSizes(set, 3, 5);
-                Assert.IsTrue(set.AreInSameSet(value1, value2));
-                Assert.IsTrue(set.AreInSameSet(value1, value4));
+                Assert.That(set.AreInSameSet(value1, value2),Is.True);
+                Assert.That(set.AreInSameSet(value1, value4),Is.True);
 
                 set.Union(value5, value2);
                 AssertSetSizes(set, 2, 5);
-                Assert.IsTrue(set.AreInSameSet(value1, value2));
-                Assert.IsTrue(set.AreInSameSet(value1, value4));
-                Assert.IsTrue(set.AreInSameSet(value1, value5));
+                Assert.That(set.AreInSameSet(value1, value2),Is.True);
+                Assert.That(set.AreInSameSet(value1, value4),Is.True);
+                Assert.That(set.AreInSameSet(value1, value5),Is.True);
 
                 #region Local function
 
@@ -354,20 +353,20 @@ namespace QuikGraph.Tests.Collections
             void ContainsTest<TValue>(TValue value1, TValue value2)
             {
                 var set = new ForestDisjointSet<TValue>();
-                Assert.IsFalse(set.Contains(value1));
-                Assert.IsFalse(set.Contains(value2));
+                Assert.That(set.Contains(value1),Is.False);
+                Assert.That(set.Contains(value2),Is.False);
 
                 set.MakeSet(value1);
-                Assert.IsTrue(set.Contains(value1));
-                Assert.IsFalse(set.Contains(value2));
+                Assert.That(set.Contains(value1),Is.True);
+                Assert.That(set.Contains(value2),Is.False);
 
                 set.MakeSet(value2);
-                Assert.IsTrue(set.Contains(value1));
-                Assert.IsTrue(set.Contains(value2));
+                Assert.That(set.Contains(value1),Is.True);
+                Assert.That(set.Contains(value2),Is.True);
 
                 set.Union(value1, value2);
-                Assert.IsTrue(set.Contains(value1));
-                Assert.IsTrue(set.Contains(value2));
+                Assert.That(set.Contains(value1),Is.True);
+                Assert.That(set.Contains(value2),Is.True);
             }
 
             #endregion

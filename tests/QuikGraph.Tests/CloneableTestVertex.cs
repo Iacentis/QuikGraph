@@ -1,5 +1,5 @@
 ﻿using System;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph.Tests
 {
@@ -13,12 +13,12 @@ namespace QuikGraph.Tests
         {
         }
 
-        public CloneableTestVertex([NotNull] string name)
+        public CloneableTestVertex( string name)
         {
             Name = name;
         }
 
-        [NotNull]
+
         public string Name { get; }
 
         /// <inheritdoc />

@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using QuikGraph.Collections;
 using static QuikGraph.Tests.AssertHelpers;
 
@@ -17,21 +17,21 @@ namespace QuikGraph.Tests.Collections
         #region Test helpers
 
         private static void AssertHeapSize<TPriority, TValue>(
-            [NotNull] FibonacciHeap<TPriority, TValue> heap,
+            FibonacciHeap<TPriority, TValue> heap,
             int expectedCount)
         {
             if (expectedCount > 0)
             {
-                Assert.IsFalse(heap.IsEmpty);
-                Assert.IsNotNull(heap.Top);
+                Assert.That(heap.IsEmpty, Is.False);
+                Assert.That(heap.Top, Is.Not.Null);
             }
             else
             {
-                Assert.IsTrue(heap.IsEmpty);
-                Assert.IsNull(heap.Top);
+                Assert.That(heap.IsEmpty, Is.True);
+                Assert.That(heap.Top, Is.Null);
             }
 
-            Assert.AreEqual(expectedCount, heap.Count);
+            Assert.That(expectedCount, Is.EqualTo(heap.Count));
         }
 
         /// <summary>
@@ -39,10 +39,10 @@ namespace QuikGraph.Tests.Collections
         /// </summary>
         /// <remarks>This is a destructive assertion.</remarks>
         private static void AssertHeapCondition<TPriority, TValue>(
-            [NotNull] FibonacciHeap<TPriority, TValue> heap,
+            FibonacciHeap<TPriority, TValue> heap,
             HeapDirection direction,
             int expectedCount,
-            [CanBeNull, ItemNotNull] IEnumerable<FibonacciHeapCell<TPriority, TValue>> deletedCells = null)
+            IEnumerable<FibonacciHeapCell<TPriority, TValue>> deletedCells = null)
             where TPriority : struct, IComparable<TPriority>
         {
             FibonacciHeapCell<TPriority, TValue>[] deletedCellsArray = null;
@@ -70,7 +70,7 @@ namespace QuikGraph.Tests.Collections
                 --expectedCount;
             }
 
-            Assert.AreEqual(0, expectedCount, "Not all elements enqueued were dequeued.");
+            Assert.That(0, Is.EqualTo(expectedCount), "Not all elements enqueued were dequeued.");
         }
 
         /// <summary>
@@ -78,10 +78,10 @@ namespace QuikGraph.Tests.Collections
         /// </summary>
         /// <remarks>This is a destructive assertion.</remarks>
         private static void AssertHeapConditionClass<TPriority, TValue>(
-            [NotNull] FibonacciHeap<TPriority, TValue> heap,
+            FibonacciHeap<TPriority, TValue> heap,
             HeapDirection direction,
             int expectedCount,
-            [CanBeNull, ItemNotNull] IEnumerable<FibonacciHeapCell<TPriority, TValue>> deletedCells = null)
+            IEnumerable<FibonacciHeapCell<TPriority, TValue>> deletedCells = null)
             where TPriority : class, IComparable<TPriority>
         {
             FibonacciHeapCell<TPriority, TValue>[] deletedCellsArray = null;
@@ -109,7 +109,7 @@ namespace QuikGraph.Tests.Collections
                 --expectedCount;
             }
 
-            Assert.AreEqual(0, expectedCount, "Not all elements enqueued were dequeued.");
+            Assert.That(0, Is.EqualTo(expectedCount), "Not all elements enqueued were dequeued.");
         }
 
         /// <summary>
@@ -117,9 +117,9 @@ namespace QuikGraph.Tests.Collections
         /// </summary>
         /// <remarks>This is a destructive assertion.</remarks>
         private static void AssertHeapCondition<TPriority, TValue>(
-            [NotNull] FibonacciHeap<TPriority, TValue> heap,
+            FibonacciHeap<TPriority, TValue> heap,
             HeapDirection direction,
-            [NotNull] TPriority lastValue,
+            TPriority lastValue,
             int expectedCount)
             where TPriority : IComparable<TPriority>
         {
@@ -135,36 +135,36 @@ namespace QuikGraph.Tests.Collections
                 --expectedCount;
             }
 
-            Assert.AreEqual(0, expectedCount, "Not all elements enqueued were dequeued.");
+            Assert.That(0, Is.EqualTo(expectedCount), "Not all elements enqueued were dequeued.");
         }
 
         private static void AssertCell<TPriority, TValue>(
-            [NotNull] FibonacciHeapCell<TPriority, TValue> cell,
-            [NotNull] TPriority expectedPriority,
-            [NotNull] TValue expectedValue,
+            FibonacciHeapCell<TPriority, TValue> cell,
+            TPriority expectedPriority,
+            TValue expectedValue,
             bool expectedMarked = false,
             bool expectedRemoved = false,
             int expectedDegree = 1,
-            [CanBeNull] FibonacciHeapCell<TPriority, TValue> expectedPrevious = null,
-            [CanBeNull] FibonacciHeapCell<TPriority, TValue> expectedNext = null,
-            [CanBeNull] FibonacciHeapCell<TPriority, TValue> expectedParent = null)
+            FibonacciHeapCell<TPriority, TValue> expectedPrevious = null,
+            FibonacciHeapCell<TPriority, TValue> expectedNext = null,
+            FibonacciHeapCell<TPriority, TValue> expectedParent = null)
         {
-            Assert.AreEqual(expectedPriority, cell.Priority);
-            Assert.AreEqual(expectedValue, cell.Value);
-            Assert.AreEqual(expectedMarked, cell.Marked);
-            Assert.AreEqual(expectedRemoved, cell.Removed);
-            Assert.AreEqual(expectedDegree, cell.Degree);
-            Assert.AreEqual(expectedPrevious, cell.Previous);
-            Assert.AreEqual(expectedNext, cell.Next);
-            Assert.AreEqual(expectedParent, cell.Parent);
+            Assert.That(expectedPriority, Is.EqualTo(cell.Priority));
+            Assert.That(expectedValue, Is.EqualTo(cell.Value));
+            Assert.That(expectedMarked, Is.EqualTo(cell.Marked));
+            Assert.That(expectedRemoved, Is.EqualTo(cell.Removed));
+            Assert.That(expectedDegree, Is.EqualTo(cell.Degree));
+            Assert.That(expectedPrevious, Is.EqualTo(cell.Previous));
+            Assert.That(expectedNext, Is.EqualTo(cell.Next));
+            Assert.That(expectedParent, Is.EqualTo(cell.Parent));
         }
 
         private static void AssertNewCell<TPriority, TValue>(
-            [NotNull] FibonacciHeapCell<TPriority, TValue> cell,
-            [NotNull] TPriority expectedPriority,
-            [NotNull] TValue expectedValue,
-            [CanBeNull] FibonacciHeapCell<TPriority, TValue> expectedPrevious = null,
-            [CanBeNull] FibonacciHeapCell<TPriority, TValue> expectedNext = null)
+            FibonacciHeapCell<TPriority, TValue> cell,
+            TPriority expectedPriority,
+            TValue expectedValue,
+            FibonacciHeapCell<TPriority, TValue> expectedPrevious = null,
+            FibonacciHeapCell<TPriority, TValue> expectedNext = null)
         {
             AssertCell(
                 cell,
@@ -200,11 +200,11 @@ namespace QuikGraph.Tests.Collections
                 Comparison<TPriority> expectedComparer,
                 HeapDirection expectedDirection = HeapDirection.Increasing)
             {
-                Assert.AreEqual(0, heap.Count);
-                Assert.IsTrue(heap.IsEmpty);
-                Assert.IsNull(heap.Top);
-                Assert.AreEqual(expectedDirection, heap.Direction);
-                Assert.AreEqual(expectedComparer, heap.PriorityComparison);
+                Assert.That(0, Is.EqualTo(heap.Count));
+                Assert.That(heap.IsEmpty, Is.True);
+                Assert.That(heap.Top, Is.Null);
+                Assert.That(expectedDirection, Is.EqualTo(heap.Direction));
+                Assert.That(expectedComparer, Is.EqualTo(heap.PriorityComparison));
             }
 
             void AssertHeapBaseProperties<TPriority, TValue>(
@@ -222,10 +222,10 @@ namespace QuikGraph.Tests.Collections
         {
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(
-                () => new FibonacciHeap<int, Edge<int>>(HeapDirection.Increasing, null));
-            Assert.Throws<ArgumentNullException>(
-                () => new FibonacciHeap<int, Edge<int>>(HeapDirection.Decreasing, null));
+            Assert.Throws<ArgumentNullException>(() =>
+                new FibonacciHeap<int, Edge<int>>(HeapDirection.Increasing, null));
+            Assert.Throws<ArgumentNullException>(() =>
+                new FibonacciHeap<int, Edge<int>>(HeapDirection.Decreasing, null));
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }
@@ -315,8 +315,8 @@ namespace QuikGraph.Tests.Collections
 
                     void AssertHeapTop()
                     {
-                        Assert.AreEqual(topPriority, heap.Top.Priority);
-                        Assert.AreEqual(topValue, heap.Top.Value);
+                        Assert.That(topPriority, Is.EqualTo(heap.Top.Priority));
+                        Assert.That(topValue, Is.EqualTo(heap.Top.Value));
                     }
 
                     #endregion
@@ -386,8 +386,8 @@ namespace QuikGraph.Tests.Collections
 
                     void AssertHeapTop()
                     {
-                        Assert.AreSame(topPriority, heap.Top.Priority);
-                        Assert.AreEqual(topValue, heap.Top.Value);
+                        Assert.That(topPriority, Is.SameAs(heap.Top.Priority));
+                        Assert.That(topValue, Is.EqualTo(heap.Top.Value));
                     }
 
                     #endregion
@@ -434,8 +434,8 @@ namespace QuikGraph.Tests.Collections
 
                     void AssertHeapTop()
                     {
-                        Assert.AreEqual(1, heap.Top.Priority);
-                        Assert.AreEqual(value1, heap.Top.Value);
+                        Assert.That(1, Is.EqualTo(heap.Top.Priority));
+                        Assert.That(value1, Is.EqualTo(heap.Top.Value));
                     }
 
                     #endregion
@@ -451,8 +451,10 @@ namespace QuikGraph.Tests.Collections
         public void Add_Throws()
         {
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => new FibonacciHeap<TestPriority, int>(HeapDirection.Increasing).Enqueue(null, 1));
-            Assert.Throws<ArgumentNullException>(() => new FibonacciHeap<TestPriority, int>(HeapDirection.Decreasing).Enqueue(null, 1));
+            Assert.Throws<ArgumentNullException>(() =>
+                new FibonacciHeap<TestPriority, int>(HeapDirection.Increasing).Enqueue(null, 1));
+            Assert.Throws<ArgumentNullException>(() =>
+                new FibonacciHeap<TestPriority, int>(HeapDirection.Decreasing).Enqueue(null, 1));
             // ReSharper restore AssignNullToNotNullAttribute
         }
 
@@ -587,7 +589,7 @@ namespace QuikGraph.Tests.Collections
 
                     // Cascade cuts (increase priority)
                     heap = new FibonacciHeap<int, TValue>(direction);
-                    cells = new List<FibonacciHeapCell<int, TValue>>();
+                    cells = [];
                     for (int i = 0; i < 10; ++i)
                         cells.Add(heap.Enqueue(i, value1));
 
@@ -725,7 +727,7 @@ namespace QuikGraph.Tests.Collections
 
                     // Cascade cuts (increase priority)
                     heap = new FibonacciHeap<TestPriority, TValue>(direction);
-                    cells = new List<FibonacciHeapCell<TestPriority, TValue>>();
+                    cells = [];
                     for (int i = 0; i < 10; ++i)
                         cells.Add(heap.Enqueue(new TestPriority(i), value1));
 
@@ -886,18 +888,18 @@ namespace QuikGraph.Tests.Collections
             var priority = new TestPriority(1);
             var cell = new FibonacciHeapCell<TestPriority, int>();
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(
-                () => new FibonacciHeap<TestPriority, int>(HeapDirection.Increasing).ChangeKey(null, priority));
-            Assert.Throws<ArgumentNullException>(
-                () => new FibonacciHeap<TestPriority, int>(HeapDirection.Decreasing).ChangeKey(null, priority));
-            Assert.Throws<ArgumentNullException>(
-                () => new FibonacciHeap<TestPriority, int>(HeapDirection.Increasing).ChangeKey(null, null));
-            Assert.Throws<ArgumentNullException>(
-                () => new FibonacciHeap<TestPriority, int>(HeapDirection.Decreasing).ChangeKey(null, null));
-            Assert.Throws<ArgumentNullException>(
-                () => new FibonacciHeap<TestPriority, int>(HeapDirection.Increasing).ChangeKey(cell, null));
-            Assert.Throws<ArgumentNullException>(
-                () => new FibonacciHeap<TestPriority, int>(HeapDirection.Decreasing).ChangeKey(cell, null));
+            Assert.Throws<ArgumentNullException>(() =>
+                new FibonacciHeap<TestPriority, int>(HeapDirection.Increasing).ChangeKey(null, priority));
+            Assert.Throws<ArgumentNullException>(() =>
+                new FibonacciHeap<TestPriority, int>(HeapDirection.Decreasing).ChangeKey(null, priority));
+            Assert.Throws<ArgumentNullException>(() =>
+                new FibonacciHeap<TestPriority, int>(HeapDirection.Increasing).ChangeKey(null, null));
+            Assert.Throws<ArgumentNullException>(() =>
+                new FibonacciHeap<TestPriority, int>(HeapDirection.Decreasing).ChangeKey(null, null));
+            Assert.Throws<ArgumentNullException>(() =>
+                new FibonacciHeap<TestPriority, int>(HeapDirection.Increasing).ChangeKey(cell, null));
+            Assert.Throws<ArgumentNullException>(() =>
+                new FibonacciHeap<TestPriority, int>(HeapDirection.Decreasing).ChangeKey(cell, null));
             // ReSharper restore AssignNullToNotNullAttribute
         }
 
@@ -929,7 +931,7 @@ namespace QuikGraph.Tests.Collections
                                 out FibonacciHeapCell<int, TValue>[] cells);
 
                             heap.Delete(cells[i]);
-                            AssertHeapCondition(heap, direction, 9, new[] {cells[i]});
+                            AssertHeapCondition(heap, direction, 9, [cells[i]]);
                         }
                     }
 
@@ -940,7 +942,7 @@ namespace QuikGraph.Tests.Collections
 
                         heap.Delete(cells[2]);
                         heap.Delete(cells[5]);
-                        AssertHeapCondition(heap, direction, 8, new[] {cells[2], cells[5]});
+                        AssertHeapCondition(heap, direction, 8, [cells[2], cells[5]]);
                     }
 
                     #region Local function
@@ -980,7 +982,7 @@ namespace QuikGraph.Tests.Collections
                                 out FibonacciHeapCell<TestPriority, TValue>[] cells);
 
                             heap.Delete(cells[i]);
-                            AssertHeapConditionClass(heap, direction, 9, new[] {cells[i]});
+                            AssertHeapConditionClass(heap, direction, 9, [cells[i]]);
                         }
                     }
 
@@ -991,7 +993,7 @@ namespace QuikGraph.Tests.Collections
 
                         heap.Delete(cells[2]);
                         heap.Delete(cells[5]);
-                        AssertHeapConditionClass(heap, direction, 8, new[] {cells[2], cells[5]});
+                        AssertHeapConditionClass(heap, direction, 8, [cells[2], cells[5]]);
                     }
 
                     #region Local function
@@ -1029,19 +1031,19 @@ namespace QuikGraph.Tests.Collections
                             out FibonacciHeapCell<TestPriority, TValue>[] cells);
 
                         heap.Delete(cells[0]);
-                        AssertHeapConditionClass(heap, direction, 9, new[] {cells[0]});
+                        AssertHeapConditionClass(heap, direction, 9, [cells[0]]);
 
 
                         heap = CreateHeap(out cells);
 
                         heap.Delete(cells[4]);
-                        AssertHeapConditionClass(heap, direction, 9, new[] {cells[4]});
+                        AssertHeapConditionClass(heap, direction, 9, [cells[4]]);
 
 
                         heap = CreateHeap(out cells);
 
                         heap.Delete(cells[9]);
-                        AssertHeapConditionClass(heap, direction, 9, new[] {cells[9]});
+                        AssertHeapConditionClass(heap, direction, 9, [cells[9]]);
                     }
 
                     // Multiple deletes
@@ -1051,7 +1053,7 @@ namespace QuikGraph.Tests.Collections
 
                         heap.Delete(cells[2]);
                         heap.Delete(cells[5]);
-                        AssertHeapConditionClass(heap, direction, 8, new[] {cells[2], cells[5]});
+                        AssertHeapConditionClass(heap, direction, 8, [cells[2], cells[5]]);
                     }
 
                     #region Local function
@@ -1086,10 +1088,10 @@ namespace QuikGraph.Tests.Collections
         public void DeleteKey_Throws()
         {
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(
-                () => new FibonacciHeap<TestPriority, int>(HeapDirection.Increasing).Delete(null));
-            Assert.Throws<ArgumentNullException>(
-                () => new FibonacciHeap<TestPriority, int>(HeapDirection.Decreasing).Delete(null));
+            Assert.Throws<ArgumentNullException>(() =>
+                new FibonacciHeap<TestPriority, int>(HeapDirection.Increasing).Delete(null));
+            Assert.Throws<ArgumentNullException>(() =>
+                new FibonacciHeap<TestPriority, int>(HeapDirection.Decreasing).Delete(null));
             // ReSharper restore AssignNullToNotNullAttribute
         }
 
@@ -1136,32 +1138,32 @@ namespace QuikGraph.Tests.Collections
                     AssertHeapSize(heap, 6);
 
                     KeyValuePair<double, TValue> pair = heap.Dequeue();
-                    Assert.AreEqual(1.0, pair.Key);
+                    Assert.That(1.0, Is.EqualTo(pair.Key));
                     AssertEqual(value2, pair.Value);
                     AssertHeapSize(heap, 5);
 
                     pair = heap.Dequeue();
-                    Assert.AreEqual(2.0, pair.Key);
+                    Assert.That(2.0, Is.EqualTo(pair.Key));
                     AssertEqual(value2, pair.Value);
                     AssertHeapSize(heap, 4);
 
                     pair = heap.Dequeue();
-                    Assert.AreEqual(3.0, pair.Key);
+                    Assert.That(3.0, Is.EqualTo(pair.Key));
                     AssertEqual(value4, pair.Value);
                     AssertHeapSize(heap, 3);
 
                     pair = heap.Dequeue();
-                    Assert.AreEqual(6.0, pair.Key);
+                    Assert.That(6.0, Is.EqualTo(pair.Key));
                     AssertEqual(default, pair.Value);
                     AssertHeapSize(heap, 2);
 
                     pair = heap.Dequeue();
-                    Assert.AreEqual(9.0, pair.Key);
+                    Assert.That(9.0, Is.EqualTo(pair.Key));
                     AssertEqual(value3, pair.Value);
                     AssertHeapSize(heap, 1);
 
                     pair = heap.Dequeue();
-                    Assert.AreEqual(10.0, pair.Key);
+                    Assert.That(10.0, Is.EqualTo(pair.Key));
                     AssertEqual(value1, pair.Value);
                     AssertHeapSize(heap, 0);
                 }
@@ -1186,32 +1188,32 @@ namespace QuikGraph.Tests.Collections
                     AssertHeapSize(heap, 6);
 
                     KeyValuePair<TestPriority, TValue> pair = heap.Dequeue();
-                    Assert.AreSame(priority1, pair.Key);
+                    Assert.That(priority1, Is.SameAs(pair.Key));
                     AssertEqual(value2, pair.Value);
                     AssertHeapSize(heap, 5);
 
                     pair = heap.Dequeue();
-                    Assert.AreSame(priority2, pair.Key);
+                    Assert.That(priority2, Is.SameAs(pair.Key));
                     AssertEqual(value2, pair.Value);
                     AssertHeapSize(heap, 4);
 
                     pair = heap.Dequeue();
-                    Assert.AreSame(priority3, pair.Key);
+                    Assert.That(priority3, Is.SameAs(pair.Key));
                     AssertEqual(value4, pair.Value);
                     AssertHeapSize(heap, 3);
 
                     pair = heap.Dequeue();
-                    Assert.AreSame(priority6, pair.Key);
+                    Assert.That(priority6, Is.SameAs(pair.Key));
                     AssertEqual(default, pair.Value);
                     AssertHeapSize(heap, 2);
 
                     pair = heap.Dequeue();
-                    Assert.AreSame(priority9, pair.Key);
+                    Assert.That(priority9, Is.SameAs(pair.Key));
                     AssertEqual(value3, pair.Value);
                     AssertHeapSize(heap, 1);
 
                     pair = heap.Dequeue();
-                    Assert.AreSame(priority10, pair.Key);
+                    Assert.That(priority10, Is.SameAs(pair.Key));
                     AssertEqual(value1, pair.Value);
                     AssertHeapSize(heap, 0);
                 }
@@ -1229,27 +1231,27 @@ namespace QuikGraph.Tests.Collections
                     AssertHeapSize(heap, 5);
 
                     KeyValuePair<int, TValue> pair = heap.Dequeue();
-                    Assert.AreEqual(1, pair.Key);
+                    Assert.That(1, Is.EqualTo(pair.Key));
                     AssertEqual(value1, pair.Value);
                     AssertHeapSize(heap, 4);
 
                     pair = heap.Dequeue();
-                    Assert.AreEqual(1, pair.Key);
+                    Assert.That(1, Is.EqualTo(pair.Key));
                     AssertEqual(value2, pair.Value);
                     AssertHeapSize(heap, 3);
 
                     pair = heap.Dequeue();
-                    Assert.AreEqual(1, pair.Key);
+                    Assert.That(1, Is.EqualTo(pair.Key));
                     AssertEqual(value3, pair.Value);
                     AssertHeapSize(heap, 2);
 
                     pair = heap.Dequeue();
-                    Assert.AreEqual(1, pair.Key);
+                    Assert.That(1, Is.EqualTo(pair.Key));
                     AssertEqual(value2, pair.Value);
                     AssertHeapSize(heap, 1);
 
                     pair = heap.Dequeue();
-                    Assert.AreEqual(1, pair.Key);
+                    Assert.That(1, Is.EqualTo(pair.Key));
                     AssertEqual(value4, pair.Value);
                     AssertHeapSize(heap, 0);
                 }
@@ -1303,32 +1305,32 @@ namespace QuikGraph.Tests.Collections
                     AssertHeapSize(heap, 6);
 
                     KeyValuePair<double, TValue> pair = heap.Dequeue();
-                    Assert.AreEqual(10.0, pair.Key);
+                    Assert.That(10.0, Is.EqualTo(pair.Key));
                     AssertEqual(value1, pair.Value);
                     AssertHeapSize(heap, 5);
 
                     pair = heap.Dequeue();
-                    Assert.AreEqual(9.0, pair.Key);
+                    Assert.That(9.0, Is.EqualTo(pair.Key));
                     AssertEqual(value3, pair.Value);
                     AssertHeapSize(heap, 4);
 
                     pair = heap.Dequeue();
-                    Assert.AreEqual(6.0, pair.Key);
+                    Assert.That(6.0, Is.EqualTo(pair.Key));
                     AssertEqual(default, pair.Value);
                     AssertHeapSize(heap, 3);
 
                     pair = heap.Dequeue();
-                    Assert.AreEqual(3.0, pair.Key);
+                    Assert.That(3.0, Is.EqualTo(pair.Key));
                     AssertEqual(value4, pair.Value);
                     AssertHeapSize(heap, 2);
 
                     pair = heap.Dequeue();
-                    Assert.AreEqual(2.0, pair.Key);
+                    Assert.That(2.0, Is.EqualTo(pair.Key));
                     AssertEqual(value2, pair.Value);
                     AssertHeapSize(heap, 1);
 
                     pair = heap.Dequeue();
-                    Assert.AreEqual(1.0, pair.Key);
+                    Assert.That(1.0, Is.EqualTo(pair.Key));
                     AssertEqual(value2, pair.Value);
                     AssertHeapSize(heap, 0);
                 }
@@ -1353,32 +1355,32 @@ namespace QuikGraph.Tests.Collections
                     AssertHeapSize(heap, 6);
 
                     KeyValuePair<TestPriority, TValue> pair = heap.Dequeue();
-                    Assert.AreSame(priority10, pair.Key);
+                    Assert.That(priority10, Is.SameAs(pair.Key));
                     AssertEqual(value1, pair.Value);
                     AssertHeapSize(heap, 5);
 
                     pair = heap.Dequeue();
-                    Assert.AreSame(priority9, pair.Key);
+                    Assert.That(priority9, Is.SameAs(pair.Key));
                     AssertEqual(value3, pair.Value);
                     AssertHeapSize(heap, 4);
 
                     pair = heap.Dequeue();
-                    Assert.AreSame(priority6, pair.Key);
+                    Assert.That(priority6, Is.SameAs(pair.Key));
                     AssertEqual(default, pair.Value);
                     AssertHeapSize(heap, 3);
 
                     pair = heap.Dequeue();
-                    Assert.AreSame(priority3, pair.Key);
+                    Assert.That(priority3, Is.SameAs(pair.Key));
                     AssertEqual(value4, pair.Value);
                     AssertHeapSize(heap, 2);
 
                     pair = heap.Dequeue();
-                    Assert.AreSame(priority2, pair.Key);
+                    Assert.That(priority2, Is.SameAs(pair.Key));
                     AssertEqual(value2, pair.Value);
                     AssertHeapSize(heap, 1);
 
                     pair = heap.Dequeue();
-                    Assert.AreSame(priority1, pair.Key);
+                    Assert.That(priority1, Is.SameAs(pair.Key));
                     AssertEqual(value2, pair.Value);
                     AssertHeapSize(heap, 0);
                 }
@@ -1396,27 +1398,27 @@ namespace QuikGraph.Tests.Collections
                     AssertHeapSize(heap, 5);
 
                     KeyValuePair<int, TValue> pair = heap.Dequeue();
-                    Assert.AreEqual(1, pair.Key);
+                    Assert.That(1, Is.EqualTo(pair.Key));
                     AssertEqual(value1, pair.Value);
                     AssertHeapSize(heap, 4);
 
                     pair = heap.Dequeue();
-                    Assert.AreEqual(1, pair.Key);
+                    Assert.That(1, Is.EqualTo(pair.Key));
                     AssertEqual(value2, pair.Value);
                     AssertHeapSize(heap, 3);
 
                     pair = heap.Dequeue();
-                    Assert.AreEqual(1, pair.Key);
+                    Assert.That(1, Is.EqualTo(pair.Key));
                     AssertEqual(value3, pair.Value);
                     AssertHeapSize(heap, 2);
 
                     pair = heap.Dequeue();
-                    Assert.AreEqual(1, pair.Key);
+                    Assert.That(1, Is.EqualTo(pair.Key));
                     AssertEqual(value2, pair.Value);
                     AssertHeapSize(heap, 1);
 
                     pair = heap.Dequeue();
-                    Assert.AreEqual(1, pair.Key);
+                    Assert.That(1, Is.EqualTo(pair.Key));
                     AssertEqual(value4, pair.Value);
                     AssertHeapSize(heap, 0);
                 }
@@ -1581,7 +1583,7 @@ namespace QuikGraph.Tests.Collections
                         for (int i = 0; i < 11; i++)
                         {
                             heap.Enqueue(new TestPriority(i), i % 2 == 0 ? value1 : value2);
-                            heap2.Enqueue(new TestPriority(i* 11), i % 2 == 0 ? value2 : value1);
+                            heap2.Enqueue(new TestPriority(i * 11), i % 2 == 0 ? value2 : value1);
                             expectedCount += 2;
                         }
 
@@ -1736,7 +1738,7 @@ namespace QuikGraph.Tests.Collections
 
             heap.Enqueue(1.0, 1);
             CollectionAssert.AreEquivalent(
-                new[] {new KeyValuePair<double, int>(1.0, 1)},
+                new[] { new KeyValuePair<double, int>(1.0, 1) },
                 heap);
 
             heap.Enqueue(12.0, 1);
@@ -1745,10 +1747,8 @@ namespace QuikGraph.Tests.Collections
             CollectionAssert.AreEquivalent(
                 new[]
                 {
-                    new KeyValuePair<double, int>(1.0, 1),
-                    new KeyValuePair<double, int>(5.0, 4),
-                    new KeyValuePair<double, int>(10.0, 2),
-                    new KeyValuePair<double, int>(12.0, 1)
+                    new KeyValuePair<double, int>(1.0, 1), new KeyValuePair<double, int>(5.0, 4),
+                    new KeyValuePair<double, int>(10.0, 2), new KeyValuePair<double, int>(12.0, 1)
                 },
                 heap);
 
@@ -1759,8 +1759,7 @@ namespace QuikGraph.Tests.Collections
                     direction == HeapDirection.Increasing
                         ? new KeyValuePair<double, int>(12.0, 1)
                         : new KeyValuePair<double, int>(1.0, 1),
-                    new KeyValuePair<double, int>(5.0, 4),
-                    new KeyValuePair<double, int>(10.0, 2)
+                    new KeyValuePair<double, int>(5.0, 4), new KeyValuePair<double, int>(10.0, 2)
                 },
                 heap);
 
@@ -1771,8 +1770,7 @@ namespace QuikGraph.Tests.Collections
                     direction == HeapDirection.Increasing
                         ? new KeyValuePair<double, int>(12.0, 1)
                         : new KeyValuePair<double, int>(1.0, 1),
-                    new KeyValuePair<double, int>(5.0, 4),
-                    new KeyValuePair<double, int>(-1, 2)
+                    new KeyValuePair<double, int>(5.0, 4), new KeyValuePair<double, int>(-1, 2)
                 },
                 heap);
 

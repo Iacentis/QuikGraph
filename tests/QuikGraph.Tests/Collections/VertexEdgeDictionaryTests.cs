@@ -1,5 +1,6 @@
 using System;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using QuikGraph.Collections;
 using static QuikGraph.Tests.SerializationTestHelpers;
 
@@ -21,18 +22,19 @@ namespace QuikGraph.Tests.Collections
         }
 
         [Test]
+        [Obsolete("Obsolete")]
         public void Serialization()
         {
             var dictionary = new VertexEdgeDictionary<int, EquatableEdge<int>>();
 
             VertexEdgeDictionary<int, EquatableEdge<int>> deserializedDictionary = SerializeAndDeserialize(dictionary);
-            Assert.AreNotSame(dictionary, deserializedDictionary);
+            Assert.That(dictionary, Is.Not.SameAs(deserializedDictionary));
             CollectionAssert.IsEmpty(deserializedDictionary);
 
             dictionary.Add(1, new EdgeList<int, EquatableEdge<int>> { new EquatableEdge<int>(1, 2) });
             dictionary.Add(2, new EdgeList<int, EquatableEdge<int>> { new EquatableEdge<int>(2, 3) });
             deserializedDictionary = SerializeAndDeserialize(dictionary);
-            Assert.AreNotSame(dictionary, deserializedDictionary);
+            Assert.That(dictionary, Is.Not.SameAs(deserializedDictionary));
             CollectionAssert.AreEqual(dictionary, deserializedDictionary);
         }
 
@@ -44,7 +46,9 @@ namespace QuikGraph.Tests.Collections
             VertexEdgeDictionary<int, EquatableEdge<int>> clonedDictionary = dictionary.Clone();
             CollectionAssert.IsEmpty(clonedDictionary);
 
-            clonedDictionary = (VertexEdgeDictionary<int, EquatableEdge<int>>)((IVertexEdgeDictionary<int, EquatableEdge<int>>)dictionary).Clone();
+            clonedDictionary =
+                (VertexEdgeDictionary<int, EquatableEdge<int>>)
+                ((IVertexEdgeDictionary<int, EquatableEdge<int>>)dictionary).Clone();
             CollectionAssert.IsEmpty(clonedDictionary);
 
             clonedDictionary = (VertexEdgeDictionary<int, EquatableEdge<int>>)((ICloneable)dictionary).Clone();
@@ -56,7 +60,9 @@ namespace QuikGraph.Tests.Collections
             clonedDictionary = dictionary.Clone();
             CollectionAssert.AreEqual(dictionary, clonedDictionary);
 
-            clonedDictionary = (VertexEdgeDictionary<int, EquatableEdge<int>>)((IVertexEdgeDictionary<int, EquatableEdge<int>>)dictionary).Clone();
+            clonedDictionary =
+                (VertexEdgeDictionary<int, EquatableEdge<int>>)
+                ((IVertexEdgeDictionary<int, EquatableEdge<int>>)dictionary).Clone();
             CollectionAssert.AreEqual(dictionary, clonedDictionary);
 
             clonedDictionary = (VertexEdgeDictionary<int, EquatableEdge<int>>)((ICloneable)dictionary).Clone();

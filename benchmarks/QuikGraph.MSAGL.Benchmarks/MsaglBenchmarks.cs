@@ -1,7 +1,5 @@
 ﻿using BenchmarkDotNet.Attributes;
 using Microsoft.Msagl.Drawing;
-using QuikGraph;
-using QuikGraph.MSAGL;
 
 namespace QuikGraph.MSAGL.Benchmarks
 {

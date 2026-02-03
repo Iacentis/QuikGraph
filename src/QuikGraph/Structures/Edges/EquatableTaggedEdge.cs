@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using JetBrains.Annotations;
 using QuikGraph.Constants;
 
 namespace QuikGraph
@@ -11,9 +10,9 @@ namespace QuikGraph
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TTag">Tag type.</typeparam>
-#if SUPPORTS_SERIALIZATION
+
     [Serializable]
-#endif
+
     [DebuggerDisplay("{" + nameof(Source) + "}->{" + nameof(Target) + "}:{" + nameof(Tag) + "}")]
     public class EquatableTaggedEdge<TVertex, TTag> : EquatableEdge<TVertex>, ITagged<TTag>
     {
@@ -25,7 +24,7 @@ namespace QuikGraph
         /// <param name="tag">Edge tag.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
-        public EquatableTaggedEdge([NotNull] TVertex source, [NotNull] TVertex target, [CanBeNull] TTag tag)
+        public EquatableTaggedEdge( TVertex source,  TVertex target,  TTag tag)
             : base(source, target)
         {
             _tag = tag;
@@ -38,7 +37,7 @@ namespace QuikGraph
         /// Event invoker for <see cref="TagChanged"/> event.
         /// </summary>
         /// <param name="args">Event arguments.</param>
-        protected virtual void OnTagChanged([NotNull] EventArgs args)
+        protected virtual void OnTagChanged( EventArgs args)
         {
             Debug.Assert(args != null);
 

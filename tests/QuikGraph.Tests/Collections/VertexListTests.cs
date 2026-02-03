@@ -1,5 +1,6 @@
 using System;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using QuikGraph.Collections;
 
 namespace QuikGraph.Tests.Collections
@@ -18,7 +19,7 @@ namespace QuikGraph.Tests.Collections
             Assert.DoesNotThrow(() => new VertexList<int>(12));
             var list = new VertexList<int> { 1, 2, 3 };
             var otherList = new VertexList<int>(list);
-            CollectionAssert.AreEqual(list, otherList);
+            CollectionAssert.AreEqual(list,otherList);
             // ReSharper restore ObjectCreationAsStatement
         }
 
@@ -33,12 +34,12 @@ namespace QuikGraph.Tests.Collections
             clonedList = (VertexList<int>)((ICloneable)list).Clone();
             CollectionAssert.IsEmpty(clonedList);
 
-            list.AddRange(new[] { 1, 2, 3 });
+            list.AddRange([1, 2, 3]);
             clonedList = list.Clone();
-            CollectionAssert.AreEqual(list, clonedList);
+            CollectionAssert.AreEqual(list,clonedList);
 
             clonedList = (VertexList<int>)((ICloneable)list).Clone();
-            CollectionAssert.AreEqual(list, clonedList);
+            CollectionAssert.AreEqual(list,clonedList);
         }
     }
 }

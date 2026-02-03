@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
-using JetBrains.Annotations;
+
 using QuikGraph.Algorithms;
 using QuikGraph.Serialization.DirectedGraphML;
 
@@ -15,13 +16,13 @@ namespace QuikGraph.Serialization
     [CLSCompliant(false)]
     public static class DirectedGraphMLExtensions
     {
-        [CanBeNull]
+
         private static XmlSerializer _directedGraphSerializer;
 
         /// <summary>
         /// Gets the DirectedGraph XML serializer.
         /// </summary>
-        [NotNull]
+
         public static XmlSerializer DirectedGraphSerializer =>
             _directedGraphSerializer ?? (_directedGraphSerializer = new XmlSerializer(typeof(DirectedGraph)));
 
@@ -32,14 +33,14 @@ namespace QuikGraph.Serialization
         /// <param name="filePath">Path to the file to write into.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="filePath"/> is <see langword="null"/>.</exception>
-        public static void WriteXml([NotNull] this DirectedGraph graph, [NotNull] string filePath)
+        public static void WriteXml( this DirectedGraph graph,  string filePath)
         {
             if (string.IsNullOrEmpty(filePath))
                 throw new ArgumentException("Must provide a file path.", nameof(filePath));
 
             using (StreamWriter stream = File.CreateText(filePath))
             {
-                WriteXml(graph, stream);
+                graph.WriteXml(stream);
             }
         }
 
@@ -50,12 +51,10 @@ namespace QuikGraph.Serialization
         /// <param name="writer">XML writer in which writing graph data.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="writer"/> is <see langword="null"/>.</exception>
-        public static void WriteXml([NotNull] this DirectedGraph graph, [NotNull] XmlWriter writer)
+        public static void WriteXml( this DirectedGraph graph,  XmlWriter writer)
         {
-            if (graph is null)
-                throw new ArgumentNullException(nameof(graph));
-            if (writer is null)
-                throw new ArgumentNullException(nameof(writer));
+            ArgumentNullException.ThrowIfNull(graph);
+            ArgumentNullException.ThrowIfNull(writer);
 
             DirectedGraphSerializer.Serialize(writer, graph);
         }
@@ -67,12 +66,10 @@ namespace QuikGraph.Serialization
         /// <param name="stream">Stream in which writing graph data.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="stream"/> is <see langword="null"/>.</exception>
-        public static void WriteXml([NotNull] this DirectedGraph graph, [NotNull] Stream stream)
+        public static void WriteXml( this DirectedGraph graph,  Stream stream)
         {
-            if (graph is null)
-                throw new ArgumentNullException(nameof(graph));
-            if (stream is null)
-                throw new ArgumentNullException(nameof(stream));
+            ArgumentNullException.ThrowIfNull(graph);
+            ArgumentNullException.ThrowIfNull(stream);
 
             DirectedGraphSerializer.Serialize(stream, graph);
         }
@@ -84,12 +81,10 @@ namespace QuikGraph.Serialization
         /// <param name="writer">Text writer in which writing graph data.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="writer"/> is <see langword="null"/>.</exception>
-        public static void WriteXml([NotNull] this DirectedGraph graph, [NotNull] TextWriter writer)
+        public static void WriteXml( this DirectedGraph graph,  TextWriter writer)
         {
-            if (graph is null)
-                throw new ArgumentNullException(nameof(graph));
-            if (writer is null)
-                throw new ArgumentNullException(nameof(writer));
+            ArgumentNullException.ThrowIfNull(graph);
+            ArgumentNullException.ThrowIfNull(writer);
 
             DirectedGraphSerializer.Serialize(writer, graph);
         }
@@ -103,14 +98,12 @@ namespace QuikGraph.Serialization
         /// <returns>Converted graph.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull]
+
         public static DirectedGraph ToDirectedGraphML<TVertex, TEdge>(
-            [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> graph)
+             this IVertexAndEdgeListGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
-            return ToDirectedGraphML(
-                graph,
-                graph.GetVertexIdentity(),
+            return graph.ToDirectedGraphML(graph.GetVertexIdentity(),
                 graph.GetEdgeIdentity());
         }
 
@@ -125,18 +118,15 @@ namespace QuikGraph.Serialization
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="verticesColors"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull]
+
         public static DirectedGraph ToDirectedGraphML<TVertex, TEdge>(
-            [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> graph,
-            [NotNull] Func<TVertex, GraphColor> verticesColors)
+             this IVertexAndEdgeListGraph<TVertex, TEdge> graph,
+             Func<TVertex, GraphColor> verticesColors)
             where TEdge : IEdge<TVertex>
         {
-            if (verticesColors is null)
-                throw new ArgumentNullException(nameof(verticesColors));
+            ArgumentNullException.ThrowIfNull(verticesColors);
 
-            return ToDirectedGraphML(
-                graph,
-                graph.GetVertexIdentity(),
+            return graph.ToDirectedGraphML(graph.GetVertexIdentity(),
                 graph.GetEdgeIdentity(),
                 (vertex, node) =>
                 {
@@ -170,16 +160,14 @@ namespace QuikGraph.Serialization
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexIdentity"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeIdentity"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull]
+
         public static DirectedGraph ToDirectedGraphML<TVertex, TEdge>(
-            [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> graph,
-            [NotNull] VertexIdentity<TVertex> vertexIdentity,
-            [NotNull] EdgeIdentity<TVertex, TEdge> edgeIdentity)
+             this IVertexAndEdgeListGraph<TVertex, TEdge> graph,
+             VertexIdentity<TVertex> vertexIdentity,
+             EdgeIdentity<TVertex, TEdge> edgeIdentity)
             where TEdge : IEdge<TVertex>
         {
-            return ToDirectedGraphML(
-                graph,
-                vertexIdentity,
+            return graph.ToDirectedGraphML(vertexIdentity,
                 edgeIdentity,
                 null,
                 null);
@@ -200,13 +188,13 @@ namespace QuikGraph.Serialization
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexIdentity"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeIdentity"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull]
+
         public static DirectedGraph ToDirectedGraphML<TVertex, TEdge>(
-            [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> graph,
-            [NotNull] VertexIdentity<TVertex> vertexIdentity,
-            [NotNull] EdgeIdentity<TVertex, TEdge> edgeIdentity,
-            [CanBeNull] Action<TVertex, DirectedGraphNode> formatNode,
-            [CanBeNull] Action<TEdge, DirectedGraphLink> formatEdge)
+             this IVertexAndEdgeListGraph<TVertex, TEdge> graph,
+             VertexIdentity<TVertex> vertexIdentity,
+             EdgeIdentity<TVertex, TEdge> edgeIdentity,
+             Action<TVertex, DirectedGraphNode> formatNode,
+             Action<TEdge, DirectedGraphLink> formatEdge)
             where TEdge : IEdge<TVertex>
         {
             var algorithm = new DirectedGraphMLAlgorithm<TVertex, TEdge>(
@@ -238,12 +226,11 @@ namespace QuikGraph.Serialization
         /// <param name="filePath">Path to the file to save.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         public static void OpenAsDGML<TVertex, TEdge>(
-            [NotNull] this IVertexAndEdgeListGraph<TVertex, TEdge> graph,
-            [CanBeNull] string filePath)
+             this IVertexAndEdgeListGraph<TVertex, TEdge> graph,
+             string filePath)
             where TEdge : IEdge<TVertex>
         {
-            if (graph is null)
-                throw new ArgumentNullException(nameof(graph));
+            ArgumentNullException.ThrowIfNull(graph);
 
             if (filePath is null)
             {

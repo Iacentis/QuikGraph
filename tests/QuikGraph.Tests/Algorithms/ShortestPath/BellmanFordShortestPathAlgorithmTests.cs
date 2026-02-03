@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
-using JetBrains.Annotations;
+
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using QuikGraph.Algorithms;
 using QuikGraph.Algorithms.Observers;
 using QuikGraph.Algorithms.ShortestPath;
@@ -19,8 +21,8 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         #region Test helpers
 
         private static void RunBellmanFordAndCheck<TVertex, TEdge>(
-            [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> graph,
-            [NotNull] TVertex root)
+             IVertexAndEdgeListGraph<TVertex, TEdge> graph,
+             TVertex root)
             where TEdge : IEdge<TVertex>
         {
             var distances = new Dictionary<TEdge, double>();
@@ -33,29 +35,29 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
 
             algorithm.InitializeVertex += vertex =>
             {
-                Assert.AreEqual(GraphColor.White, algorithm.VerticesColors[vertex]);
+                Assert.That(GraphColor.White,Is.EqualTo(algorithm.VerticesColors[vertex]));
             };
 
             var predecessors = new VertexPredecessorRecorderObserver<TVertex, TEdge>();
             using (predecessors.Attach(algorithm))
                 algorithm.Compute(root);
 
-            Assert.AreEqual(graph.VertexCount, algorithm.VerticesColors.Count);
+            Assert.That(graph.VertexCount,Is.EqualTo(algorithm.VerticesColors.Count));
             foreach (TVertex vertex in graph.Vertices)
             {
-                Assert.AreEqual(GraphColor.Black, algorithm.VerticesColors[vertex]);
+                Assert.That(GraphColor.Black,Is.EqualTo(algorithm.VerticesColors[vertex]));
             }
 
-            Assert.IsFalse(algorithm.FoundNegativeCycle);
+            Assert.That(algorithm.FoundNegativeCycle,Is.False);
             CollectionAssert.IsNotEmpty(algorithm.GetDistances());
-            Assert.AreEqual(graph.VertexCount, algorithm.GetDistances().Count());
+            Assert.That(graph.VertexCount,Is.EqualTo(algorithm.GetDistances().Count()));
 
             Verify(algorithm, predecessors);
         }
 
         private static void Verify<TVertex, TEdge>(
-            [NotNull] BellmanFordShortestPathAlgorithm<TVertex, TEdge> algorithm,
-            [NotNull] VertexPredecessorRecorderObserver<TVertex, TEdge> predecessors)
+             BellmanFordShortestPathAlgorithm<TVertex, TEdge> algorithm,
+             VertexPredecessorRecorderObserver<TVertex, TEdge> predecessors)
             where TEdge : IEdge<TVertex>
         {
             // Verify the result
@@ -65,10 +67,10 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
                     continue;
                 if (predecessor.Source.Equals(vertex))
                     continue;
-                Assert.AreEqual(
-                    algorithm.TryGetDistance(vertex, out double currentDistance),
-                    algorithm.TryGetDistance(predecessor.Source, out double predecessorDistance));
-                Assert.GreaterOrEqual(currentDistance, predecessorDistance);
+                Assert.That(
+                    algorithm.TryGetDistance(predecessor.Source, out double predecessorDistance),
+                    Is.EqualTo(algorithm.TryGetDistance(vertex, out double currentDistance)));
+                Assert.That(currentDistance, Is.GreaterThanOrEqualTo(predecessorDistance));
             }
         }
 
@@ -99,17 +101,17 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
                 where TEdge : IEdge<TVertex>
             {
                 AssertAlgorithmState(algo, g);
-                Assert.IsNull(algo.VerticesColors);
-                Assert.IsFalse(algo.FoundNegativeCycle);
+                Assert.That(algo.VerticesColors,Is.Null);
+                Assert.That(algo.FoundNegativeCycle,Is.False);
                 if (eWeights is null)
-                    Assert.IsNotNull(algo.Weights);
+                    Assert.That(algo.Weights,Is.Not.Null);
                 else
-                    Assert.AreSame(eWeights, algo.Weights);
+                    Assert.That(eWeights,Is.SameAs(algo.Weights));
                 CollectionAssert.IsEmpty(algo.GetDistances());
                 if (relaxer is null)
-                    Assert.IsNotNull(algo.DistanceRelaxer);
+                    Assert.That(algo.DistanceRelaxer,Is.Not.Null);
                 else
-                    Assert.AreSame(relaxer, algo.DistanceRelaxer);
+                    Assert.That(relaxer,Is.SameAs(algo.DistanceRelaxer));
             }
 
             #endregion
@@ -234,8 +236,8 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
             var algorithm = new BellmanFordShortestPathAlgorithm<int, Edge<int>>(graph, _ => 1.0);
             algorithm.Compute(1);
 
-            Assert.AreEqual(GraphColor.Black, algorithm.GetVertexColor(1));
-            Assert.AreEqual(GraphColor.Black, algorithm.GetVertexColor(2));
+            Assert.That(GraphColor.Black,Is.EqualTo(algorithm.GetVertexColor(1)));
+            Assert.That(GraphColor.Black,Is.EqualTo(algorithm.GetVertexColor(2)));
         }
 
         [Test]
@@ -258,10 +260,9 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
             var edge34 = new Edge<int>(3, 4);
 
             var negativeWeightGraph = new AdjacencyGraph<int, Edge<int>>();
-            negativeWeightGraph.AddVerticesAndEdgeRange(new[]
-            {
+            negativeWeightGraph.AddVerticesAndEdgeRange([
                 edge12, edge23, edge34
-            });
+            ]);
 
             var algorithm = new BellmanFordShortestPathAlgorithm<int, Edge<int>>(
                 negativeWeightGraph,
@@ -276,16 +277,15 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
                     return 1.0;
                 });
             Assert.DoesNotThrow(() => algorithm.Compute(1));
-            Assert.IsFalse(algorithm.FoundNegativeCycle);
+            Assert.That(algorithm.FoundNegativeCycle,Is.False);
 
             // With negative cycle
             var edge41 = new Edge<int>(4, 1);
 
             var negativeCycleGraph = new AdjacencyGraph<int, Edge<int>>();
-            negativeCycleGraph.AddVerticesAndEdgeRange(new[]
-            {
+            negativeCycleGraph.AddVerticesAndEdgeRange([
                 edge12, edge23, edge34, edge41
-            });
+            ]);
 
             algorithm = new BellmanFordShortestPathAlgorithm<int, Edge<int>>(
                 negativeCycleGraph,
@@ -302,13 +302,13 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
                     return 1.0;
                 });
             Assert.DoesNotThrow(() => algorithm.Compute(1));
-            Assert.IsTrue(algorithm.FoundNegativeCycle);
+            Assert.That(algorithm.FoundNegativeCycle,Is.True);
         }
 
         [Pure]
-        [NotNull]
+
         public static BellmanFordShortestPathAlgorithm<T, Edge<T>> CreateAlgorithmAndMaybeDoComputation<T>(
-            [NotNull] ContractScenario<T> scenario)
+             ContractScenario<T> scenario)
         {
             var graph = new AdjacencyGraph<T, Edge<T>>();
             graph.AddVerticesAndEdgeRange(scenario.EdgesInGraph.Select(e => new Edge<T>(e.Source, e.Target)));

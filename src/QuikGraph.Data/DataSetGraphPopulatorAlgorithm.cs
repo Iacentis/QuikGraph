@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Data;
-using JetBrains.Annotations;
 using QuikGraph.Algorithms;
 
 namespace QuikGraph.Data
@@ -13,7 +12,7 @@ namespace QuikGraph.Data
         /// <summary>
         /// <see cref="T:System.Data.DataSet"/> to represent as a graph.
         /// </summary>
-        [NotNull]
+
         public DataSet DataSet { get; }
 
         /// <summary>
@@ -24,8 +23,8 @@ namespace QuikGraph.Data
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="dataSet"/> is <see langword="null"/>.</exception>
         public DataSetGraphPopulatorAlgorithm(
-            [NotNull] IMutableVertexAndEdgeSet<DataTable, DataRelationEdge> visitedGraph,
-            [NotNull] DataSet dataSet)
+             IMutableVertexAndEdgeSet<DataTable, DataRelationEdge> visitedGraph,
+             DataSet dataSet)
             : base(visitedGraph)
         {
             DataSet = dataSet ?? throw new ArgumentNullException(nameof(dataSet));

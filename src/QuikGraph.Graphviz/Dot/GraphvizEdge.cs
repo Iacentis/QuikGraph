@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Text;
-using JetBrains.Annotations;
 using QuikGraph.Graphviz.Helpers;
 using static QuikGraph.Graphviz.DotEscapers;
 using static QuikGraph.Utils.MathUtils;
@@ -11,9 +11,7 @@ namespace QuikGraph.Graphviz.Dot
     /// <summary>
     /// Graphviz edge.
     /// </summary>
-#if SUPPORTS_SERIALIZATION
     [Serializable]
-#endif
     public class GraphvizEdge
     {
         /// <summary>
@@ -22,14 +20,14 @@ namespace QuikGraph.Graphviz.Dot
         /// </summary>
         public string Comment { get; set; }
 
-        [NotNull]
+
         private GraphvizEdgeLabel _label = new GraphvizEdgeLabel();
 
         /// <summary>
         /// Label.
         /// </summary>
         /// <exception cref="T:System.ArgumentNullException">Set value is <see langword="null"/>.</exception>
-        [NotNull]
+
         public GraphvizEdgeLabel Label
         {
             get => _label;
@@ -73,7 +71,7 @@ namespace QuikGraph.Graphviz.Dot
         /// </summary>
         public double PenWidth { get; set; } = 1.0;
 
-        [NotNull]
+
         private GraphvizEdgeExtremity _head = new GraphvizEdgeExtremity(true);
 
         /// <summary>
@@ -81,14 +79,13 @@ namespace QuikGraph.Graphviz.Dot
         /// </summary>
         /// <exception cref="T:System.ArgumentNullException">Set value is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException">Set extremity is not corresponding to a head one.</exception>
-        [NotNull]
+
         public GraphvizEdgeExtremity Head
         {
             get => _head;
             set
             {
-                if (value is null)
-                    throw new ArgumentNullException(nameof(value));
+                ArgumentNullException.ThrowIfNull(value);
                 if (!value.IsHead)
                     throw new ArgumentException("Edge extremity must be a head extremity.");
                 _head = value;
@@ -107,7 +104,7 @@ namespace QuikGraph.Graphviz.Dot
         /// </summary>
         public string HeadPort { get; set; }
 
-        [NotNull]
+
         private GraphvizEdgeExtremity _tail = new GraphvizEdgeExtremity(false);
 
         /// <summary>
@@ -115,14 +112,13 @@ namespace QuikGraph.Graphviz.Dot
         /// </summary>
         /// <exception cref="T:System.ArgumentNullException">Set value is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException">Set extremity is not corresponding to a tail one.</exception>
-        [NotNull]
+
         public GraphvizEdgeExtremity Tail
         {
             get => _tail;
             set
             {
-                if (value is null)
-                    throw new ArgumentNullException(nameof(value));
+                ArgumentNullException.ThrowIfNull(value);
                 if (value.IsHead)
                     throw new ArgumentException("Edge extremity must be a tail extremity.");
                 _tail = value;
@@ -190,8 +186,7 @@ namespace QuikGraph.Graphviz.Dot
         public int MinLength { get; set; } = 1;
 
         [Pure]
-        [NotNull]
-        internal string GenerateDot([NotNull] Dictionary<string, object> properties)
+        internal string GenerateDot(Dictionary<string, object> properties)
         {
             var builder = new StringBuilder();
 
@@ -244,7 +239,7 @@ namespace QuikGraph.Graphviz.Dot
                         continue;
 
                     default:
-                        builder.Append($"{pair.Key}={pair.Value.ToString().ToLower()}");
+                        builder.Append($"{pair.Key}={pair.Value.ToString()?.ToLower()}");
                         break;
                 }
             }
@@ -257,7 +252,6 @@ namespace QuikGraph.Graphviz.Dot
         /// </summary>
         /// <returns>Edge as DOT.</returns>
         [Pure]
-        [NotNull]
         public string ToDot()
         {
             var properties = new Dictionary<string, object>();
@@ -265,82 +259,101 @@ namespace QuikGraph.Graphviz.Dot
             {
                 properties["dir"] = Direction;
             }
+
             if (Font != null)
             {
                 properties["fontname"] = Font.Name;
                 properties["fontsize"] = Font.SizeInPoints;
             }
+
             if (FontColor != GraphvizColor.Black)
             {
                 properties["fontcolor"] = FontColor;
             }
+
             if (!NearEqual(PenWidth, 1.0))
             {
                 properties["penwidth"] = PenWidth;
             }
+
             Head.AddParameters(properties);
             if (HeadArrow != null)
             {
                 properties["arrowhead"] = HeadArrow.ToDot();
             }
+
             if (HeadPort != null)
             {
                 properties["headport"] = EscapePort(HeadPort);
             }
+
             if (!IsConstrained)
             {
                 properties["constraint"] = IsConstrained;
             }
+
             if (IsDecorated)
             {
                 properties["decorate"] = IsDecorated;
             }
+
             Label.AddParameters(properties);
             if (Layer != null)
             {
                 properties["layer"] = Layer.Name;
             }
+
             if (MinLength != 1)
             {
                 properties["minlen"] = MinLength;
             }
+
             if (Length != 1)
             {
                 properties["len"] = Length;
             }
+
             if (StrokeColor != GraphvizColor.Black)
             {
                 properties["color"] = StrokeColor;
             }
+
             if (Style != GraphvizEdgeStyle.Unspecified)
             {
                 properties["style"] = Style;
             }
+
             Tail.AddParameters(properties);
             if (TailArrow != null)
             {
                 properties["arrowtail"] = TailArrow.ToDot();
             }
+
             if (TailPort != null)
             {
                 properties["tailport"] = EscapePort(TailPort);
             }
+
             if (ToolTip != null)
             {
                 properties["tooltip"] = Escape(ToolTip);
             }
+
             if (Comment != null)
             {
                 properties["comment"] = Escape(Comment);
             }
+
             if (Url != null)
             {
                 properties["URL"] = Url;
             }
+
             if (!NearEqual(Weight, 1.0))
             {
                 properties["weight"] = Weight;
             }
+
             return GenerateDot(properties);
         }
 

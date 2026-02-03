@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Linq;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph
 {
@@ -15,14 +16,14 @@ namespace QuikGraph
     /// </remarks>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type</typeparam>
-#if SUPPORTS_SERIALIZATION
+
     [Serializable]
-#endif
+
     [DebuggerDisplay("VertexCount = {" + nameof(VertexCount) + "}, EdgeCount = {" + nameof(EdgeCount) + "}")]
     public sealed class ArrayAdjacencyGraph<TVertex, TEdge> : IVertexAndEdgeListGraph<TVertex, TEdge>
-#if SUPPORTS_CLONEABLE
+
         , ICloneable
-#endif
+
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -30,10 +31,9 @@ namespace QuikGraph
         /// </summary>
         /// <param name="baseGraph">Wrapped graph.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="baseGraph"/> is <see langword="null"/>.</exception>
-        public ArrayAdjacencyGraph([NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> baseGraph)
+        public ArrayAdjacencyGraph( IVertexAndEdgeListGraph<TVertex, TEdge> baseGraph)
         {
-            if (baseGraph is null)
-                throw new ArgumentNullException(nameof(baseGraph));
+            ArgumentNullException.ThrowIfNull(baseGraph);
 
             AllowParallelEdges = baseGraph.AllowParallelEdges;
             _vertexOutEdges = new Dictionary<TVertex, TEdge[]>(baseGraph.VertexCount);
@@ -64,7 +64,7 @@ namespace QuikGraph
         /// <inheritdoc />
         public int VertexCount => _vertexOutEdges.Count;
 
-        [NotNull]
+
         private readonly Dictionary<TVertex, TEdge[]> _vertexOutEdges;
 
         /// <inheritdoc />
@@ -220,19 +220,19 @@ namespace QuikGraph
         /// </summary>
         /// <returns>This graph.</returns>
         [Pure]
-        [NotNull]
+
         public ArrayAdjacencyGraph<TVertex, TEdge> Clone()
         {
             return this;
         }
 
-#if SUPPORTS_CLONEABLE
+
         /// <inheritdoc />
         object ICloneable.Clone()
         {
             return Clone();
         }
-#endif
+
 
         #endregion
     }

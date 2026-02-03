@@ -1,5 +1,5 @@
 using System;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph.Tests
 {
@@ -15,7 +15,7 @@ namespace QuikGraph.Tests
         {
         }
 
-        public EquatableCloneableTestVertex([NotNull] string name)
+        public EquatableCloneableTestVertex( string name)
             : base(name)
         {
         }

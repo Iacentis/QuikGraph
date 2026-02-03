@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
-using JetBrains.Annotations;
+using System.Diagnostics.Contracts;
+
 
 namespace QuikGraph
 {
@@ -25,7 +26,7 @@ namespace QuikGraph
         /// <summary>
         /// Gets the edges.
         /// </summary>
-        [NotNull, ItemNotNull]
+
         IEnumerable<TEdge> Edges { get; }
 
         /// <summary>
@@ -35,6 +36,6 @@ namespace QuikGraph
         /// <returns>True if the specified <paramref name="edge"/> is contained in this set, false otherwise.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edge"/> is <see langword="null"/>.</exception>
         [Pure]
-        bool ContainsEdge([NotNull] TEdge edge);
+        bool ContainsEdge( TEdge edge);
     }
 }

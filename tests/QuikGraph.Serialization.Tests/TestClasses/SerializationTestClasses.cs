@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Text;
 using System.Xml.Serialization;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph.Serialization.Tests
 {
@@ -65,49 +65,49 @@ namespace QuikGraph.Serialization.Tests
     /// <see cref="INotifyPropertyChanged"/> allows properties of the <see cref="Person"/> class to
     /// participate as source in data bindings.
     /// </summary>
-#if SUPPORTS_SERIALIZATION
+
     [Serializable]
-#endif
+
     public sealed class Person : INotifyPropertyChanged, IEquatable<Person>, IDataErrorInfo
     {
         #region Fields and Constants
 
-        [NotNull]
+
         private const string DefaultFirstName = "Unknown";
 
-        [NotNull]
+
         private string _id;
 
-        [NotNull]
+
         private string _firstName;
 
-        [CanBeNull]
+
         private string _lastName;
 
-        [CanBeNull]
+
         private string _middleName;
 
-        [CanBeNull]
+
         private string _suffix;
 
-        [CanBeNull]
+
         private string _nickName;
 
-        [CanBeNull]
+
         private string _maidenName;
 
         private Gender _gender;
 
-        [CanBeNull]
+
         private DateTime? _birthDate;
 
-        [CanBeNull]
+
         private string _birthPlace;
 
-        [CanBeNull]
+
         private DateTime? _deathDate;
 
-        [CanBeNull]
+
         private string _deathPlace;
 
         private bool _isLiving;
@@ -134,7 +134,7 @@ namespace QuikGraph.Serialization.Tests
         /// </summary>
         /// <param name="firstName">First name.</param>
         /// <param name="lastName">Last name.</param>
-        public Person([CanBeNull] string firstName, [CanBeNull] string lastName)
+        public Person( string firstName,  string lastName)
             : this()
         {
             // Use the first name if specified, if not, the default first name is used.
@@ -154,7 +154,7 @@ namespace QuikGraph.Serialization.Tests
         /// <param name="firstName">First name.</param>
         /// <param name="lastName">Last name.</param>
         /// <param name="gender">Gender of the person.</param>
-        public Person([CanBeNull] string firstName, [CanBeNull] string lastName, Gender gender)
+        public Person( string firstName,  string lastName, Gender gender)
             : this(firstName, lastName)
         {
             _gender = gender;
@@ -167,7 +167,7 @@ namespace QuikGraph.Serialization.Tests
         /// <summary>
         /// Gets or sets the unique identifier for each person.
         /// </summary>
-        [NotNull]
+
         [XmlAttribute]
         public string Id
         {
@@ -185,7 +185,7 @@ namespace QuikGraph.Serialization.Tests
         /// <summary>
         /// Gets or sets the name that occurs first in a given name.
         /// </summary>
-        [NotNull]
+
         [XmlElement]
         public string FirstName
         {
@@ -205,7 +205,7 @@ namespace QuikGraph.Serialization.Tests
         /// <summary>
         /// Gets or sets the part of a given name that indicates what family the person belongs to.
         /// </summary>
-        [CanBeNull]
+
         [XmlElement]
         public string LastName
         {
@@ -225,7 +225,7 @@ namespace QuikGraph.Serialization.Tests
         /// <summary>
         /// Gets or sets the name that occurs between the first and last name.
         /// </summary>
-        [CanBeNull]
+
         [XmlElement]
         public string MiddleName
         {
@@ -244,7 +244,7 @@ namespace QuikGraph.Serialization.Tests
         /// <summary>
         /// Gets the person's name in the format <see cref="FirstName"/> <see cref="LastName"/>.
         /// </summary>
-        [NotNull]
+
         [XmlIgnore]
         public string Name
         {
@@ -268,7 +268,7 @@ namespace QuikGraph.Serialization.Tests
         /// <summary>
         /// Gets the person's fully qualified name: <see cref="FirstName"/> <see cref="MiddleName"/> <see cref="LastName"/> <see cref="Suffix"/>.
         /// </summary>
-        [NotNull]
+
         [XmlIgnore]
         public string FullName
         {
@@ -302,7 +302,7 @@ namespace QuikGraph.Serialization.Tests
         /// <summary>
         /// Gets or sets the text that appear behind the last name providing additional information about the person.
         /// </summary>
-        [CanBeNull]
+
         [XmlElement]
         public string Suffix
         {
@@ -321,7 +321,7 @@ namespace QuikGraph.Serialization.Tests
         /// <summary>
         /// Gets or sets the person's familiar or shortened name.
         /// </summary>
-        [CanBeNull]
+
         [XmlElement]
         public string NickName
         {
@@ -339,7 +339,7 @@ namespace QuikGraph.Serialization.Tests
         /// <summary>
         /// Gets or sets the person's name carried before marriage.
         /// </summary>
-        [CanBeNull]
+
         [XmlElement]
         public string MaidenName
         {
@@ -374,7 +374,7 @@ namespace QuikGraph.Serialization.Tests
         /// <summary>
         /// Gets the age of the person.
         /// </summary>
-        [CanBeNull]
+
         [XmlIgnore]
         public int? Age
         {
@@ -437,7 +437,7 @@ namespace QuikGraph.Serialization.Tests
         /// <summary>
         /// Gets the year the person was born.
         /// </summary>
-        [NotNull]
+
         [XmlIgnore]
         public string YearOfBirth
         {
@@ -455,7 +455,7 @@ namespace QuikGraph.Serialization.Tests
         /// <summary>
         /// Gets the year the person died.
         /// </summary>
-        [NotNull]
+
         [XmlIgnore]
         public string YearOfDeath
         {
@@ -473,7 +473,7 @@ namespace QuikGraph.Serialization.Tests
         /// <summary>
         /// Gets or sets the person's birth date.
         /// </summary>
-        [CanBeNull]
+
         [XmlElement]
         public DateTime? BirthDate
         {
@@ -496,7 +496,7 @@ namespace QuikGraph.Serialization.Tests
         /// <summary>
         /// Gets or sets the person's place of birth.
         /// </summary>
-        [CanBeNull]
+
         [XmlElement]
         public string BirthPlace
         {
@@ -515,7 +515,7 @@ namespace QuikGraph.Serialization.Tests
         /// <summary>
         /// Gets the month and day the person was born in.
         /// </summary>
-        [CanBeNull]
+
         [XmlIgnore]
         public string BirthMonthAndDay =>
             _birthDate?.ToString(
@@ -525,7 +525,7 @@ namespace QuikGraph.Serialization.Tests
         /// <summary>
         /// Gets a friendly string for BirthDate and Place.
         /// </summary>
-        [CanBeNull]
+
         [XmlIgnore]
         public string BirthDateAndPlace
         {
@@ -554,7 +554,7 @@ namespace QuikGraph.Serialization.Tests
         /// <summary>
         /// Gets or sets the person's death of death.
         /// </summary>
-        [CanBeNull]
+
         [XmlElement]
         public DateTime? DeathDate
         {
@@ -575,7 +575,7 @@ namespace QuikGraph.Serialization.Tests
         /// <summary>
         /// Gets or sets the person's place of death.
         /// </summary>
-        [CanBeNull]
+
         [XmlElement]
         public string DeathPlace
         {
@@ -611,28 +611,28 @@ namespace QuikGraph.Serialization.Tests
         /// <summary>
         /// Gets a string that describes this person to their parents.
         /// </summary>
-        [NotNull]
+
         [XmlIgnore]
         public string ParentRelationshipText => _gender == Gender.Male ? "Son" : "Daughter";
 
         /// <summary>
         /// Gets a string that describes this person to their siblings.
         /// </summary>
-        [NotNull]
+
         [XmlIgnore]
         public string SiblingRelationshipText => _gender == Gender.Male ? "Brother" : "Sister";
 
         /// <summary>
         /// Gets a string that describes this person to their spouses.
         /// </summary>
-        [NotNull]
+
         [XmlIgnore]
         public string SpouseRelationshipText => _gender == Gender.Male ? "Husband" : "Wife";
 
         /// <summary>
         /// Gets a string that describes this person to their children.
         /// </summary>
-        [NotNull]
+
         [XmlIgnore]
         public string ChildRelationshipText => _gender == Gender.Male ? "Father" : "Mother";
 
@@ -649,7 +649,7 @@ namespace QuikGraph.Serialization.Tests
         /// Fires the event for the property when it changes.
         /// </summary>
         /// <param name="propertyName">Property name.</param>
-        private void OnPropertyChanged([NotNull] string propertyName)
+        private void OnPropertyChanged( string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -683,7 +683,7 @@ namespace QuikGraph.Serialization.Tests
         /// <summary>
         /// Gets an error message indicating what is wrong with this object.
         /// </summary>
-        [CanBeNull]
+
         public string Error => null;
 
         /// <summary>

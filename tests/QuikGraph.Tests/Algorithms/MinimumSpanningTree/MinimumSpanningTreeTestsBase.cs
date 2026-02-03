@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Xml;
-using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Algorithms;
 using QuikGraph.Algorithms.MinimumSpanningTree;
@@ -21,7 +21,6 @@ namespace QuikGraph.Tests.Algorithms.MinimumSpanningTree
         #region Test helpers
 
         [Pure]
-        [NotNull]
         protected static UndirectedGraph<string, TaggedEdge<string, double>> GetUndirectedCompleteGraph(int vertex)
         {
             var random = new Random();
@@ -50,7 +49,7 @@ namespace QuikGraph.Tests.Algorithms.MinimumSpanningTree
             return graph;
         }
 
-        private static double CompareRoot<TVertex, TEdge>([NotNull] IUndirectedGraph<TVertex, TEdge> graph)
+        private static double CompareRoot<TVertex, TEdge>(IUndirectedGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
             var distances = new Dictionary<TEdge, double>();
@@ -69,8 +68,8 @@ namespace QuikGraph.Tests.Algorithms.MinimumSpanningTree
         }
 
         private static void AssertSpanningTree<TVertex, TEdge>(
-            [NotNull] IUndirectedGraph<TVertex, TEdge> graph,
-            [NotNull, ItemNotNull] IEnumerable<TEdge> tree)
+            IUndirectedGraph<TVertex, TEdge> graph,
+            IEnumerable<TEdge> tree)
             where TEdge : IEdge<TVertex>
         {
             var spanned = new Dictionary<TVertex, TEdge>();
@@ -86,12 +85,12 @@ namespace QuikGraph.Tests.Algorithms.MinimumSpanningTree
 
             // Ensure they are in the tree
             foreach (TVertex vertex in treeable.Keys)
-                Assert.IsTrue(spanned.ContainsKey(vertex), $"{vertex} not in tree.");
+                Assert.That(spanned.ContainsKey(vertex), Is.True, $"{vertex} not in tree.");
         }
 
         private static void AssertMinimumSpanningTree<TVertex, TEdge>(
-            [NotNull] IUndirectedGraph<TVertex, TEdge> graph,
-            [NotNull] IMinimumSpanningTreeAlgorithm<TVertex, TEdge> algorithm)
+            IUndirectedGraph<TVertex, TEdge> graph,
+            IMinimumSpanningTreeAlgorithm<TVertex, TEdge> algorithm)
             where TEdge : IEdge<TVertex>
         {
             var edgeRecorder = new EdgeRecorderObserver<TVertex, TEdge>();
@@ -101,7 +100,8 @@ namespace QuikGraph.Tests.Algorithms.MinimumSpanningTree
             AssertSpanningTree(graph, edgeRecorder.Edges);
         }
 
-        protected static void PrimSpanningTree<TVertex, TEdge>([NotNull] IUndirectedGraph<TVertex, TEdge> graph, [NotNull] Func<TEdge, double> edgeWeights)
+        protected static void PrimSpanningTree<TVertex, TEdge>(IUndirectedGraph<TVertex, TEdge> graph,
+            Func<TEdge, double> edgeWeights)
             where TEdge : IEdge<TVertex>
         {
             var distances = new Dictionary<TEdge, double>();
@@ -112,7 +112,7 @@ namespace QuikGraph.Tests.Algorithms.MinimumSpanningTree
             AssertMinimumSpanningTree(graph, prim);
         }
 
-        protected static void Prim<TVertex, TEdge>([NotNull] IUndirectedGraph<TVertex, TEdge> graph)
+        protected static void Prim<TVertex, TEdge>(IUndirectedGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
             var distances = new Dictionary<TEdge, double>();
@@ -123,7 +123,8 @@ namespace QuikGraph.Tests.Algorithms.MinimumSpanningTree
             AssertSpanningTree(graph, edges);
         }
 
-        protected static void KruskalSpanningTree<TVertex, TEdge>(IUndirectedGraph<TVertex, TEdge> graph, Func<TEdge, double> edgeWeights)
+        protected static void KruskalSpanningTree<TVertex, TEdge>(IUndirectedGraph<TVertex, TEdge> graph,
+            Func<TEdge, double> edgeWeights)
             where TEdge : IEdge<TVertex>
         {
             var distances = new Dictionary<TEdge, double>();
@@ -134,7 +135,7 @@ namespace QuikGraph.Tests.Algorithms.MinimumSpanningTree
             AssertMinimumSpanningTree(graph, kruskal);
         }
 
-        protected static void Kruskal<TVertex, TEdge>([NotNull] IUndirectedGraph<TVertex, TEdge> graph)
+        protected static void Kruskal<TVertex, TEdge>(IUndirectedGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
             var distances = new Dictionary<TEdge, double>();
@@ -157,40 +158,40 @@ namespace QuikGraph.Tests.Algorithms.MinimumSpanningTree
             graph.AddVerticesAndEdge(new Edge<int>(1, 4));
 
             double cost = CompareRoot(graph);
-            Assert.AreEqual(9, cost);
+            Assert.That(9, Is.EqualTo(cost));
         }
 
         [Test]
         public void DelegateComparePrimKruskal()
         {
-            int[] vertices = { 1, 2, 3, 4 };
-            var graph = vertices.ToDelegateUndirectedGraph(
-                (int vertex, out IEnumerable<EquatableEdge<int>> adjacentEdges) =>
+            int[] vertices = [1, 2, 3, 4];
+            var graph = vertices.ToDelegateUndirectedGraph((int vertex,
+                out IEnumerable<EquatableEdge<int>> adjacentEdges) =>
+            {
+                switch (vertex)
                 {
-                    switch (vertex)
-                    {
-                        case 1:
-                            adjacentEdges = new[] { new EquatableEdge<int>(1, 2), new EquatableEdge<int>(1, 4) };
-                            break;
-                        case 2:
-                            adjacentEdges = new[] { new EquatableEdge<int>(1, 2), new EquatableEdge<int>(3, 1) };
-                            break;
-                        case 3:
-                            adjacentEdges = new[] { new EquatableEdge<int>(3, 2), new EquatableEdge<int>(3, 4) };
-                            break;
-                        case 4:
-                            adjacentEdges = new[] { new EquatableEdge<int>(1, 4), new EquatableEdge<int>(3, 4) };
-                            break;
-                        default:
-                            adjacentEdges = null;
-                            break;
-                    }
+                    case 1:
+                        adjacentEdges = [new EquatableEdge<int>(1, 2), new EquatableEdge<int>(1, 4)];
+                        break;
+                    case 2:
+                        adjacentEdges = [new EquatableEdge<int>(1, 2), new EquatableEdge<int>(3, 1)];
+                        break;
+                    case 3:
+                        adjacentEdges = [new EquatableEdge<int>(3, 2), new EquatableEdge<int>(3, 4)];
+                        break;
+                    case 4:
+                        adjacentEdges = [new EquatableEdge<int>(1, 4), new EquatableEdge<int>(3, 4)];
+                        break;
+                    default:
+                        adjacentEdges = null;
+                        break;
+                }
 
-                    return adjacentEdges != null;
-                });
+                return adjacentEdges != null;
+            });
 
             double cost = CompareRoot(graph);
-            Assert.AreEqual(9, cost);
+            Assert.That(9, Is.EqualTo(cost));
         }
 
         [Test]
@@ -208,7 +209,8 @@ namespace QuikGraph.Tests.Algorithms.MinimumSpanningTree
                     reader => new TaggedEdge<string, double>(
                         reader.GetAttribute("source") ?? throw new AssertionException("Must have source attribute"),
                         reader.GetAttribute("target") ?? throw new AssertionException("Must have target attribute"),
-                        int.Parse(reader.GetAttribute("weight") ?? throw new AssertionException("Must have weight attribute"))));
+                        int.Parse(reader.GetAttribute("weight") ??
+                                  throw new AssertionException("Must have weight attribute"))));
 
             TaggedEdge<string, double>[] prim = undirectedGraph.MinimumSpanningTreePrim(e => e.Tag).ToArray();
             double primCost = prim.Sum(e => e.Tag);
@@ -216,8 +218,8 @@ namespace QuikGraph.Tests.Algorithms.MinimumSpanningTree
             TaggedEdge<string, double>[] kruskal = undirectedGraph.MinimumSpanningTreeKruskal(e => e.Tag).ToArray();
             double kruskalCost = kruskal.Sum(e => e.Tag);
 
-            Assert.AreEqual(63, primCost);
-            Assert.AreEqual(primCost, kruskalCost);
+            Assert.That(63, Is.EqualTo(primCost));
+            Assert.That(primCost, Is.EqualTo(kruskalCost));
         }
     }
 }

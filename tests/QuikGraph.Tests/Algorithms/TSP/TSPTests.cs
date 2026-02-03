@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
-using JetBrains.Annotations;
+
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using QuikGraph.Algorithms;
 using QuikGraph.Algorithms.TSP;
 using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
@@ -19,29 +21,29 @@ namespace QuikGraph.Tests.Algorithms.TSP
 
         private class TestCase
         {
-            [NotNull]
+
             public BidirectionalGraph<string, EquatableEdge<string>> Graph { get; } = new BidirectionalGraph<string, EquatableEdge<string>>();
 
-            [NotNull]
+
             private readonly Dictionary<EquatableEdge<string>, double> _weightsDict = new Dictionary<EquatableEdge<string>, double>();
 
-            [NotNull]
-            public TestCase AddVertex([NotNull] string vertex)
+
+            public TestCase AddVertex( string vertex)
             {
                 Graph.AddVertex(vertex);
                 return this;
             }
 
-            [NotNull]
-            public TestCase AddUndirectedEdge([NotNull] string source, [NotNull] string target, double weight)
+
+            public TestCase AddUndirectedEdge( string source,  string target, double weight)
             {
                 AddDirectedEdge(source, target, weight);
                 AddDirectedEdge(target, source, weight);
                 return this;
             }
 
-            [NotNull]
-            public TestCase AddDirectedEdge([NotNull] string source, [NotNull] string target, double weight)
+
+            public TestCase AddDirectedEdge( string source,  string target, double weight)
             {
                 var edge = new EquatableEdge<string>(source, target);
                 Graph.AddEdge(edge);
@@ -51,7 +53,7 @@ namespace QuikGraph.Tests.Algorithms.TSP
             }
 
             [Pure]
-            [NotNull]
+
             public Func<EquatableEdge<string>, double> GetWeightsFunc()
             {
                 return edge => _weightsDict[edge];
@@ -79,13 +81,13 @@ namespace QuikGraph.Tests.Algorithms.TSP
                 where TGraph : BidirectionalGraph<TVertex, TEdge>
             {
                 AssertAlgorithmState(algo, g);
-                Assert.IsNull(algo.VerticesColors);
+                Assert.That(algo.VerticesColors,Is.Null);
                 if (eWeights is null)
-                    Assert.IsNotNull(algo.Weights);
+                    Assert.That(algo.Weights,Is.Not.Null);
                 else
-                    Assert.AreSame(eWeights, algo.Weights);
+                    Assert.That(eWeights,Is.SameAs(algo.Weights));
                 CollectionAssert.IsEmpty(algo.GetDistances());
-                Assert.AreSame(DistanceRelaxers.ShortestDistance, algo.DistanceRelaxer);
+                Assert.That(DistanceRelaxers.ShortestDistance,Is.SameAs(algo.DistanceRelaxer));
             }
 
             #endregion
@@ -182,7 +184,7 @@ namespace QuikGraph.Tests.Algorithms.TSP
             graph.AddVertex(1);
             var algorithm = new TSP<int, EquatableEdge<int>, BidirectionalGraph<int, EquatableEdge<int>>>(graph, _ => 1.0);
             algorithm.Compute(1);
-            Assert.IsFalse(algorithm.TryGetDistance(1, out double _));
+            Assert.That(algorithm.TryGetDistance(1, out double _),Is.False);
 
             var graph2 = new BidirectionalGraph<TestVertex, EquatableEdge<TestVertex>>();
             var algorithm2 = new TSP<TestVertex, EquatableEdge<TestVertex>, BidirectionalGraph<TestVertex, EquatableEdge<TestVertex>>>(graph2, _ => 1.0);
@@ -235,9 +237,9 @@ namespace QuikGraph.Tests.Algorithms.TSP
                 testCase.Graph, testCase.GetWeightsFunc());
             tsp.Compute();
 
-            Assert.AreEqual(25, tsp.BestCost);
-            Assert.IsNotNull(tsp.ResultPath);
-            Assert.IsFalse(tsp.ResultPath.IsDirectedAcyclicGraph());
+            Assert.That(25,Is.EqualTo(tsp.BestCost));
+            Assert.That(tsp.ResultPath,Is.Not.Null);
+            Assert.That(tsp.ResultPath.IsDirectedAcyclicGraph(),Is.False);
         }
 
         [Test]
@@ -267,9 +269,9 @@ namespace QuikGraph.Tests.Algorithms.TSP
                 testCase.Graph, testCase.GetWeightsFunc());
             tsp.Compute();
 
-            Assert.AreEqual(47, tsp.BestCost);
-            Assert.IsNotNull(tsp.ResultPath);
-            Assert.IsFalse(tsp.ResultPath.IsDirectedAcyclicGraph());
+            Assert.That(47,Is.EqualTo(tsp.BestCost));
+            Assert.That(tsp.ResultPath,Is.Not.Null);
+            Assert.That(tsp.ResultPath.IsDirectedAcyclicGraph(),Is.False);
         }
 
         [Test]
@@ -299,8 +301,8 @@ namespace QuikGraph.Tests.Algorithms.TSP
                 testCase.Graph, testCase.GetWeightsFunc());
             tsp.Compute();
 
-            Assert.AreEqual(double.PositiveInfinity, tsp.BestCost);
-            Assert.IsNull(tsp.ResultPath);
+            Assert.That(double.PositiveInfinity,Is.EqualTo(tsp.BestCost));
+            Assert.That(tsp.ResultPath,Is.Null);
         }
 
         [Test]
@@ -331,15 +333,15 @@ namespace QuikGraph.Tests.Algorithms.TSP
                 testCase.Graph, testCase.GetWeightsFunc());
             tsp.Compute();
 
-            Assert.AreEqual(45, tsp.BestCost);
-            Assert.IsNotNull(tsp.ResultPath);
-            Assert.IsFalse(tsp.ResultPath.IsDirectedAcyclicGraph());
+            Assert.That(45,Is.EqualTo(tsp.BestCost));
+            Assert.That(tsp.ResultPath,Is.Not.Null);
+            Assert.That(tsp.ResultPath.IsDirectedAcyclicGraph(),Is.False);
         }
 
         [Pure]
-        [NotNull]
+
         public static TSP<T, EquatableEdge<T>, BidirectionalGraph<T, EquatableEdge<T>>> CreateAlgorithmAndMaybeDoComputation<T>(
-            [NotNull] ContractScenario<T> scenario)
+             ContractScenario<T> scenario)
         {
             var graph = new BidirectionalGraph<T, EquatableEdge<T>>();
             graph.AddVerticesAndEdgeRange(scenario.EdgesInGraph.Select(e => new EquatableEdge<T>(e.Source, e.Target)));

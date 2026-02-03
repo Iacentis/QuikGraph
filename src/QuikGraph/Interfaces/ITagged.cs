@@ -1,5 +1,5 @@
 using System;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph
 {
@@ -17,7 +17,7 @@ namespace QuikGraph
         /// <summary>
         /// Gets or sets the tag.
         /// </summary>
-        [CanBeNull]
+
         TTag Tag { get; set; }
     }
 }

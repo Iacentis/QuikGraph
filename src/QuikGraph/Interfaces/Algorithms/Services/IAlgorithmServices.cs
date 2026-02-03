@@ -1,4 +1,4 @@
-using JetBrains.Annotations;
+
 
 namespace QuikGraph.Algorithms.Services
 {
@@ -10,7 +10,7 @@ namespace QuikGraph.Algorithms.Services
         /// <summary>
         /// Algorithm cancel manager.
         /// </summary>
-        [NotNull]
+
         ICancelManager CancelManager { get; }
     }
 }

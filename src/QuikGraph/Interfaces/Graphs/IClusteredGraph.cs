@@ -1,5 +1,5 @@
 ﻿using System.Collections;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph
 {
@@ -11,7 +11,7 @@ namespace QuikGraph
         /// <summary>
         /// Graph clusters.
         /// </summary>
-        [NotNull, ItemNotNull]
+
         IEnumerable Clusters { get; }
 
         /// <summary>
@@ -28,7 +28,7 @@ namespace QuikGraph
         /// Adds a new cluster.
         /// </summary>
         /// <returns>The added cluster.</returns>
-        [NotNull]
+
         IClusteredGraph AddCluster();
 
         /// <summary>
@@ -36,6 +36,6 @@ namespace QuikGraph
         /// </summary>
         /// <param name="graph">The graph.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
-        void RemoveCluster([NotNull] IClusteredGraph graph);
+        void RemoveCluster( IClusteredGraph graph);
     }
 }

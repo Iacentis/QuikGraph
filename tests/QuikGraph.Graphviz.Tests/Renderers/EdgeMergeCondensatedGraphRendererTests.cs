@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Algorithms.Condensation;
 
@@ -17,8 +16,8 @@ namespace QuikGraph.Graphviz.Tests
         {
             var graph = new AdjacencyGraph<int, MergedEdge<int, Edge<int>>>();
             var algorithm = new EdgeMergeCondensatedGraphRenderer<int, Edge<int>>(graph);
-            Assert.AreSame(graph, algorithm.VisitedGraph);
-            Assert.IsNotNull(algorithm.Graphviz);
+            Assert.That(graph,Is.SameAs(algorithm.VisitedGraph));
+            Assert.That(algorithm.Graphviz,Is.Not.Null);
         }
 
         [Test]
@@ -29,10 +28,10 @@ namespace QuikGraph.Graphviz.Tests
             Assert.Throws<ArgumentNullException>(() => new EdgeMergeCondensatedGraphRenderer<int, Edge<int>>(null));
         }
 
-        [NotNull, ItemNotNull]
+
         private static IEnumerable<TestCaseData> GenerateTestCases
         {
-            [UsedImplicitly]
+
             get
             {
                 // Empty graph
@@ -46,7 +45,7 @@ namespace QuikGraph.Graphviz.Tests
 
                 // Not empty graph
                 graph = new AdjacencyGraph<int, MergedEdge<int, Edge<int>>>();
-                graph.AddVertexRange(new[] { 4, 8 });
+                graph.AddVertexRange([4, 8]);
 
                 var edge12 = new Edge<int>(1, 2);
                 var edge13 = new Edge<int>(1, 3);
@@ -92,11 +91,10 @@ namespace QuikGraph.Graphviz.Tests
                 mergeEdge6.Edges.Add(edge23);
                 mergeEdge6.Edges.Add(edge38);
 
-                graph.AddEdgeRange(new[]
-                {
+                graph.AddEdgeRange([
                     mergeEdge1, mergeEdge2, mergeEdge3,
                     mergeEdge4, mergeEdge5, mergeEdge6
-                });
+                ]);
                 yield return new TestCaseData(
                     graph,
                     @"digraph G {" + Environment.NewLine +
@@ -116,8 +114,8 @@ namespace QuikGraph.Graphviz.Tests
 
         [TestCaseSource(nameof(GenerateTestCases))]
         public void Generate(
-            [NotNull] AdjacencyGraph<int, MergedEdge<int, Edge<int>>> graph,
-            [NotNull] string expectedDot)
+             AdjacencyGraph<int, MergedEdge<int, Edge<int>>> graph,
+             string expectedDot)
         {
             var dotEngine = new TestDotEngine
             {
@@ -137,7 +135,7 @@ namespace QuikGraph.Graphviz.Tests
             const string vertex4 = "Vertex4∴∞⇐ℜΩ÷嗷娪";
 
             var graph = new AdjacencyGraph<string, MergedEdge<string, Edge<string>>>();
-            graph.AddVertexRange(new[] { vertex3, vertex4 });
+            graph.AddVertexRange([vertex3, vertex4]);
 
             var edge12 = new Edge<string>(vertex1, vertex2);
             var edge24 = new Edge<string>(vertex2, vertex4);
@@ -163,10 +161,9 @@ namespace QuikGraph.Graphviz.Tests
             mergeEdge4.Edges.Add(edge12);
             mergeEdge4.Edges.Add(edge24);
 
-            graph.AddEdgeRange(new[]
-            {
+            graph.AddEdgeRange([
                 mergeEdge1, mergeEdge2, mergeEdge3, mergeEdge4
-            });
+            ]);
 
             const string expectedVertex1 = @"Vertex1&/<>@~|";
             const string expectedVertex2 = @"Vertex2æéèêë£¤¶ÀÁÂÃÄÅ";

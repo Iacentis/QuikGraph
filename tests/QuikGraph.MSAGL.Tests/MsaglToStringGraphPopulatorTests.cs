@@ -44,7 +44,7 @@ namespace QuikGraph.MSAGL.Tests
 
             populator = new MsaglToStringGraphPopulator<int, Edge<int>>(graph, formatProvider: formatProvider);
             AssertPopulatorProperties(populator, graph, provider: formatProvider);
-            
+
             populator = new MsaglToStringGraphPopulator<int, Edge<int>>(graph, "Format {0}");
             AssertPopulatorProperties(populator, graph, "Format {0}");
 
@@ -65,15 +65,15 @@ namespace QuikGraph.MSAGL.Tests
                 where TEdge : IEdge<TVertex>
             {
                 AssertAlgorithmState(p, g);
-                Assert.IsNull(p.MsaglGraph);
-                Assert.AreEqual(f ?? "{0}", p.Format);
+                Assert.That(p.MsaglGraph,Is.Null);
+                Assert.That(f ?? "{0}",Is.EqualTo(p.Format));
                 if (provider is null)
                 {
-                    Assert.IsNull(p.FormatProvider);
+                    Assert.That(p.FormatProvider,Is.Null);
                 }
                 else
                 {
-                    Assert.AreSame(provider, p.FormatProvider);
+                    Assert.That(provider,Is.SameAs(p.FormatProvider));
                 }
             }
 
@@ -107,20 +107,19 @@ namespace QuikGraph.MSAGL.Tests
             var nullFormatProvider = new NullVertexTestFormatProvider();
             var formatProvider = new VertexTestFormatProvider();
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[]
-            {
+            graph.AddVerticesAndEdgeRange([
                 new Edge<int>(1, 2),
                 new Edge<int>(2, 3)
-            });
-            graph.AddVertexRange(new[] { 5, 6 });
+            ]);
+            graph.AddVertexRange([5, 6]);
 
             // No special format
             var populator = new MsaglToStringGraphPopulator<int, Edge<int>>(graph);
             populator.Compute();
 
             // Check vertices has been well formatted
-            Assert.IsNull(populator.MsaglGraph.FindNode("0"));
-            Assert.IsNotNull(populator.MsaglGraph.FindNode("1"));
+            Assert.That(populator.MsaglGraph.FindNode("0"),Is.Null);
+            Assert.That(populator.MsaglGraph.FindNode("1"),Is.Not.Null);
 
 
             // No special format (2)
@@ -128,8 +127,8 @@ namespace QuikGraph.MSAGL.Tests
             populator.Compute();
 
             // Check vertices has been well formatted
-            Assert.IsNull(populator.MsaglGraph.FindNode("0"));
-            Assert.IsNotNull(populator.MsaglGraph.FindNode("1"));
+            Assert.That(populator.MsaglGraph.FindNode("0"),Is.Null);
+            Assert.That(populator.MsaglGraph.FindNode("1"),Is.Not.Null);
 
 
 
@@ -138,8 +137,8 @@ namespace QuikGraph.MSAGL.Tests
             populator.Compute();
 
             // Check vertices has been well formatted
-            Assert.IsNull(populator.MsaglGraph.FindNode("MyTestFormat 0 Vertex"));
-            Assert.IsNotNull(populator.MsaglGraph.FindNode("MyTestFormat 1 Vertex"));
+            Assert.That(populator.MsaglGraph.FindNode("MyTestFormat 0 Vertex"),Is.Null);
+            Assert.That(populator.MsaglGraph.FindNode("MyTestFormat 1 Vertex"),Is.Not.Null);
 
 
             // With special format (2)
@@ -147,8 +146,8 @@ namespace QuikGraph.MSAGL.Tests
             populator.Compute();
 
             // Check vertices has been well formatted
-            Assert.IsNull(populator.MsaglGraph.FindNode("MyTestFormat 0 Vertex"));
-            Assert.IsNotNull(populator.MsaglGraph.FindNode("MyTestFormat 1 Vertex"));
+            Assert.That(populator.MsaglGraph.FindNode("MyTestFormat 0 Vertex"),Is.Null);
+            Assert.That(populator.MsaglGraph.FindNode("MyTestFormat 1 Vertex"),Is.Not.Null);
 
 
             // With special format (3)
@@ -156,8 +155,8 @@ namespace QuikGraph.MSAGL.Tests
             populator.Compute();
 
             // Check vertices has been well formatted
-            Assert.IsNull(populator.MsaglGraph.FindNode("MySpecialFormatProvider 0"));
-            Assert.IsNotNull(populator.MsaglGraph.FindNode("MySpecialFormatProvider 1"));
+            Assert.That(populator.MsaglGraph.FindNode("MySpecialFormatProvider 0"),Is.Null);
+            Assert.That(populator.MsaglGraph.FindNode("MySpecialFormatProvider 1"),Is.Not.Null);
 
 
             // With special format (4)
@@ -165,8 +164,8 @@ namespace QuikGraph.MSAGL.Tests
             populator.Compute();
 
             // Check vertices has been well formatted
-            Assert.IsNull(populator.MsaglGraph.FindNode("MyTestFormat MySpecialFormatProvider 0 Vertex"));
-            Assert.IsNotNull(populator.MsaglGraph.FindNode("MyTestFormat MySpecialFormatProvider 1 Vertex"));
+            Assert.That(populator.MsaglGraph.FindNode("MyTestFormat MySpecialFormatProvider 0 Vertex"),Is.Null);
+            Assert.That(populator.MsaglGraph.FindNode("MyTestFormat MySpecialFormatProvider 1 Vertex"),Is.Not.Null);
         }
     }
 }

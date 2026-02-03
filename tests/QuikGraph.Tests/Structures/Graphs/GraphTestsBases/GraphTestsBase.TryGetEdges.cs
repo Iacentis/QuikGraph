@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using static QuikGraph.Tests.GraphTestHelpers;
 
 namespace QuikGraph.Tests.Structures
@@ -11,8 +11,8 @@ namespace QuikGraph.Tests.Structures
         #region Try Get Edges
 
         protected static void TryGetEdge_Test(
-            [NotNull] IIncidenceGraph<int, Edge<int>> graph,
-            [NotNull, InstantHandle] Action<IEnumerable<Edge<int>>> addVerticesAndEdgeRange)
+            IIncidenceGraph<int, Edge<int>> graph,
+            Action<IEnumerable<Edge<int>>> addVerticesAndEdgeRange)
         {
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 2);
@@ -21,25 +21,25 @@ namespace QuikGraph.Tests.Structures
             var edge5 = new Edge<int>(2, 4);
             var edge6 = new Edge<int>(3, 1);
 
-            addVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
+            addVerticesAndEdgeRange([edge1, edge2, edge3, edge4, edge5, edge6]);
 
-            Assert.IsFalse(graph.TryGetEdge(0, 10, out _));
-            Assert.IsFalse(graph.TryGetEdge(0, 1, out _));
+            Assert.That(graph.TryGetEdge(0, 10, out _), Is.False);
+            Assert.That(graph.TryGetEdge(0, 1, out _), Is.False);
 
-            Assert.IsTrue(graph.TryGetEdge(2, 4, out Edge<int> gotEdge));
-            Assert.AreSame(edge5, gotEdge);
+            Assert.That(graph.TryGetEdge(2, 4, out Edge<int> gotEdge), Is.True);
+            Assert.That(edge5, Is.SameAs(gotEdge));
 
-            Assert.IsTrue(graph.TryGetEdge(2, 2, out gotEdge));
-            Assert.AreSame(edge4, gotEdge);
+            Assert.That(graph.TryGetEdge(2, 2, out gotEdge), Is.True);
+            Assert.That(edge4, Is.SameAs(gotEdge));
 
-            Assert.IsTrue(graph.TryGetEdge(1, 2, out gotEdge));
-            Assert.AreSame(edge1, gotEdge);
+            Assert.That(graph.TryGetEdge(1, 2, out gotEdge), Is.True);
+            Assert.That(edge1, Is.SameAs(gotEdge));
 
-            Assert.IsFalse(graph.TryGetEdge(2, 1, out _));
+            Assert.That(graph.TryGetEdge(2, 1, out _), Is.False);
         }
 
         protected static void TryGetEdge_Test(
-            [NotNull] IMutableVertexAndEdgeListGraph<int, Edge<int>> graph)
+            IMutableVertexAndEdgeListGraph<int, Edge<int>> graph)
         {
             TryGetEdge_Test(
                 graph,
@@ -47,8 +47,8 @@ namespace QuikGraph.Tests.Structures
         }
 
         protected static void TryGetEdge_ImmutableGraph_Test(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
-            [NotNull, InstantHandle] Func<IIncidenceGraph<int, Edge<int>>> createGraph)
+            IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            Func<IIncidenceGraph<int, Edge<int>>> createGraph)
         {
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 2);
@@ -57,27 +57,27 @@ namespace QuikGraph.Tests.Structures
             var edge5 = new Edge<int>(2, 4);
             var edge6 = new Edge<int>(3, 1);
 
-            wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
+            wrappedGraph.AddVerticesAndEdgeRange([edge1, edge2, edge3, edge4, edge5, edge6]);
             IIncidenceGraph<int, Edge<int>> graph = createGraph();
 
-            Assert.IsFalse(graph.TryGetEdge(0, 10, out _));
-            Assert.IsFalse(graph.TryGetEdge(0, 1, out _));
+            Assert.That(graph.TryGetEdge(0, 10, out _), Is.False);
+            Assert.That(graph.TryGetEdge(0, 1, out _), Is.False);
 
-            Assert.IsTrue(graph.TryGetEdge(2, 4, out Edge<int> gotEdge));
-            Assert.AreSame(edge5, gotEdge);
+            Assert.That(graph.TryGetEdge(2, 4, out Edge<int> gotEdge), Is.True);
+            Assert.That(edge5, Is.SameAs(gotEdge));
 
-            Assert.IsTrue(graph.TryGetEdge(2, 2, out gotEdge));
-            Assert.AreSame(edge4, gotEdge);
+            Assert.That(graph.TryGetEdge(2, 2, out gotEdge), Is.True);
+            Assert.That(edge4, Is.SameAs(gotEdge));
 
-            Assert.IsTrue(graph.TryGetEdge(1, 2, out gotEdge));
-            Assert.AreSame(edge1, gotEdge);
+            Assert.That(graph.TryGetEdge(1, 2, out gotEdge), Is.True);
+            Assert.That(edge1, Is.SameAs(gotEdge));
 
-            Assert.IsFalse(graph.TryGetEdge(2, 1, out _));
+            Assert.That(graph.TryGetEdge(2, 1, out _), Is.False);
         }
 
         protected static void TryGetEdge_ImmutableGraph_Test(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
-            [NotNull, InstantHandle] Func<IIncidenceGraph<int, SEquatableEdge<int>>> createGraph)
+            IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            Func<IIncidenceGraph<int, SEquatableEdge<int>>> createGraph)
         {
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 2);
@@ -86,26 +86,26 @@ namespace QuikGraph.Tests.Structures
             var edge5 = new Edge<int>(2, 4);
             var edge6 = new Edge<int>(3, 1);
 
-            wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
+            wrappedGraph.AddVerticesAndEdgeRange([edge1, edge2, edge3, edge4, edge5, edge6]);
             IIncidenceGraph<int, SEquatableEdge<int>> graph = createGraph();
 
-            Assert.IsFalse(graph.TryGetEdge(0, 10, out _));
-            Assert.IsFalse(graph.TryGetEdge(0, 1, out _));
+            Assert.That(graph.TryGetEdge(0, 10, out _), Is.False);
+            Assert.That(graph.TryGetEdge(0, 1, out _), Is.False);
 
-            Assert.IsTrue(graph.TryGetEdge(2, 4, out SEquatableEdge<int> gotEdge));
-            Assert.AreEqual(new SEquatableEdge<int>(2, 4), gotEdge);
+            Assert.That(graph.TryGetEdge(2, 4, out SEquatableEdge<int> gotEdge), Is.True);
+            Assert.That(new SEquatableEdge<int>(2, 4), Is.EqualTo(gotEdge));
 
-            Assert.IsTrue(graph.TryGetEdge(2, 2, out gotEdge));
-            Assert.AreEqual(new SEquatableEdge<int>(2, 2), gotEdge);
+            Assert.That(graph.TryGetEdge(2, 2, out gotEdge), Is.True);
+            Assert.That(new SEquatableEdge<int>(2, 2), Is.EqualTo(gotEdge));
 
-            Assert.IsTrue(graph.TryGetEdge(1, 2, out gotEdge));
-            Assert.AreEqual(new SEquatableEdge<int>(1, 2), gotEdge);
+            Assert.That(graph.TryGetEdge(1, 2, out gotEdge), Is.True);
+            Assert.That(new SEquatableEdge<int>(1, 2), Is.EqualTo(gotEdge));
 
-            Assert.IsFalse(graph.TryGetEdge(2, 1, out _));
+            Assert.That(graph.TryGetEdge(2, 1, out _), Is.False);
         }
 
         protected static void TryGetEdge_ImmutableVertices_Test(
-            [NotNull] BidirectionalMatrixGraph<Edge<int>> graph)
+            BidirectionalMatrixGraph<Edge<int>> graph)
         {
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 3);
@@ -113,26 +113,26 @@ namespace QuikGraph.Tests.Structures
             var edge4 = new Edge<int>(2, 4);
             var edge5 = new Edge<int>(3, 1);
 
-            graph.AddEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5 });
+            graph.AddEdgeRange([edge1, edge2, edge3, edge4, edge5]);
 
-            Assert.IsFalse(graph.TryGetEdge(6, 10, out _));
-            Assert.IsFalse(graph.TryGetEdge(6, 1, out _));
+            Assert.That(graph.TryGetEdge(6, 10, out _), Is.False);
+            Assert.That(graph.TryGetEdge(6, 1, out _), Is.False);
 
-            Assert.IsTrue(graph.TryGetEdge(2, 4, out Edge<int> gotEdge));
-            Assert.AreSame(edge4, gotEdge);
+            Assert.That(graph.TryGetEdge(2, 4, out Edge<int> gotEdge), Is.True);
+            Assert.That(edge4, Is.SameAs(gotEdge));
 
-            Assert.IsTrue(graph.TryGetEdge(2, 2, out gotEdge));
-            Assert.AreSame(edge3, gotEdge);
+            Assert.That(graph.TryGetEdge(2, 2, out gotEdge), Is.True);
+            Assert.That(edge3, Is.SameAs(gotEdge));
 
-            Assert.IsTrue(graph.TryGetEdge(1, 2, out gotEdge));
-            Assert.AreSame(edge1, gotEdge);
+            Assert.That(graph.TryGetEdge(1, 2, out gotEdge), Is.True);
+            Assert.That(edge1, Is.SameAs(gotEdge));
 
-            Assert.IsFalse(graph.TryGetEdge(2, 1, out _));
+            Assert.That(graph.TryGetEdge(2, 1, out _), Is.False);
         }
 
         protected static void TryGetEdge_ImmutableGraph_ReversedTest(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
-            [NotNull, InstantHandle] Func<IIncidenceGraph<int, SReversedEdge<int, Edge<int>>>> createGraph)
+            IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            Func<IIncidenceGraph<int, SReversedEdge<int, Edge<int>>>> createGraph)
         {
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 2);
@@ -141,26 +141,26 @@ namespace QuikGraph.Tests.Structures
             var edge5 = new Edge<int>(2, 4);
             var edge6 = new Edge<int>(3, 1);
 
-            wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
+            wrappedGraph.AddVerticesAndEdgeRange([edge1, edge2, edge3, edge4, edge5, edge6]);
             IIncidenceGraph<int, SReversedEdge<int, Edge<int>>> graph = createGraph();
 
-            Assert.IsFalse(graph.TryGetEdge(0, 10, out _));
-            Assert.IsFalse(graph.TryGetEdge(0, 1, out _));
+            Assert.That(graph.TryGetEdge(0, 10, out _), Is.False);
+            Assert.That(graph.TryGetEdge(0, 1, out _), Is.False);
 
-            Assert.IsTrue(graph.TryGetEdge(4, 2, out SReversedEdge<int, Edge<int>> gotEdge));
+            Assert.That(graph.TryGetEdge(4, 2, out SReversedEdge<int, Edge<int>> gotEdge), Is.True);
             AssertSameReversedEdge(edge5, gotEdge);
 
-            Assert.IsTrue(graph.TryGetEdge(2, 2, out gotEdge));
+            Assert.That(graph.TryGetEdge(2, 2, out gotEdge), Is.True);
             AssertSameReversedEdge(edge4, gotEdge);
 
-            Assert.IsTrue(graph.TryGetEdge(2, 1, out gotEdge));
+            Assert.That(graph.TryGetEdge(2, 1, out gotEdge), Is.True);
             AssertSameReversedEdge(edge1, gotEdge);
 
-            Assert.IsFalse(graph.TryGetEdge(1, 2, out _));
+            Assert.That(graph.TryGetEdge(1, 2, out _), Is.False);
         }
 
         protected static void TryGetEdge_UndirectedGraph_Test(
-            [NotNull] IMutableUndirectedGraph<int, Edge<int>> graph)
+            IMutableUndirectedGraph<int, Edge<int>> graph)
         {
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 2);
@@ -170,35 +170,35 @@ namespace QuikGraph.Tests.Structures
             var edge6 = new Edge<int>(3, 1);
             var edge7 = new Edge<int>(5, 2);
 
-            graph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6, edge7 });
+            graph.AddVerticesAndEdgeRange([edge1, edge2, edge3, edge4, edge5, edge6, edge7]);
 
-            Assert.IsFalse(graph.TryGetEdge(0, 10, out _));
-            Assert.IsFalse(graph.TryGetEdge(0, 1, out _));
+            Assert.That(graph.TryGetEdge(0, 10, out _), Is.False);
+            Assert.That(graph.TryGetEdge(0, 1, out _), Is.False);
 
-            Assert.IsTrue(graph.TryGetEdge(2, 4, out Edge<int> gotEdge));
-            Assert.AreSame(edge5, gotEdge);
+            Assert.That(graph.TryGetEdge(2, 4, out Edge<int> gotEdge), Is.True);
+            Assert.That(edge5, Is.SameAs(gotEdge));
 
-            Assert.IsTrue(graph.TryGetEdge(1, 2, out gotEdge));
-            Assert.AreSame(edge1, gotEdge);
+            Assert.That(graph.TryGetEdge(1, 2, out gotEdge), Is.True);
+            Assert.That(edge1, Is.SameAs(gotEdge));
 
-            Assert.IsTrue(graph.TryGetEdge(2, 2, out gotEdge));
-            Assert.AreSame(edge4, gotEdge);
+            Assert.That(graph.TryGetEdge(2, 2, out gotEdge), Is.True);
+            Assert.That(edge4, Is.SameAs(gotEdge));
 
             // 1 -> 2 is present in this undirected graph
-            Assert.IsTrue(graph.TryGetEdge(2, 1, out gotEdge));
-            Assert.AreSame(edge1, gotEdge);
+            Assert.That(graph.TryGetEdge(2, 1, out gotEdge), Is.True);
+            Assert.That(edge1, Is.SameAs(gotEdge));
 
-            Assert.IsTrue(graph.TryGetEdge(5, 2, out gotEdge));
-            Assert.AreSame(edge7, gotEdge);
+            Assert.That(graph.TryGetEdge(5, 2, out gotEdge), Is.True);
+            Assert.That(edge7, Is.SameAs(gotEdge));
 
             // 5 -> 2 is present in this undirected graph
-            Assert.IsTrue(graph.TryGetEdge(2, 5, out gotEdge));
-            Assert.AreSame(edge7, gotEdge);
+            Assert.That(graph.TryGetEdge(2, 5, out gotEdge), Is.True);
+            Assert.That(edge7, Is.SameAs(gotEdge));
         }
 
         protected static void TryGetEdge_ImmutableGraph_UndirectedGraph_Test(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
-            [NotNull, InstantHandle] Func<IImplicitUndirectedGraph<int, Edge<int>>> createGraph)
+            IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            Func<IImplicitUndirectedGraph<int, Edge<int>>> createGraph)
         {
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 2);
@@ -208,35 +208,35 @@ namespace QuikGraph.Tests.Structures
             var edge6 = new Edge<int>(3, 1);
             var edge7 = new Edge<int>(5, 2);
 
-            wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6, edge7 });
+            wrappedGraph.AddVerticesAndEdgeRange([edge1, edge2, edge3, edge4, edge5, edge6, edge7]);
             IImplicitUndirectedGraph<int, Edge<int>> graph = createGraph();
 
-            Assert.IsFalse(graph.TryGetEdge(0, 10, out _));
-            Assert.IsFalse(graph.TryGetEdge(0, 1, out _));
+            Assert.That(graph.TryGetEdge(0, 10, out _), Is.False);
+            Assert.That(graph.TryGetEdge(0, 1, out _), Is.False);
 
-            Assert.IsTrue(graph.TryGetEdge(2, 4, out Edge<int> gotEdge));
-            Assert.AreSame(edge5, gotEdge);
+            Assert.That(graph.TryGetEdge(2, 4, out Edge<int> gotEdge), Is.True);
+            Assert.That(edge5, Is.SameAs(gotEdge));
 
-            Assert.IsTrue(graph.TryGetEdge(1, 2, out gotEdge));
-            Assert.AreSame(edge1, gotEdge);
+            Assert.That(graph.TryGetEdge(1, 2, out gotEdge), Is.True);
+            Assert.That(edge1, Is.SameAs(gotEdge));
 
-            Assert.IsTrue(graph.TryGetEdge(2, 2, out gotEdge));
-            Assert.AreSame(edge4, gotEdge);
+            Assert.That(graph.TryGetEdge(2, 2, out gotEdge), Is.True);
+            Assert.That(edge4, Is.SameAs(gotEdge));
 
             // 1 -> 2 is present in this undirected graph
-            Assert.IsTrue(graph.TryGetEdge(2, 1, out gotEdge));
-            Assert.AreSame(edge1, gotEdge);
+            Assert.That(graph.TryGetEdge(2, 1, out gotEdge), Is.True);
+            Assert.That(edge1, Is.SameAs(gotEdge));
 
-            Assert.IsTrue(graph.TryGetEdge(5, 2, out gotEdge));
-            Assert.AreSame(edge7, gotEdge);
+            Assert.That(graph.TryGetEdge(5, 2, out gotEdge), Is.True);
+            Assert.That(edge7, Is.SameAs(gotEdge));
 
             // 5 -> 2 is present in this undirected graph
-            Assert.IsTrue(graph.TryGetEdge(2, 5, out gotEdge));
-            Assert.AreSame(edge7, gotEdge);
+            Assert.That(graph.TryGetEdge(2, 5, out gotEdge), Is.True);
+            Assert.That(edge7, Is.SameAs(gotEdge));
         }
 
         protected static void TryGetEdge_Throws_Test<TVertex, TEdge>(
-            [NotNull] IIncidenceGraph<TVertex, TEdge> graph)
+            IIncidenceGraph<TVertex, TEdge> graph)
             where TVertex : class, new()
             where TEdge : IEdge<TVertex>
         {
@@ -248,7 +248,7 @@ namespace QuikGraph.Tests.Structures
         }
 
         protected static void TryGetEdge_Throws_UndirectedGraph_Test<TVertex, TEdge>(
-            [NotNull] IImplicitUndirectedGraph<TVertex, TEdge> graph)
+            IImplicitUndirectedGraph<TVertex, TEdge> graph)
             where TVertex : class, new()
             where TEdge : IEdge<TVertex>
         {
@@ -260,8 +260,8 @@ namespace QuikGraph.Tests.Structures
         }
 
         protected static void TryGetEdges_Test(
-            [NotNull] IIncidenceGraph<int, Edge<int>> graph,
-            [NotNull, InstantHandle] Action<IEnumerable<Edge<int>>> addVerticesAndEdgeRange)
+            IIncidenceGraph<int, Edge<int>> graph,
+            Action<IEnumerable<Edge<int>>> addVerticesAndEdgeRange)
         {
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 2);
@@ -270,26 +270,26 @@ namespace QuikGraph.Tests.Structures
             var edge5 = new Edge<int>(2, 4);
             var edge6 = new Edge<int>(3, 1);
 
-            addVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
+            addVerticesAndEdgeRange([edge1, edge2, edge3, edge4, edge5, edge6]);
 
-            Assert.IsFalse(graph.TryGetEdges(0, 10, out _));
-            Assert.IsFalse(graph.TryGetEdges(0, 1, out _));
+            Assert.That(graph.TryGetEdges(0, 10, out _), Is.False);
+            Assert.That(graph.TryGetEdges(0, 1, out _), Is.False);
 
-            Assert.IsTrue(graph.TryGetEdges(2, 2, out IEnumerable<Edge<int>> gotEdges));
+            Assert.That(graph.TryGetEdges(2, 2, out IEnumerable<Edge<int>> gotEdges), Is.True);
             CollectionAssert.AreEqual(new[] { edge4 }, gotEdges);
 
-            Assert.IsTrue(graph.TryGetEdges(2, 4, out gotEdges));
+            Assert.That(graph.TryGetEdges(2, 4, out gotEdges), Is.True);
             CollectionAssert.AreEqual(new[] { edge5 }, gotEdges);
 
-            Assert.IsTrue(graph.TryGetEdges(1, 2, out gotEdges));
+            Assert.That(graph.TryGetEdges(1, 2, out gotEdges), Is.True);
             CollectionAssert.AreEqual(new[] { edge1, edge2 }, gotEdges);
 
-            Assert.IsTrue(graph.TryGetEdges(2, 1, out gotEdges));
+            Assert.That(graph.TryGetEdges(2, 1, out gotEdges), Is.True);
             CollectionAssert.IsEmpty(gotEdges);
         }
 
         protected static void TryGetEdges_Test(
-            [NotNull] IMutableVertexAndEdgeListGraph<int, Edge<int>> graph)
+            IMutableVertexAndEdgeListGraph<int, Edge<int>> graph)
         {
             TryGetEdges_Test(
                 graph,
@@ -297,8 +297,8 @@ namespace QuikGraph.Tests.Structures
         }
 
         protected static void TryGetEdges_ImmutableGraph_Test(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
-            [NotNull, InstantHandle] Func<IIncidenceGraph<int, Edge<int>>> createGraph)
+            IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            Func<IIncidenceGraph<int, Edge<int>>> createGraph)
         {
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 2);
@@ -307,28 +307,28 @@ namespace QuikGraph.Tests.Structures
             var edge5 = new Edge<int>(2, 4);
             var edge6 = new Edge<int>(3, 1);
 
-            wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
+            wrappedGraph.AddVerticesAndEdgeRange([edge1, edge2, edge3, edge4, edge5, edge6]);
             IIncidenceGraph<int, Edge<int>> graph = createGraph();
 
-            Assert.IsFalse(graph.TryGetEdges(0, 10, out _));
-            Assert.IsFalse(graph.TryGetEdges(0, 1, out _));
+            Assert.That(graph.TryGetEdges(0, 10, out _), Is.False);
+            Assert.That(graph.TryGetEdges(0, 1, out _), Is.False);
 
-            Assert.IsTrue(graph.TryGetEdges(2, 2, out IEnumerable<Edge<int>> gotEdges));
+            Assert.That(graph.TryGetEdges(2, 2, out IEnumerable<Edge<int>> gotEdges), Is.True);
             CollectionAssert.AreEqual(new[] { edge4 }, gotEdges);
 
-            Assert.IsTrue(graph.TryGetEdges(2, 4, out gotEdges));
+            Assert.That(graph.TryGetEdges(2, 4, out gotEdges), Is.True);
             CollectionAssert.AreEqual(new[] { edge5 }, gotEdges);
 
-            Assert.IsTrue(graph.TryGetEdges(1, 2, out gotEdges));
+            Assert.That(graph.TryGetEdges(1, 2, out gotEdges), Is.True);
             CollectionAssert.AreEqual(new[] { edge1, edge2 }, gotEdges);
 
-            Assert.IsTrue(graph.TryGetEdges(2, 1, out gotEdges));
+            Assert.That(graph.TryGetEdges(2, 1, out gotEdges), Is.True);
             CollectionAssert.IsEmpty(gotEdges);
         }
 
         protected static void TryGetEdges_ImmutableGraph_Test(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
-            [NotNull, InstantHandle] Func<IIncidenceGraph<int, SEquatableEdge<int>>> createGraph)
+            IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            Func<IIncidenceGraph<int, SEquatableEdge<int>>> createGraph)
         {
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 2);
@@ -337,37 +337,33 @@ namespace QuikGraph.Tests.Structures
             var edge5 = new Edge<int>(2, 4);
             var edge6 = new Edge<int>(3, 1);
 
-            wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
+            wrappedGraph.AddVerticesAndEdgeRange([edge1, edge2, edge3, edge4, edge5, edge6]);
             IIncidenceGraph<int, SEquatableEdge<int>> graph = createGraph();
 
-            Assert.IsFalse(graph.TryGetEdges(0, 10, out _));
-            Assert.IsFalse(graph.TryGetEdges(0, 1, out _));
+            Assert.That(graph.TryGetEdges(0, 10, out _), Is.False);
+            Assert.That(graph.TryGetEdges(0, 1, out _), Is.False);
 
-            Assert.IsTrue(graph.TryGetEdges(2, 2, out IEnumerable<SEquatableEdge<int>> gotEdges));
+            Assert.That(graph.TryGetEdges(2, 2, out IEnumerable<SEquatableEdge<int>> gotEdges), Is.True);
             CollectionAssert.AreEqual(
                 new[] { new SEquatableEdge<int>(2, 2) },
                 gotEdges);
 
-            Assert.IsTrue(graph.TryGetEdges(2, 4, out gotEdges));
+            Assert.That(graph.TryGetEdges(2, 4, out gotEdges), Is.True);
             CollectionAssert.AreEqual(
                 new[] { new SEquatableEdge<int>(2, 4), },
                 gotEdges);
 
-            Assert.IsTrue(graph.TryGetEdges(1, 2, out gotEdges));
+            Assert.That(graph.TryGetEdges(1, 2, out gotEdges), Is.True);
             CollectionAssert.AreEqual(
-                new[]
-                {
-                    new SEquatableEdge<int>(1, 2),
-                    new SEquatableEdge<int>(1, 2)
-                },
+                new[] { new SEquatableEdge<int>(1, 2), new SEquatableEdge<int>(1, 2) },
                 gotEdges);
 
-            Assert.IsTrue(graph.TryGetEdges(2, 1, out gotEdges));
+            Assert.That(graph.TryGetEdges(2, 1, out gotEdges), Is.True);
             CollectionAssert.IsEmpty(gotEdges);
         }
 
         protected static void TryGetEdges_ImmutableVertices_Test(
-            [NotNull] BidirectionalMatrixGraph<Edge<int>> graph)
+            BidirectionalMatrixGraph<Edge<int>> graph)
         {
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 3);
@@ -375,27 +371,27 @@ namespace QuikGraph.Tests.Structures
             var edge4 = new Edge<int>(2, 4);
             var edge5 = new Edge<int>(3, 1);
 
-            graph.AddEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5 });
+            graph.AddEdgeRange([edge1, edge2, edge3, edge4, edge5]);
 
-            Assert.IsFalse(graph.TryGetEdges(6, 10, out _));
-            Assert.IsFalse(graph.TryGetEdges(6, 1, out _));
+            Assert.That(graph.TryGetEdges(6, 10, out _), Is.False);
+            Assert.That(graph.TryGetEdges(6, 1, out _), Is.False);
 
-            Assert.IsTrue(graph.TryGetEdges(2, 2, out IEnumerable<Edge<int>> gotEdges));
+            Assert.That(graph.TryGetEdges(2, 2, out IEnumerable<Edge<int>> gotEdges), Is.True);
             CollectionAssert.AreEqual(new[] { edge3 }, gotEdges);
 
-            Assert.IsTrue(graph.TryGetEdges(2, 4, out gotEdges));
+            Assert.That(graph.TryGetEdges(2, 4, out gotEdges), Is.True);
             CollectionAssert.AreEqual(new[] { edge4 }, gotEdges);
 
-            Assert.IsTrue(graph.TryGetEdges(1, 2, out gotEdges));
+            Assert.That(graph.TryGetEdges(1, 2, out gotEdges), Is.True);
             CollectionAssert.AreEqual(new[] { edge1 }, gotEdges);
 
-            Assert.IsTrue(graph.TryGetEdges(2, 1, out gotEdges));
+            Assert.That(graph.TryGetEdges(2, 1, out gotEdges), Is.True);
             CollectionAssert.IsEmpty(gotEdges);
         }
 
         protected static void TryGetEdges_ImmutableGraph_ReversedTest(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
-            [NotNull, InstantHandle] Func<IIncidenceGraph<int, SReversedEdge<int, Edge<int>>>> createGraph)
+            IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            Func<IIncidenceGraph<int, SReversedEdge<int, Edge<int>>>> createGraph)
         {
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 2);
@@ -404,27 +400,27 @@ namespace QuikGraph.Tests.Structures
             var edge5 = new Edge<int>(2, 4);
             var edge6 = new Edge<int>(3, 1);
 
-            wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
+            wrappedGraph.AddVerticesAndEdgeRange([edge1, edge2, edge3, edge4, edge5, edge6]);
             IIncidenceGraph<int, SReversedEdge<int, Edge<int>>> graph = createGraph();
 
-            Assert.IsFalse(graph.TryGetEdges(0, 10, out _));
-            Assert.IsFalse(graph.TryGetEdges(0, 1, out _));
+            Assert.That(graph.TryGetEdges(0, 10, out _), Is.False);
+            Assert.That(graph.TryGetEdges(0, 1, out _), Is.False);
 
-            Assert.IsTrue(graph.TryGetEdges(2, 2, out IEnumerable<SReversedEdge<int, Edge<int>>> gotEdges));
-            AssertSameReversedEdges(new[] { edge4 }, gotEdges);
+            Assert.That(graph.TryGetEdges(2, 2, out IEnumerable<SReversedEdge<int, Edge<int>>> gotEdges), Is.True);
+            AssertSameReversedEdges([edge4], gotEdges);
 
-            Assert.IsTrue(graph.TryGetEdges(4, 2, out gotEdges));
-            AssertSameReversedEdges(new[] { edge5 }, gotEdges);
+            Assert.That(graph.TryGetEdges(4, 2, out gotEdges), Is.True);
+            AssertSameReversedEdges([edge5], gotEdges);
 
-            Assert.IsTrue(graph.TryGetEdges(2, 1, out gotEdges));
-            AssertSameReversedEdges(new[] { edge1, edge2 }, gotEdges);
+            Assert.That(graph.TryGetEdges(2, 1, out gotEdges), Is.True);
+            AssertSameReversedEdges([edge1, edge2], gotEdges);
 
-            Assert.IsTrue(graph.TryGetEdges(1, 2, out gotEdges));
+            Assert.That(graph.TryGetEdges(1, 2, out gotEdges), Is.True);
             CollectionAssert.IsEmpty(gotEdges);
         }
 
         protected static void TryGetEdges_Throws_Test<TEdge>(
-            [NotNull] IIncidenceGraph<TestVertex, TEdge> graph)
+            IIncidenceGraph<TestVertex, TEdge> graph)
             where TEdge : IEdge<TestVertex>
         {
             // ReSharper disable AssignNullToNotNullAttribute
@@ -435,8 +431,8 @@ namespace QuikGraph.Tests.Structures
         }
 
         protected static void TryGetOutEdges_Test(
-            [NotNull] IImplicitGraph<int, Edge<int>> graph,
-            [NotNull, InstantHandle] Action<IEnumerable<Edge<int>>> addVerticesAndEdgeRange)
+            IImplicitGraph<int, Edge<int>> graph,
+            Action<IEnumerable<Edge<int>>> addVerticesAndEdgeRange)
         {
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 2);
@@ -446,22 +442,22 @@ namespace QuikGraph.Tests.Structures
             var edge6 = new Edge<int>(3, 1);
             var edge7 = new Edge<int>(4, 5);
 
-            addVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6, edge7 });
+            addVerticesAndEdgeRange([edge1, edge2, edge3, edge4, edge5, edge6, edge7]);
 
-            Assert.IsFalse(graph.TryGetOutEdges(0, out _));
+            Assert.That(graph.TryGetOutEdges(0, out _), Is.False);
 
-            Assert.IsTrue(graph.TryGetOutEdges(5, out IEnumerable<Edge<int>> gotEdges));
+            Assert.That(graph.TryGetOutEdges(5, out IEnumerable<Edge<int>> gotEdges), Is.True);
             CollectionAssert.IsEmpty(gotEdges);
 
-            Assert.IsTrue(graph.TryGetOutEdges(3, out gotEdges));
+            Assert.That(graph.TryGetOutEdges(3, out gotEdges), Is.True);
             CollectionAssert.AreEqual(new[] { edge6 }, gotEdges);
 
-            Assert.IsTrue(graph.TryGetOutEdges(1, out gotEdges));
+            Assert.That(graph.TryGetOutEdges(1, out gotEdges), Is.True);
             CollectionAssert.AreEqual(new[] { edge1, edge2, edge3 }, gotEdges);
         }
 
         protected static void TryGetOutEdges_Test(
-            [NotNull] IMutableVertexAndEdgeListGraph<int, Edge<int>> graph)
+            IMutableVertexAndEdgeListGraph<int, Edge<int>> graph)
         {
             TryGetOutEdges_Test(
                 graph,
@@ -469,8 +465,8 @@ namespace QuikGraph.Tests.Structures
         }
 
         protected static void TryGetOutEdges_ImmutableGraph_Test(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
-            [NotNull, InstantHandle] Func<IImplicitGraph<int, Edge<int>>> createGraph)
+            IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            Func<IImplicitGraph<int, Edge<int>>> createGraph)
         {
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 2);
@@ -480,24 +476,24 @@ namespace QuikGraph.Tests.Structures
             var edge6 = new Edge<int>(3, 1);
             var edge7 = new Edge<int>(4, 5);
 
-            wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6, edge7 });
+            wrappedGraph.AddVerticesAndEdgeRange([edge1, edge2, edge3, edge4, edge5, edge6, edge7]);
             IImplicitGraph<int, Edge<int>> graph = createGraph();
 
-            Assert.IsFalse(graph.TryGetOutEdges(0, out _));
+            Assert.That(graph.TryGetOutEdges(0, out _), Is.False);
 
-            Assert.IsTrue(graph.TryGetOutEdges(5, out IEnumerable<Edge<int>> gotEdges));
+            Assert.That(graph.TryGetOutEdges(5, out IEnumerable<Edge<int>> gotEdges), Is.True);
             CollectionAssert.IsEmpty(gotEdges);
 
-            Assert.IsTrue(graph.TryGetOutEdges(3, out gotEdges));
+            Assert.That(graph.TryGetOutEdges(3, out gotEdges), Is.True);
             CollectionAssert.AreEqual(new[] { edge6 }, gotEdges);
 
-            Assert.IsTrue(graph.TryGetOutEdges(1, out gotEdges));
+            Assert.That(graph.TryGetOutEdges(1, out gotEdges), Is.True);
             CollectionAssert.AreEqual(new[] { edge1, edge2, edge3 }, gotEdges);
         }
 
         protected static void TryGetOutEdges_ImmutableGraph_Test(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
-            [NotNull, InstantHandle] Func<IImplicitGraph<int, SEquatableEdge<int>>> createGraph)
+            IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            Func<IImplicitGraph<int, SEquatableEdge<int>>> createGraph)
         {
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 2);
@@ -507,32 +503,27 @@ namespace QuikGraph.Tests.Structures
             var edge6 = new Edge<int>(3, 1);
             var edge7 = new Edge<int>(4, 5);
 
-            wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6, edge7 });
+            wrappedGraph.AddVerticesAndEdgeRange([edge1, edge2, edge3, edge4, edge5, edge6, edge7]);
             IImplicitGraph<int, SEquatableEdge<int>> graph = createGraph();
 
-            Assert.IsFalse(graph.TryGetOutEdges(0, out _));
+            Assert.That(graph.TryGetOutEdges(0, out _), Is.False);
 
-            Assert.IsTrue(graph.TryGetOutEdges(5, out IEnumerable<SEquatableEdge<int>> gotEdges));
+            Assert.That(graph.TryGetOutEdges(5, out IEnumerable<SEquatableEdge<int>> gotEdges), Is.True);
             CollectionAssert.IsEmpty(gotEdges);
 
-            Assert.IsTrue(graph.TryGetOutEdges(3, out gotEdges));
+            Assert.That(graph.TryGetOutEdges(3, out gotEdges), Is.True);
             CollectionAssert.AreEqual(
                 new[] { new SEquatableEdge<int>(3, 1) },
                 gotEdges);
 
-            Assert.IsTrue(graph.TryGetOutEdges(1, out gotEdges));
+            Assert.That(graph.TryGetOutEdges(1, out gotEdges), Is.True);
             CollectionAssert.AreEqual(
-                new[]
-                {
-                    new SEquatableEdge<int>(1, 2),
-                    new SEquatableEdge<int>(1, 2),
-                    new SEquatableEdge<int>(1, 3)
-                },
+                new[] { new SEquatableEdge<int>(1, 2), new SEquatableEdge<int>(1, 2), new SEquatableEdge<int>(1, 3) },
                 gotEdges);
         }
 
         protected static void TryGetOutEdges_ImmutableVertices_Test(
-            [NotNull] BidirectionalMatrixGraph<Edge<int>> graph)
+            BidirectionalMatrixGraph<Edge<int>> graph)
         {
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 3);
@@ -541,23 +532,23 @@ namespace QuikGraph.Tests.Structures
             var edge5 = new Edge<int>(3, 1);
             var edge6 = new Edge<int>(4, 5);
 
-            graph.AddEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
+            graph.AddEdgeRange([edge1, edge2, edge3, edge4, edge5, edge6]);
 
-            Assert.IsFalse(graph.TryGetOutEdges(6, out _));
+            Assert.That(graph.TryGetOutEdges(6, out _), Is.False);
 
-            Assert.IsTrue(graph.TryGetOutEdges(5, out IEnumerable<Edge<int>> gotEdges));
+            Assert.That(graph.TryGetOutEdges(5, out IEnumerable<Edge<int>> gotEdges), Is.True);
             CollectionAssert.IsEmpty(gotEdges);
 
-            Assert.IsTrue(graph.TryGetOutEdges(3, out gotEdges));
+            Assert.That(graph.TryGetOutEdges(3, out gotEdges), Is.True);
             CollectionAssert.AreEqual(new[] { edge5 }, gotEdges);
 
-            Assert.IsTrue(graph.TryGetOutEdges(1, out gotEdges));
+            Assert.That(graph.TryGetOutEdges(1, out gotEdges), Is.True);
             CollectionAssert.AreEqual(new[] { edge1, edge2 }, gotEdges);
         }
 
         protected static void TryGetOutEdges_ImmutableGraph_ReversedTest(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
-            [NotNull, InstantHandle] Func<IImplicitGraph<int, SReversedEdge<int, Edge<int>>>> createGraph)
+            IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            Func<IImplicitGraph<int, SReversedEdge<int, Edge<int>>>> createGraph)
         {
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 2);
@@ -567,23 +558,23 @@ namespace QuikGraph.Tests.Structures
             var edge6 = new Edge<int>(3, 1);
             var edge7 = new Edge<int>(5, 4);
 
-            wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6, edge7 });
+            wrappedGraph.AddVerticesAndEdgeRange([edge1, edge2, edge3, edge4, edge5, edge6, edge7]);
             IImplicitGraph<int, SReversedEdge<int, Edge<int>>> graph = createGraph();
 
-            Assert.IsFalse(graph.TryGetOutEdges(0, out _));
+            Assert.That(graph.TryGetOutEdges(0, out _), Is.False);
 
-            Assert.IsTrue(graph.TryGetOutEdges(5, out IEnumerable<SReversedEdge<int, Edge<int>>> gotEdges));
+            Assert.That(graph.TryGetOutEdges(5, out IEnumerable<SReversedEdge<int, Edge<int>>> gotEdges), Is.True);
             CollectionAssert.IsEmpty(gotEdges);
 
-            Assert.IsTrue(graph.TryGetOutEdges(3, out gotEdges));
-            AssertSameReversedEdges(new[] { edge3 }, gotEdges);
+            Assert.That(graph.TryGetOutEdges(3, out gotEdges), Is.True);
+            AssertSameReversedEdges([edge3], gotEdges);
 
-            Assert.IsTrue(graph.TryGetOutEdges(2, out gotEdges));
-            AssertSameReversedEdges(new[] { edge1, edge2, edge4 }, gotEdges);
+            Assert.That(graph.TryGetOutEdges(2, out gotEdges), Is.True);
+            AssertSameReversedEdges([edge1, edge2, edge4], gotEdges);
         }
 
         protected static void TryGetOutEdges_Throws_Test<TVertex, TEdge>(
-            [NotNull] IImplicitGraph<TVertex, TEdge> graph)
+            IImplicitGraph<TVertex, TEdge> graph)
             where TVertex : class
             where TEdge : IEdge<TVertex>
         {
@@ -592,8 +583,8 @@ namespace QuikGraph.Tests.Structures
         }
 
         protected static void TryGetInEdges_Test(
-            [NotNull] IBidirectionalIncidenceGraph<int, Edge<int>> graph,
-            [NotNull, InstantHandle] Action<IEnumerable<Edge<int>>> addVerticesAndEdgeRange)
+            IBidirectionalIncidenceGraph<int, Edge<int>> graph,
+            Action<IEnumerable<Edge<int>>> addVerticesAndEdgeRange)
         {
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 2);
@@ -603,22 +594,22 @@ namespace QuikGraph.Tests.Structures
             var edge6 = new Edge<int>(3, 1);
             var edge7 = new Edge<int>(5, 3);
 
-            addVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6, edge7 });
+            addVerticesAndEdgeRange([edge1, edge2, edge3, edge4, edge5, edge6, edge7]);
 
-            Assert.IsFalse(graph.TryGetInEdges(0, out _));
+            Assert.That(graph.TryGetInEdges(0, out _), Is.False);
 
-            Assert.IsTrue(graph.TryGetInEdges(5, out IEnumerable<Edge<int>> gotEdges));
+            Assert.That(graph.TryGetInEdges(5, out IEnumerable<Edge<int>> gotEdges), Is.True);
             CollectionAssert.IsEmpty(gotEdges);
 
-            Assert.IsTrue(graph.TryGetInEdges(4, out gotEdges));
+            Assert.That(graph.TryGetInEdges(4, out gotEdges), Is.True);
             CollectionAssert.AreEqual(new[] { edge5 }, gotEdges);
 
-            Assert.IsTrue(graph.TryGetInEdges(2, out gotEdges));
+            Assert.That(graph.TryGetInEdges(2, out gotEdges), Is.True);
             CollectionAssert.AreEqual(new[] { edge1, edge2, edge4 }, gotEdges);
         }
 
         protected static void TryGetInEdges_Test(
-            [NotNull] IMutableBidirectionalGraph<int, Edge<int>> graph)
+            IMutableBidirectionalGraph<int, Edge<int>> graph)
         {
             TryGetInEdges_Test(
                 graph,
@@ -626,8 +617,8 @@ namespace QuikGraph.Tests.Structures
         }
 
         protected static void TryGetInEdges_ImmutableGraph_Test(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
-            [NotNull, InstantHandle] Func<IBidirectionalIncidenceGraph<int, Edge<int>>> createGraph)
+            IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            Func<IBidirectionalIncidenceGraph<int, Edge<int>>> createGraph)
         {
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 2);
@@ -637,23 +628,23 @@ namespace QuikGraph.Tests.Structures
             var edge6 = new Edge<int>(3, 1);
             var edge7 = new Edge<int>(5, 3);
 
-            wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6, edge7 });
+            wrappedGraph.AddVerticesAndEdgeRange([edge1, edge2, edge3, edge4, edge5, edge6, edge7]);
             IBidirectionalIncidenceGraph<int, Edge<int>> graph = createGraph();
 
-            Assert.IsFalse(graph.TryGetInEdges(0, out _));
+            Assert.That(graph.TryGetInEdges(0, out _), Is.False);
 
-            Assert.IsTrue(graph.TryGetInEdges(5, out IEnumerable<Edge<int>> gotEdges));
+            Assert.That(graph.TryGetInEdges(5, out IEnumerable<Edge<int>> gotEdges), Is.True);
             CollectionAssert.IsEmpty(gotEdges);
 
-            Assert.IsTrue(graph.TryGetInEdges(4, out gotEdges));
+            Assert.That(graph.TryGetInEdges(4, out gotEdges), Is.True);
             CollectionAssert.AreEqual(new[] { edge5 }, gotEdges);
 
-            Assert.IsTrue(graph.TryGetInEdges(2, out gotEdges));
+            Assert.That(graph.TryGetInEdges(2, out gotEdges), Is.True);
             CollectionAssert.AreEqual(new[] { edge1, edge2, edge4 }, gotEdges);
         }
 
         protected static void TryGetInEdges_ImmutableVertices_Test(
-            [NotNull] BidirectionalMatrixGraph<Edge<int>> graph)
+            BidirectionalMatrixGraph<Edge<int>> graph)
         {
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 3);
@@ -662,23 +653,23 @@ namespace QuikGraph.Tests.Structures
             var edge5 = new Edge<int>(3, 1);
             var edge6 = new Edge<int>(5, 3);
 
-            graph.AddEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
+            graph.AddEdgeRange([edge1, edge2, edge3, edge4, edge5, edge6]);
 
-            Assert.IsFalse(graph.TryGetInEdges(6, out _));
+            Assert.That(graph.TryGetInEdges(6, out _), Is.False);
 
-            Assert.IsTrue(graph.TryGetInEdges(5, out IEnumerable<Edge<int>> gotEdges));
+            Assert.That(graph.TryGetInEdges(5, out IEnumerable<Edge<int>> gotEdges), Is.True);
             CollectionAssert.IsEmpty(gotEdges);
 
-            Assert.IsTrue(graph.TryGetInEdges(4, out gotEdges));
+            Assert.That(graph.TryGetInEdges(4, out gotEdges), Is.True);
             CollectionAssert.AreEqual(new[] { edge4 }, gotEdges);
 
-            Assert.IsTrue(graph.TryGetInEdges(2, out gotEdges));
+            Assert.That(graph.TryGetInEdges(2, out gotEdges), Is.True);
             CollectionAssert.AreEqual(new[] { edge1, edge3 }, gotEdges);
         }
 
         protected static void TryGetInEdges_ImmutableGraph_ReversedTest(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
-            [NotNull, InstantHandle] Func<IBidirectionalIncidenceGraph<int, SReversedEdge<int, Edge<int>>>> createGraph)
+            IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+            Func<IBidirectionalIncidenceGraph<int, SReversedEdge<int, Edge<int>>>> createGraph)
         {
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 2);
@@ -688,23 +679,23 @@ namespace QuikGraph.Tests.Structures
             var edge6 = new Edge<int>(3, 1);
             var edge7 = new Edge<int>(4, 5);
 
-            wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6, edge7 });
+            wrappedGraph.AddVerticesAndEdgeRange([edge1, edge2, edge3, edge4, edge5, edge6, edge7]);
             IBidirectionalIncidenceGraph<int, SReversedEdge<int, Edge<int>>> graph = createGraph();
 
-            Assert.IsFalse(graph.TryGetInEdges(0, out _));
+            Assert.That(graph.TryGetInEdges(0, out _), Is.False);
 
-            Assert.IsTrue(graph.TryGetInEdges(5, out IEnumerable<SReversedEdge<int, Edge<int>>> gotEdges));
+            Assert.That(graph.TryGetInEdges(5, out IEnumerable<SReversedEdge<int, Edge<int>>> gotEdges), Is.True);
             CollectionAssert.IsEmpty(gotEdges);
 
-            Assert.IsTrue(graph.TryGetInEdges(4, out gotEdges));
-            AssertSameReversedEdges(new[] { edge7 }, gotEdges);
+            Assert.That(graph.TryGetInEdges(4, out gotEdges), Is.True);
+            AssertSameReversedEdges([edge7], gotEdges);
 
-            Assert.IsTrue(graph.TryGetInEdges(1, out gotEdges));
-            AssertSameReversedEdges(new[] { edge1, edge2, edge3, edge4 }, gotEdges);
+            Assert.That(graph.TryGetInEdges(1, out gotEdges), Is.True);
+            AssertSameReversedEdges([edge1, edge2, edge3, edge4], gotEdges);
         }
 
         protected static void TryGetInEdges_Throws_Test<TVertex, TEdge>(
-            [NotNull] IBidirectionalIncidenceGraph<TVertex, TEdge> graph)
+            IBidirectionalIncidenceGraph<TVertex, TEdge> graph)
             where TVertex : class
             where TEdge : IEdge<TVertex>
         {

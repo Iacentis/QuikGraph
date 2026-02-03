@@ -1,8 +1,8 @@
-#if REQUIRE_STRING_COMPATIBILITY
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using JetBrains.Annotations;
+
 
 namespace QuikGraph.Utils
 {
@@ -19,8 +19,7 @@ namespace QuikGraph.Utils
         /// <typeparam name="T">Element type.</typeparam>
         /// <returns>String composed of elements from <paramref name="values"/> separated by <paramref name="separator"/>.</returns>
         [Pure]
-        [NotNull]
-        public static string Join<T>([NotNull] string separator, [NotNull, ItemNotNull] IEnumerable<T> values)
+        public static string Join<T>(string separator, IEnumerable<T> values)
         {
             Debug.Assert(separator != null);
             Debug.Assert(values != null);
@@ -40,4 +39,3 @@ namespace QuikGraph.Utils
         }
     }
 }
-#endif

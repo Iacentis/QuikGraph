@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using QuikGraph.Algorithms.ConnectedComponents;
 using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
 
@@ -15,32 +15,32 @@ namespace QuikGraph.Tests.Algorithms.ConnectedComponents
     {
         #region Test helpers
 
-        public void RunWeaklyConnectedComponentsAndCheck<TVertex, TEdge>([NotNull] IVertexListGraph<TVertex, TEdge> graph)
+        public void RunWeaklyConnectedComponentsAndCheck<TVertex, TEdge>( IVertexListGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
             var algorithm = new WeaklyConnectedComponentsAlgorithm<TVertex, TEdge>(graph);
             algorithm.Compute();
 
-            Assert.AreEqual(graph.VertexCount, algorithm.Components.Count);
+            Assert.That(graph.VertexCount,Is.EqualTo(algorithm.Components.Count));
             if (graph.VertexCount == 0)
             {
-                Assert.IsTrue(algorithm.ComponentCount == 0);
+                Assert.That(algorithm.ComponentCount == 0,Is.True);
                 return;
             }
 
-            Assert.Positive(algorithm.ComponentCount);
-            Assert.LessOrEqual(algorithm.ComponentCount, graph.VertexCount);
+            Assert.That(algorithm.ComponentCount, Is.Positive);
+            Assert.That(algorithm.ComponentCount, Is.AtMost(graph.VertexCount));
             foreach (KeyValuePair<TVertex, int> pair in algorithm.Components)
             {
-                Assert.GreaterOrEqual(pair.Value, 0);
-                Assert.IsTrue(pair.Value < algorithm.ComponentCount, $"{pair.Value} < {algorithm.ComponentCount}");
+                Assert.That(pair.Value, Is.GreaterThanOrEqualTo(0));
+                Assert.That(pair.Value < algorithm.ComponentCount, Is.True, $"{pair.Value} < {algorithm.ComponentCount}");
             }
 
             foreach (TVertex vertex in graph.Vertices)
             {
                 foreach (TEdge edge in graph.OutEdges(vertex))
                 {
-                    Assert.AreEqual(algorithm.Components[edge.Source], algorithm.Components[edge.Target]);
+                    Assert.That(algorithm.Components[edge.Source],Is.EqualTo(algorithm.Components[edge.Target]));
                 }
             }
         }
@@ -69,7 +69,7 @@ namespace QuikGraph.Tests.Algorithms.ConnectedComponents
                 where TEdge : IEdge<TVertex>
             {
                 AssertAlgorithmState(algo, g);
-                Assert.AreEqual(0, algo.ComponentCount);
+                Assert.That(0,Is.EqualTo(algo.ComponentCount));
                 CollectionAssert.IsEmpty(algo.Components);
                 CollectionAssert.IsEmpty(algo.Graphs);
             }
@@ -109,19 +109,18 @@ namespace QuikGraph.Tests.Algorithms.ConnectedComponents
         public void OneComponent()
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[]
-            {
+            graph.AddVerticesAndEdgeRange([
                 new Edge<int>(1, 2),
                 new Edge<int>(1, 3),
                 new Edge<int>(2, 3),
                 new Edge<int>(4, 2),
                 new Edge<int>(4, 3)
-            });
+            ]);
 
             var algorithm = new WeaklyConnectedComponentsAlgorithm<int, Edge<int>>(graph);
             algorithm.Compute();
 
-            Assert.AreEqual(1, algorithm.ComponentCount);
+            Assert.That(1,Is.EqualTo(algorithm.ComponentCount));
             CollectionAssert.AreEquivalent(
                 new Dictionary<int, int>
                 {
@@ -131,7 +130,7 @@ namespace QuikGraph.Tests.Algorithms.ConnectedComponents
                     [4] = 0
                 },
                 algorithm.Components);
-            Assert.AreEqual(1, algorithm.Graphs.Length);
+            Assert.That(1,Is.EqualTo(algorithm.Graphs.Length));
             CollectionAssert.AreEquivalent(
                 new[] { 1, 2, 3, 4 },
                 algorithm.Graphs[0].Vertices);
@@ -141,8 +140,7 @@ namespace QuikGraph.Tests.Algorithms.ConnectedComponents
         public void TwoComponents()
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[]
-            {
+            graph.AddVerticesAndEdgeRange([
                 new Edge<int>(1, 2),
                 new Edge<int>(1, 3),
                 new Edge<int>(2, 3),
@@ -152,12 +150,12 @@ namespace QuikGraph.Tests.Algorithms.ConnectedComponents
                 new Edge<int>(5, 6),
                 new Edge<int>(5, 7),
                 new Edge<int>(7, 6)
-            });
+            ]);
 
             var algorithm = new WeaklyConnectedComponentsAlgorithm<int, Edge<int>>(graph);
             algorithm.Compute();
 
-            Assert.AreEqual(2, algorithm.ComponentCount);
+            Assert.That(2,Is.EqualTo(algorithm.ComponentCount));
             CollectionAssert.AreEquivalent(
                 new Dictionary<int, int>
                 {
@@ -170,7 +168,7 @@ namespace QuikGraph.Tests.Algorithms.ConnectedComponents
                     [7] = 1
                 },
                 algorithm.Components);
-            Assert.AreEqual(2, algorithm.Graphs.Length);
+            Assert.That(2,Is.EqualTo(algorithm.Graphs.Length));
             CollectionAssert.AreEquivalent(
                 new[] { 1, 2, 3, 4  },
                 algorithm.Graphs[0].Vertices);
@@ -183,8 +181,7 @@ namespace QuikGraph.Tests.Algorithms.ConnectedComponents
         public void MultipleComponents()
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[]
-            {
+            graph.AddVerticesAndEdgeRange([
                 new Edge<int>(1, 2),
                 new Edge<int>(1, 3),
                 new Edge<int>(2, 3),
@@ -196,13 +193,13 @@ namespace QuikGraph.Tests.Algorithms.ConnectedComponents
                 new Edge<int>(7, 6),
 
                 new Edge<int>(8, 9)
-            });
+            ]);
             graph.AddVertex(10);
 
             var algorithm = new WeaklyConnectedComponentsAlgorithm<int, Edge<int>>(graph);
             algorithm.Compute();
 
-            Assert.AreEqual(4, algorithm.ComponentCount);
+            Assert.That(4,Is.EqualTo(algorithm.ComponentCount));
             CollectionAssert.AreEquivalent(
                 new Dictionary<int, int>
                 {
@@ -218,7 +215,7 @@ namespace QuikGraph.Tests.Algorithms.ConnectedComponents
                     [10] = 3
                 },
                 algorithm.Components);
-            Assert.AreEqual(4, algorithm.Graphs.Length);
+            Assert.That(4,Is.EqualTo(algorithm.Graphs.Length));
             CollectionAssert.AreEquivalent(
                 new[] { 1, 2, 3, 4 },
                 algorithm.Graphs[0].Vertices);

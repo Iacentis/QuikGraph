@@ -1,6 +1,4 @@
-﻿#if SUPPORTS_SERIALIZATION
-using System;
-using JetBrains.Annotations;
+﻿using System;
 using NUnit.Framework;
 using static QuikGraph.Tests.SerializationTestHelpers;
 
@@ -13,19 +11,19 @@ namespace QuikGraph.Tests.Exceptions
     internal sealed class ExceptionTests
     {
         private static void ExceptionConstructorTest<TException>(
-            [NotNull, InstantHandle] Func<string, Exception, TException> createException)
+            Func<string, Exception, TException> createException)
             where TException : Exception
         {
             const string message = "Test exception message.";
             var innerException = new Exception("Inner");
 
             Exception exception = createException(message, innerException);
-            Assert.AreEqual(message, exception.Message);
-            Assert.AreSame(innerException, exception.InnerException);
-            
+            Assert.That(message, Is.EqualTo(exception.Message));
+            Assert.That(innerException, Is.SameAs(exception.InnerException));
+
             exception = createException(message, null);
-            Assert.AreEqual(message, exception.Message);
-            Assert.IsNull(exception.InnerException);
+            Assert.That(message, Is.EqualTo(exception.Message));
+            Assert.That(exception.InnerException, Is.Null);
         }
 
         [Test]
@@ -41,8 +39,9 @@ namespace QuikGraph.Tests.Exceptions
             ExceptionConstructorTest((m, e) => new VertexNotFoundException(m, e));
         }
 
+        [Obsolete("Obsolete")]
         private static void ExceptionSerializationTest<TException>(
-            [NotNull, InstantHandle] Func<TException> createException)
+            Func<TException> createException)
             where TException : Exception
         {
             Exception exception = createException();
@@ -53,11 +52,12 @@ namespace QuikGraph.Tests.Exceptions
             Exception deserializedException = SerializeAndDeserialize(exception);
 
             // Double-check that the exception message and stack trace (owned by the base Exception) are preserved
-            Assert.AreNotSame(exception, deserializedException);
-            Assert.AreEqual(exceptionToString, deserializedException.ToString());
+            Assert.That(exception, Is.Not.SameAs(deserializedException));
+            Assert.That(exceptionToString, Is.EqualTo(deserializedException.ToString()));
         }
 
         [Test]
+        [Obsolete("Obsolete")]
         public void ExceptionsSerialization()
         {
             ExceptionSerializationTest(() => new NegativeCapacityException());
@@ -71,4 +71,3 @@ namespace QuikGraph.Tests.Exceptions
         }
     }
 }
-#endif

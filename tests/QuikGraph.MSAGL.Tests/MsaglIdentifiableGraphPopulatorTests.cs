@@ -29,7 +29,7 @@ namespace QuikGraph.MSAGL.Tests
                 where TEdge : IEdge<TVertex>
             {
                 AssertAlgorithmState(p, g);
-                Assert.IsNull(p.MsaglGraph);
+                Assert.That(p.MsaglGraph,Is.Null);
             }
 
             #endregion
@@ -69,19 +69,18 @@ namespace QuikGraph.MSAGL.Tests
         public void VertexId()
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[]
-            {
+            graph.AddVerticesAndEdgeRange([
                 new Edge<int>(1, 2),
                 new Edge<int>(2, 3)
-            });
-            graph.AddVertexRange(new[] { 5, 6 });
+            ]);
+            graph.AddVertexRange([5, 6]);
 
             var populator = new MsaglIdentifiableGraphPopulator<int, Edge<int>>(graph, vertex => $"MyTestId{vertex}");
             populator.Compute();
 
             // Check vertices has been well formatted
-            Assert.IsNull(populator.MsaglGraph.FindNode("MyTestId0"));
-            Assert.IsNotNull(populator.MsaglGraph.FindNode("MyTestId1"));
+            Assert.That(populator.MsaglGraph.FindNode("MyTestId0"),Is.Null);
+            Assert.That(populator.MsaglGraph.FindNode("MyTestId1"),Is.Not.Null);
         }
     }
 }

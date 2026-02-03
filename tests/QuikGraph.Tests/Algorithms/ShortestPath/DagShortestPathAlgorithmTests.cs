@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Diagnostics.Contracts;
 using System.Linq;
-using JetBrains.Annotations;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using QuikGraph.Algorithms;
 using QuikGraph.Algorithms.Observers;
 using QuikGraph.Algorithms.ShortestPath;
@@ -18,8 +19,8 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         #region Test helpers
 
         private static void DagAlgorithm_Test<TVertex, TEdge>(
-            [NotNull] IVertexListGraph<TVertex, TEdge> graph,
-            [NotNull] IDistanceRelaxer relaxer)
+            IVertexListGraph<TVertex, TEdge> graph,
+            IDistanceRelaxer relaxer)
             where TEdge : IEdge<TVertex>
         {
             // Is this a dag?
@@ -39,23 +40,23 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
             }
         }
 
-        private static void DagShortestPath_Test<TVertex, TEdge>([NotNull] IVertexListGraph<TVertex, TEdge> graph)
+        private static void DagShortestPath_Test<TVertex, TEdge>(IVertexListGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
             DagAlgorithm_Test(graph, DistanceRelaxers.ShortestDistance);
         }
 
         private static void DagCriticalPath_Test<TVertex, TEdge>(
-            [NotNull] IVertexListGraph<TVertex, TEdge> graph)
+            IVertexListGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
             DagAlgorithm_Test(graph, DistanceRelaxers.CriticalDistance);
         }
 
         private static void RunDagShortestPathAndCheck<TVertex, TEdge>(
-            [NotNull] IVertexListGraph<TVertex, TEdge> graph,
-            [NotNull] TVertex root,
-            [NotNull] IDistanceRelaxer relaxer)
+            IVertexListGraph<TVertex, TEdge> graph,
+            TVertex root,
+            IDistanceRelaxer relaxer)
             where TEdge : IEdge<TVertex>
         {
             var algorithm = new DagShortestPathAlgorithm<TVertex, TEdge>(
@@ -65,48 +66,48 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
 
             algorithm.InitializeVertex += vertex =>
             {
-                Assert.AreEqual(GraphColor.White, algorithm.VerticesColors[vertex]);
+                Assert.That(GraphColor.White, Is.EqualTo(algorithm.VerticesColors[vertex]));
             };
 
             algorithm.DiscoverVertex += vertex =>
             {
-                Assert.AreEqual(GraphColor.Gray, algorithm.VerticesColors[vertex]);
+                Assert.That(GraphColor.Gray, Is.EqualTo(algorithm.VerticesColors[vertex]));
             };
 
             algorithm.StartVertex += vertex =>
             {
-                Assert.AreNotEqual(GraphColor.Black, algorithm.VerticesColors[vertex]);
+                Assert.That(GraphColor.Black, Is.Not.EqualTo(algorithm.VerticesColors[vertex]));
             };
 
             algorithm.ExamineVertex += vertex =>
             {
-                Assert.AreEqual(GraphColor.Gray, algorithm.VerticesColors[vertex]);
+                Assert.That(GraphColor.Gray, Is.EqualTo(algorithm.VerticesColors[vertex]));
             };
 
             algorithm.FinishVertex += vertex =>
             {
-                Assert.AreEqual(GraphColor.Black, algorithm.VerticesColors[vertex]);
+                Assert.That(GraphColor.Black, Is.EqualTo(algorithm.VerticesColors[vertex]));
             };
 
             var predecessors = new VertexPredecessorRecorderObserver<TVertex, TEdge>();
             using (predecessors.Attach(algorithm))
                 algorithm.Compute(root);
 
-            Assert.AreEqual(graph.VertexCount, algorithm.VerticesColors.Count);
+            Assert.That(graph.VertexCount, Is.EqualTo(algorithm.VerticesColors.Count));
             foreach (TVertex vertex in graph.Vertices)
             {
-                Assert.AreEqual(GraphColor.Black, algorithm.VerticesColors[vertex]);
+                Assert.That(GraphColor.Black, Is.EqualTo(algorithm.VerticesColors[vertex]));
             }
 
             CollectionAssert.IsNotEmpty(algorithm.GetDistances());
-            Assert.AreEqual(graph.VertexCount, algorithm.GetDistances().Count());
+            Assert.That(graph.VertexCount, Is.EqualTo(algorithm.GetDistances().Count()));
 
             Verify(algorithm, predecessors);
         }
 
         private static void Verify<TVertex, TEdge>(
-            [NotNull] DagShortestPathAlgorithm<TVertex, TEdge> algorithm,
-            [NotNull] VertexPredecessorRecorderObserver<TVertex, TEdge> predecessors)
+            DagShortestPathAlgorithm<TVertex, TEdge> algorithm,
+            VertexPredecessorRecorderObserver<TVertex, TEdge> predecessors)
             where TEdge : IEdge<TVertex>
         {
             // Verify the result
@@ -116,10 +117,10 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
                     continue;
                 if (predecessor.Source.Equals(vertex))
                     continue;
-                Assert.AreEqual(
+                Assert.That(
                     algorithm.TryGetDistance(vertex, out double currentDistance),
-                    algorithm.TryGetDistance(predecessor.Source, out double predecessorDistance));
-                Assert.AreEqual(predecessorDistance + 1, currentDistance);
+                    Is.EqualTo(algorithm.TryGetDistance(predecessor.Source, out double predecessorDistance)));
+                Assert.That(predecessorDistance + 1, Is.EqualTo(currentDistance));
             }
         }
 
@@ -137,7 +138,8 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
             algorithm = new DagShortestPathAlgorithm<int, Edge<int>>(graph, Weights, DistanceRelaxers.CriticalDistance);
             AssertAlgorithmProperties(algorithm, graph, Weights, DistanceRelaxers.CriticalDistance);
 
-            algorithm = new DagShortestPathAlgorithm<int, Edge<int>>(null, graph, Weights, DistanceRelaxers.CriticalDistance);
+            algorithm = new DagShortestPathAlgorithm<int, Edge<int>>(null, graph, Weights,
+                DistanceRelaxers.CriticalDistance);
             AssertAlgorithmProperties(algorithm, graph, Weights, DistanceRelaxers.CriticalDistance);
 
             #region Local function
@@ -150,16 +152,16 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
                 where TEdge : IEdge<TVertex>
             {
                 AssertAlgorithmState(algo, g);
-                Assert.IsNull(algo.VerticesColors);
+                Assert.That(algo.VerticesColors, Is.Null);
                 if (eWeights is null)
-                    Assert.IsNotNull(algo.Weights);
+                    Assert.That(algo.Weights, Is.Not.Null);
                 else
-                    Assert.AreSame(eWeights, algo.Weights);
+                    Assert.That(eWeights, Is.SameAs(algo.Weights));
                 CollectionAssert.IsEmpty(algo.GetDistances());
                 if (relaxer is null)
-                    Assert.IsNotNull(algo.DistanceRelaxer);
+                    Assert.That(algo.DistanceRelaxer, Is.Not.Null);
                 else
-                    Assert.AreSame(relaxer, algo.DistanceRelaxer);
+                    Assert.That(relaxer, Is.SameAs(algo.DistanceRelaxer));
             }
 
             #endregion
@@ -174,42 +176,37 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
 
             Func<Edge<int>, double> Weights = _ => 1.0;
 
-            Assert.Throws<ArgumentNullException>(
-                () => new DagShortestPathAlgorithm<int, Edge<int>>(null, Weights));
-            Assert.Throws<ArgumentNullException>(
-                () => new DagShortestPathAlgorithm<int, Edge<int>>(graph, null));
-            Assert.Throws<ArgumentNullException>(
-                () => new DagShortestPathAlgorithm<int, Edge<int>>(null, null));
+            Assert.Throws<ArgumentNullException>(() => new DagShortestPathAlgorithm<int, Edge<int>>(null, Weights));
+            Assert.Throws<ArgumentNullException>(() => new DagShortestPathAlgorithm<int, Edge<int>>(graph, null));
+            Assert.Throws<ArgumentNullException>(() => new DagShortestPathAlgorithm<int, Edge<int>>(null, null));
 
-            Assert.Throws<ArgumentNullException>(
-                () => new DagShortestPathAlgorithm<int, Edge<int>>(null, Weights, DistanceRelaxers.CriticalDistance));
-            Assert.Throws<ArgumentNullException>(
-                () => new DagShortestPathAlgorithm<int, Edge<int>>(graph, null, DistanceRelaxers.CriticalDistance));
-            Assert.Throws<ArgumentNullException>(
-                () => new DagShortestPathAlgorithm<int, Edge<int>>(graph, Weights, null));
-            Assert.Throws<ArgumentNullException>(
-                () => new DagShortestPathAlgorithm<int, Edge<int>>(null, null, DistanceRelaxers.CriticalDistance));
-            Assert.Throws<ArgumentNullException>(
-                () => new DagShortestPathAlgorithm<int, Edge<int>>(null, Weights, null));
-            Assert.Throws<ArgumentNullException>(
-                () => new DagShortestPathAlgorithm<int, Edge<int>>(graph, null, null));
-            Assert.Throws<ArgumentNullException>(
-                () => new DagShortestPathAlgorithm<int, Edge<int>>(null, null, null));
+            Assert.Throws<ArgumentNullException>(() =>
+                new DagShortestPathAlgorithm<int, Edge<int>>(null, Weights, DistanceRelaxers.CriticalDistance));
+            Assert.Throws<ArgumentNullException>(() =>
+                new DagShortestPathAlgorithm<int, Edge<int>>(graph, null, DistanceRelaxers.CriticalDistance));
+            Assert.Throws<ArgumentNullException>(() =>
+                new DagShortestPathAlgorithm<int, Edge<int>>(graph, Weights, null));
+            Assert.Throws<ArgumentNullException>(() =>
+                new DagShortestPathAlgorithm<int, Edge<int>>(null, null, DistanceRelaxers.CriticalDistance));
+            Assert.Throws<ArgumentNullException>(() =>
+                new DagShortestPathAlgorithm<int, Edge<int>>(null, Weights, null));
+            Assert.Throws<ArgumentNullException>(() => new DagShortestPathAlgorithm<int, Edge<int>>(graph, null, null));
+            Assert.Throws<ArgumentNullException>(() => new DagShortestPathAlgorithm<int, Edge<int>>(null, null, null));
 
-            Assert.Throws<ArgumentNullException>(
-                () => new DagShortestPathAlgorithm<int, Edge<int>>(null, null, Weights, DistanceRelaxers.CriticalDistance));
-            Assert.Throws<ArgumentNullException>(
-                () => new DagShortestPathAlgorithm<int, Edge<int>>(null, graph, null, DistanceRelaxers.CriticalDistance));
-            Assert.Throws<ArgumentNullException>(
-                () => new DagShortestPathAlgorithm<int, Edge<int>>(null, graph, Weights, null));
-            Assert.Throws<ArgumentNullException>(
-                () => new DagShortestPathAlgorithm<int, Edge<int>>(null, null, null, DistanceRelaxers.CriticalDistance));
-            Assert.Throws<ArgumentNullException>(
-                () => new DagShortestPathAlgorithm<int, Edge<int>>(null, null, Weights, null));
-            Assert.Throws<ArgumentNullException>(
-                () => new DagShortestPathAlgorithm<int, Edge<int>>(null, graph, null, null));
-            Assert.Throws<ArgumentNullException>(
-                () => new DagShortestPathAlgorithm<int, Edge<int>>(null, null, null, null));
+            Assert.Throws<ArgumentNullException>(() =>
+                new DagShortestPathAlgorithm<int, Edge<int>>(null, null, Weights, DistanceRelaxers.CriticalDistance));
+            Assert.Throws<ArgumentNullException>(() =>
+                new DagShortestPathAlgorithm<int, Edge<int>>(null, graph, null, DistanceRelaxers.CriticalDistance));
+            Assert.Throws<ArgumentNullException>(() =>
+                new DagShortestPathAlgorithm<int, Edge<int>>(null, graph, Weights, null));
+            Assert.Throws<ArgumentNullException>(() =>
+                new DagShortestPathAlgorithm<int, Edge<int>>(null, null, null, DistanceRelaxers.CriticalDistance));
+            Assert.Throws<ArgumentNullException>(() =>
+                new DagShortestPathAlgorithm<int, Edge<int>>(null, null, Weights, null));
+            Assert.Throws<ArgumentNullException>(() =>
+                new DagShortestPathAlgorithm<int, Edge<int>>(null, graph, null, null));
+            Assert.Throws<ArgumentNullException>(() =>
+                new DagShortestPathAlgorithm<int, Edge<int>>(null, null, null, null));
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }
@@ -252,8 +249,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         public void ComputeWithoutRoot_Throws()
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            ComputeWithoutRoot_Throws_Test(
-                () => new DagShortestPathAlgorithm<int, Edge<int>>(graph, _ => 1.0));
+            ComputeWithoutRoot_Throws_Test(() => new DagShortestPathAlgorithm<int, Edge<int>>(graph, _ => 1.0));
         }
 
         [Test]
@@ -269,8 +265,8 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         public void ComputeWithRoot_Throws()
         {
             var graph = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
-            ComputeWithRoot_Throws_Test(
-                () => new DagShortestPathAlgorithm<TestVertex, Edge<TestVertex>>(graph, _ => 1.0));
+            ComputeWithRoot_Throws_Test(() =>
+                new DagShortestPathAlgorithm<TestVertex, Edge<TestVertex>>(graph, _ => 1.0));
         }
 
         #endregion
@@ -284,8 +280,8 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
             var algorithm = new DagShortestPathAlgorithm<int, Edge<int>>(graph, _ => 1.0);
             algorithm.Compute(1);
 
-            Assert.AreEqual(GraphColor.Black, algorithm.GetVertexColor(1));
-            Assert.AreEqual(GraphColor.Black, algorithm.GetVertexColor(2));
+            Assert.That(GraphColor.Black, Is.EqualTo(algorithm.GetVertexColor(1)));
+            Assert.That(GraphColor.Black, Is.EqualTo(algorithm.GetVertexColor(2)));
         }
 
         [Test]
@@ -300,9 +296,8 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         }
 
         [Pure]
-        [NotNull]
         public static DagShortestPathAlgorithm<T, Edge<T>> CreateAlgorithmAndMaybeDoComputation<T>(
-            [NotNull] ContractScenario<T> scenario)
+            ContractScenario<T> scenario)
         {
             var graph = new AdjacencyGraph<T, Edge<T>>();
             graph.AddVerticesAndEdgeRange(scenario.EdgesInGraph.Select(e => new Edge<T>(e.Source, e.Target)));

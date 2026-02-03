@@ -1,4 +1,3 @@
-using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Algorithms;
 
@@ -12,15 +11,15 @@ namespace QuikGraph.Tests.Algorithms
         #region Test helpers
 
         public static void AssertAlgorithmState<TGraph>(
-            [NotNull] AlgorithmBase<TGraph> algorithm,
-            [NotNull] TGraph treatedGraph,
+             AlgorithmBase<TGraph> algorithm,
+             TGraph treatedGraph,
             ComputationState state = ComputationState.NotRunning)
         {
-            Assert.IsNotNull(treatedGraph);
-            Assert.AreSame(treatedGraph, algorithm.VisitedGraph);
-            Assert.IsNotNull(algorithm.Services);
-            Assert.IsNotNull(algorithm.SyncRoot);
-            Assert.AreEqual(state, algorithm.State);
+            Assert.That(treatedGraph,Is.Not.Null);
+            Assert.That(treatedGraph,Is.SameAs(algorithm.VisitedGraph));
+            Assert.That(algorithm.Services,Is.Not.Null);
+            Assert.That(algorithm.SyncRoot,Is.Not.Null);
+            Assert.That(state,Is.EqualTo(algorithm.State));
         }
 
         #endregion

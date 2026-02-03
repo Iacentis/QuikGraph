@@ -1,17 +1,17 @@
 ﻿using System;
-#if SUPPORTS_SERIALIZATION
+
 using System.Runtime.Serialization;
-#endif
-using JetBrains.Annotations;
+
+
 
 namespace QuikGraph
 {
     /// <summary>
     /// Exception raised when trying to use a vertex that is not inside the manipulated graph.
     /// </summary>
-#if SUPPORTS_SERIALIZATION
+
     [Serializable]
-#endif
+
     public class VertexNotFoundException : QuikGraphException
     {
         /// <summary>
@@ -25,19 +25,20 @@ namespace QuikGraph
         /// <summary>
         /// Initializes a new instance of <see cref="VertexNotFoundException"/> class.
         /// </summary>
-        public VertexNotFoundException([NotNull] string message, [CanBeNull] Exception innerException = null)
+        public VertexNotFoundException( string message,  Exception innerException = null)
             : base(message, innerException)
         {
         }
 
-#if SUPPORTS_SERIALIZATION
+
         /// <summary>
         /// Constructor used during runtime serialization.
         /// </summary>
+        [Obsolete("Obsolete")]
         protected VertexNotFoundException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }
-#endif
+
     }
 }

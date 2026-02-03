@@ -47,7 +47,8 @@ namespace QuikGraph.Tests.Algorithms.MinimumSpanningTree
         }
 
         [Test]
-        public void Kruskal()
+        public void
+            Kruskal()
         {
             // Kruskal 10, 50, 100, 200, 300, 400
             UndirectedGraph<string, TaggedEdge<string, double>> graph = GetUndirectedCompleteGraph(10);

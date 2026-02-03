@@ -32,8 +32,8 @@ namespace JetBrains.Annotations
     /// so the check for <c>null</c> is necessary before its usage.
     /// </summary>
     /// <example><code>
-    /// [CanBeNull] object Test() => null;
-    /// 
+    ///  object Test() => null;
+    ///
     /// void UseTest() {
     ///   var p = Test();
     ///   var s = p.ToString(); // Warning: Possible 'System.NullReferenceException'
@@ -50,7 +50,7 @@ namespace JetBrains.Annotations
     /// Indicates that the value of the marked element could never be <c>null</c>.
     /// </summary>
     /// <example><code>
-    /// [NotNull] object Foo() {
+    ///  object Foo() {
     ///   return null; // Warning: Possible 'null' assignment
     /// }
     /// </code></example>
@@ -120,7 +120,7 @@ namespace JetBrains.Annotations
     /// // A method that returns null if the parameter is null,
     /// // and not null if the parameter is not null
     /// [ContractAnnotation("null =&gt; null; notnull =&gt; notnull")]
-    /// public object Transform(object data) 
+    /// public object Transform(object data)
     /// </code></item>
     /// <item><code>
     /// [ContractAnnotation("=&gt; true, result: notnull; =&gt; false, result: null")]
@@ -131,16 +131,16 @@ namespace JetBrains.Annotations
     [Conditional("JETBRAINS_ANNOTATIONS")]
     internal sealed class ContractAnnotationAttribute : Attribute
     {
-        public ContractAnnotationAttribute([NotNull] string contract)
+        public ContractAnnotationAttribute( string contract)
           : this(contract, false) { }
 
-        public ContractAnnotationAttribute([NotNull] string contract, bool forceFullStates)
+        public ContractAnnotationAttribute( string contract, bool forceFullStates)
         {
             Contract = contract;
             ForceFullStates = forceFullStates;
         }
 
-        [NotNull] public string Contract { get; private set; }
+         public string Contract { get; private set; }
 
         public bool ForceFullStates { get; private set; }
     }
@@ -196,9 +196,9 @@ namespace JetBrains.Annotations
             TargetFlags = targetFlags;
         }
 
-        [UsedImplicitly] public ImplicitUseKindFlags UseKindFlags { get; private set; }
+         public ImplicitUseKindFlags UseKindFlags { get; private set; }
 
-        [UsedImplicitly] public ImplicitUseTargetFlags TargetFlags { get; private set; }
+         public ImplicitUseTargetFlags TargetFlags { get; private set; }
     }
 
 #pragma warning disable S2344
@@ -246,12 +246,12 @@ namespace JetBrains.Annotations
     {
         public PublicAPIAttribute() { }
 
-        public PublicAPIAttribute([NotNull] string comment)
+        public PublicAPIAttribute( string comment)
         {
             Comment = comment;
         }
 
-        [CanBeNull] public string Comment { get; private set; }
+         public string Comment { get; private set; }
     }
 #pragma warning restore S101
 
@@ -270,7 +270,7 @@ namespace JetBrains.Annotations
     /// </summary>
     /// <example><code>
     /// [Pure] int Multiply(int x, int y) => x * y;
-    /// 
+    ///
     /// void M() {
     ///   Multiply(123, 42); // Waring: Return value of pure method is not used
     /// }

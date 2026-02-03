@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Xml.Serialization;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph.Serialization
 {
@@ -12,9 +12,7 @@ namespace QuikGraph.Serialization
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     /// <typeparam name="TGraph">Graph type.</typeparam>
-#if SUPPORTS_SERIALIZATION
     [Serializable]
-#endif
     [XmlRoot("graph")]
     public class XmlSerializableGraph<TVertex, TEdge, TGraph>
         where TEdge : IEdge<TVertex>
@@ -33,7 +31,7 @@ namespace QuikGraph.Serialization
         /// </summary>
         /// <param name="graph">Graph to serialize.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
-        public XmlSerializableGraph([NotNull] TGraph graph)
+        public XmlSerializableGraph(TGraph graph)
         {
             if (graph == null)
                 throw new ArgumentNullException(nameof(graph));
@@ -44,7 +42,7 @@ namespace QuikGraph.Serialization
         /// <summary>
         /// Gets the graph to serialize.
         /// </summary>
-        [NotNull]
+
         public TGraph Graph { get; }
 
         private XmlVertexList _vertices;
@@ -52,7 +50,7 @@ namespace QuikGraph.Serialization
         /// <summary>
         /// Gets the vertices to serialize.
         /// </summary>
-        [NotNull, ItemNotNull]
+
         [XmlArray("vertices")]
         [XmlArrayItem("vertex")]
         public XmlVertexList Vertices
@@ -66,7 +64,7 @@ namespace QuikGraph.Serialization
         /// <summary>
         /// Gets the edges to serialize.
         /// </summary>
-        [NotNull, ItemNotNull]
+
         [XmlArray("edges")]
         [XmlArrayItem("edge")]
         public XmlEdgeList Edges
@@ -78,15 +76,17 @@ namespace QuikGraph.Serialization
         /// <summary>
         /// Represents an XML serializable list of vertices.
         /// </summary>
-#if SUPPORTS_SERIALIZATION
         [Serializable]
-#endif
         public class XmlVertexList : IEnumerable<TVertex>
         {
-            [NotNull]
             private readonly TGraph _graph;
 
-            internal XmlVertexList([NotNull] TGraph graph)
+            /// <summary>
+            ///
+            /// </summary>
+            /// <param name="graph"></param>
+            /// <exception cref="ArgumentNullException"></exception>
+            public XmlVertexList(TGraph graph)
             {
                 if (graph == null)
                     throw new ArgumentNullException(nameof(graph));
@@ -115,7 +115,7 @@ namespace QuikGraph.Serialization
             /// </summary>
             /// <param name="vertex">Vertex to add.</param>
             /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
-            public void Add([NotNull] TVertex vertex)
+            public void Add(TVertex vertex)
             {
                 if (vertex == null)
                     throw new ArgumentNullException(nameof(vertex));
@@ -127,15 +127,17 @@ namespace QuikGraph.Serialization
         /// <summary>
         /// Represents an XML serializable list of edge.
         /// </summary>
-#if SUPPORTS_SERIALIZATION
         [Serializable]
-#endif
         public class XmlEdgeList : IEnumerable<TEdge>
         {
-            [NotNull]
             private readonly TGraph _graph;
 
-            internal XmlEdgeList([NotNull] TGraph graph)
+            /// <summary>
+            ///
+            /// </summary>
+            /// <param name="graph"></param>
+            /// <exception cref="ArgumentNullException"></exception>
+            public XmlEdgeList(TGraph graph)
             {
                 if (graph == null)
                     throw new ArgumentNullException(nameof(graph));
@@ -164,7 +166,7 @@ namespace QuikGraph.Serialization
             /// </summary>
             /// <param name="edge">Edge to add.</param>
             /// <exception cref="T:System.ArgumentNullException"><paramref name="edge"/> is <see langword="null"/>.</exception>
-            public void Add([NotNull] TEdge edge)
+            public void Add(TEdge edge)
             {
                 if (edge == null)
                     throw new ArgumentNullException(nameof(edge));

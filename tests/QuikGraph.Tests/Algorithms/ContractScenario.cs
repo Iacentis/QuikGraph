@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph.Tests.Algorithms
 {
@@ -12,13 +12,13 @@ namespace QuikGraph.Tests.Algorithms
         /// Edges in the graph. These should be converted to compatible edges in the constructor for the graph
         /// and both edges and vertices should be added.
         /// </summary>
-        [NotNull, ItemNotNull]
+
         public IEnumerable<Edge<TVertex>> EdgesInGraph { get; set; } = new Edge<TVertex>[0];
 
         /// <summary>
         /// Vertices not connected to any other vertices.
         /// </summary>
-        [NotNull]
+
         public IEnumerable<TVertex> SingleVerticesInGraph { get; set; } = new TVertex[0];
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace QuikGraph.Tests.Algorithms
         /// <summary>
         /// Vertices expected to be accessible from the root, not including the root itself.
         /// </summary>
-        [NotNull]
+
         public IEnumerable<TVertex> AccessibleVerticesFromRoot { get; set; } = new TVertex[0];
 
         /// <summary>

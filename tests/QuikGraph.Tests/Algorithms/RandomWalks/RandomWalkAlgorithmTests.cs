@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using QuikGraph.Algorithms.Observers;
 using QuikGraph.Algorithms.RandomWalks;
 using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
@@ -18,7 +18,7 @@ namespace QuikGraph.Tests.Algorithms.RandomWalks
         #region Test helpers
 
         private static void RunRandomWalkAndCheck<TVertex, TEdge>(
-            [NotNull] IVertexListGraph<TVertex, TEdge> graph)
+            IVertexListGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
             if (graph.VertexCount == 0)
@@ -32,20 +32,20 @@ namespace QuikGraph.Tests.Algorithms.RandomWalks
                 var encounteredEdges1 = new List<TEdge>();
                 walker1.StartVertex += vertex =>
                 {
-                    Assert.IsFalse(calledStart1);
+                    Assert.That(calledStart1, Is.False);
                     calledStart1 = true;
-                    Assert.AreEqual(root, vertex);
+                    Assert.That(root, Is.EqualTo(vertex));
                 };
                 walker1.TreeEdge += edge =>
                 {
-                    Assert.IsNotNull(edge);
+                    Assert.That(edge, Is.Not.Null);
                     encounteredEdges1.Add(edge);
                 };
                 walker1.EndVertex += vertex =>
                 {
-                    Assert.IsFalse(calledEnd1);
+                    Assert.That(calledEnd1, Is.False);
                     calledEnd1 = true;
-                    Assert.IsNotNull(vertex);
+                    Assert.That(vertex, Is.Not.Null);
                 };
 
                 RandomWalkAlgorithm<TVertex, TEdge> walker2 = CreateAlgorithm();
@@ -54,20 +54,20 @@ namespace QuikGraph.Tests.Algorithms.RandomWalks
                 var encounteredEdges2 = new List<TEdge>();
                 walker2.StartVertex += vertex =>
                 {
-                    Assert.IsFalse(calledStart2);
+                    Assert.That(calledStart2, Is.False);
                     calledStart2 = true;
-                    Assert.AreEqual(root, vertex);
+                    Assert.That(root, Is.EqualTo(vertex));
                 };
                 walker2.TreeEdge += edge =>
                 {
-                    Assert.IsNotNull(edge);
+                    Assert.That(edge, Is.Not.Null);
                     encounteredEdges2.Add(edge);
                 };
                 walker2.EndVertex += vertex =>
                 {
-                    Assert.IsFalse(calledEnd2);
+                    Assert.That(calledEnd2, Is.False);
                     calledEnd2 = true;
-                    Assert.IsNotNull(vertex);
+                    Assert.That(vertex, Is.Not.Null);
                 };
 
                 RandomWalkAlgorithm<TVertex, TEdge> walker3 = CreateAlgorithm();
@@ -76,40 +76,40 @@ namespace QuikGraph.Tests.Algorithms.RandomWalks
                 var encounteredEdges3 = new List<TEdge>();
                 walker3.StartVertex += vertex =>
                 {
-                    Assert.IsFalse(calledStart3);
+                    Assert.That(calledStart3, Is.False);
                     calledStart3 = true;
-                    Assert.AreEqual(root, vertex);
+                    Assert.That(root, Is.EqualTo(vertex));
                 };
                 walker3.TreeEdge += edge =>
                 {
-                    Assert.IsNotNull(edge);
+                    Assert.That(edge, Is.Not.Null);
                     encounteredEdges3.Add(edge);
                 };
                 walker3.EndVertex += vertex =>
                 {
-                    Assert.IsFalse(calledEnd3);
+                    Assert.That(calledEnd3, Is.False);
                     calledEnd3 = true;
-                    Assert.IsNotNull(vertex);
+                    Assert.That(vertex, Is.Not.Null);
                 };
 
                 var vis1 = new EdgeRecorderObserver<TVertex, TEdge>();
                 using (vis1.Attach(walker1))
                     walker1.Generate(root);
-                Assert.IsTrue(calledStart1);
-                Assert.IsTrue(calledEnd1);
+                Assert.That(calledStart1, Is.True);
+                Assert.That(calledEnd1, Is.True);
 
                 walker2.SetRootVertex(root);
                 var vis2 = new EdgeRecorderObserver<TVertex, TEdge>();
                 using (vis2.Attach(walker2))
                     walker2.Compute();
-                Assert.IsTrue(calledStart2);
-                Assert.IsTrue(calledEnd2);
+                Assert.That(calledStart2, Is.True);
+                Assert.That(calledEnd2, Is.True);
 
                 var vis3 = new EdgeRecorderObserver<TVertex, TEdge>();
                 using (vis3.Attach(walker3))
                     walker3.Generate(root, 100);
-                Assert.IsTrue(calledStart3);
-                Assert.IsTrue(calledEnd3);
+                Assert.That(calledStart3, Is.True);
+                Assert.That(calledEnd3, Is.True);
 
                 CollectionAssert.AreEqual(vis1.Edges, encounteredEdges1);
                 CollectionAssert.AreEqual(vis1.Edges, encounteredEdges2);
@@ -124,10 +124,7 @@ namespace QuikGraph.Tests.Algorithms.RandomWalks
             {
                 var walker = new RandomWalkAlgorithm<TVertex, TEdge>(graph)
                 {
-                    EdgeChain = new NormalizedMarkovEdgeChain<TVertex, TEdge>
-                    {
-                        Rand = new Random(123456)
-                    }
+                    EdgeChain = new NormalizedMarkovEdgeChain<TVertex, TEdge> { Rand = new Random(123456) }
                 };
 
                 return walker;
@@ -150,16 +147,10 @@ namespace QuikGraph.Tests.Algorithms.RandomWalks
             algorithm = new RandomWalkAlgorithm<int, Edge<int>>(graph, chain);
             AssertAlgorithmProperties(algorithm, graph, chain);
 
-            algorithm = new RandomWalkAlgorithm<int, Edge<int>>(graph)
-            {
-                EndPredicate = predicate
-            };
+            algorithm = new RandomWalkAlgorithm<int, Edge<int>>(graph) { EndPredicate = predicate };
             AssertAlgorithmProperties(algorithm, graph, p: predicate);
 
-            algorithm = new RandomWalkAlgorithm<int, Edge<int>>(graph)
-            {
-                EdgeChain = chain
-            };
+            algorithm = new RandomWalkAlgorithm<int, Edge<int>>(graph) { EdgeChain = chain };
             AssertAlgorithmProperties(algorithm, graph, chain);
 
             #region Local function
@@ -173,10 +164,10 @@ namespace QuikGraph.Tests.Algorithms.RandomWalks
             {
                 AssertAlgorithmState(algo, g);
                 if (c is null)
-                    Assert.IsNotNull(algo.EdgeChain);
+                    Assert.That(algo.EdgeChain, Is.Not.Null);
                 else
-                    Assert.AreSame(c , algo.EdgeChain);
-                Assert.AreEqual(p, algo.EndPredicate);
+                    Assert.That(c, Is.SameAs(algo.EdgeChain));
+                Assert.That(p, Is.EqualTo(algo.EndPredicate));
             }
 
             #endregion
@@ -190,14 +181,10 @@ namespace QuikGraph.Tests.Algorithms.RandomWalks
 
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(
-                () => new RandomWalkAlgorithm<int, Edge<int>>(null));
-            Assert.Throws<ArgumentNullException>(
-                () => new RandomWalkAlgorithm<int, Edge<int>>(graph, null));
-            Assert.Throws<ArgumentNullException>(
-                () => new RandomWalkAlgorithm<int, Edge<int>>(null, chain));
-            Assert.Throws<ArgumentNullException>(
-                () => new RandomWalkAlgorithm<int, Edge<int>>(null, null));
+            Assert.Throws<ArgumentNullException>(() => new RandomWalkAlgorithm<int, Edge<int>>(null));
+            Assert.Throws<ArgumentNullException>(() => new RandomWalkAlgorithm<int, Edge<int>>(graph, null));
+            Assert.Throws<ArgumentNullException>(() => new RandomWalkAlgorithm<int, Edge<int>>(null, chain));
+            Assert.Throws<ArgumentNullException>(() => new RandomWalkAlgorithm<int, Edge<int>>(null, null));
 
             var algorithm = new RandomWalkAlgorithm<int, Edge<int>>(graph, chain);
             Assert.Throws<ArgumentNullException>(() => algorithm.EdgeChain = null);
@@ -243,8 +230,7 @@ namespace QuikGraph.Tests.Algorithms.RandomWalks
         public void ComputeWithoutRoot_Throws()
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            ComputeWithoutRoot_Throws_Test(
-                () => new RandomWalkAlgorithm<int, Edge<int>>(graph));
+            ComputeWithoutRoot_Throws_Test(() => new RandomWalkAlgorithm<int, Edge<int>>(graph));
         }
 
         [Test]
@@ -260,8 +246,7 @@ namespace QuikGraph.Tests.Algorithms.RandomWalks
         public void ComputeWithRoot_Throws()
         {
             var graph = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
-            ComputeWithRoot_Throws_Test(
-                () => new RandomWalkAlgorithm<TestVertex, Edge<TestVertex>>(graph));
+            ComputeWithRoot_Throws_Test(() => new RandomWalkAlgorithm<TestVertex, Edge<TestVertex>>(graph));
         }
 
         #endregion
@@ -283,14 +268,10 @@ namespace QuikGraph.Tests.Algorithms.RandomWalks
             var edge5 = new Edge<int>(4, 5);
             var edge6 = new Edge<int>(5, 4);
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[]
-            {
+            graph.AddVerticesAndEdgeRange([
                 edge1, edge2, edge3, edge4, edge5, edge6
-            });
-            var chain = new NormalizedMarkovEdgeChain<int, Edge<int>>
-            {
-                Rand = new Random(123456)
-            };
+            ]);
+            var chain = new NormalizedMarkovEdgeChain<int, Edge<int>> { Rand = new Random(123456) };
 
             var algorithm = new RandomWalkAlgorithm<int, Edge<int>>(graph, chain)
             {
@@ -299,16 +280,17 @@ namespace QuikGraph.Tests.Algorithms.RandomWalks
 
             var encounteredEdges = new List<Edge<int>>();
             algorithm.TreeEdge += edge => encounteredEdges.Add(edge);
-            algorithm.EndVertex += vertex => Assert.AreEqual(3, vertex); 
+            algorithm.EndVertex += vertex => Assert.That(3, Is.EqualTo(vertex));
 
             algorithm.Generate(1, int.MaxValue);
 
             CollectionAssert.IsNotEmpty(encounteredEdges);
-            Assert.AreEqual(3, encounteredEdges.Last().Target);
-            Assert.IsTrue(
+            Assert.That(3, Is.EqualTo(encounteredEdges.Last().Target));
+            Assert.That(
                 edge2 == encounteredEdges.Last()
-                || 
-                edge3 == encounteredEdges.Last());
+                ||
+                edge3 == encounteredEdges.Last(),
+                Is.True);
         }
 
         [Test]

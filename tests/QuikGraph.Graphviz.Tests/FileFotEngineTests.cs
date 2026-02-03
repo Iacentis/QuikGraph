@@ -33,9 +33,9 @@ namespace QuikGraph.Graphviz.Tests
 
             void CheckFileContent(string filePath, string fileContent)
             {
-                Assert.IsTrue(File.Exists(filePath));
+                Assert.That(File.Exists(filePath),Is.True);
                 string loadedContent = File.ReadAllText(filePath);
-                Assert.AreEqual(fileContent, loadedContent);
+                Assert.That(fileContent,Is.EqualTo(loadedContent));
             }
 
             #endregion

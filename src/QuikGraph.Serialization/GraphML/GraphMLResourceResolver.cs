@@ -1,7 +1,7 @@
-﻿#if SUPPORTS_GRAPHS_SERIALIZATION
-using System.Diagnostics;
+﻿using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.IO;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph.Serialization
 {
@@ -13,8 +13,7 @@ namespace QuikGraph.Serialization
         /// <param name="resourceName">Resource name.</param>
         /// <returns>Resource stream.</returns>
         [Pure]
-        [NotNull]
-        public static Stream GetResource([NotNull] string resourceName)
+        public static Stream GetResource(string resourceName)
         {
             Stream resourceStream = typeof(GraphMLResourceResolver).Assembly
                 .GetManifestResourceStream(
@@ -26,4 +25,3 @@ namespace QuikGraph.Serialization
         }
     }
 }
-#endif

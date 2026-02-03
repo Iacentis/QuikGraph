@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Linq;
-#if SUPPORTS_AGGRESSIVE_INLINING
+
 using System.Runtime.CompilerServices;
-#endif
-using JetBrains.Annotations;
+
+
 
 namespace QuikGraph
 {
@@ -13,14 +14,14 @@ namespace QuikGraph
     /// Mutable bidirectional graph data structure based on a matrix.
     /// </summary>
     /// <typeparam name="TEdge">Edge type</typeparam>
-#if SUPPORTS_SERIALIZATION
+
     [Serializable]
-#endif
+
     [DebuggerDisplay("VertexCount = {" + nameof(VertexCount) + "}, EdgeCount = {" + nameof(EdgeCount) + "}")]
     public class BidirectionalMatrixGraph<TEdge> : IBidirectionalGraph<int, TEdge>, IMutableEdgeListGraph<int, TEdge>
-#if SUPPORTS_CLONEABLE
+
         , ICloneable
-#endif
+
         where TEdge : class, IEdge<int>
     {
         /// <summary>
@@ -105,7 +106,7 @@ namespace QuikGraph
         /// <inheritdoc />
         public int EdgeCount { get; private set; }
 
-        [NotNull]
+
         private readonly TEdge[,] _edges;
 
         /// <inheritdoc />
@@ -128,8 +129,7 @@ namespace QuikGraph
         /// <inheritdoc />
         public bool ContainsEdge(TEdge edge)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            ArgumentNullException.ThrowIfNull(edge);
             if (!AreInGraph(edge.Source, edge.Target))
                 return false;
 
@@ -380,10 +380,9 @@ namespace QuikGraph
         /// <param name="predicate">Edge predicate.</param>
         /// <returns>Number of edges removed.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="predicate"/> is <see langword="null"/>.</exception>
-        public int RemoveInEdgeIf(int vertex, [NotNull, InstantHandle] EdgePredicate<int, TEdge> predicate)
+        public int RemoveInEdgeIf(int vertex,  EdgePredicate<int, TEdge> predicate)
         {
-            if (predicate is null)
-                throw new ArgumentNullException(nameof(predicate));
+            ArgumentNullException.ThrowIfNull(predicate);
             if (!IsInGraph(vertex))
                 return 0;
 
@@ -401,9 +400,9 @@ namespace QuikGraph
             return count;
         }
 
-#if SUPPORTS_AGGRESSIVE_INLINING
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+
         private void ClearInEdgesInternal(int vertex)
         {
             for (int i = 0; i < VertexCount; ++i)
@@ -453,10 +452,9 @@ namespace QuikGraph
         /// <param name="predicate">Predicate to remove edges.</param>
         /// <returns>The number of removed edges.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="predicate"/> is <see langword="null"/>.</exception>
-        public int RemoveOutEdgeIf(int vertex, [NotNull, InstantHandle] EdgePredicate<int, TEdge> predicate)
+        public int RemoveOutEdgeIf(int vertex,  EdgePredicate<int, TEdge> predicate)
         {
-            if (predicate is null)
-                throw new ArgumentNullException(nameof(predicate));
+            ArgumentNullException.ThrowIfNull(predicate);
             if (!IsInGraph(vertex))
                 return 0;
 
@@ -474,9 +472,9 @@ namespace QuikGraph
             return count;
         }
 
-#if SUPPORTS_AGGRESSIVE_INLINING
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+
         private void ClearOutEdgesInternal(int vertex)
         {
             for (int j = 0; j < VertexCount; ++j)
@@ -509,8 +507,7 @@ namespace QuikGraph
         /// <exception cref="ParallelEdgeNotAllowedException"><paramref name="edge"/> is already present in graph.</exception>
         public bool AddEdge(TEdge edge)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            ArgumentNullException.ThrowIfNull(edge);
             AssertAreInGraph(edge.Source, edge.Target);
 
             if (_edges[edge.Source, edge.Target] is null)
@@ -527,8 +524,7 @@ namespace QuikGraph
         /// <inheritdoc />
         public int AddEdgeRange(IEnumerable<TEdge> edges)
         {
-            if (edges is null)
-                throw new ArgumentNullException(nameof(edges));
+            ArgumentNullException.ThrowIfNull(edges);
             TEdge[] edgesArray = edges.ToArray();
             if (edgesArray.Any(e => e == null))
                 throw new ArgumentNullException(nameof(edges), "At least one edge is null.");
@@ -543,17 +539,17 @@ namespace QuikGraph
         /// Called on each added edge.
         /// </summary>
         /// <param name="edge">Added edge.</param>
-        protected virtual void OnEdgeAdded([NotNull] TEdge edge)
+        protected virtual void OnEdgeAdded( TEdge edge)
         {
             Debug.Assert(edge != null);
 
             EdgeAdded?.Invoke(edge);
         }
 
-#if SUPPORTS_AGGRESSIVE_INLINING
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
-        private void RemoveEdgeInternal([NotNull] TEdge edge)
+
+        private void RemoveEdgeInternal( TEdge edge)
         {
             Debug.Assert(edge != null);
             Debug.Assert(_edges[edge.Source, edge.Target] != null);
@@ -567,8 +563,7 @@ namespace QuikGraph
         /// <inheritdoc />
         public bool RemoveEdge(TEdge edge)
         {
-            if (edge == null)
-                throw new ArgumentNullException(nameof(edge));
+            ArgumentNullException.ThrowIfNull(edge);
             if (!AreInGraph(edge.Source, edge.Target))
                 return false;
             TEdge edgeToRemove = _edges[edge.Source, edge.Target];
@@ -587,7 +582,7 @@ namespace QuikGraph
         /// Called on each removed edge.
         /// </summary>
         /// <param name="edge">Removed edge.</param>
-        protected virtual void OnEdgeRemoved([NotNull] TEdge edge)
+        protected virtual void OnEdgeRemoved( TEdge edge)
         {
             Debug.Assert(edge != null);
 
@@ -610,7 +605,7 @@ namespace QuikGraph
         private BidirectionalMatrixGraph(
             int vertexCount,
             int edgeCount,
-            [NotNull] TEdge[,] edges)
+             TEdge[,] edges)
         {
             Debug.Assert(vertexCount > 0);
             Debug.Assert(edgeCount >= 0);
@@ -628,7 +623,7 @@ namespace QuikGraph
         /// </summary>
         /// <returns>Cloned graph.</returns>
         [Pure]
-        [NotNull]
+
         public BidirectionalMatrixGraph<TEdge> Clone()
         {
             return new BidirectionalMatrixGraph<TEdge>(
@@ -637,13 +632,13 @@ namespace QuikGraph
                 (TEdge[,])_edges.Clone());
         }
 
-#if SUPPORTS_CLONEABLE
+
         /// <inheritdoc />
         object ICloneable.Clone()
         {
             return Clone();
         }
-#endif
+
 
         #endregion
     }

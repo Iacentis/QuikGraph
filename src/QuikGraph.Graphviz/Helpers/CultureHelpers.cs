@@ -1,5 +1,6 @@
-﻿using System.Globalization;
-using JetBrains.Annotations;
+﻿using System.Diagnostics.Contracts;
+using System.Globalization;
+
 
 namespace QuikGraph.Graphviz.Helpers
 {
@@ -15,7 +16,7 @@ namespace QuikGraph.Graphviz.Helpers
         /// <param name="value">Value to convert.</param>
         /// <returns>Float as string.</returns>
         [Pure]
-        [NotNull]
+
         public static string ToInvariantString(this float value)
         {
             return value.ToString(CultureInfo.InvariantCulture);
@@ -28,7 +29,7 @@ namespace QuikGraph.Graphviz.Helpers
         /// <param name="value">Value to convert.</param>
         /// <returns>Double as string.</returns>
         [Pure]
-        [NotNull]
+
         public static string ToInvariantString(this double value)
         {
             return value.ToString(CultureInfo.InvariantCulture);

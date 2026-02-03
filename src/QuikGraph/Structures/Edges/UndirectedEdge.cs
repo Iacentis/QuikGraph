@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using JetBrains.Annotations;
 using QuikGraph.Constants;
 
 namespace QuikGraph
@@ -10,9 +9,9 @@ namespace QuikGraph
     /// The default <see cref="IUndirectedEdge{TVertex}"/> implementation.
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
-#if SUPPORTS_SERIALIZATION
+
     [Serializable]
-#endif
+
     [DebuggerDisplay("{" + nameof(Source) + "}<->{" + nameof(Target) + "}")]
     public class UndirectedEdge<TVertex> : IUndirectedEdge<TVertex>
     {
@@ -26,7 +25,7 @@ namespace QuikGraph
         /// <exception cref="T:System.ArgumentException">
         /// <paramref name="target"/> is not lower than <paramref name="source"/> when using <see cref="M:System.Collections.Generic.Comparer{T}.Default"/>.
         /// </exception>
-        public UndirectedEdge([NotNull] TVertex source, [NotNull] TVertex target)
+        public UndirectedEdge( TVertex source,  TVertex target)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));

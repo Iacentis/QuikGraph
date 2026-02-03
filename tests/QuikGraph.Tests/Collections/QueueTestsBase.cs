@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using QuikGraph.Collections;
 using static QuikGraph.Tests.AssertHelpers;
 
@@ -13,61 +13,61 @@ namespace QuikGraph.Tests.Collections
     internal abstract class QueueTestsBase
     {
         protected static void Contains_Test<TVertex>(
-            [NotNull] IQueue<TVertex> queue,
-            [NotNull] TVertex vertex1,
-            [NotNull] TVertex vertex2)
+             IQueue<TVertex> queue,
+             TVertex vertex1,
+             TVertex vertex2)
         {
-            Assert.IsFalse(queue.Contains(vertex1));
-            Assert.IsFalse(queue.Contains(vertex2));
+            Assert.That(queue.Contains(vertex1),Is.False);
+            Assert.That(queue.Contains(vertex2),Is.False);
 
             queue.Enqueue(vertex1);
-            Assert.IsTrue(queue.Contains(vertex1));
-            Assert.IsFalse(queue.Contains(vertex2));
+            Assert.That(queue.Contains(vertex1),Is.True);
+            Assert.That(queue.Contains(vertex2),Is.False);
 
             queue.Enqueue(vertex2);
-            Assert.IsTrue(queue.Contains(vertex1));
-            Assert.IsTrue(queue.Contains(vertex2));
+            Assert.That(queue.Contains(vertex1),Is.True);
+            Assert.That(queue.Contains(vertex2),Is.True);
 
             queue.Enqueue(vertex2);
-            Assert.IsTrue(queue.Contains(vertex1));
-            Assert.IsTrue(queue.Contains(vertex2));
+            Assert.That(queue.Contains(vertex1),Is.True);
+            Assert.That(queue.Contains(vertex2),Is.True);
 
             queue.Dequeue();
-            Assert.IsFalse(queue.Contains(vertex1));
-            Assert.IsTrue(queue.Contains(vertex2));
+            Assert.That(queue.Contains(vertex1),Is.False);
+            Assert.That(queue.Contains(vertex2),Is.True);
 
             queue.Dequeue();
-            Assert.IsFalse(queue.Contains(vertex1));
-            Assert.IsTrue(queue.Contains(vertex2));
+            Assert.That(queue.Contains(vertex1),Is.False);
+            Assert.That(queue.Contains(vertex2),Is.True);
 
             queue.Dequeue();
-            Assert.IsFalse(queue.Contains(vertex1));
-            Assert.IsFalse(queue.Contains(vertex2));
+            Assert.That(queue.Contains(vertex1),Is.False);
+            Assert.That(queue.Contains(vertex2),Is.False);
         }
 
         protected static void Enqueue_Test<TVertex>(
-            [NotNull] IQueue<TVertex> queue,
-            [NotNull] TVertex vertex1,
-            [NotNull] TVertex vertex2)
+             IQueue<TVertex> queue,
+             TVertex vertex1,
+             TVertex vertex2)
         {
-            Assert.AreEqual(0, queue.Count);
+            Assert.That(0,Is.EqualTo(queue.Count));
 
             queue.Enqueue(vertex1);
-            Assert.AreEqual(1, queue.Count);
+            Assert.That(1,Is.EqualTo(queue.Count));
 
             queue.Enqueue(vertex2);
-            Assert.AreEqual(2, queue.Count);
+            Assert.That(2,Is.EqualTo(queue.Count));
 
             queue.Enqueue(vertex2);
-            Assert.AreEqual(3, queue.Count);
+            Assert.That(3,Is.EqualTo(queue.Count));
         }
 
         protected static void Dequeue_Test<TVertex>(
-            [NotNull] Func<Func<TVertex, double>, IQueue<TVertex>> createQueue,
-            [NotNull] TVertex vertex1,
-            [NotNull] TVertex vertex2,
-            [NotNull] TVertex vertex3,
-            [NotNull] TVertex vertex4)
+             Func<Func<TVertex, double>, IQueue<TVertex>> createQueue,
+             TVertex vertex1,
+             TVertex vertex2,
+             TVertex vertex3,
+             TVertex vertex4)
         {
             DequeueInternalTest();
             DequeueInternalSameDistanceTest();
@@ -76,44 +76,44 @@ namespace QuikGraph.Tests.Collections
 
             void DequeueInternalTest()
             {
-                var order = new Stack<int>(new[] { 3, 2, 9, 1, 10 });
+                var order = new Stack<int>([3, 2, 9, 1, 10]);
                 IQueue<TVertex> queue = createQueue(_ => order.Pop());
-                Assert.AreEqual(0, queue.Count);
+                Assert.That(0,Is.EqualTo(queue.Count));
 
                 queue.Enqueue(vertex1);
                 queue.Enqueue(vertex2);
                 queue.Enqueue(vertex3);
                 queue.Enqueue(vertex2);
                 queue.Enqueue(vertex4);
-                Assert.AreEqual(5, queue.Count);
+                Assert.That(5,Is.EqualTo(queue.Count));
 
                 AssertEqual(vertex2, queue.Dequeue());
-                Assert.AreEqual(4, queue.Count);
+                Assert.That(4,Is.EqualTo(queue.Count));
 
                 AssertEqual(vertex2, queue.Dequeue());
-                Assert.AreEqual(3, queue.Count);
+                Assert.That(3,Is.EqualTo(queue.Count));
 
                 AssertEqual(vertex4, queue.Dequeue());
-                Assert.AreEqual(2, queue.Count);
+                Assert.That(2,Is.EqualTo(queue.Count));
 
                 AssertEqual(vertex3, queue.Dequeue());
-                Assert.AreEqual(1, queue.Count);
+                Assert.That(1,Is.EqualTo(queue.Count));
 
                 AssertEqual(vertex1, queue.Dequeue());
-                Assert.AreEqual(0, queue.Count);
+                Assert.That(0,Is.EqualTo(queue.Count));
             }
 
             void DequeueInternalSameDistanceTest()
             {
                 IQueue<TVertex> queue = createQueue(_ => 1.0);
-                Assert.AreEqual(0, queue.Count);
+                Assert.That(0,Is.EqualTo(queue.Count));
 
                 queue.Enqueue(vertex1);
                 queue.Enqueue(vertex2);
                 queue.Enqueue(vertex3);
                 queue.Enqueue(vertex2);
                 queue.Enqueue(vertex4);
-                Assert.AreEqual(5, queue.Count);
+                Assert.That(5,Is.EqualTo(queue.Count));
 
                 var counters = new Dictionary<TVertex, int>
                 {
@@ -125,19 +125,19 @@ namespace QuikGraph.Tests.Collections
                 // Cannot assert exactly dequeued item since
                 // it depends on queue internal implementation
                 ++counters[queue.Dequeue()];
-                Assert.AreEqual(4, queue.Count);
+                Assert.That(4,Is.EqualTo(queue.Count));
 
                 ++counters[queue.Dequeue()];
-                Assert.AreEqual(3, queue.Count);
+                Assert.That(3,Is.EqualTo(queue.Count));
 
                 ++counters[queue.Dequeue()];
-                Assert.AreEqual(2, queue.Count);
+                Assert.That(2,Is.EqualTo(queue.Count));
 
                 ++counters[queue.Dequeue()];
-                Assert.AreEqual(1, queue.Count);
+                Assert.That(1,Is.EqualTo(queue.Count));
 
                 ++counters[queue.Dequeue()];
-                Assert.AreEqual(0, queue.Count);
+                Assert.That(0,Is.EqualTo(queue.Count));
 
                 CollectionAssert.AreEquivalent(
                     new[]
@@ -153,17 +153,17 @@ namespace QuikGraph.Tests.Collections
             #endregion
         }
 
-        protected static void Dequeue_Throws_Test<TVertex>([NotNull] IQueue<TVertex> queue)
+        protected static void Dequeue_Throws_Test<TVertex>( IQueue<TVertex> queue)
         {
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             Assert.Throws<InvalidOperationException>(() => queue.Dequeue());
         }
 
         protected static void Peek_Test<TVertex>(
-            [NotNull] Func<Func<TVertex, double>, IQueue<TVertex>> createQueue,
-            [NotNull] TVertex vertex1,
-            [NotNull] TVertex vertex2,
-            [NotNull] TVertex vertex3)
+             Func<Func<TVertex, double>, IQueue<TVertex>> createQueue,
+             TVertex vertex1,
+             TVertex vertex2,
+             TVertex vertex3)
         {
             PeekInternalTest();
             PeekInternalSameDistanceTest();
@@ -172,107 +172,107 @@ namespace QuikGraph.Tests.Collections
 
             void PeekInternalTest()
             {
-                var order = new Stack<int>(new[] { 3, 2, 9, 1, 10 });
+                var order = new Stack<int>([3, 2, 9, 1, 10]);
                 IQueue<TVertex> queue = createQueue(_ => order.Pop());
-                Assert.AreEqual(0, queue.Count);
+                Assert.That(0,Is.EqualTo(queue.Count));
 
                 queue.Enqueue(vertex3);
                 queue.Enqueue(vertex2);
                 queue.Enqueue(vertex1);
                 queue.Enqueue(vertex2);
                 queue.Enqueue(vertex1);
-                Assert.AreEqual(5, queue.Count);
+                Assert.That(5,Is.EqualTo(queue.Count));
 
                 AssertEqual(vertex2, queue.Peek());
-                Assert.AreEqual(5, queue.Count);
+                Assert.That(5,Is.EqualTo(queue.Count));
 
                 queue.Dequeue();
                 queue.Dequeue();
-                Assert.AreEqual(3, queue.Count);
+                Assert.That(3,Is.EqualTo(queue.Count));
 
                 AssertEqual(vertex1, queue.Peek());
-                Assert.AreEqual(3, queue.Count);
+                Assert.That(3,Is.EqualTo(queue.Count));
 
                 queue.Dequeue();
                 queue.Dequeue();
-                Assert.AreEqual(1, queue.Count);
+                Assert.That(1,Is.EqualTo(queue.Count));
 
                 AssertEqual(vertex3, queue.Peek());
-                Assert.AreEqual(1, queue.Count);
+                Assert.That(1,Is.EqualTo(queue.Count));
             }
 
             void PeekInternalSameDistanceTest()
             {
                 IQueue<TVertex> queue = createQueue(_ => 1.0);
-                Assert.AreEqual(0, queue.Count);
+                Assert.That(0,Is.EqualTo(queue.Count));
 
                 queue.Enqueue(vertex3);
                 queue.Enqueue(vertex2);
                 queue.Enqueue(vertex1);
                 queue.Enqueue(vertex2);
                 queue.Enqueue(vertex1);
-                Assert.AreEqual(5, queue.Count);
+                Assert.That(5,Is.EqualTo(queue.Count));
 
                 // ReSharper disable ReturnValueOfPureMethodIsNotUsed
                 // Cannot assert exactly peeked item since
                 // it depends on queue internal implementation
                 Assert.DoesNotThrow(() => queue.Peek());
-                Assert.AreEqual(5, queue.Count);
+                Assert.That(5,Is.EqualTo(queue.Count));
 
                 queue.Dequeue();
                 queue.Dequeue();
-                Assert.AreEqual(3, queue.Count);
-
-                Assert.DoesNotThrow(() => queue.Peek());
-                Assert.AreEqual(3, queue.Count);
-
-                queue.Dequeue();
-                queue.Dequeue();
-                Assert.AreEqual(1, queue.Count);
+                Assert.That(3,Is.EqualTo(queue.Count));
 
                 Assert.DoesNotThrow(() => queue.Peek());
-                Assert.AreEqual(1, queue.Count);
+                Assert.That(3,Is.EqualTo(queue.Count));
+
+                queue.Dequeue();
+                queue.Dequeue();
+                Assert.That(1,Is.EqualTo(queue.Count));
+
+                Assert.DoesNotThrow(() => queue.Peek());
+                Assert.That(1,Is.EqualTo(queue.Count));
                 // ReSharper restore ReturnValueOfPureMethodIsNotUsed
             }
 
             #endregion
         }
 
-        protected static void Peek_Throws_Test<TVertex>([NotNull] IQueue<TVertex> queue)
+        protected static void Peek_Throws_Test<TVertex>( IQueue<TVertex> queue)
         {
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             Assert.Throws<InvalidOperationException>(() => queue.Peek());
         }
 
         protected static void Update_Test<TVertex>(
-            [NotNull] Func<Func<TVertex, double>, IPriorityQueue<TVertex>> createQueue,
-            [NotNull] TVertex vertex1,
-            [NotNull] TVertex vertex2)
+             Func<Func<TVertex, double>, IPriorityQueue<TVertex>> createQueue,
+             TVertex vertex1,
+             TVertex vertex2)
         {
-            var distances = new Stack<double>(new[] { 0.5, 10.0, 5.0, 1.0 });
+            var distances = new Stack<double>([0.5, 10.0, 5.0, 1.0]);
             IPriorityQueue<TVertex> queue = createQueue(_ => distances.Pop());
-            Assert.AreEqual(0, queue.Count);
+            Assert.That(0,Is.EqualTo(queue.Count));
 
             queue.Enqueue(vertex1);
             queue.Enqueue(vertex2);
-            Assert.AreEqual(2, queue.Count);
+            Assert.That(2,Is.EqualTo(queue.Count));
 
             AssertEqual(vertex1, queue.Peek());
 
             queue.Update(vertex1);  // Distance from 1.0 to 10.0
-            Assert.AreEqual(2, queue.Count);
+            Assert.That(2,Is.EqualTo(queue.Count));
 
             AssertEqual(vertex2, queue.Peek());
         }
 
         protected static void ToArray_Test<TVertex>(
-            [NotNull] Func<Func<TVertex, double>, IQueue<TVertex>> createQueue,
-            [NotNull] TVertex vertex1,
-            [NotNull] TVertex vertex2,
-            [NotNull] TVertex vertex3,
-            [NotNull] TVertex vertex4)
+             Func<Func<TVertex, double>, IQueue<TVertex>> createQueue,
+             TVertex vertex1,
+             TVertex vertex2,
+             TVertex vertex3,
+             TVertex vertex4)
         {
-            var distances = new Stack<double>(new[] { 123.0, 3.0, 2.0, 4.0, 5.0, 1.0 });
+            var distances = new Stack<double>([123.0, 3.0, 2.0, 4.0, 5.0, 1.0]);
             IQueue<TVertex> queue = createQueue(_ => distances.Pop());
 
             // Empty heap

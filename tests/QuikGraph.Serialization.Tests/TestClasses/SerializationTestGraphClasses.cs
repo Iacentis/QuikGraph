@@ -59,7 +59,7 @@ namespace QuikGraph.Serialization.Tests
             get => null;
             set
             {
-                Assert.IsNull(value);
+                Assert.That(value,Is.Null);
             }
         }
 
@@ -183,7 +183,7 @@ namespace QuikGraph.Serialization.Tests
     {
         public class DefaultValueObject : DefaultValueAttribute
         {
-            public DefaultValueObject() 
+            public DefaultValueObject()
                 : base(new TestVertex("0"))
             {
             }

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using JetBrains.Annotations;
+
 using QuikGraph.Algorithms.Search;
 
 namespace QuikGraph.Algorithms.TopologicalSort
@@ -16,7 +16,7 @@ namespace QuikGraph.Algorithms.TopologicalSort
         , IVertexTimeStamperAlgorithm<TVertex>
         where TEdge : IEdge<TVertex>
     {
-        [NotNull, ItemNotNull]
+
         private readonly IList<TVertex> _sortedVertices;
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace QuikGraph.Algorithms.TopologicalSort
         /// <param name="capacity">Sorted vertices capacity.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public TopologicalSortAlgorithm(
-            [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph,
+             IVertexListGraph<TVertex, TEdge> visitedGraph,
             int capacity = -1)
             : base(visitedGraph)
         {
@@ -37,17 +37,17 @@ namespace QuikGraph.Algorithms.TopologicalSort
         /// Sorted vertices.
         /// </summary>
         /// <remarks>It is <see langword="null"/> if the algorithm has not been run yet.</remarks>
-        [ItemNotNull]
+
         public TVertex[] SortedVertices { get; private set; }
 
-        private static void OnBackEdge([NotNull] TEdge edge)
+        private static void OnBackEdge( TEdge edge)
         {
             Debug.Assert(edge != null);
 
             throw new NonAcyclicGraphException();
         }
 
-        private void OnVertexFinished([NotNull] TVertex vertex)
+        private void OnVertexFinished( TVertex vertex)
         {
             Debug.Assert(vertex != null);
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
 using NUnit.Framework;
 
 namespace QuikGraph.Tests.Structures
@@ -47,10 +46,10 @@ namespace QuikGraph.Tests.Structures
 
         #region Test cases
 
-        [NotNull, ItemNotNull]
+
         private static IEnumerable<TestCaseData> EquateWithComparerTestCases
         {
-            [UsedImplicitly]
+
             get
             {
                 var vertexComparer = new VertexTestComparer();
@@ -120,7 +119,7 @@ namespace QuikGraph.Tests.Structures
                 adjacencyGraph4.AddVerticesAndEdge(edge12);
 
                 var adjacencyGraph5 = new AdjacencyGraph<int, Edge<int>>();
-                adjacencyGraph5.AddVertexRange(new[] { 1, 2 });
+                adjacencyGraph5.AddVertexRange([1, 2]);
 
                 yield return new TestCaseData(adjacencyGraph1, adjacencyGraph3, vertexComparer, edgeComparer)
                 {
@@ -236,7 +235,7 @@ namespace QuikGraph.Tests.Structures
                 undirectedGraph4.AddVerticesAndEdge(edge12);
 
                 var undirectedGraph5 = new UndirectedGraph<int, Edge<int>>();
-                undirectedGraph5.AddVertexRange(new[] { 1, 2 });
+                undirectedGraph5.AddVertexRange([1, 2]);
 
                 yield return new TestCaseData(undirectedGraph1, undirectedGraph3, vertexComparer, edgeComparer)
                 {
@@ -304,12 +303,12 @@ namespace QuikGraph.Tests.Structures
                 adjacencyGraph8.AddVertex(1);
                 adjacencyGraph8.AddVertex(6);
                 adjacencyGraph8.AddVerticesAndEdge(edge12);
-                adjacencyGraph8.AddVertexRange(new[] { 3, 5, 4 });
-                adjacencyGraph8.AddEdgeRange(new[] { edge42, edge34 });
+                adjacencyGraph8.AddVertexRange([3, 5, 4]);
+                adjacencyGraph8.AddEdgeRange([edge42, edge34]);
 
                 var adjacencyGraph9 = new AdjacencyGraph<int, Edge<int>>();
-                adjacencyGraph9.AddVertexRange(new[] { 1, 2, 3, 4, 5, 6 });
-                adjacencyGraph9.AddEdgeRange(new[] { edge12, edge34, edge42 });
+                adjacencyGraph9.AddVertexRange([1, 2, 3, 4, 5, 6]);
+                adjacencyGraph9.AddEdgeRange([edge12, edge34, edge42]);
 
                 yield return new TestCaseData(adjacencyGraph8, adjacencyGraph9, vertexComparer, edgeComparer)
                 {
@@ -327,8 +326,8 @@ namespace QuikGraph.Tests.Structures
 
                 // Array adjacency
                 var wrappedAdjacencyGraph1 = new AdjacencyGraph<int, Edge<int>>();
-                wrappedAdjacencyGraph1.AddVertexRange(new[] { 0, 1, 2, 3, 4 });
-                wrappedAdjacencyGraph1.AddEdgeRange(new[] { edge12, edge34 });
+                wrappedAdjacencyGraph1.AddVertexRange([0, 1, 2, 3, 4]);
+                wrappedAdjacencyGraph1.AddEdgeRange([edge12, edge34]);
                 var arrayAdjacencyGraph1 = new ArrayAdjacencyGraph<int, Edge<int>>(wrappedAdjacencyGraph1);
                 var arrayAdjacencyGraph2 = new ArrayAdjacencyGraph<int, Edge<int>>(wrappedAdjacencyGraph1);
 
@@ -343,8 +342,8 @@ namespace QuikGraph.Tests.Structures
                 };
 
                 var wrappedAdjacencyGraph2 = new AdjacencyGraph<int, Edge<int>>();
-                wrappedAdjacencyGraph2.AddVertexRange(new[] { 0, 3, 1, 2, 4 });
-                wrappedAdjacencyGraph2.AddEdgeRange(new[] { edge34, edge12 });
+                wrappedAdjacencyGraph2.AddVertexRange([0, 3, 1, 2, 4]);
+                wrappedAdjacencyGraph2.AddEdgeRange([edge34, edge12]);
                 var arrayAdjacencyGraph3 = new ArrayAdjacencyGraph<int, Edge<int>>(wrappedAdjacencyGraph2);
 
                 yield return new TestCaseData(arrayAdjacencyGraph1, arrayAdjacencyGraph3, vertexComparer, edgeComparer)
@@ -369,10 +368,10 @@ namespace QuikGraph.Tests.Structures
                 };
 
                 var wrappedAdjacencyGraph3 = new AdjacencyGraph<int, Edge<int>>();
-                wrappedAdjacencyGraph3.AddVertexRange(new[] { 1, 2 });
+                wrappedAdjacencyGraph3.AddVertexRange([1, 2]);
                 wrappedAdjacencyGraph3.AddEdge(edge12);
                 var arrayAdjacencyGraph4 = new ArrayAdjacencyGraph<int, Edge<int>>(wrappedAdjacencyGraph3);
-                
+
                 yield return new TestCaseData(arrayAdjacencyGraph4, arrayAdjacencyGraph1, vertexComparer, edgeComparer)
                 {
                     ExpectedResult = false
@@ -389,8 +388,8 @@ namespace QuikGraph.Tests.Structures
 
                 // Bidirectional
                 var bidirectionalGraph1 = new BidirectionalGraph<int, Edge<int>>();
-                bidirectionalGraph1.AddVertexRange(new[] { 0, 1, 2, 3, 4 });
-                bidirectionalGraph1.AddEdgeRange(new[] { edge12, edge34 });
+                bidirectionalGraph1.AddVertexRange([0, 1, 2, 3, 4]);
+                bidirectionalGraph1.AddEdgeRange([edge12, edge34]);
 
                 yield return new TestCaseData(wrappedAdjacencyGraph1, bidirectionalGraph1, vertexComparer, edgeComparer)
                 {
@@ -403,9 +402,9 @@ namespace QuikGraph.Tests.Structures
                 };
 
                 var bidirectionalGraph2 = new BidirectionalGraph<int, Edge<int>>();
-                bidirectionalGraph2.AddVertexRange(new[] { 1, 2 });
+                bidirectionalGraph2.AddVertexRange([1, 2]);
                 bidirectionalGraph2.AddEdge(edge12);
-                
+
                 yield return new TestCaseData(wrappedAdjacencyGraph1, bidirectionalGraph2, vertexComparer, edgeComparer)
                 {
                     ExpectedResult = false
@@ -415,10 +414,10 @@ namespace QuikGraph.Tests.Structures
                 {
                     ExpectedResult = false
                 };
-                
+
                 // Array bidirectional
                 var arrayBidirectionalGraph1 = new ArrayBidirectionalGraph<int, Edge<int>>(bidirectionalGraph1);
-                
+
                 yield return new TestCaseData(wrappedAdjacencyGraph1, arrayBidirectionalGraph1, vertexComparer, edgeComparer)
                 {
                     ExpectedResult = true
@@ -430,7 +429,7 @@ namespace QuikGraph.Tests.Structures
                 };
 
                 var arrayBidirectionalGraph2 = new ArrayBidirectionalGraph<int, Edge<int>>(bidirectionalGraph2);
-                
+
                 yield return new TestCaseData(wrappedAdjacencyGraph1, arrayBidirectionalGraph2, vertexComparer, edgeComparer)
                 {
                     ExpectedResult = false
@@ -468,7 +467,7 @@ namespace QuikGraph.Tests.Structures
 
                 // Matrix graph
                 var matrixGraph1 = new BidirectionalMatrixGraph<Edge<int>>(5);
-                matrixGraph1.AddEdgeRange(new[] { edge12, edge34 });
+                matrixGraph1.AddEdgeRange([edge12, edge34]);
 
                 yield return new TestCaseData(wrappedAdjacencyGraph1, matrixGraph1, vertexComparer, edgeComparer)
                 {
@@ -479,7 +478,7 @@ namespace QuikGraph.Tests.Structures
                 {
                     ExpectedResult = true
                 };
-                
+
                 var matrixGraph2 = new BidirectionalMatrixGraph<Edge<int>>(5);
                 matrixGraph2.AddEdge(edge12);
 
@@ -495,8 +494,8 @@ namespace QuikGraph.Tests.Structures
 
                 // Cluster graph
                 var clusterWrappedAdjacencyGraph1 = new AdjacencyGraph<int, Edge<int>>();
-                clusterWrappedAdjacencyGraph1.AddVertexRange(new[] { 0, 1, 2, 3, 4 });
-                clusterWrappedAdjacencyGraph1.AddEdgeRange(new[] { edge12, edge34 });
+                clusterWrappedAdjacencyGraph1.AddVertexRange([0, 1, 2, 3, 4]);
+                clusterWrappedAdjacencyGraph1.AddEdgeRange([edge12, edge34]);
                 var cluster1 = new ClusteredAdjacencyGraph<int, Edge<int>>(clusterWrappedAdjacencyGraph1);
 
                 yield return new TestCaseData(wrappedAdjacencyGraph1, cluster1, vertexComparer, edgeComparer)
@@ -510,8 +509,8 @@ namespace QuikGraph.Tests.Structures
                 };
 
                 var clusterWrappedAdjacencyGraph2 = new AdjacencyGraph<int, Edge<int>>();
-                clusterWrappedAdjacencyGraph2.AddVertexRange(new[] { 0, 1, 2, 3, 4 });
-                clusterWrappedAdjacencyGraph2.AddEdgeRange(new[] { edge12, edge34 });
+                clusterWrappedAdjacencyGraph2.AddVertexRange([0, 1, 2, 3, 4]);
+                clusterWrappedAdjacencyGraph2.AddEdgeRange([edge12, edge34]);
                 var cluster2 = new ClusteredAdjacencyGraph<int, Edge<int>>(clusterWrappedAdjacencyGraph2);
                 cluster2.AddCluster();
                 cluster2.AddCluster();
@@ -527,8 +526,8 @@ namespace QuikGraph.Tests.Structures
                 };
 
                 var clusterWrappedAdjacencyGraph3 = new AdjacencyGraph<int, Edge<int>>();
-                clusterWrappedAdjacencyGraph3.AddVertexRange(new[] { 0, 1, 2, 3, 4 });
-                clusterWrappedAdjacencyGraph3.AddEdgeRange(new[] { edge12, edge34 });
+                clusterWrappedAdjacencyGraph3.AddVertexRange([0, 1, 2, 3, 4]);
+                clusterWrappedAdjacencyGraph3.AddEdgeRange([edge12, edge34]);
                 var cluster3 = new ClusteredAdjacencyGraph<int, Edge<int>>(clusterWrappedAdjacencyGraph3);
                 ClusteredAdjacencyGraph<int, Edge<int>> subGraph31 = cluster3.AddCluster();
                 subGraph31.AddVertex(6);
@@ -545,9 +544,9 @@ namespace QuikGraph.Tests.Structures
 
                 // Edge list
                 var adjacencyGraph = new AdjacencyGraph<int, Edge<int>>();
-                adjacencyGraph.AddVerticesAndEdgeRange(new[] { edge12, edge34 });
+                adjacencyGraph.AddVerticesAndEdgeRange([edge12, edge34]);
                 var edgeListGraph1 = new EdgeListGraph<int, Edge<int>>();
-                edgeListGraph1.AddEdgeRange(new[] { edge12, edge34 });
+                edgeListGraph1.AddEdgeRange([edge12, edge34]);
 
                 yield return new TestCaseData(adjacencyGraph, edgeListGraph1, vertexComparer, edgeComparer)
                 {
@@ -561,7 +560,7 @@ namespace QuikGraph.Tests.Structures
 
                 var edgeListGraph2 = new EdgeListGraph<int, Edge<int>>();
                 edgeListGraph2.AddEdge(edge12);
-                
+
                 yield return new TestCaseData(adjacencyGraph, edgeListGraph2, vertexComparer, edgeComparer)
                 {
                     ExpectedResult = false
@@ -574,8 +573,8 @@ namespace QuikGraph.Tests.Structures
 
                 // Undirected graph
                 var undirectedGraph8 = new UndirectedGraph<int, Edge<int>>();
-                undirectedGraph8.AddVertexRange(new[] { 0, 1, 2, 3, 4 });
-                undirectedGraph8.AddEdgeRange(new[] { edge12, edge34 });
+                undirectedGraph8.AddVertexRange([0, 1, 2, 3, 4]);
+                undirectedGraph8.AddEdgeRange([edge12, edge34]);
 
                 yield return new TestCaseData(wrappedAdjacencyGraph1, undirectedGraph8, vertexComparer, edgeComparer)
                 {
@@ -590,8 +589,8 @@ namespace QuikGraph.Tests.Structures
                 var edge21 = new Edge<int>(2, 1);
                 var edge43 = new Edge<int>(4, 3);
                 var adjacencyGraph10 = new AdjacencyGraph<int, Edge<int>>();
-                adjacencyGraph10.AddVertexRange(new[] { 0, 1, 2, 3, 4 });
-                adjacencyGraph10.AddEdgeRange(new[] { edge12, edge21, edge34, edge43 });
+                adjacencyGraph10.AddVertexRange([0, 1, 2, 3, 4]);
+                adjacencyGraph10.AddEdgeRange([edge12, edge21, edge34, edge43]);
 
                 yield return new TestCaseData(adjacencyGraph10, undirectedGraph8, vertexComparer, edgeComparer)
                 {
@@ -604,7 +603,7 @@ namespace QuikGraph.Tests.Structures
                 };
 
                 var undirectedGraph9 = new UndirectedGraph<int, Edge<int>>();
-                undirectedGraph9.AddVertexRange(new[] { 1, 2 });
+                undirectedGraph9.AddVertexRange([1, 2]);
                 undirectedGraph9.AddEdge(edge12);
 
                 yield return new TestCaseData(wrappedAdjacencyGraph1, undirectedGraph9, vertexComparer, edgeComparer)
@@ -631,7 +630,7 @@ namespace QuikGraph.Tests.Structures
                 };
 
                 var arrayUndirectedGraph2 = new ArrayUndirectedGraph<int, Edge<int>>(undirectedGraph9);
-                
+
                 yield return new TestCaseData(wrappedAdjacencyGraph1, arrayUndirectedGraph2, vertexComparer, edgeComparer)
                 {
                     ExpectedResult = false
@@ -711,10 +710,10 @@ namespace QuikGraph.Tests.Structures
 
         [TestCaseSource(nameof(EquateWithComparerTestCases))]
         public bool EquateWithComparer(
-            [NotNull] IEdgeListGraph<int, Edge<int>> g,
-            [NotNull] IEdgeListGraph<int, Edge<int>> h,
-            [NotNull] IEqualityComparer<int> vertexEquality,
-            [NotNull] IEqualityComparer<Edge<int>> edgeEquality)
+             IEdgeListGraph<int, Edge<int>> g,
+             IEdgeListGraph<int, Edge<int>> h,
+             IEqualityComparer<int> vertexEquality,
+             IEqualityComparer<Edge<int>> edgeEquality)
         {
             return EquateGraphs.Equate(g, h, vertexEquality, edgeEquality);
         }
@@ -736,10 +735,10 @@ namespace QuikGraph.Tests.Structures
 
         #region Test cases
 
-        [NotNull, ItemNotNull]
+
         private static IEnumerable<TestCaseData> EquateTestCases
         {
-            [UsedImplicitly]
+
             get
             {
                 #region Same graph type
@@ -806,7 +805,7 @@ namespace QuikGraph.Tests.Structures
                 adjacencyGraph4.AddVerticesAndEdge(edge12);
 
                 var adjacencyGraph5 = new AdjacencyGraph<int, Edge<int>>();
-                adjacencyGraph5.AddVertexRange(new[] { 1, 2 });
+                adjacencyGraph5.AddVertexRange([1, 2]);
 
                 yield return new TestCaseData(adjacencyGraph1, adjacencyGraph3)
                 {
@@ -908,7 +907,7 @@ namespace QuikGraph.Tests.Structures
                 undirectedGraph4.AddVerticesAndEdge(edge12);
 
                 var undirectedGraph5 = new UndirectedGraph<int, Edge<int>>();
-                undirectedGraph5.AddVertexRange(new[] { 1, 2 });
+                undirectedGraph5.AddVertexRange([1, 2]);
 
                 yield return new TestCaseData(undirectedGraph1, undirectedGraph3)
                 {
@@ -963,12 +962,12 @@ namespace QuikGraph.Tests.Structures
                 adjacencyGraph7.AddVertex(1);
                 adjacencyGraph7.AddVertex(6);
                 adjacencyGraph7.AddVerticesAndEdge(edge12);
-                adjacencyGraph7.AddVertexRange(new[] { 3, 5, 4 });
-                adjacencyGraph7.AddEdgeRange(new[] { edge42, edge34 });
+                adjacencyGraph7.AddVertexRange([3, 5, 4]);
+                adjacencyGraph7.AddEdgeRange([edge42, edge34]);
 
                 var adjacencyGraph8 = new AdjacencyGraph<int, Edge<int>>();
-                adjacencyGraph8.AddVertexRange(new[] { 1, 2, 3, 4, 5, 6 });
-                adjacencyGraph8.AddEdgeRange(new[] { edge12, edge34, edge42 });
+                adjacencyGraph8.AddVertexRange([1, 2, 3, 4, 5, 6]);
+                adjacencyGraph8.AddEdgeRange([edge12, edge34, edge42]);
 
                 yield return new TestCaseData(adjacencyGraph7, adjacencyGraph8)
                 {
@@ -986,8 +985,8 @@ namespace QuikGraph.Tests.Structures
 
                 // Array adjacency
                 var wrappedAdjacencyGraph1 = new AdjacencyGraph<int, Edge<int>>();
-                wrappedAdjacencyGraph1.AddVertexRange(new[] { 0, 1, 2, 3, 4 });
-                wrappedAdjacencyGraph1.AddEdgeRange(new[] { edge12, edge34 });
+                wrappedAdjacencyGraph1.AddVertexRange([0, 1, 2, 3, 4]);
+                wrappedAdjacencyGraph1.AddEdgeRange([edge12, edge34]);
                 var arrayAdjacencyGraph1 = new ArrayAdjacencyGraph<int, Edge<int>>(wrappedAdjacencyGraph1);
                 var arrayAdjacencyGraph2 = new ArrayAdjacencyGraph<int, Edge<int>>(wrappedAdjacencyGraph1);
 
@@ -1002,8 +1001,8 @@ namespace QuikGraph.Tests.Structures
                 };
 
                 var wrappedAdjacencyGraph2 = new AdjacencyGraph<int, Edge<int>>();
-                wrappedAdjacencyGraph2.AddVertexRange(new[] { 0, 3, 1, 2, 4 });
-                wrappedAdjacencyGraph2.AddEdgeRange(new[] { edge34, edge12 });
+                wrappedAdjacencyGraph2.AddVertexRange([0, 3, 1, 2, 4]);
+                wrappedAdjacencyGraph2.AddEdgeRange([edge34, edge12]);
                 var arrayAdjacencyGraph3 = new ArrayAdjacencyGraph<int, Edge<int>>(wrappedAdjacencyGraph2);
 
                 yield return new TestCaseData(arrayAdjacencyGraph1, arrayAdjacencyGraph3)
@@ -1028,10 +1027,10 @@ namespace QuikGraph.Tests.Structures
                 };
 
                 var wrappedAdjacencyGraph3 = new AdjacencyGraph<int, Edge<int>>();
-                wrappedAdjacencyGraph3.AddVertexRange(new[] { 1, 2 });
+                wrappedAdjacencyGraph3.AddVertexRange([1, 2]);
                 wrappedAdjacencyGraph3.AddEdge(edge12);
                 var arrayAdjacencyGraph4 = new ArrayAdjacencyGraph<int, Edge<int>>(wrappedAdjacencyGraph3);
-                
+
                 yield return new TestCaseData(arrayAdjacencyGraph4, arrayAdjacencyGraph1)
                 {
                     ExpectedResult = false
@@ -1048,8 +1047,8 @@ namespace QuikGraph.Tests.Structures
 
                 // Bidirectional
                 var bidirectionalGraph1 = new BidirectionalGraph<int, Edge<int>>();
-                bidirectionalGraph1.AddVertexRange(new[] { 0, 1, 2, 3, 4 });
-                bidirectionalGraph1.AddEdgeRange(new[] { edge12, edge34 });
+                bidirectionalGraph1.AddVertexRange([0, 1, 2, 3, 4]);
+                bidirectionalGraph1.AddEdgeRange([edge12, edge34]);
 
                 yield return new TestCaseData(wrappedAdjacencyGraph1, bidirectionalGraph1)
                 {
@@ -1062,9 +1061,9 @@ namespace QuikGraph.Tests.Structures
                 };
 
                 var bidirectionalGraph2 = new BidirectionalGraph<int, Edge<int>>();
-                bidirectionalGraph2.AddVertexRange(new[] { 1, 2 });
+                bidirectionalGraph2.AddVertexRange([1, 2]);
                 bidirectionalGraph2.AddEdge(edge12);
-                
+
                 yield return new TestCaseData(wrappedAdjacencyGraph1, bidirectionalGraph2)
                 {
                     ExpectedResult = false
@@ -1074,10 +1073,10 @@ namespace QuikGraph.Tests.Structures
                 {
                     ExpectedResult = false
                 };
-                
+
                 // Array bidirectional
                 var arrayBidirectionalGraph1 = new ArrayBidirectionalGraph<int, Edge<int>>(bidirectionalGraph1);
-                
+
                 yield return new TestCaseData(wrappedAdjacencyGraph1, arrayBidirectionalGraph1)
                 {
                     ExpectedResult = true
@@ -1089,7 +1088,7 @@ namespace QuikGraph.Tests.Structures
                 };
 
                 var arrayBidirectionalGraph2 = new ArrayBidirectionalGraph<int, Edge<int>>(bidirectionalGraph2);
-                
+
                 yield return new TestCaseData(wrappedAdjacencyGraph1, arrayBidirectionalGraph2)
                 {
                     ExpectedResult = false
@@ -1127,7 +1126,7 @@ namespace QuikGraph.Tests.Structures
 
                 // Matrix graph
                 var matrixGraph1 = new BidirectionalMatrixGraph<Edge<int>>(5);
-                matrixGraph1.AddEdgeRange(new[] { edge12, edge34 });
+                matrixGraph1.AddEdgeRange([edge12, edge34]);
 
                 yield return new TestCaseData(wrappedAdjacencyGraph1, matrixGraph1)
                 {
@@ -1138,7 +1137,7 @@ namespace QuikGraph.Tests.Structures
                 {
                     ExpectedResult = true
                 };
-                
+
                 var matrixGraph2 = new BidirectionalMatrixGraph<Edge<int>>(5);
                 matrixGraph2.AddEdge(edge12);
 
@@ -1154,8 +1153,8 @@ namespace QuikGraph.Tests.Structures
 
                 // Cluster graph
                 var clusterWrappedAdjacencyGraph1 = new AdjacencyGraph<int, Edge<int>>();
-                clusterWrappedAdjacencyGraph1.AddVertexRange(new[] { 0, 1, 2, 3, 4 });
-                clusterWrappedAdjacencyGraph1.AddEdgeRange(new[] { edge12, edge34 });
+                clusterWrappedAdjacencyGraph1.AddVertexRange([0, 1, 2, 3, 4]);
+                clusterWrappedAdjacencyGraph1.AddEdgeRange([edge12, edge34]);
                 var cluster1 = new ClusteredAdjacencyGraph<int, Edge<int>>(clusterWrappedAdjacencyGraph1);
 
                 yield return new TestCaseData(wrappedAdjacencyGraph1, cluster1)
@@ -1169,8 +1168,8 @@ namespace QuikGraph.Tests.Structures
                 };
 
                 var clusterWrappedAdjacencyGraph2 = new AdjacencyGraph<int, Edge<int>>();
-                clusterWrappedAdjacencyGraph2.AddVertexRange(new[] { 0, 1, 2, 3, 4 });
-                clusterWrappedAdjacencyGraph2.AddEdgeRange(new[] { edge12, edge34 });
+                clusterWrappedAdjacencyGraph2.AddVertexRange([0, 1, 2, 3, 4]);
+                clusterWrappedAdjacencyGraph2.AddEdgeRange([edge12, edge34]);
                 var cluster2 = new ClusteredAdjacencyGraph<int, Edge<int>>(clusterWrappedAdjacencyGraph2);
                 cluster2.AddCluster();
                 cluster2.AddCluster();
@@ -1186,8 +1185,8 @@ namespace QuikGraph.Tests.Structures
                 };
 
                 var clusterWrappedAdjacencyGraph3 = new AdjacencyGraph<int, Edge<int>>();
-                clusterWrappedAdjacencyGraph3.AddVertexRange(new[] { 0, 1, 2, 3, 4 });
-                clusterWrappedAdjacencyGraph3.AddEdgeRange(new[] { edge12, edge34 });
+                clusterWrappedAdjacencyGraph3.AddVertexRange([0, 1, 2, 3, 4]);
+                clusterWrappedAdjacencyGraph3.AddEdgeRange([edge12, edge34]);
                 var cluster3 = new ClusteredAdjacencyGraph<int, Edge<int>>(clusterWrappedAdjacencyGraph3);
                 ClusteredAdjacencyGraph<int, Edge<int>> subGraph31 = cluster3.AddCluster();
                 subGraph31.AddVertex(6);
@@ -1204,9 +1203,9 @@ namespace QuikGraph.Tests.Structures
 
                 // Edge list
                 var adjacencyGraph = new AdjacencyGraph<int, Edge<int>>();
-                adjacencyGraph.AddVerticesAndEdgeRange(new[] { edge12, edge34 });
+                adjacencyGraph.AddVerticesAndEdgeRange([edge12, edge34]);
                 var edgeListGraph1 = new EdgeListGraph<int, Edge<int>>();
-                edgeListGraph1.AddEdgeRange(new[] { edge12, edge34 });
+                edgeListGraph1.AddEdgeRange([edge12, edge34]);
 
                 yield return new TestCaseData(adjacencyGraph, edgeListGraph1)
                 {
@@ -1220,7 +1219,7 @@ namespace QuikGraph.Tests.Structures
 
                 var edgeListGraph2 = new EdgeListGraph<int, Edge<int>>();
                 edgeListGraph2.AddEdge(edge12);
-                
+
                 yield return new TestCaseData(adjacencyGraph, edgeListGraph2)
                 {
                     ExpectedResult = false
@@ -1233,8 +1232,8 @@ namespace QuikGraph.Tests.Structures
 
                 // Undirected graph
                 var undirectedGraph7 = new UndirectedGraph<int, Edge<int>>();
-                undirectedGraph7.AddVertexRange(new[] { 0, 1, 2, 3, 4 });
-                undirectedGraph7.AddEdgeRange(new[] { edge12, edge34 });
+                undirectedGraph7.AddVertexRange([0, 1, 2, 3, 4]);
+                undirectedGraph7.AddEdgeRange([edge12, edge34]);
 
                 yield return new TestCaseData(wrappedAdjacencyGraph1, undirectedGraph7)
                 {
@@ -1249,8 +1248,8 @@ namespace QuikGraph.Tests.Structures
                 var edge21 = new Edge<int>(2, 1);
                 var edge43 = new Edge<int>(4, 3);
                 var adjacencyGraph9 = new AdjacencyGraph<int, Edge<int>>();
-                adjacencyGraph9.AddVertexRange(new[] { 0, 1, 2, 3, 4 });
-                adjacencyGraph9.AddEdgeRange(new[] { edge12, edge21, edge34, edge43 });
+                adjacencyGraph9.AddVertexRange([0, 1, 2, 3, 4]);
+                adjacencyGraph9.AddEdgeRange([edge12, edge21, edge34, edge43]);
 
                 yield return new TestCaseData(adjacencyGraph9, undirectedGraph7)
                 {
@@ -1263,7 +1262,7 @@ namespace QuikGraph.Tests.Structures
                 };
 
                 var undirectedGraph8 = new UndirectedGraph<int, Edge<int>>();
-                undirectedGraph8.AddVertexRange(new[] { 1, 2 });
+                undirectedGraph8.AddVertexRange([1, 2]);
                 undirectedGraph8.AddEdge(edge12);
 
                 yield return new TestCaseData(wrappedAdjacencyGraph1, undirectedGraph8)
@@ -1290,7 +1289,7 @@ namespace QuikGraph.Tests.Structures
                 };
 
                 var arrayUndirectedGraph2 = new ArrayUndirectedGraph<int, Edge<int>>(undirectedGraph8);
-                
+
                 yield return new TestCaseData(wrappedAdjacencyGraph1, arrayUndirectedGraph2)
                 {
                     ExpectedResult = false
@@ -1366,20 +1365,20 @@ namespace QuikGraph.Tests.Structures
             }
         }
 
-        [NotNull, ItemNotNull]
+
         private static IEnumerable<TestCaseData> ReversedGraphEquateTestCases
         {
-            [UsedImplicitly]
+
             get
             {
                 var edge12 = new Edge<int>(1, 2);
                 var edge34 = new Edge<int>(3, 4);
 
                 var bidirectionalGraph1 = new BidirectionalGraph<int, Edge<int>>();
-                bidirectionalGraph1.AddVertexRange(new[] { 0, 1, 2, 3, 4 });
-                bidirectionalGraph1.AddEdgeRange(new[] { edge12, edge34 });
+                bidirectionalGraph1.AddVertexRange([0, 1, 2, 3, 4]);
+                bidirectionalGraph1.AddEdgeRange([edge12, edge34]);
                 var bidirectionalGraph2 = new BidirectionalGraph<int, Edge<int>>();
-                bidirectionalGraph2.AddVertexRange(new[] { 1, 2 });
+                bidirectionalGraph2.AddVertexRange([1, 2]);
                 bidirectionalGraph2.AddEdge(edge12);
 
                 // Reversed graph
@@ -1410,20 +1409,20 @@ namespace QuikGraph.Tests.Structures
             }
         }
 
-        [NotNull, ItemNotNull]
+
         private static IEnumerable<TestCaseData> CompressedGraphEquateTestCases
         {
-            [UsedImplicitly]
+
             get
             {
                 var edge12 = new SEquatableEdge<int>(1, 2);
                 var edge34 = new SEquatableEdge<int>(3, 4);
 
                 var adjacencyGraph1 = new AdjacencyGraph<int, SEquatableEdge<int>>();
-                adjacencyGraph1.AddVertexRange(new[] { 0, 1, 2, 3, 4 });
-                adjacencyGraph1.AddEdgeRange(new[] { edge12, edge34 });
+                adjacencyGraph1.AddVertexRange([0, 1, 2, 3, 4]);
+                adjacencyGraph1.AddEdgeRange([edge12, edge34]);
                 var adjacencyGraph2 = new AdjacencyGraph<int, SEquatableEdge<int>>();
-                adjacencyGraph2.AddVertexRange(new[] { 1, 2 });
+                adjacencyGraph2.AddVertexRange([1, 2]);
                 adjacencyGraph2.AddEdge(edge12);
 
                 // Compressed graph
@@ -1457,24 +1456,24 @@ namespace QuikGraph.Tests.Structures
 
         [TestCaseSource(nameof(EquateTestCases))]
         public bool Equate(
-            [NotNull] IEdgeListGraph<int, Edge<int>> g,
-            [NotNull] IEdgeListGraph<int, Edge<int>> h)
+             IEdgeListGraph<int, Edge<int>> g,
+             IEdgeListGraph<int, Edge<int>> h)
         {
             return EquateGraphs.Equate(g, h);
         }
 
         [TestCaseSource(nameof(ReversedGraphEquateTestCases))]
         public bool EquateReversedGraph(
-            [NotNull] IEdgeListGraph<int, SReversedEdge<int, Edge<int>>> g,
-            [NotNull] IEdgeListGraph<int, SReversedEdge<int, Edge<int>>> h)
+             IEdgeListGraph<int, SReversedEdge<int, Edge<int>>> g,
+             IEdgeListGraph<int, SReversedEdge<int, Edge<int>>> h)
         {
             return EquateGraphs.Equate(g, h);
         }
 
         [TestCaseSource(nameof(CompressedGraphEquateTestCases))]
         public bool EquateCompressedGraph(
-            [NotNull] IEdgeListGraph<int, SEquatableEdge<int>> g,
-            [NotNull] IEdgeListGraph<int, SEquatableEdge<int>> h)
+             IEdgeListGraph<int, SEquatableEdge<int>> g,
+             IEdgeListGraph<int, SEquatableEdge<int>> h)
         {
             return EquateGraphs.Equate(g, h);
         }

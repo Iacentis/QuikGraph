@@ -1,5 +1,5 @@
 ﻿using System;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph.Algorithms
 {
@@ -20,8 +20,8 @@ namespace QuikGraph.Algorithms
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/>.</exception>
         public TransitiveClosureAlgorithm(
-            [NotNull] IEdgeListGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] Func<TVertex, TVertex, TEdge> edgeFactory)
+             IEdgeListGraph<TVertex, TEdge> visitedGraph,
+             Func<TVertex, TVertex, TEdge> edgeFactory)
             : base(visitedGraph)
         {
             TransitiveClosure = new BidirectionalGraph<TVertex, TEdge>();
@@ -33,7 +33,7 @@ namespace QuikGraph.Algorithms
         /// </summary>
         public BidirectionalGraph<TVertex, TEdge> TransitiveClosure { get; }
 
-        [NotNull]
+
         private readonly Func<TVertex, TVertex, TEdge> _createEdge;
 
         #region AlgorithmBase<TGraph>

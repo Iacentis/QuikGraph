@@ -14,7 +14,7 @@ namespace QuikGraph.Tests.Events
             var edge = new Edge<int>(1, 2);
             var args = new EdgeEventArgs<int, Edge<int>>(edge);
 
-            Assert.AreSame(edge, args.Edge);
+            Assert.That(edge,Is.SameAs(args.Edge));
         }
 
         [Test]

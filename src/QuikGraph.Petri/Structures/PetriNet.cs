@@ -1,11 +1,10 @@
-﻿#if SUPPORTS_SERIALIZATION || SUPPORTS_CLONEABLE
-using System;
-#endif
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph.Petri
 {
@@ -13,13 +12,10 @@ namespace QuikGraph.Petri
     /// High Level Petri Graph.
     /// </summary>
     /// <typeparam name="TToken">Token type.</typeparam>
-#if SUPPORTS_SERIALIZATION
     [Serializable]
-#endif
     public sealed class PetriNet<TToken> : IMutablePetriNet<TToken>
-#if SUPPORTS_CLONEABLE
         , ICloneable
-#endif
+
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PetriNet{Token}"/> class.
@@ -32,7 +28,7 @@ namespace QuikGraph.Petri
         /// Copy constructor.
         /// </summary>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="other"/> is <see langword="null"/>.</exception>
-        private PetriNet([NotNull] PetriNet<TToken> other)
+        private PetriNet(PetriNet<TToken> other)
         {
             Debug.Assert(other != null);
 
@@ -46,25 +42,24 @@ namespace QuikGraph.Petri
 
         #region IPetriNet<TToken>
 
-        [NotNull, ItemNotNull]
         private readonly List<IPlace<TToken>> _places = new List<IPlace<TToken>>();
 
         /// <inheritdoc />
         public IEnumerable<IPlace<TToken>> Places => _places.AsEnumerable();
 
-        [NotNull, ItemNotNull]
+
         private readonly List<ITransition<TToken>> _transitions = new List<ITransition<TToken>>();
 
         /// <inheritdoc />
         public IEnumerable<ITransition<TToken>> Transitions => _transitions.AsEnumerable();
 
-        [NotNull, ItemNotNull]
+
         private readonly List<IArc<TToken>> _arcs = new List<IArc<TToken>>();
 
         /// <inheritdoc />
         public IEnumerable<IArc<TToken>> Arcs => _arcs.AsEnumerable();
 
-        [NotNull]
+
         private readonly PetriGraph<TToken> _graph = new PetriGraph<TToken>();
 
         /// <inheritdoc />
@@ -118,19 +113,17 @@ namespace QuikGraph.Petri
         /// Clones this <see cref="PetriNet{TToken}"/>.
         /// </summary>
         [Pure]
-        [NotNull]
         public PetriNet<TToken> Clone()
         {
             return new PetriNet<TToken>(this);
         }
 
-#if SUPPORTS_CLONEABLE
+
         /// <inheritdoc />
         object ICloneable.Clone()
         {
             return Clone();
         }
-#endif
 
         #endregion
 
@@ -139,7 +132,7 @@ namespace QuikGraph.Petri
         {
             var builder = new StringBuilder();
             builder.AppendLine("-----------------------------------------------");
-            
+
             builder.AppendLine($"Places ({_places.Count})");
             foreach (IPlace<TToken> place in _places)
             {

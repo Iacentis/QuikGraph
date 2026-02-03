@@ -1,8 +1,7 @@
-﻿#if !SUPPORTS_TYPE_FULL_FEATURES
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph.Utils
 {
@@ -11,8 +10,7 @@ namespace QuikGraph.Utils
     /// </summary>
     internal static class TypeUtils
     {
-        [NotNull]
-        private static readonly Dictionary<Type, TypeCode> TypeCodeMap = new Dictionary<Type, TypeCode>(15)
+        private static readonly Dictionary<Type, TypeCode> TypeCodeMap = new(15)
         {
             { typeof(sbyte), TypeCode.SByte },
             { typeof(byte), TypeCode.Byte },
@@ -24,7 +22,7 @@ namespace QuikGraph.Utils
             { typeof(ulong), TypeCode.UInt64 },
             { typeof(float), TypeCode.Single },
             { typeof(double), TypeCode.Double },
-            { typeof(decimal), TypeCode.Decimal},
+            { typeof(decimal), TypeCode.Decimal },
             { typeof(DateTime), TypeCode.DateTime },
             { typeof(string), TypeCode.String },
             { typeof(bool), TypeCode.Boolean },
@@ -37,7 +35,7 @@ namespace QuikGraph.Utils
         /// <remarks>Kind of equivalent to the System function for compatibility, but not really...</remarks>
         /// <param name="type"><see cref="Type"/> to get the <see cref="TypeCode"/>.</param>
         /// <returns>A <see cref="TypeCode"/>.</returns>
-        public static TypeCode GetTypeCode([CanBeNull] Type type)
+        public static TypeCode GetTypeCode(Type type)
         {
             if (type is null)
                 return TypeCode.Empty;
@@ -52,4 +50,3 @@ namespace QuikGraph.Utils
         }
     }
 }
-#endif

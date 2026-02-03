@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Graphviz.Dot;
 using static QuikGraph.Graphviz.Tests.CultureHelpers;
@@ -17,44 +16,44 @@ namespace QuikGraph.Graphviz.Tests
         public void Constructor()
         {
             var graph = new GraphvizGraph();
-            Assert.IsNull(graph.Comment);
-            Assert.IsNull(graph.Url);
-            Assert.AreEqual(GraphvizColor.White, graph.BackgroundColor);
-            Assert.AreEqual(GraphvizClusterMode.Local, graph.ClusterRank);
-            Assert.IsNull(graph.Font);
-            Assert.AreEqual(GraphvizColor.Black, graph.FontColor);
-            Assert.AreEqual(1.0, graph.PenWidth);
-            Assert.IsFalse(graph.IsCentered);
-            Assert.IsFalse(graph.IsCompounded);
-            Assert.IsFalse(graph.IsConcentrated);
-            Assert.IsFalse(graph.IsLandscape);
-            Assert.IsFalse(graph.IsReMinCross);
-            Assert.IsFalse(graph.IsHtmlLabel);
-            Assert.IsNull(graph.Label);
-            Assert.AreEqual(GraphvizLabelJustification.C, graph.LabelJustification);
-            Assert.IsNotNull(graph.Layers);
-            Assert.AreEqual(1.0, graph.McLimit);
-            Assert.AreEqual(0.25, graph.NodeSeparation);
-            Assert.AreEqual(GraphvizRankDirection.TB, graph.RankDirection);
-            Assert.AreEqual(0.5, graph.RankSeparation);
-            Assert.AreEqual(-1, graph.NsLimit);
-            Assert.AreEqual(-1, graph.NsLimit1);
-            Assert.AreEqual(GraphvizOutputMode.BreadthFirst, graph.OutputOrder);
-            Assert.AreEqual(GraphvizPageDirection.BL, graph.PageDirection);
-            Assert.IsNotNull(graph.PageSize);
-            Assert.Zero(graph.PageSize.Width);
-            Assert.Zero(graph.PageSize.Height);
-            Assert.Zero(graph.Quantum);
-            Assert.AreEqual(GraphvizRatioMode.Auto, graph.Ratio);
-            Assert.AreEqual(0.96, graph.Resolution);
-            Assert.Zero(graph.Rotate);
-            Assert.AreEqual(8, graph.SamplePoints);
-            Assert.AreEqual(30, graph.SearchSize);
-            Assert.IsNotNull(graph.Size);
-            Assert.Zero(graph.Size.Width);
-            Assert.Zero(graph.Size.Height);
-            Assert.AreEqual(GraphvizSplineType.Spline, graph.Splines);
-            Assert.IsNull(graph.StyleSheet);
+            Assert.That(graph.Comment, Is.Null);
+            Assert.That(graph.Url, Is.Null);
+            Assert.That(GraphvizColor.White, Is.EqualTo(graph.BackgroundColor));
+            Assert.That(GraphvizClusterMode.Local, Is.EqualTo(graph.ClusterRank));
+            Assert.That(graph.Font, Is.Null);
+            Assert.That(GraphvizColor.Black, Is.EqualTo(graph.FontColor));
+            Assert.That(1.0, Is.EqualTo(graph.PenWidth));
+            Assert.That(graph.IsCentered, Is.False);
+            Assert.That(graph.IsCompounded, Is.False);
+            Assert.That(graph.IsConcentrated, Is.False);
+            Assert.That(graph.IsLandscape, Is.False);
+            Assert.That(graph.IsReMinCross, Is.False);
+            Assert.That(graph.IsHtmlLabel, Is.False);
+            Assert.That(graph.Label, Is.Null);
+            Assert.That(GraphvizLabelJustification.C, Is.EqualTo(graph.LabelJustification));
+            Assert.That(graph.Layers, Is.Not.Null);
+            Assert.That(1.0, Is.EqualTo(graph.McLimit));
+            Assert.That(0.25, Is.EqualTo(graph.NodeSeparation));
+            Assert.That(GraphvizRankDirection.TB, Is.EqualTo(graph.RankDirection));
+            Assert.That(0.5, Is.EqualTo(graph.RankSeparation));
+            Assert.That(-1, Is.EqualTo(graph.NsLimit));
+            Assert.That(-1, Is.EqualTo(graph.NsLimit1));
+            Assert.That(GraphvizOutputMode.BreadthFirst, Is.EqualTo(graph.OutputOrder));
+            Assert.That(GraphvizPageDirection.BL, Is.EqualTo(graph.PageDirection));
+            Assert.That(graph.PageSize, Is.Not.Null);
+            Assert.That(graph.PageSize.Width, Is.Zero);
+            Assert.That(graph.PageSize.Height, Is.Zero);
+            Assert.That(graph.Quantum, Is.Zero);
+            Assert.That(GraphvizRatioMode.Auto, Is.EqualTo(graph.Ratio));
+            Assert.That(0.96, Is.EqualTo(graph.Resolution));
+            Assert.That(graph.Rotate, Is.Zero);
+            Assert.That(8, Is.EqualTo(graph.SamplePoints));
+            Assert.That(30, Is.EqualTo(graph.SearchSize));
+            Assert.That(graph.Size, Is.Not.Null);
+            Assert.That(graph.Size.Width, Is.Zero);
+            Assert.That(graph.Size.Height, Is.Zero);
+            Assert.That(GraphvizSplineType.Spline, Is.EqualTo(graph.Splines));
+            Assert.That(graph.StyleSheet, Is.Null);
         }
 
         [Test]
@@ -65,7 +64,7 @@ namespace QuikGraph.Graphviz.Tests
                 throw new InvalidOperationException($"Graph has null {nameof(GraphvizGraph.Name)}.");
 
             graph.Name = "GraphName";
-            Assert.AreSame("GraphName", graph.Name);
+            Assert.That("GraphName", Is.SameAs(graph.Name));
         }
 
         [Test]
@@ -76,7 +75,7 @@ namespace QuikGraph.Graphviz.Tests
             Assert.Throws<ArgumentNullException>(() => graph.Name = null);
         }
 
-        [NotNull, ItemNotNull]
+
         private static IEnumerable<TestCaseData> ToDotTestCases
         {
             get
@@ -84,17 +83,10 @@ namespace QuikGraph.Graphviz.Tests
                 var graph = new GraphvizGraph();
                 yield return new TestCaseData(graph, string.Empty);
 
-                graph = new GraphvizGraph
-                {
-                    Comment = "Test comment"
-                };
+                graph = new GraphvizGraph { Comment = "Test comment" };
                 yield return new TestCaseData(graph, @"comment=""Test comment""");
 
-                graph = new GraphvizGraph
-                {
-                    Url = "https://test.fr",
-                    PageDirection = GraphvizPageDirection.LB
-                };
+                graph = new GraphvizGraph { Url = "https://test.fr", PageDirection = GraphvizPageDirection.LB };
                 yield return new TestCaseData(graph, @"URL=""https://test.fr""; pagedir=LB;");
 
                 graph = new GraphvizGraph
@@ -156,21 +148,15 @@ namespace QuikGraph.Graphviz.Tests
                     + @"splines=curved; stylesheet=""stylesheet.xml"";");
 
                 // Orientation
-                graph = new GraphvizGraph
-                {
-                    Rotate = 12
-                };
+                graph = new GraphvizGraph { Rotate = 12 };
                 yield return new TestCaseData(graph, "rotate=12");
 
-                graph = new GraphvizGraph
-                {
-                    IsLandscape = true
-                };
+                graph = new GraphvizGraph { IsLandscape = true };
                 yield return new TestCaseData(graph, @"orientation=""[1L]*""");
 
                 graph = new GraphvizGraph
                 {
-                    Rotate = 14,    // Priority to rotation over landscape (rotate 90)
+                    Rotate = 14, // Priority to rotation over landscape (rotate 90)
                     IsLandscape = true
                 };
                 yield return new TestCaseData(graph, @"rotate=14");
@@ -188,22 +174,24 @@ namespace QuikGraph.Graphviz.Tests
                 graph = new GraphvizGraph
                 {
                     IsHtmlLabel = true,
-                    Label = "<i>\"The Label\"</i>\n &amp;/&lt;&gt;@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\\[]() Content ∴∞⇐ℜΩ÷嗷娪"
+                    Label =
+                        "<i>\"The Label\"</i>\n &amp;/&lt;&gt;@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\\[]() Content ∴∞⇐ℜΩ÷嗷娪"
                 };
                 yield return new TestCaseData(
                     graph,
-                    @"label=<<i>""The Label""</i>" + '\n' + @" &amp;/&lt;&gt;@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\[]() Content ∴∞⇐ℜΩ÷嗷娪>");
+                    @"label=<<i>""The Label""</i>" + '\n' +
+                    @" &amp;/&lt;&gt;@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\[]() Content ∴∞⇐ℜΩ÷嗷娪>");
             }
         }
 
         [TestCaseSource(nameof(ToDotTestCases))]
-        public void ToDot([NotNull] GraphvizGraph graph, [NotNull] string expectedDot)
+        public void ToDot(GraphvizGraph graph, string expectedDot)
         {
-            Assert.AreEqual(expectedDot, graph.ToDot());
-            Assert.AreEqual(expectedDot, graph.ToString());
+            Assert.That(expectedDot, Is.EqualTo(graph.ToDot()));
+            Assert.That(expectedDot, Is.EqualTo(graph.ToString()));
         }
 
-        [NotNull, ItemNotNull]
+
         private static IEnumerable<TestCaseData> ToDotCultureInvariantTestCases
         {
             get
@@ -217,7 +205,7 @@ namespace QuikGraph.Graphviz.Tests
         }
 
         [TestCaseSource(nameof(ToDotCultureInvariantTestCases))]
-        public void ToDot_InvariantCulture([NotNull, InstantHandle] Func<GraphvizGraph, string> convert)
+        public void ToDot_InvariantCulture(Func<GraphvizGraph, string> convert)
         {
             var graph = new GraphvizGraph
             {
@@ -238,12 +226,12 @@ namespace QuikGraph.Graphviz.Tests
 
             using (CultureScope(EnglishCulture))
             {
-                Assert.AreEqual(expectedDot, convert(graph));
+                Assert.That(expectedDot, Is.EqualTo(convert(graph)));
             }
 
             using (CultureScope(FrenchCulture))
             {
-                Assert.AreEqual(expectedDot, convert(graph));
+                Assert.That(expectedDot, Is.EqualTo(convert(graph)));
             }
         }
     }

@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Linq;
-#if SUPPORTS_AGGRESSIVE_INLINING
+
 using System.Runtime.CompilerServices;
-#endif
-using JetBrains.Annotations;
+
+
 
 namespace QuikGraph
 {
@@ -14,18 +15,18 @@ namespace QuikGraph
     /// (http://www.cs.utk.edu/~dongarra/etemplates/node373.html)
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
-#if SUPPORTS_SERIALIZATION
+
     [Serializable]
-#endif
+
     [DebuggerDisplay("VertexCount = {" + nameof(VertexCount) + "}, EdgeCount = {" + nameof(EdgeCount) + "}")]
     public sealed class CompressedSparseRowGraph<TVertex> : IVertexListGraph<TVertex, SEquatableEdge<TVertex>>, IEdgeListGraph<TVertex, SEquatableEdge<TVertex>>
-#if SUPPORTS_CLONEABLE
+
         , ICloneable
-#endif
+
     {
-#if SUPPORTS_SERIALIZATION
+
         [Serializable]
-#endif
+
         private struct Range
         {
             public readonly int Start;
@@ -44,8 +45,8 @@ namespace QuikGraph
         }
 
         private CompressedSparseRowGraph(
-            [NotNull] Dictionary<TVertex, Range> outEdgeStartRanges,
-            [NotNull, ItemNotNull] TVertex[] outEdges)
+             Dictionary<TVertex, Range> outEdgeStartRanges,
+             TVertex[] outEdges)
         {
             Debug.Assert(outEdgeStartRanges != null);
             Debug.Assert(outEdges != null);
@@ -61,13 +62,12 @@ namespace QuikGraph
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <returns>A corresponding <see cref="CompressedSparseRowGraph{TVertex}"/>.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
-        [NotNull]
+
         public static CompressedSparseRowGraph<TVertex> FromGraph<TEdge>(
-            [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> graph)
+             IVertexAndEdgeListGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
-            if (graph is null)
-                throw new ArgumentNullException(nameof(graph));
+            ArgumentNullException.ThrowIfNull(graph);
 
             var outEdgeStartRanges = new Dictionary<TVertex, Range>(graph.VertexCount);
             var outEdges = new TVertex[graph.EdgeCount];
@@ -134,10 +134,10 @@ namespace QuikGraph
         /// <inheritdoc />
         public int EdgeCount => _outEdges.Length;
 
-        [NotNull, ItemNotNull]
+
         private readonly TVertex[] _outEdges;
 
-        [NotNull]
+
         private readonly Dictionary<TVertex, Range> _outEdgeStartRanges;
 
         /// <inheritdoc />
@@ -262,11 +262,11 @@ namespace QuikGraph
         }
 
         [Pure]
-        [NotNull]
-#if SUPPORTS_AGGRESSIVE_INLINING
+
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
-        private IEnumerable<SEquatableEdge<TVertex>> OutEdgesIterator([NotNull] TVertex vertex)
+
+        private IEnumerable<SEquatableEdge<TVertex>> OutEdgesIterator( TVertex vertex)
         {
             Debug.Assert(vertex != null);
 
@@ -319,7 +319,7 @@ namespace QuikGraph
         /// </summary>
         /// <returns>Cloned graph.</returns>
         [Pure]
-        [NotNull]
+
         public CompressedSparseRowGraph<TVertex> Clone()
         {
             var ranges = new Dictionary<TVertex, Range>(_outEdgeStartRanges);
@@ -327,13 +327,13 @@ namespace QuikGraph
             return new CompressedSparseRowGraph<TVertex>(ranges, edges);
         }
 
-#if SUPPORTS_CLONEABLE
+
         /// <inheritdoc />
         object ICloneable.Clone()
         {
             return Clone();
         }
-#endif
+
 
         #endregion
     }

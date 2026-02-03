@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using QuikGraph.Collections;
 
 namespace QuikGraph.Tests.Collections
@@ -20,10 +20,10 @@ namespace QuikGraph.Tests.Collections
         #region Test helpers
 
         private static void AssertHeapSize<TPriority, TValue>(
-            [NotNull] SoftHeap<TPriority, TValue> heap,
+             SoftHeap<TPriority, TValue> heap,
             int expectedCount)
         {
-            Assert.AreEqual(expectedCount, heap.Count);
+            Assert.That(expectedCount,Is.EqualTo(heap.Count));
         }
 
         #endregion
@@ -56,10 +56,10 @@ namespace QuikGraph.Tests.Collections
                 Comparison<TPriority> expectedComparer)
             {
                 AssertHeapSize(heap, 0);
-                Assert.AreEqual(expectedErrorRate, heap.ErrorRate);
-                Assert.AreEqual(2 + 2 * (int) Math.Ceiling(Math.Log(1.0 / expectedErrorRate, 2.0)), heap.MinRank);
-                Assert.AreEqual(expectedComparer, heap.KeyComparison);
-                Assert.AreEqual(expectedMaxPriority, heap.KeyMaxValue);
+                Assert.That(expectedErrorRate,Is.EqualTo(heap.ErrorRate));
+                Assert.That(2 + 2 * (int) Math.Ceiling(Math.Log(1.0 / expectedErrorRate, 2.0)),Is.EqualTo(heap.MinRank));
+                Assert.That(expectedComparer,Is.EqualTo(heap.KeyComparison));
+                Assert.That(expectedMaxPriority,Is.EqualTo(heap.KeyMaxValue));
             }
 
             void AssertHeapBaseProperties<TPriority, TValue>(
@@ -249,38 +249,38 @@ namespace QuikGraph.Tests.Collections
             #endregion
         }
 
-        [NotNull, ItemNotNull]
+
         private static IEnumerable<TestCaseData> RemoveMinimumTestCases
         {
-            [UsedImplicitly]
+
             get
             {
-                int[] keys1 = { 42 };
+                int[] keys1 = [42];
 
                 yield return new TestCaseData(keys1, ErrorRate);
                 yield return new TestCaseData(keys1, ErrorRate2);
 
-                int[] keys2 = { 1, 2, 3, 5, 10, 2, 4, 6, 4, 3, 2, 150, 11, 42, 13 };
+                int[] keys2 = [1, 2, 3, 5, 10, 2, 4, 6, 4, 3, 2, 150, 11, 42, 13];
 
                 yield return new TestCaseData(keys2, ErrorRate);
                 yield return new TestCaseData(keys2, ErrorRate2);
 
                 int[] keys3 =
-                {
+                [
                     1, 2, 4, 3, 2, 15, 0, 11, 3, 5, 10, 2, 4, 6, 42, 13,
                     1, 2, 4, 2, 4, 6, 42, 13, 3, 2, 15, 0, 11, 3, 5, 10
-                };
+                ];
 
                 yield return new TestCaseData(keys3, ErrorRate);
                 yield return new TestCaseData(keys3, ErrorRate2);
 
                 int[] keys4 =
-                {
+                [
                     1, 2, 4, 3, 2, 15, 0, 11, 3, 5, 10, 2, 4, 6, 42, 13,
                     1, 2, 4, 2, 4, 6, 42, 13, 3, 2, 15, 0, 11, 3, 5, 10,
                     4, 6, 42, 1, 2, 0, 11, 3, 5, 10, 2, 13, 4, 3, 2, 15,
                     2, 4, 6, 42, 2, 4, 15, 13, 3, 2, 1, 0, 11, 3, 5, 10
-                };
+                ];
 
                 yield return new TestCaseData(keys4, ErrorRate);
                 yield return new TestCaseData(keys4, ErrorRate2);
@@ -288,17 +288,17 @@ namespace QuikGraph.Tests.Collections
         }
 
         [TestCaseSource(nameof(RemoveMinimumTestCases))]
-        public void RemoveMinimum([NotNull] int[] keys, double errorRate)
+        public void RemoveMinimum( int[] keys, double errorRate)
         {
             QuikGraphAssert.TrueForAll(keys, k => k < int.MaxValue);
-            Assert.IsTrue(keys.Length > 0);
+            Assert.That(keys.Length > 0,Is.True);
 
             var heap = new SoftHeap<int, string>(errorRate, int.MaxValue);
             foreach (int key in keys)
             {
                 heap.Add(key, key.ToString());
             }
-            Assert.AreEqual(keys.Length, heap.Count);
+            Assert.That(keys.Length,Is.EqualTo(heap.Count));
 
             int lastMinimum = int.MaxValue;
             int nbError = 0;
@@ -311,10 +311,10 @@ namespace QuikGraph.Tests.Collections
                 if (lastMinimum < pair.Key)
                     ++nbError;
                 lastMinimum = pair.Key;
-                Assert.AreEqual(pair.Key.ToString(), pair.Value);
+                Assert.That(pair.Key.ToString(),Is.EqualTo(pair.Value));
             }
 
-            Assert.IsTrue(nbError / (double)keys.Length <= errorRate);
+            Assert.That(nbError / (double)keys.Length <= errorRate,Is.True);
         }
 
         [Test]
@@ -336,7 +336,7 @@ namespace QuikGraph.Tests.Collections
 
             using (IEnumerator<KeyValuePair<double, int>> enumerator = heap.GetEnumerator())
             {
-                Assert.AreEqual(default(KeyValuePair<double, int>), enumerator.Current);
+                Assert.That(default(KeyValuePair<double, int>),Is.EqualTo(enumerator.Current));
                 Assert.Throws<NotSupportedException>(() => enumerator.Reset());
             }
         }

@@ -1,24 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
+using System.Diagnostics.Contracts;
 using QuikGraph.Graphviz.Helpers;
 using static QuikGraph.Graphviz.DotEscapers;
 using static QuikGraph.Utils.MathUtils;
-#if REQUIRE_STRING_COMPATIBILITY
-using static QuikGraph.Utils.StringUtils;
-#endif
+
 
 namespace QuikGraph.Graphviz.Dot
 {
     /// <summary>
     /// Graphviz graph.
     /// </summary>
-#if SUPPORTS_SERIALIZATION
     [Serializable]
-#endif
     public class GraphvizGraph
     {
-        [NotNull]
         private string _name = "G";
 
         /// <summary>
@@ -138,7 +133,7 @@ namespace QuikGraph.Graphviz.Dot
         /// Layers.
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:layers">See more</see>
         /// </summary>
-        [NotNull, ItemNotNull]
+
         public GraphvizLayerCollection Layers { get; } = new GraphvizLayerCollection();
 
         /// <summary>
@@ -250,8 +245,7 @@ namespace QuikGraph.Graphviz.Dot
         public string StyleSheet { get; set; }
 
         [Pure]
-        [NotNull]
-        internal string GenerateDot([NotNull] Dictionary<string, object> properties)
+        internal string GenerateDot(Dictionary<string, object> properties)
         {
             var dotParts = new List<string>(properties.Count);
             foreach (KeyValuePair<string, object> pair in properties)
@@ -261,7 +255,7 @@ namespace QuikGraph.Graphviz.Dot
                     case string strValue:
                         dotParts.Add($"{pair.Key}=\"{strValue}\"");
                         continue;
-                    
+
                     case float floatValue:
                         dotParts.Add($"{pair.Key}={floatValue.ToInvariantString()}");
                         continue;
@@ -289,20 +283,14 @@ namespace QuikGraph.Graphviz.Dot
                         continue;
 
                     default:
-                        dotParts.Add($"{pair.Key}={pair.Value.ToString().ToLower()}");
+                        dotParts.Add($"{pair.Key}={pair.Value.ToString()?.ToLower()}");
                         break;
                 }
             }
 
-            string dot =
-#if REQUIRE_STRING_COMPATIBILITY
-                Join(
-#else
-                string.Join(
-#endif
-                    "; ", dotParts);
+            string dot = string.Join("; ", dotParts);
 
-                dot = dotParts.Count > 1 ? dot + ";" : dot;
+            dot = dotParts.Count > 1 ? dot + ";" : dot;
 
             return dot;
         }
@@ -312,7 +300,6 @@ namespace QuikGraph.Graphviz.Dot
         /// </summary>
         /// <returns>Graph as DOT.</returns>
         [Pure]
-        [NotNull]
         public string ToDot()
         {
             var properties = new Dictionary<string, object>();
@@ -320,43 +307,53 @@ namespace QuikGraph.Graphviz.Dot
             {
                 properties["URL"] = Url;
             }
+
             if (BackgroundColor != GraphvizColor.White)
             {
                 properties["bgcolor"] = BackgroundColor;
             }
+
             if (IsCentered)
             {
                 properties["center"] = true;
             }
+
             if (ClusterRank != GraphvizClusterMode.Local)
             {
                 properties["clusterrank"] = ClusterRank.ToString().ToLower();
             }
+
             if (Comment != null)
             {
                 properties["comment"] = Escape(Comment);
             }
+
             if (IsCompounded)
             {
                 properties["compound"] = IsCompounded;
             }
+
             if (IsConcentrated)
             {
                 properties["concentrate"] = IsConcentrated;
             }
+
             if (Font != null)
             {
                 properties["fontname"] = Font.Name;
                 properties["fontsize"] = Font.SizeInPoints;
             }
+
             if (FontColor != GraphvizColor.Black)
             {
                 properties["fontcolor"] = FontColor;
             }
+
             if (!NearEqual(PenWidth, 1.0))
             {
-               properties["penwidth"] = PenWidth;
+                properties["penwidth"] = PenWidth;
             }
+
             if (Label != null)
             {
                 if (IsHtmlLabel)
@@ -368,74 +365,92 @@ namespace QuikGraph.Graphviz.Dot
                     properties["label"] = Escape(Label);
                 }
             }
+
             if (LabelJustification != GraphvizLabelJustification.C)
             {
                 properties["labeljust"] = LabelJustification.ToString().ToLower();
             }
+
             if (LabelLocation != GraphvizLabelLocation.B)
             {
                 properties["labelloc"] = LabelLocation.ToString().ToLower();
             }
+
             if (Layers.Count != 0)
             {
                 properties["layers"] = Layers;
             }
+
             if (!NearEqual(McLimit, 1.0))
             {
                 properties["mclimit"] = McLimit;
             }
+
             if (!NearEqual(NodeSeparation, 0.25))
             {
                 properties["nodesep"] = NodeSeparation;
             }
+
             if (RankDirection != GraphvizRankDirection.TB)
             {
                 properties["rankdir"] = RankDirection;
             }
+
             if (!NearEqual(RankSeparation, 0.5))
             {
                 properties["ranksep"] = RankSeparation;
             }
+
             if (IsNormalized)
             {
                 properties["normalize"] = IsNormalized;
             }
+
             if (NsLimit > 0)
             {
                 properties["nslimit"] = NsLimit;
             }
+
             if (NsLimit1 > 0)
             {
                 properties["nslimit1"] = NsLimit1;
             }
+
             if (OutputOrder != GraphvizOutputMode.BreadthFirst)
             {
                 properties["outputorder"] = OutputOrder.ToString().ToLower();
             }
+
             if (!PageSize.IsEmpty)
             {
                 properties["page"] = $"{PageSize.Width.ToInvariantString()},{PageSize.Height.ToInvariantString()}";
             }
+
             if (PageDirection != GraphvizPageDirection.BL)
             {
                 properties["pagedir"] = PageDirection;
             }
+
             if (Quantum > 0)
             {
                 properties["quantum"] = Quantum;
             }
+
             if (Ratio != GraphvizRatioMode.Auto)
             {
                 properties["ratio"] = Ratio.ToString().ToLower();
             }
+
             if (IsReMinCross)
             {
                 properties["remincross"] = IsReMinCross;
             }
+
             if (!NearEqual(Resolution, 0.96))
             {
                 properties["resolution"] = Resolution;
             }
+
             if (Rotate != 0)
             {
                 properties["rotate"] = Rotate;
@@ -444,22 +459,27 @@ namespace QuikGraph.Graphviz.Dot
             {
                 properties["orientation"] = "[1L]*";
             }
+
             if (SamplePoints != 8)
             {
                 properties["samplepoints"] = SamplePoints;
             }
+
             if (SearchSize != 30)
             {
                 properties["searchsize"] = SearchSize;
             }
+
             if (!Size.IsEmpty)
             {
                 properties["size"] = $"{Size.Width.ToInvariantString()},{Size.Height.ToInvariantString()}";
             }
+
             if (Splines != GraphvizSplineType.Spline)
             {
                 properties["splines"] = Splines;
             }
+
             if (StyleSheet != null)
             {
                 properties["stylesheet"] = StyleSheet;

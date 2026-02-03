@@ -33,9 +33,9 @@ namespace QuikGraph.Graphviz.Tests
 
             void CheckSize(GraphvizSize s, int w, int h, bool empty)
             {
-                Assert.AreEqual(w, s.Width);
-                Assert.AreEqual(h, s.Height);
-                Assert.AreEqual(empty, s.IsEmpty);
+                Assert.That(w, Is.EqualTo(s.Width));
+                Assert.That(h, Is.EqualTo(s.Height));
+                Assert.That(empty, Is.EqualTo(s.IsEmpty));
             }
 
             #endregion
@@ -73,9 +73,9 @@ namespace QuikGraph.Graphviz.Tests
 
             void CheckSize(GraphvizSizeF s, float w, float h, bool empty)
             {
-                Assert.AreEqual(w, s.Width);
-                Assert.AreEqual(h, s.Height);
-                Assert.AreEqual(empty, s.IsEmpty);
+                Assert.That(w, Is.EqualTo(s.Width));
+                Assert.That(h, Is.EqualTo(s.Height));
+                Assert.That(empty, Is.EqualTo(s.IsEmpty));
             }
 
             #endregion
@@ -97,8 +97,8 @@ namespace QuikGraph.Graphviz.Tests
             var size1 = default(GraphvizSize);
             var size2 = new GraphvizSize(12, 25);
 
-            Assert.AreEqual("0x0", size1.ToString());
-            Assert.AreEqual("12x25", size2.ToString());
+            Assert.That("0x0", Is.EqualTo(size1.ToString()));
+            Assert.That("12x25", Is.EqualTo(size2.ToString()));
         }
 
         [Test]
@@ -107,28 +107,30 @@ namespace QuikGraph.Graphviz.Tests
             var size1 = default(GraphvizSizeF);
             var size2 = new GraphvizSizeF(12.2f, 25.6f);
 
-            Assert.AreEqual("0x0", size1.ToString());
-            Assert.AreEqual("12.2x25.6", size2.ToString());
+            Assert.That("0x0", Is.EqualTo(size1.ToString()));
+            Assert.That("12.2x25.6", Is.EqualTo(size2.ToString()));
         }
 
         [Test]
+        [Obsolete("Obsolete")]
         public void Serialization_Size()
         {
             var size = new GraphvizSize(150, 200);
             GraphvizSize deserializedSize = SerializeAndDeserialize(size);
-            Assert.AreEqual(size.IsEmpty, deserializedSize.IsEmpty);
-            Assert.AreEqual(size.Width, deserializedSize.Width);
-            Assert.AreEqual(size.Height, deserializedSize.Height);
+            Assert.That(size.IsEmpty, Is.EqualTo(deserializedSize.IsEmpty));
+            Assert.That(size.Width, Is.EqualTo(deserializedSize.Width));
+            Assert.That(size.Height, Is.EqualTo(deserializedSize.Height));
         }
 
         [Test]
+        [Obsolete("Obsolete")]
         public void Serialization_SizeF()
         {
             var size = new GraphvizSizeF(150.5f, 200.6f);
             GraphvizSizeF deserializedSize = SerializeAndDeserialize(size);
-            Assert.AreEqual(size.IsEmpty, deserializedSize.IsEmpty);
-            Assert.AreEqual(size.Width, deserializedSize.Width);
-            Assert.AreEqual(size.Height, deserializedSize.Height);
+            Assert.That(size.IsEmpty, Is.EqualTo(deserializedSize.IsEmpty));
+            Assert.That(size.Width, Is.EqualTo(deserializedSize.Width));
+            Assert.That(size.Height, Is.EqualTo(deserializedSize.Height));
         }
     }
 }

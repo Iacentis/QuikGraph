@@ -13,16 +13,16 @@ namespace QuikGraph.Graphviz.Tests
         public void Constructor()
         {
             var point = new GraphvizPoint(0, 0);
-            Assert.AreEqual(0, point.X);
-            Assert.AreEqual(0, point.Y);
+            Assert.That(0,Is.EqualTo(point.X));
+            Assert.That(0,Is.EqualTo(point.Y));
 
             point = new GraphvizPoint(1, 5);
-            Assert.AreEqual(1, point.X);
-            Assert.AreEqual(5, point.Y);
+            Assert.That(1,Is.EqualTo(point.X));
+            Assert.That(5,Is.EqualTo(point.Y));
 
             point = new GraphvizPoint(-1, 3);
-            Assert.AreEqual(-1, point.X);
-            Assert.AreEqual(3, point.Y);
+            Assert.That(-1,Is.EqualTo(point.X));
+            Assert.That(3,Is.EqualTo(point.Y));
         }
     }
 }

@@ -34,28 +34,28 @@ namespace QuikGraph.Tests.Predicates
             var vertexMap = new Dictionary<int, double>();
             var predicate = new InDictionaryVertexPredicate<int, double>(vertexMap);
 
-            Assert.IsFalse(predicate.Test(1));
-            Assert.IsFalse(predicate.Test(2));
+            Assert.That(predicate.Test(1),Is.False);
+            Assert.That(predicate.Test(2),Is.False);
 
             vertexMap.Add(2, 12);
-            Assert.IsFalse(predicate.Test(1));
-            Assert.IsTrue(predicate.Test(2));
+            Assert.That(predicate.Test(1),Is.False);
+            Assert.That(predicate.Test(2),Is.True);
 
             vertexMap.Add(1, 42);
-            Assert.IsTrue(predicate.Test(1));
-            Assert.IsTrue(predicate.Test(2));
+            Assert.That(predicate.Test(1),Is.True);
+            Assert.That(predicate.Test(2),Is.True);
 
             vertexMap.Remove(2);
-            Assert.IsTrue(predicate.Test(1));
-            Assert.IsFalse(predicate.Test(2));
+            Assert.That(predicate.Test(1),Is.True);
+            Assert.That(predicate.Test(2),Is.False);
 
             vertexMap.Remove(3);
-            Assert.IsTrue(predicate.Test(1));
-            Assert.IsFalse(predicate.Test(2));
+            Assert.That(predicate.Test(1),Is.True);
+            Assert.That(predicate.Test(2),Is.False);
 
             vertexMap.Remove(1);
-            Assert.IsFalse(predicate.Test(1));
-            Assert.IsFalse(predicate.Test(2));
+            Assert.That(predicate.Test(1),Is.False);
+            Assert.That(predicate.Test(2),Is.False);
         }
 
         [Test]

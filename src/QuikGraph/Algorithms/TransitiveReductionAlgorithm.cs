@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations;
+﻿
 
 namespace QuikGraph.Algorithms
 {
@@ -17,7 +17,7 @@ namespace QuikGraph.Algorithms
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public TransitiveReductionAlgorithm(
-            [NotNull] IEdgeListGraph<TVertex, TEdge> visitedGraph)
+             IEdgeListGraph<TVertex, TEdge> visitedGraph)
             : base(visitedGraph)
         {
             TransitiveReduction = new BidirectionalGraph<TVertex, TEdge>();
@@ -26,7 +26,7 @@ namespace QuikGraph.Algorithms
         /// <summary>
         /// Transitive reduction graph.
         /// </summary>
-        [NotNull]
+
         public BidirectionalGraph<TVertex, TEdge> TransitiveReduction { get; }
 
         #region AlgorithmBase<TGraph>

@@ -2,14 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-#if !SUPPORTS_TYPE_FULL_FEATURES
-using System.Reflection;
-#endif
-#if SUPPORTS_SERIALIZATION && NETSTANDARD2_0
 using System.Runtime.Serialization;
-using System.Security.Permissions;
-#endif
-using JetBrains.Annotations;
+
 
 namespace QuikGraph
 {
@@ -19,14 +13,10 @@ namespace QuikGraph
     /// <remarks>It is mutable via the wrapped graph.</remarks>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type</typeparam>
-#if SUPPORTS_SERIALIZATION
     [Serializable]
-#endif
     [DebuggerDisplay("VertexCount = {" + nameof(VertexCount) + "}, EdgeCount = {" + nameof(EdgeCount) + "}")]
     public sealed class UndirectedBidirectionalGraph<TVertex, TEdge> : IUndirectedGraph<TVertex, TEdge>
-#if SUPPORTS_SERIALIZATION && NETSTANDARD2_0
         , ISerializable
-#endif
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -34,16 +24,13 @@ namespace QuikGraph
         /// </summary>
         /// <param name="originalGraph">Bidirectional graph.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="originalGraph"/> is <see langword="null"/>.</exception>
-        public UndirectedBidirectionalGraph([NotNull] IBidirectionalGraph<TVertex, TEdge> originalGraph)
+        public UndirectedBidirectionalGraph(IBidirectionalGraph<TVertex, TEdge> originalGraph)
         {
             OriginalGraph = originalGraph ?? throw new ArgumentNullException(nameof(originalGraph));
 
-#if SUPPORTS_TYPE_FULL_FEATURES
             _reorder = typeof(IUndirectedEdge<TVertex>).IsAssignableFrom(typeof(TEdge))
-#else
-            _reorder = typeof(IUndirectedEdge<TVertex>).GetTypeInfo().IsAssignableFrom(typeof(TEdge).GetTypeInfo())
-#endif
-                ? (ReorderVertices)((TVertex source, TVertex target, out TVertex orderedSource, out TVertex orderedTarget) =>
+                ? (source, target, out orderedSource,
+                    out orderedTarget) =>
                 {
                     if (Comparer<TVertex>.Default.Compare(source, target) > 0)
                     {
@@ -55,8 +42,8 @@ namespace QuikGraph
                         orderedSource = source;
                         orderedTarget = target;
                     }
-                })
-                : (TVertex source, TVertex target, out TVertex orderedSource, out TVertex orderedTarget) =>
+                }
+                : (source, target, out orderedSource, out orderedTarget) =>
                 {
                     orderedSource = source;
                     orderedTarget = target;
@@ -64,12 +51,12 @@ namespace QuikGraph
         }
 
         private delegate void ReorderVertices(
-            [NotNull] TVertex source,
-            [NotNull] TVertex target,
-            [NotNull] out TVertex orderedSource,
-            [NotNull] out TVertex orderedTarget);
+            TVertex source,
+            TVertex target,
+            out TVertex orderedSource,
+            out TVertex orderedTarget);
 
-        [NotNull]
+
         private readonly ReorderVertices _reorder;
 
         /// <inheritdoc />
@@ -180,7 +167,8 @@ namespace QuikGraph
 
             if (ContainsVertex(source))
             {
-                foreach (TEdge adjacentEdge in AdjacentEdges(source).Where(adjacentEdge => EdgeEqualityComparer(adjacentEdge, source, target)))
+                foreach (TEdge adjacentEdge in AdjacentEdges(source)
+                             .Where(adjacentEdge => EdgeEqualityComparer(adjacentEdge, source, target)))
                 {
                     edge = adjacentEdge;
                     return true;
@@ -193,22 +181,21 @@ namespace QuikGraph
 
         #endregion
 
-#if SUPPORTS_SERIALIZATION && NETSTANDARD2_0
+
         #region ISerializable
 
         private UndirectedBidirectionalGraph(SerializationInfo info, StreamingContext context)
-            : this((IBidirectionalGraph<TVertex, TEdge>)info.GetValue("OriginalGraph", typeof(IBidirectionalGraph<TVertex, TEdge>)))
+            : this((IBidirectionalGraph<TVertex, TEdge>)info.GetValue("OriginalGraph",
+                typeof(IBidirectionalGraph<TVertex, TEdge>)))
         {
         }
 
         /// <inheritdoc />
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
         void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("OriginalGraph", OriginalGraph);
         }
 
         #endregion
-#endif
     }
 }

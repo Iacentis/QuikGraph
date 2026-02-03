@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using JetBrains.Annotations;
+using System.Diagnostics.Contracts;
 using static QuikGraph.Utils.DisposableHelpers;
 
 namespace QuikGraph.Algorithms.Observers
@@ -11,9 +11,9 @@ namespace QuikGraph.Algorithms.Observers
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
-#if SUPPORTS_SERIALIZATION
+
     [Serializable]
-#endif
+
     public sealed class UndirectedVertexPredecessorRecorderObserver<TVertex, TEdge> :
         IObserver<IUndirectedTreeBuilderAlgorithm<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
@@ -32,7 +32,7 @@ namespace QuikGraph.Algorithms.Observers
         /// <param name="verticesPredecessors">Vertices predecessors.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="verticesPredecessors"/> is <see langword="null"/>.</exception>
         public UndirectedVertexPredecessorRecorderObserver(
-            [NotNull] IDictionary<TVertex, TEdge> verticesPredecessors)
+             IDictionary<TVertex, TEdge> verticesPredecessors)
         {
             VerticesPredecessors = verticesPredecessors ?? throw new ArgumentNullException(nameof(verticesPredecessors));
         }
@@ -40,7 +40,7 @@ namespace QuikGraph.Algorithms.Observers
         /// <summary>
         /// Vertices predecessors.
         /// </summary>
-        [NotNull]
+
         public IDictionary<TVertex, TEdge> VerticesPredecessors { get; }
 
         #region IObserver<TAlgorithm>
@@ -48,8 +48,7 @@ namespace QuikGraph.Algorithms.Observers
         /// <inheritdoc />
         public IDisposable Attach(IUndirectedTreeBuilderAlgorithm<TVertex, TEdge> algorithm)
         {
-            if (algorithm is null)
-                throw new ArgumentNullException(nameof(algorithm));
+            ArgumentNullException.ThrowIfNull(algorithm);
 
             algorithm.TreeEdge += OnEdgeDiscovered;
             return Finally(() => algorithm.TreeEdge -= OnEdgeDiscovered);
@@ -57,7 +56,7 @@ namespace QuikGraph.Algorithms.Observers
 
         #endregion
 
-        private void OnEdgeDiscovered([NotNull] object sender, [NotNull] UndirectedEdgeEventArgs<TVertex, TEdge> args)
+        private void OnEdgeDiscovered( object sender,  UndirectedEdgeEventArgs<TVertex, TEdge> args)
         {
             Debug.Assert(sender != null);
             Debug.Assert(args != null);
@@ -73,8 +72,8 @@ namespace QuikGraph.Algorithms.Observers
         /// <returns>True if a path was found, false otherwise.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         [Pure]
-        [ContractAnnotation("=> true, path:notnull;=> false, path:null")]
-        public bool TryGetPath([NotNull] TVertex vertex, [ItemNotNull] out IEnumerable<TEdge> path)
+
+        public bool TryGetPath( TVertex vertex,  out IEnumerable<TEdge> path)
         {
             return VerticesPredecessors.TryGetPath(vertex, out path);
         }

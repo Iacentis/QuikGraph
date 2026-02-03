@@ -1,5 +1,4 @@
-﻿using JetBrains.Annotations;
-using QuikGraph.Graphviz.Dot;
+﻿using QuikGraph.Graphviz.Dot;
 
 namespace QuikGraph.Graphviz
 {
@@ -18,10 +17,10 @@ namespace QuikGraph.Graphviz
         /// <returns>Path to the saved result.</returns>
         /// <exception cref="T:System.ArgumentException"><paramref name="dot"/> is <see langword="null"/> or empty.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="outputFilePath"/> is <see langword="null"/> or empty.</exception>
-        [NotNull]
+
         string Run(
             GraphvizImageType imageType,
-            [NotNull] string dot,
-            [NotNull] string outputFilePath);
+             string dot,
+             string outputFilePath);
     }
 }

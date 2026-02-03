@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Threading;
-using JetBrains.Annotations;
+
 using static QuikGraph.Utils.DisposableHelpers;
 
 namespace QuikGraph.Graphviz.Tests
@@ -14,20 +14,20 @@ namespace QuikGraph.Graphviz.Tests
         /// <summary>
         /// French culture.
         /// </summary>
-        [NotNull]
+
         public static readonly CultureInfo FrenchCulture = new CultureInfo("fr-FR");
 
         /// <summary>
         /// US culture.
         /// </summary>
-        [NotNull]
+
         public static readonly CultureInfo EnglishCulture = new CultureInfo("en-US");
 
         /// <summary>
         /// Creates a scope using the given <paramref name="culture"/>.
         /// </summary>
-        [NotNull]
-        public static IDisposable CultureScope([NotNull] CultureInfo culture)
+
+        public static IDisposable CultureScope( CultureInfo culture)
         {
             CultureInfo backupCulture = Thread.CurrentThread.CurrentCulture;
             Thread.CurrentThread.CurrentCulture = culture;

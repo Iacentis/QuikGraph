@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-#if SUPPORTS_AGGRESSIVE_INLINING
+using System.Diagnostics.Contracts;
+
 using System.Runtime.CompilerServices;
-#endif
-using JetBrains.Annotations;
+
+
 using QuikGraph.Algorithms.Services;
 
 namespace QuikGraph.Algorithms
@@ -13,9 +14,9 @@ namespace QuikGraph.Algorithms
     /// Base class for all graph algorithm.
     /// </summary>
     /// <typeparam name="TGraph">Graph type.</typeparam>
-#if SUPPORTS_SERIALIZATION
+
     [Serializable]
-#endif
+
     public abstract class AlgorithmBase<TGraph> : IAlgorithm<TGraph>, IAlgorithmComponent
     {
         /// <summary>
@@ -24,7 +25,7 @@ namespace QuikGraph.Algorithms
         /// <param name="host">Host to use if set, otherwise use this reference.</param>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
-        protected AlgorithmBase([CanBeNull] IAlgorithmComponent host, [NotNull] TGraph visitedGraph)
+        protected AlgorithmBase(IAlgorithmComponent host, TGraph visitedGraph)
         {
             if (visitedGraph == null)
                 throw new ArgumentNullException(nameof(visitedGraph));
@@ -33,6 +34,7 @@ namespace QuikGraph.Algorithms
             {
                 host = this;
             }
+
             VisitedGraph = visitedGraph;
             _algorithmServices = new AlgorithmServices(host);
         }
@@ -42,7 +44,7 @@ namespace QuikGraph.Algorithms
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
-        protected AlgorithmBase([NotNull] TGraph visitedGraph)
+        protected AlgorithmBase(TGraph visitedGraph)
         {
             if (visitedGraph == null)
                 throw new ArgumentNullException(nameof(visitedGraph));
@@ -121,7 +123,7 @@ namespace QuikGraph.Algorithms
         /// Called on algorithm state changed.
         /// </summary>
         /// <param name="args"><see cref="F:EventArgs.Empty"/>.</param>
-        protected virtual void OnStateChanged([NotNull] EventArgs args)
+        protected virtual void OnStateChanged(EventArgs args)
         {
             Debug.Assert(args != null);
 
@@ -135,7 +137,7 @@ namespace QuikGraph.Algorithms
         /// Called on algorithm start.
         /// </summary>
         /// <param name="args"><see cref="F:EventArgs.Empty"/>.</param>
-        protected virtual void OnStarted([NotNull] EventArgs args)
+        protected virtual void OnStarted(EventArgs args)
         {
             Debug.Assert(args != null);
 
@@ -149,7 +151,7 @@ namespace QuikGraph.Algorithms
         /// Called on algorithm finished.
         /// </summary>
         /// <param name="args"><see cref="F:EventArgs.Empty"/>.</param>
-        protected virtual void OnFinished([NotNull] EventArgs args)
+        protected virtual void OnFinished(EventArgs args)
         {
             Debug.Assert(args != null);
 
@@ -163,7 +165,7 @@ namespace QuikGraph.Algorithms
         /// Called on algorithm abort.
         /// </summary>
         /// <param name="args"><see cref="F:EventArgs.Empty"/>.</param>
-        protected virtual void OnAborted([NotNull] EventArgs args)
+        protected virtual void OnAborted(EventArgs args)
         {
             Debug.Assert(args != null);
 
@@ -181,7 +183,6 @@ namespace QuikGraph.Algorithms
 
         #region IAlgorithmComponent
 
-        [NotNull]
         private readonly AlgorithmServices _algorithmServices;
 
         /// <inheritdoc />
@@ -209,7 +210,7 @@ namespace QuikGraph.Algorithms
             return false;
         }
 
-        [CanBeNull]
+
         private Dictionary<Type, object> _services;
 
         /// <summary>
@@ -219,11 +220,9 @@ namespace QuikGraph.Algorithms
         /// <param name="service">Found service.</param>
         /// <returns>True if the service was found, false otherwise.</returns>
         [Pure]
-        [ContractAnnotation("=> true, service:notnull;=> false, service:null")]
-        protected virtual bool TryGetService([NotNull] Type serviceType, out object service)
+        protected virtual bool TryGetService(Type serviceType, out object service)
         {
-            if (serviceType is null)
-                throw new ArgumentNullException(nameof(serviceType));
+            ArgumentNullException.ThrowIfNull(serviceType);
 
             lock (SyncRoot)
             {
@@ -256,9 +255,9 @@ namespace QuikGraph.Algorithms
         /// <exception cref="T:System.OperationCanceledException">
         /// If the algorithm cancellation service indicates <see cref="ICancelManager.IsCancelling"/> is true.
         /// </exception>
-#if SUPPORTS_AGGRESSIVE_INLINING
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
+
         protected void ThrowIfCancellationRequested()
         {
             if (_algorithmServices.CancelManager.IsCancelling)

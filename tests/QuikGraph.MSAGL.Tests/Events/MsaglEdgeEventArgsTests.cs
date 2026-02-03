@@ -16,8 +16,8 @@ namespace QuikGraph.MSAGL.Tests
             var msaglEdge = new Edge(new Node("1"), new Node("2"), ConnectionToGraph.Disconnected);
             var args = new MsaglEdgeEventArgs<int, Edge<int>>(edge, msaglEdge);
 
-            Assert.AreSame(edge, args.Edge);
-            Assert.AreSame(msaglEdge, args.MsaglEdge);
+            Assert.That(edge,Is.SameAs(args.Edge));
+            Assert.That(msaglEdge,Is.SameAs(args.MsaglEdge));
         }
 
         [Test]

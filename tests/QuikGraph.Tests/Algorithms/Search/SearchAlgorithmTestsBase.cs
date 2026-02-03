@@ -1,5 +1,4 @@
 ﻿using System;
-using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Algorithms;
 using static QuikGraph.Tests.AssertHelpers;
@@ -14,20 +13,20 @@ namespace QuikGraph.Tests.Algorithms.Search
         #region Test helpers
 
         protected static void TryGetTargetVertex_Test<TVertex, TGraph>(
-            [NotNull] RootedSearchAlgorithmBase<TVertex, TGraph> algorithm)
+             RootedSearchAlgorithmBase<TVertex, TGraph> algorithm)
             where TVertex : new()
             where TGraph : IImplicitVertexSet<TVertex>
         {
-            Assert.IsFalse(algorithm.TryGetTargetVertex(out _));
+            Assert.That(algorithm.TryGetTargetVertex(out _),Is.False);
 
             var vertex = new TVertex();
             algorithm.SetTargetVertex(vertex);
-            Assert.IsTrue(algorithm.TryGetTargetVertex(out TVertex target));
+            Assert.That(algorithm.TryGetTargetVertex(out TVertex target),Is.True);
             AssertEqual(vertex, target);
         }
 
         protected static void SetTargetVertex_Test<TGraph>(
-            [NotNull] RootedSearchAlgorithmBase<int, TGraph> algorithm)
+             RootedSearchAlgorithmBase<int, TGraph> algorithm)
             where TGraph : IImplicitVertexSet<int>
         {
             int targetVertexChangeCount = 0;
@@ -35,30 +34,30 @@ namespace QuikGraph.Tests.Algorithms.Search
 
             const int vertex1 = 0;
             algorithm.SetTargetVertex(vertex1);
-            Assert.AreEqual(1, targetVertexChangeCount);
+            Assert.That(1,Is.EqualTo(targetVertexChangeCount));
             algorithm.TryGetTargetVertex(out int target);
-            Assert.AreEqual(vertex1, target);
+            Assert.That(vertex1,Is.EqualTo(target));
 
             // Not changed
             algorithm.SetTargetVertex(vertex1);
-            Assert.AreEqual(1, targetVertexChangeCount);
+            Assert.That(1,Is.EqualTo(targetVertexChangeCount));
             algorithm.TryGetTargetVertex(out target);
-            Assert.AreEqual(vertex1, target);
+            Assert.That(vertex1,Is.EqualTo(target));
 
             const int vertex2 = 1;
             algorithm.SetTargetVertex(vertex2);
-            Assert.AreEqual(2, targetVertexChangeCount);
+            Assert.That(2,Is.EqualTo(targetVertexChangeCount));
             algorithm.TryGetTargetVertex(out target);
-            Assert.AreEqual(vertex2, target);
+            Assert.That(vertex2,Is.EqualTo(target));
 
             algorithm.SetTargetVertex(vertex1);
-            Assert.AreEqual(3, targetVertexChangeCount);
+            Assert.That(3,Is.EqualTo(targetVertexChangeCount));
             algorithm.TryGetTargetVertex(out target);
-            Assert.AreEqual(vertex1, target);
+            Assert.That(vertex1,Is.EqualTo(target));
         }
 
         protected static void SetTargetVertex_Throws_Test<TVertex, TGraph>(
-            [NotNull] RootedSearchAlgorithmBase<TVertex, TGraph> algorithm)
+             RootedSearchAlgorithmBase<TVertex, TGraph> algorithm)
             where TVertex : class
             where TGraph : IImplicitVertexSet<TVertex>
         {
@@ -67,7 +66,7 @@ namespace QuikGraph.Tests.Algorithms.Search
         }
 
         protected static void ClearTargetVertex_Test<TVertex, TGraph>(
-            [NotNull] RootedSearchAlgorithmBase<TVertex, TGraph> algorithm)
+             RootedSearchAlgorithmBase<TVertex, TGraph> algorithm)
             where TVertex : new()
             where TGraph : IImplicitVertexSet<TVertex>
         {
@@ -76,15 +75,15 @@ namespace QuikGraph.Tests.Algorithms.Search
             algorithm.TargetVertexChanged += (_, _) => ++targetVertexChangeCount;
 
             algorithm.ClearTargetVertex();
-            Assert.AreEqual(0, targetVertexChangeCount);
+            Assert.That(0,Is.EqualTo(targetVertexChangeCount));
 
             var vertex = new TVertex();
             SetTargetVertex(vertex);
             algorithm.ClearTargetVertex();
-            Assert.AreEqual(1, targetVertexChangeCount);
+            Assert.That(1,Is.EqualTo(targetVertexChangeCount));
 
             algorithm.ClearTargetVertex();
-            Assert.AreEqual(1, targetVertexChangeCount);
+            Assert.That(1,Is.EqualTo(targetVertexChangeCount));
 
             #region Local function
 
@@ -98,8 +97,8 @@ namespace QuikGraph.Tests.Algorithms.Search
         }
 
         protected static void ComputeWithoutRoot_Throws_Test<TGraph>(
-            [NotNull] IMutableVertexSet<int> graph,
-            [NotNull, InstantHandle] Func<RootedSearchAlgorithmBase<int, TGraph>> createAlgorithm)
+             IMutableVertexSet<int> graph,
+             Func<RootedSearchAlgorithmBase<int, TGraph>> createAlgorithm)
             where TGraph : IImplicitVertexSet<int>
         {
             RootedSearchAlgorithmBase<int, TGraph> algorithm = createAlgorithm();
@@ -121,21 +120,21 @@ namespace QuikGraph.Tests.Algorithms.Search
         }
 
         protected static void ComputeWithRootAndTarget_Test<TGraph>(
-            [NotNull] RootedSearchAlgorithmBase<int, TGraph> algorithm)
+             RootedSearchAlgorithmBase<int, TGraph> algorithm)
             where TGraph : IImplicitVertexSet<int>
         {
             const int start = 0;
             const int end = 1;
             Assert.DoesNotThrow(() => algorithm.Compute(start, end));
-            Assert.IsTrue(algorithm.TryGetRootVertex(out int root));
-            Assert.IsTrue(algorithm.TryGetTargetVertex(out int target));
+            Assert.That(algorithm.TryGetRootVertex(out int root),Is.True);
+            Assert.That(algorithm.TryGetTargetVertex(out int target),Is.True);
             AssertEqual(start, root);
             AssertEqual(end, target);
         }
 
         protected static void ComputeWithRootAndTarget_Throws_Test<TGraph>(
-            [NotNull] IMutableVertexSet<int> graph,
-            [NotNull] RootedSearchAlgorithmBase<int, TGraph> algorithm)
+             IMutableVertexSet<int> graph,
+             RootedSearchAlgorithmBase<int, TGraph> algorithm)
             where TGraph : IImplicitVertexSet<int>
         {
             const int start = 1;
@@ -150,7 +149,7 @@ namespace QuikGraph.Tests.Algorithms.Search
         }
 
         protected static void ComputeWithRootAndTarget_Throws_Test<TVertex, TGraph>(
-            [NotNull] RootedSearchAlgorithmBase<TVertex, TGraph> algorithm)
+             RootedSearchAlgorithmBase<TVertex, TGraph> algorithm)
             where TVertex : class, new()
             where TGraph : IImplicitVertexSet<TVertex>
         {

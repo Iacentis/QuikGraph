@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using JetBrains.Annotations;
+
 using QuikGraph.Algorithms.Services;
 using QuikGraph.Collections;
 
@@ -18,7 +18,7 @@ namespace QuikGraph.Algorithms.MinimumSpanningTree
             , IMinimumSpanningTreeAlgorithm<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
-        [NotNull]
+
         private readonly Func<TEdge, double> _edgeWeights;
 
         /// <summary>
@@ -29,8 +29,8 @@ namespace QuikGraph.Algorithms.MinimumSpanningTree
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
         public PrimMinimumSpanningTreeAlgorithm(
-            [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] Func<TEdge, double> edgeWeights)
+             IUndirectedGraph<TVertex, TEdge> visitedGraph,
+             Func<TEdge, double> edgeWeights)
             : this(null, visitedGraph, edgeWeights)
         {
         }
@@ -44,9 +44,9 @@ namespace QuikGraph.Algorithms.MinimumSpanningTree
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
         public PrimMinimumSpanningTreeAlgorithm(
-            [CanBeNull] IAlgorithmComponent host,
-            [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] Func<TEdge, double> edgeWeights)
+             IAlgorithmComponent host,
+             IUndirectedGraph<TVertex, TEdge> visitedGraph,
+             Func<TEdge, double> edgeWeights)
             : base(host, visitedGraph)
         {
             _edgeWeights = edgeWeights ?? throw new ArgumentNullException(nameof(edgeWeights));
@@ -57,7 +57,7 @@ namespace QuikGraph.Algorithms.MinimumSpanningTree
         /// </summary>
         public event EdgeAction<TVertex, TEdge> ExamineEdge;
 
-        private void OnExamineEdge([NotNull] TEdge edge)
+        private void OnExamineEdge( TEdge edge)
         {
             Debug.Assert(edge != null);
 
@@ -69,7 +69,7 @@ namespace QuikGraph.Algorithms.MinimumSpanningTree
         /// <inheritdoc />
         public event EdgeAction<TVertex, TEdge> TreeEdge;
 
-        private void OnTreeEdge([NotNull] TEdge edge)
+        private void OnTreeEdge( TEdge edge)
         {
             Debug.Assert(edge != null);
 
@@ -170,7 +170,7 @@ namespace QuikGraph.Algorithms.MinimumSpanningTree
             }
         }
 
-        private void EnqueueEdgesFrom([NotNull] TVertex vertex)
+        private void EnqueueEdgesFrom( TVertex vertex)
         {
             foreach (TEdge edge in _verticesEdges[vertex])
             {

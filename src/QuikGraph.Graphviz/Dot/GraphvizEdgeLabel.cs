@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using JetBrains.Annotations;
 using QuikGraph.Graphviz.Helpers;
 using static QuikGraph.Graphviz.DotEscapers;
 using static QuikGraph.Utils.MathUtils;
@@ -10,9 +9,9 @@ namespace QuikGraph.Graphviz.Dot
     /// <summary>
     /// Graphviz edge label.
     /// </summary>
-#if SUPPORTS_SERIALIZATION
+
     [Serializable]
-#endif
+
     public class GraphvizEdgeLabel
     {
         /// <summary>
@@ -63,10 +62,9 @@ namespace QuikGraph.Graphviz.Dot
         /// </summary>
         /// <param name="parameters">Parameter map to fill.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="parameters"/> is <see langword="null"/>.</exception>
-        public void AddParameters([NotNull] IDictionary parameters)
+        public void AddParameters( IDictionary parameters)
         {
-            if (parameters is null)
-                throw new ArgumentNullException(nameof(parameters));
+            ArgumentNullException.ThrowIfNull(parameters);
 
             if (Value != null)
             {

@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using BenchmarkDotNet.Attributes;
-using QuikGraph;
 
 namespace QuikGraph.Benchmarks
 {

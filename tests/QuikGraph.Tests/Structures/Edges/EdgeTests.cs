@@ -44,20 +44,20 @@ namespace QuikGraph.Tests.Structures
             var edge2 = new Edge<int>(1, 2);
             var edge3 = new Edge<int>(2, 1);
 
-            Assert.AreEqual(edge1, edge1);
+            Assert.That(edge1, Is.EqualTo(edge1));
 
-            Assert.AreNotEqual(edge1, edge2);
-            Assert.AreNotEqual(edge2, edge1);
-            Assert.IsFalse(edge1.Equals(edge2));
-            Assert.IsFalse(edge2.Equals(edge1));
+            Assert.That(edge1, Is.Not.EqualTo(edge2));
+            Assert.That(edge2, Is.Not.EqualTo(edge1));
+            Assert.That(edge1.Equals(edge2), Is.False);
+            Assert.That(edge2.Equals(edge1), Is.False);
 
-            Assert.AreNotEqual(edge1, edge3);
-            Assert.AreNotEqual(edge3, edge1);
-            Assert.IsFalse(edge1.Equals(edge2));
-            Assert.IsFalse(edge2.Equals(edge1));
+            Assert.That(edge1, Is.Not.EqualTo(edge3));
+            Assert.That(edge3, Is.Not.EqualTo(edge1));
+            Assert.That(edge1.Equals(edge2), Is.False);
+            Assert.That(edge2.Equals(edge1), Is.False);
 
-            Assert.AreNotEqual(null, edge1);
-            Assert.IsFalse(edge1.Equals(null));
+            Assert.That(edge1, Is.Not.Null);
+            Assert.That(edge1.Equals(null), Is.False);
         }
 
         [Test]
@@ -66,8 +66,8 @@ namespace QuikGraph.Tests.Structures
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(2, 1);
 
-            Assert.AreEqual("1 -> 2", edge1.ToString());
-            Assert.AreEqual("2 -> 1", edge2.ToString());
+            Assert.That("1 -> 2", Is.EqualTo(edge1.ToString()));
+            Assert.That("2 -> 1", Is.EqualTo(edge2.ToString()));
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
 using QuikGraph.Collections;
 
@@ -19,7 +18,7 @@ namespace QuikGraph.Algorithms.Search
         , IVertexColorizerAlgorithm<TVertex>
         where TEdge : IEdge<TVertex>
     {
-        [NotNull]
+
         private readonly IQueue<TVertex> _vertexQueue;
 
         /// <summary>
@@ -28,7 +27,7 @@ namespace QuikGraph.Algorithms.Search
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public UndirectedBreadthFirstSearchAlgorithm(
-            [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph)
+             IUndirectedGraph<TVertex, TEdge> visitedGraph)
             : this(visitedGraph, new Collections.Queue<TVertex>(), new Dictionary<TVertex, GraphColor>())
         {
         }
@@ -43,9 +42,9 @@ namespace QuikGraph.Algorithms.Search
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexQueue"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="verticesColors"/> is <see langword="null"/>.</exception>
         public UndirectedBreadthFirstSearchAlgorithm(
-            [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] IQueue<TVertex> vertexQueue,
-            [NotNull] IDictionary<TVertex, GraphColor> verticesColors)
+             IUndirectedGraph<TVertex, TEdge> visitedGraph,
+             IQueue<TVertex> vertexQueue,
+             IDictionary<TVertex, GraphColor> verticesColors)
             : this(null, visitedGraph, vertexQueue, verticesColors)
         {
         }
@@ -61,10 +60,10 @@ namespace QuikGraph.Algorithms.Search
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexQueue"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="verticesColors"/> is <see langword="null"/>.</exception>
         public UndirectedBreadthFirstSearchAlgorithm(
-            [CanBeNull] IAlgorithmComponent host,
-            [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] IQueue<TVertex> vertexQueue,
-            [NotNull] IDictionary<TVertex, GraphColor> verticesColors)
+             IAlgorithmComponent host,
+             IUndirectedGraph<TVertex, TEdge> visitedGraph,
+             IQueue<TVertex> vertexQueue,
+             IDictionary<TVertex, GraphColor> verticesColors)
             : base(host, visitedGraph)
         {
             VerticesColors = verticesColors ?? throw new ArgumentNullException(nameof(verticesColors));
@@ -76,7 +75,7 @@ namespace QuikGraph.Algorithms.Search
         /// <inheritdoc />
         public event VertexAction<TVertex> InitializeVertex;
 
-        private void OnVertexInitialized([NotNull] TVertex vertex)
+        private void OnVertexInitialized( TVertex vertex)
         {
             Debug.Assert(vertex != null);
 
@@ -86,7 +85,7 @@ namespace QuikGraph.Algorithms.Search
         /// <inheritdoc />
         public event VertexAction<TVertex> StartVertex;
 
-        private void OnStartVertex([NotNull] TVertex vertex)
+        private void OnStartVertex( TVertex vertex)
         {
             Debug.Assert(vertex != null);
 
@@ -98,7 +97,7 @@ namespace QuikGraph.Algorithms.Search
         /// </summary>
         public event VertexAction<TVertex> ExamineVertex;
 
-        private void OnExamineVertex([NotNull] TVertex vertex)
+        private void OnExamineVertex( TVertex vertex)
         {
             Debug.Assert(vertex != null);
 
@@ -110,7 +109,7 @@ namespace QuikGraph.Algorithms.Search
         /// </summary>
         public event VertexAction<TVertex> DiscoverVertex;
 
-        private void OnDiscoverVertex([NotNull] TVertex vertex)
+        private void OnDiscoverVertex( TVertex vertex)
         {
             Debug.Assert(vertex != null);
 
@@ -122,7 +121,7 @@ namespace QuikGraph.Algorithms.Search
         /// </summary>
         public event EdgeAction<TVertex, TEdge> ExamineEdge;
 
-        private void OnExamineEdge([NotNull] TEdge edge)
+        private void OnExamineEdge( TEdge edge)
         {
             Debug.Assert(edge != null);
 
@@ -134,7 +133,7 @@ namespace QuikGraph.Algorithms.Search
         /// </summary>
         public event UndirectedEdgeAction<TVertex, TEdge> TreeEdge;
 
-        private void OnTreeEdge([NotNull] TEdge edge, bool reversed)
+        private void OnTreeEdge( TEdge edge, bool reversed)
         {
             Debug.Assert(edge != null);
 
@@ -148,7 +147,7 @@ namespace QuikGraph.Algorithms.Search
         /// </summary>
         public event UndirectedEdgeAction<TVertex, TEdge> NonTreeEdge;
 
-        private void OnNonTreeEdge([NotNull] TEdge edge, bool reversed)
+        private void OnNonTreeEdge( TEdge edge, bool reversed)
         {
             Debug.Assert(edge != null);
 
@@ -162,7 +161,7 @@ namespace QuikGraph.Algorithms.Search
         /// </summary>
         public event UndirectedEdgeAction<TVertex, TEdge> GrayTarget;
 
-        private void OnGrayTarget([NotNull] TEdge edge, bool reversed)
+        private void OnGrayTarget( TEdge edge, bool reversed)
         {
             Debug.Assert(edge != null);
 
@@ -176,7 +175,7 @@ namespace QuikGraph.Algorithms.Search
         /// </summary>
         public event UndirectedEdgeAction<TVertex, TEdge> BlackTarget;
 
-        private void OnBlackTarget([NotNull] TEdge edge, bool reversed)
+        private void OnBlackTarget( TEdge edge, bool reversed)
         {
             Debug.Assert(edge != null);
 
@@ -188,7 +187,7 @@ namespace QuikGraph.Algorithms.Search
         /// <inheritdoc />
         public event VertexAction<TVertex> FinishVertex;
 
-        private void OnVertexFinished([NotNull] TVertex vertex)
+        private void OnVertexFinished( TVertex vertex)
         {
             Debug.Assert(vertex != null);
 
@@ -227,7 +226,7 @@ namespace QuikGraph.Algorithms.Search
         /// <summary>
         /// Stores vertices associated to their colors (treatment state).
         /// </summary>
-        [NotNull]
+
         public IDictionary<TVertex, GraphColor> VerticesColors { get; }
 
         #region IVertexColorizerAlgorithm<TVertex>
@@ -242,7 +241,7 @@ namespace QuikGraph.Algorithms.Search
 
         #endregion
 
-        internal void Visit([NotNull] TVertex root)
+        internal void Visit( TVertex root)
         {
             Debug.Assert(root != null);
 
@@ -250,7 +249,7 @@ namespace QuikGraph.Algorithms.Search
             FlushVisitQueue();
         }
 
-        private void EnqueueRoot([NotNull] TVertex root)
+        private void EnqueueRoot( TVertex root)
         {
             OnStartVertex(root);
 
@@ -277,7 +276,7 @@ namespace QuikGraph.Algorithms.Search
             }
         }
 
-        private void ExploreAdjacentEdges([NotNull] TVertex u)
+        private void ExploreAdjacentEdges( TVertex u)
         {
             foreach (TEdge edge in VisitedGraph.AdjacentEdges(u))
             {

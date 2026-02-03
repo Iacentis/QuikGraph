@@ -2,12 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using JetBrains.Annotations;
 using QuikGraph.Algorithms.Search;
 using QuikGraph.Algorithms.Services;
-#if !SUPPORTS_SORTEDSET
-using QuikGraph.Collections;
-#endif
+
 
 namespace QuikGraph.Algorithms.ConnectedComponents
 {
@@ -23,10 +20,9 @@ namespace QuikGraph.Algorithms.ConnectedComponents
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public sealed class WeaklyConnectedComponentsAlgorithm<TVertex, TEdge>
         : AlgorithmBase<IVertexListGraph<TVertex, TEdge>>
-        , IConnectedComponentAlgorithm<TVertex, TEdge, IVertexListGraph<TVertex, TEdge>>
+            , IConnectedComponentAlgorithm<TVertex, TEdge, IVertexListGraph<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
     {
-        [NotNull]
         private readonly Dictionary<int, int> _componentEquivalences = new Dictionary<int, int>();
 
         private int _currentComponent;
@@ -37,7 +33,7 @@ namespace QuikGraph.Algorithms.ConnectedComponents
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public WeaklyConnectedComponentsAlgorithm(
-            [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph)
+            IVertexListGraph<TVertex, TEdge> visitedGraph)
             : this(visitedGraph, new Dictionary<TVertex, int>())
         {
         }
@@ -50,8 +46,8 @@ namespace QuikGraph.Algorithms.ConnectedComponents
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="components"/> is <see langword="null"/>.</exception>
         public WeaklyConnectedComponentsAlgorithm(
-            [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] IDictionary<TVertex, int> components)
+            IVertexListGraph<TVertex, TEdge> visitedGraph,
+            IDictionary<TVertex, int> components)
             : this(null, visitedGraph, components)
         {
         }
@@ -65,21 +61,21 @@ namespace QuikGraph.Algorithms.ConnectedComponents
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="components"/> is <see langword="null"/>.</exception>
         public WeaklyConnectedComponentsAlgorithm(
-            [CanBeNull] IAlgorithmComponent host,
-            [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] IDictionary<TVertex, int> components)
+            IAlgorithmComponent host,
+            IVertexListGraph<TVertex, TEdge> visitedGraph,
+            IDictionary<TVertex, int> components)
             : base(host, visitedGraph)
         {
             Components = components ?? throw new ArgumentNullException(nameof(components));
         }
 
-        [ItemNotNull]
+
         private BidirectionalGraph<TVertex, TEdge>[] _graphs;
 
         /// <summary>
         /// Weakly connected components.
         /// </summary>
-        [NotNull, ItemNotNull]
+
         public BidirectionalGraph<TVertex, TEdge>[] Graphs
         {
             get
@@ -99,7 +95,6 @@ namespace QuikGraph.Algorithms.ConnectedComponents
                 {
                     foreach (TEdge edge in VisitedGraph.OutEdges(vertex))
                     {
-
                         if (Components[vertex] == Components[edge.Target])
                         {
                             _graphs[Components[vertex]].AddEdge(edge);
@@ -168,8 +163,7 @@ namespace QuikGraph.Algorithms.ConnectedComponents
 
             Debug.Assert(ComponentCount >= 0 && ComponentCount <= VisitedGraph.VertexCount);
             Debug.Assert(
-                VisitedGraph.Vertices.All(
-                    vertex => Components[vertex] >= 0 && Components[vertex] < ComponentCount));
+                VisitedGraph.Vertices.All(vertex => Components[vertex] >= 0 && Components[vertex] < ComponentCount));
         }
 
         private void MergeEquivalentComponents()
@@ -230,7 +224,7 @@ namespace QuikGraph.Algorithms.ConnectedComponents
 
         #endregion
 
-        private void OnStartVertex([NotNull] TVertex vertex)
+        private void OnStartVertex(TVertex vertex)
         {
             // We are looking on a new tree
             _currentComponent = _componentEquivalences.Count;
@@ -239,13 +233,13 @@ namespace QuikGraph.Algorithms.ConnectedComponents
             Components.Add(vertex, _currentComponent);
         }
 
-        private void OnEdgeDiscovered([NotNull] TEdge edge)
+        private void OnEdgeDiscovered(TEdge edge)
         {
             // New edge, we store with the current component number
             Components.Add(edge.Target, _currentComponent);
         }
 
-        private void OnForwardOrCrossEdge([NotNull] TEdge edge)
+        private void OnForwardOrCrossEdge(TEdge edge)
         {
             // We have touched another tree, updating count and current component
             int otherComponent = GetComponentEquivalence(Components[edge.Target]);

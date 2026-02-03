@@ -1,21 +1,17 @@
 ﻿using System;
-#if SUPPORTS_SERIALIZATION
 using System.Runtime.Serialization;
 using System.Security.Permissions;
-#endif
+
 
 namespace QuikGraph.Graphviz.Dot
 {
     /// <summary>
     /// Represents a color.
     /// </summary>
-#if SUPPORTS_SERIALIZATION
     [Serializable]
-#endif
     public partial struct GraphvizColor : IEquatable<GraphvizColor>
-#if SUPPORTS_SERIALIZATION
         , ISerializable
-#endif
+
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="GraphvizColor"/> struct.
@@ -94,20 +90,19 @@ namespace QuikGraph.Graphviz.Dot
             return A << 24 | R << 16 | G << 8 | B;
         }
 
-#if SUPPORTS_SERIALIZATION
+
         #region ISerializable
 
         private GraphvizColor(SerializationInfo info, StreamingContext context)
             : this(
-                (byte)info.GetValue("a", typeof(byte)),
-                (byte)info.GetValue("r", typeof(byte)),
-                (byte)info.GetValue("g", typeof(byte)),
-                (byte)info.GetValue("b", typeof(byte)))
+                (byte)(info.GetValue("a", typeof(byte)) ?? 0),
+                (byte)(info.GetValue("r", typeof(byte)) ?? 0),
+                (byte)(info.GetValue("g", typeof(byte)) ?? 0),
+                (byte)(info.GetValue("b", typeof(byte)) ?? 0))
         {
         }
 
         /// <inheritdoc />
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
         void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("a", A);
@@ -117,6 +112,5 @@ namespace QuikGraph.Graphviz.Dot
         }
 
         #endregion
-#endif
     }
 }

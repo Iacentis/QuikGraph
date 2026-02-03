@@ -1,5 +1,6 @@
 using System;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace QuikGraph.Petri.Tests
 {
@@ -12,7 +13,7 @@ namespace QuikGraph.Petri.Tests
         public void Constructor()
         {
             var place = new Place<int>("MyPlace");
-            Assert.AreEqual("MyPlace", place.Name);
+            Assert.That("MyPlace", Is.EqualTo(place.Name));
             CollectionAssert.IsEmpty(place.Marking);
         }
 
@@ -29,35 +30,35 @@ namespace QuikGraph.Petri.Tests
         {
             var place = new Place<int>("TestName");
             string expectedString = "P(TestName|0)";
-            Assert.AreEqual(expectedString, place.ToStringWithMarking());
+            Assert.That(expectedString, Is.EqualTo(place.ToStringWithMarking()));
 
             place.Marking.Add(1);
             place.Marking.Add(3);
             place.Marking.Add(5);
             place.Marking.Add(2);
-            expectedString = 
+            expectedString =
                 "P(TestName|4)" + Environment.NewLine +
                 "\tInt32" + Environment.NewLine +
                 "\tInt32" + Environment.NewLine +
                 "\tInt32" + Environment.NewLine +
                 "\tInt32";
-            Assert.AreEqual(expectedString, place.ToStringWithMarking());
+            Assert.That(expectedString, Is.EqualTo(place.ToStringWithMarking()));
         }
 
         [Test]
         public void ObjectToString()
         {
             var place = new Place<int>("TestName");
-            Assert.AreEqual("P(TestName|0)", place.ToString());
+            Assert.That("P(TestName|0)", Is.EqualTo(place.ToString()));
 
             place = new Place<int>("OtherTestName");
-            Assert.AreEqual("P(OtherTestName|0)", place.ToString());
+            Assert.That("P(OtherTestName|0)", Is.EqualTo(place.ToString()));
 
             place = new Place<int>("TestName_1");
             place.Marking.Add(1);
             place.Marking.Add(3);
             place.Marking.Add(5);
-            Assert.AreEqual("P(TestName_1|3)", place.ToString());
+            Assert.That("P(TestName_1|3)", Is.EqualTo(place.ToString()));
         }
     }
 }

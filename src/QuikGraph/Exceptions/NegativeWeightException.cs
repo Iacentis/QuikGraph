@@ -1,17 +1,17 @@
 ﻿using System;
-#if SUPPORTS_SERIALIZATION
+
 using System.Runtime.Serialization;
-#endif
-using JetBrains.Annotations;
+
+
 
 namespace QuikGraph
 {
     /// <summary>
     /// Exception raised when an algorithm find or computed a negative weight in a graph.
     /// </summary>
-#if SUPPORTS_SERIALIZATION
+
     [Serializable]
-#endif
+
     public class NegativeWeightException : QuikGraphException
     {
         /// <summary>
@@ -25,19 +25,20 @@ namespace QuikGraph
         /// <summary>
         /// Initializes a new instance of <see cref="NegativeWeightException"/> class.
         /// </summary>
-        public NegativeWeightException([NotNull] string message, [CanBeNull] Exception innerException = null)
+        public NegativeWeightException( string message,  Exception innerException = null)
             : base(message, innerException)
         {
         }
 
-#if SUPPORTS_SERIALIZATION
+
         /// <summary>
         /// Constructor used during runtime serialization.
         /// </summary>
+        [Obsolete("Obsolete")]
         protected NegativeWeightException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }
-#endif
+
     }
 }

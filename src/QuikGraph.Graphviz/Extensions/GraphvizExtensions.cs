@@ -1,9 +1,8 @@
 ﻿using System;
-#if SUPPORTS_SVG_CONVERSION
+using System.Diagnostics.Contracts;
 using System.IO;
 using System.Net;
-#endif
-using JetBrains.Annotations;
+
 
 namespace QuikGraph.Graphviz
 {
@@ -21,8 +20,7 @@ namespace QuikGraph.Graphviz
         /// <returns>Graph serialized in DOT format.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull]
-        public static string ToGraphviz<TVertex, TEdge>([NotNull] this IEdgeListGraph<TVertex, TEdge> graph)
+        public static string ToGraphviz<TVertex, TEdge>(this IEdgeListGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
             var algorithm = new GraphvizAlgorithm<TVertex, TEdge>(graph);
@@ -40,25 +38,21 @@ namespace QuikGraph.Graphviz
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="initAlgorithm"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull]
         public static string ToGraphviz<TVertex, TEdge>(
-            [NotNull] this IEdgeListGraph<TVertex, TEdge> graph,
-            [NotNull, InstantHandle] Action<GraphvizAlgorithm<TVertex, TEdge>> initAlgorithm)
+            this IEdgeListGraph<TVertex, TEdge> graph,
+            Action<GraphvizAlgorithm<TVertex, TEdge>> initAlgorithm)
             where TEdge : IEdge<TVertex>
         {
-            if (initAlgorithm is null)
-                throw new ArgumentNullException(nameof(initAlgorithm));
+            ArgumentNullException.ThrowIfNull(initAlgorithm);
 
             var algorithm = new GraphvizAlgorithm<TVertex, TEdge>(graph);
             initAlgorithm(algorithm);
             return algorithm.Generate();
         }
 
-#if SUPPORTS_SVG_CONVERSION
         /// <summary>
         /// Dot to Svg REST API endpoint.
         /// </summary>
-        [NotNull]
         public const string DotToSvgApiEndpoint = "https://rise4fun.com/rest/ask/Agl/";
 
         /// <summary>
@@ -72,9 +66,8 @@ namespace QuikGraph.Graphviz
         /// <returns>The svg graph.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull]
         [Obsolete("Conversion is using an external web service that is no longer available.")]
-        public static string ToSvg<TVertex, TEdge>([NotNull] this IEdgeListGraph<TVertex, TEdge> graph)
+        public static string ToSvg<TVertex, TEdge>(this IEdgeListGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
             return ToSvg(ToGraphviz(graph));
@@ -93,11 +86,10 @@ namespace QuikGraph.Graphviz
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="initAlgorithm"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull]
         [Obsolete("Conversion is using an external web service that is no longer available.")]
         public static string ToSvg<TVertex, TEdge>(
-            [NotNull] this IEdgeListGraph<TVertex, TEdge> graph,
-            [NotNull, InstantHandle] Action<GraphvizAlgorithm<TVertex, TEdge>> initAlgorithm)
+            this IEdgeListGraph<TVertex, TEdge> graph,
+            Action<GraphvizAlgorithm<TVertex, TEdge>> initAlgorithm)
             where TEdge : IEdge<TVertex>
         {
             return ToSvg(ToGraphviz(graph, initAlgorithm));
@@ -111,9 +103,8 @@ namespace QuikGraph.Graphviz
         /// <returns>The svg graph.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="dot"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull]
         [Obsolete("Conversion is using an external web service that is no longer available.")]
-        public static string ToSvg([NotNull] string dot)
+        public static string ToSvg(string dot)
         {
             if (dot is null)
                 throw new ArgumentNullException(nameof(dot));
@@ -133,9 +124,8 @@ namespace QuikGraph.Graphviz
                 return string.Empty;
             using (var reader = new StreamReader(streamResponse))
             {
-                return reader.ReadToEnd();  // Svg
+                return reader.ReadToEnd(); // Svg
             }
         }
-#endif
     }
 }

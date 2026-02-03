@@ -1,19 +1,21 @@
 ﻿using System;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph.Petri
 {
-#if SUPPORTS_SERIALIZATION
+    /// <summary>
+    /// Transition in a Petri net.
+    /// </summary>
+    /// <typeparam name="TToken"></typeparam>
     [Serializable]
-#endif
-    internal sealed class Transition<TToken> : ITransition<TToken>
+    public sealed class Transition<TToken> : ITransition<TToken>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Transition{Token}"/> class.
         /// </summary>
         /// <param name="name">Transition name.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="name"/> is <see langword="null"/>.</exception>
-        public Transition([NotNull] string name)
+        public Transition(string name)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
         }
@@ -21,7 +23,7 @@ namespace QuikGraph.Petri
         /// <inheritdoc />
         public string Name { get; }
 
-        [NotNull]
+
         private IConditionExpression<TToken> _condition = new AlwaysTrueConditionExpression<TToken>();
 
         /// <inheritdoc />

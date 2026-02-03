@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-#if SUPPORTS_AGGRESSIVE_INLINING
+using System.Diagnostics.Contracts;
+
 using System.Runtime.CompilerServices;
-#endif
-using JetBrains.Annotations;
+
+
 using QuikGraph.Algorithms.Services;
 
 namespace QuikGraph.Algorithms
@@ -15,13 +16,12 @@ namespace QuikGraph.Algorithms
     /// <remarks>Requires a starting vertex (root).</remarks>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TGraph">Graph type.</typeparam>
-#if SUPPORTS_SERIALIZATION
+
     [Serializable]
-#endif
+
     public abstract class RootedAlgorithmBase<TVertex, TGraph> : AlgorithmBase<TGraph>
         where TGraph : IImplicitVertexSet<TVertex>
     {
-        [CanBeNull]
         private TVertex _root;
 
         private bool _hasRootVertex;
@@ -33,8 +33,8 @@ namespace QuikGraph.Algorithms
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         protected RootedAlgorithmBase(
-            [CanBeNull] IAlgorithmComponent host,
-            [NotNull] TGraph visitedGraph)
+            IAlgorithmComponent host,
+            TGraph visitedGraph)
             : base(host, visitedGraph)
         {
         }
@@ -45,7 +45,6 @@ namespace QuikGraph.Algorithms
         /// <param name="root">Root vertex if set, otherwise <see langword="null"/>.</param>
         /// <returns>True if the root vertex was set, false otherwise.</returns>
         [Pure]
-        [ContractAnnotation("=> true, root:notnull;=> false, root:null")]
         public bool TryGetRootVertex(out TVertex root)
         {
             if (_hasRootVertex)
@@ -63,7 +62,7 @@ namespace QuikGraph.Algorithms
         /// </summary>
         /// <param name="root">Root vertex.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="root"/> is <see langword="null"/>.</exception>
-        public void SetRootVertex([NotNull] TVertex root)
+        public void SetRootVertex(TVertex root)
         {
             if (root == null)
                 throw new ArgumentNullException(nameof(root));
@@ -102,7 +101,7 @@ namespace QuikGraph.Algorithms
         /// Called on each root vertex change.
         /// </summary>
         /// <param name="args"><see cref="F:EventArgs.Empty"/>.</param>
-        protected virtual void OnRootVertexChanged([NotNull] EventArgs args)
+        protected virtual void OnRootVertexChanged(EventArgs args)
         {
             Debug.Assert(args != null);
 
@@ -118,7 +117,6 @@ namespace QuikGraph.Algorithms
         /// <exception cref="VertexNotFoundException">
         /// If the set root vertex is not part of the <see cref="AlgorithmBase{TGraph}.VisitedGraph"/>.
         /// </exception>
-        [NotNull]
         protected TVertex GetAndAssertRootInGraph()
         {
             if (!TryGetRootVertex(out TVertex root))
@@ -134,10 +132,10 @@ namespace QuikGraph.Algorithms
         /// <exception cref="VertexNotFoundException">
         /// If the set root vertex is not part of the <see cref="AlgorithmBase{TGraph}.VisitedGraph"/>.
         /// </exception>
-#if SUPPORTS_AGGRESSIVE_INLINING
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
-        protected void AssertRootInGraph([NotNull] TVertex root)
+
+        protected void AssertRootInGraph(TVertex root)
         {
             if (!VisitedGraph.ContainsVertex(root))
                 throw new VertexNotFoundException("Root vertex is not part of the graph.");
@@ -150,7 +148,7 @@ namespace QuikGraph.Algorithms
         /// <exception cref="T:System.ArgumentNullException"><paramref name="root"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="root"/> is not part of <see cref="AlgorithmBase{TGraph}.VisitedGraph"/>.</exception>
         /// <exception cref="T:System.InvalidOperationException">Something went wrong when running the algorithm.</exception>
-        public virtual void Compute([NotNull] TVertex root)
+        public virtual void Compute(TVertex root)
         {
             SetRootVertex(root);
             if (!VisitedGraph.ContainsVertex(root))

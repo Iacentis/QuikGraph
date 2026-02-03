@@ -1,17 +1,17 @@
 ﻿using System;
-#if SUPPORTS_SERIALIZATION
+
 using System.Runtime.Serialization;
-#endif
-using JetBrains.Annotations;
+
+
 
 namespace QuikGraph
 {
     /// <summary>
     /// Exception raised when an algorithm detected a cyclic graph when required acyclic.
     /// </summary>
-#if SUPPORTS_SERIALIZATION
+
     [Serializable]
-#endif
+
     public class NonAcyclicGraphException : QuikGraphException
     {
         /// <summary>
@@ -25,19 +25,20 @@ namespace QuikGraph
         /// <summary>
         /// Initializes a new instance of <see cref="NonAcyclicGraphException"/> class.
         /// </summary>
-        public NonAcyclicGraphException([NotNull] string message, [CanBeNull] Exception innerException = null)
+        public NonAcyclicGraphException( string message,  Exception innerException = null)
             : base(message, innerException)
         {
         }
 
-#if SUPPORTS_SERIALIZATION
+
         /// <summary>
         /// Constructor used during runtime serialization.
         /// </summary>
+        [Obsolete("Obsolete")]
         protected NonAcyclicGraphException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }
-#endif
+
     }
 }

@@ -1,4 +1,4 @@
-using JetBrains.Annotations;
+
 
 namespace QuikGraph
 {
@@ -9,7 +9,7 @@ namespace QuikGraph
     /// <typeparam name="TEdge">Edge type.</typeparam>
     /// <param name="graph">Graph in with adding the vertex.</param>
     /// <returns>The created vertex.</returns>
-    [NotNull]
-    public delegate TVertex CreateVertexDelegate<TVertex, TEdge>([NotNull] IVertexListGraph<TVertex, TEdge> graph)
+
+    public delegate TVertex CreateVertexDelegate<TVertex, TEdge>( IVertexListGraph<TVertex, TEdge> graph)
         where TEdge : IEdge<TVertex>;
 }

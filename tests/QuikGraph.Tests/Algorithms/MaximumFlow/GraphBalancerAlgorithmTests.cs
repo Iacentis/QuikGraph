@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using QuikGraph.Algorithms.MaximumFlow;
 
 namespace QuikGraph.Tests.Algorithms.MaximumFlow
@@ -15,46 +16,46 @@ namespace QuikGraph.Tests.Algorithms.MaximumFlow
         public void Constructor()
         {
             var graph = new BidirectionalGraph<int, Edge<int>>();
-            graph.AddVertexRange(new[] { 1, 2 });
+            graph.AddVertexRange([1, 2]);
             graph.AddVerticesAndEdge(new Edge<int>(1, 3));
             VertexFactory<int> vertexFactory = () => 1;
             EdgeFactory<int, Edge<int>> edgeFactory = (source, target) => new Edge<int>(source, target);
             var capacities = new Dictionary<Edge<int>, double>();
 
             var algorithm = new GraphBalancerAlgorithm<int, Edge<int>>(graph, 1, 2, vertexFactory, edgeFactory);
-            Assert.AreSame(graph, algorithm.VisitedGraph);
-            Assert.AreSame(vertexFactory, algorithm.VertexFactory);
-            Assert.AreSame(edgeFactory, algorithm.EdgeFactory);
-            Assert.IsFalse(algorithm.Balanced);
-            Assert.AreEqual(1, algorithm.Source);
-            Assert.AreEqual(2, algorithm.Sink);
-            Assert.IsNotNull(algorithm.Capacities);
-            Assert.AreEqual(graph.EdgeCount, algorithm.Capacities.Count);
+            Assert.That(graph,Is.SameAs(algorithm.VisitedGraph));
+            Assert.That(vertexFactory,Is.SameAs(algorithm.VertexFactory));
+            Assert.That(edgeFactory,Is.SameAs(algorithm.EdgeFactory));
+            Assert.That(algorithm.Balanced,Is.False);
+            Assert.That(1,Is.EqualTo(algorithm.Source));
+            Assert.That(2,Is.EqualTo(algorithm.Sink));
+            Assert.That(algorithm.Capacities,Is.Not.Null);
+            Assert.That(graph.EdgeCount,Is.EqualTo(algorithm.Capacities.Count));
             CollectionAssert.IsEmpty(algorithm.SurplusVertices);
             CollectionAssert.IsEmpty(algorithm.SurplusEdges);
             CollectionAssert.IsEmpty(algorithm.DeficientVertices);
             CollectionAssert.IsEmpty(algorithm.DeficientEdges);
-            Assert.AreEqual(default(int), algorithm.BalancingSource);
-            Assert.AreEqual(default(Edge<int>), algorithm.BalancingSourceEdge);
-            Assert.AreEqual(default(int), algorithm.BalancingSink);
-            Assert.AreEqual(default(Edge<int>), algorithm.BalancingSinkEdge);
+            Assert.That(default(int),Is.EqualTo(algorithm.BalancingSource));
+            Assert.That(default(Edge<int>),Is.EqualTo(algorithm.BalancingSourceEdge));
+            Assert.That(default(int),Is.EqualTo(algorithm.BalancingSink));
+            Assert.That(default(Edge<int>),Is.EqualTo(algorithm.BalancingSinkEdge));
 
             algorithm = new GraphBalancerAlgorithm<int, Edge<int>>(graph, 1, 2, vertexFactory, edgeFactory, capacities);
-            Assert.AreSame(graph, algorithm.VisitedGraph);
-            Assert.AreSame(vertexFactory, algorithm.VertexFactory);
-            Assert.AreSame(edgeFactory, algorithm.EdgeFactory);
-            Assert.IsFalse(algorithm.Balanced);
-            Assert.AreEqual(1, algorithm.Source);
-            Assert.AreEqual(2, algorithm.Sink);
-            Assert.AreSame(capacities, algorithm.Capacities);
+            Assert.That(graph,Is.SameAs(algorithm.VisitedGraph));
+            Assert.That(vertexFactory,Is.SameAs(algorithm.VertexFactory));
+            Assert.That(edgeFactory,Is.SameAs(algorithm.EdgeFactory));
+            Assert.That(algorithm.Balanced,Is.False);
+            Assert.That(1,Is.EqualTo(algorithm.Source));
+            Assert.That(2,Is.EqualTo(algorithm.Sink));
+            Assert.That(capacities,Is.SameAs(algorithm.Capacities));
             CollectionAssert.IsEmpty(algorithm.SurplusVertices);
             CollectionAssert.IsEmpty(algorithm.SurplusEdges);
             CollectionAssert.IsEmpty(algorithm.DeficientVertices);
             CollectionAssert.IsEmpty(algorithm.DeficientEdges);
-            Assert.AreEqual(default(int), algorithm.BalancingSource);
-            Assert.AreEqual(default(Edge<int>), algorithm.BalancingSourceEdge);
-            Assert.AreEqual(default(int), algorithm.BalancingSink);
-            Assert.AreEqual(default(Edge<int>), algorithm.BalancingSinkEdge);
+            Assert.That(default(int),Is.EqualTo(algorithm.BalancingSource));
+            Assert.That(default(Edge<int>),Is.EqualTo(algorithm.BalancingSourceEdge));
+            Assert.That(default(int),Is.EqualTo(algorithm.BalancingSink));
+            Assert.That(default(Edge<int>),Is.EqualTo(algorithm.BalancingSinkEdge));
         }
 
         [Test]
@@ -287,28 +288,27 @@ namespace QuikGraph.Tests.Algorithms.MaximumFlow
             var edge78 = new EquatableEdge<int>(7, 8);
 
             var graph = new BidirectionalGraph<int, EquatableEdge<int>>();
-            graph.AddVerticesAndEdgeRange(new[]
-            {
+            graph.AddVerticesAndEdgeRange([
                 edge12, edge13, edge23, edge32, edge34,
                 edge35, edge42, edge55, edge67, edge78
-            });
+            ]);
             int vertexID = 9;
             VertexFactory<int> vertexFactory = () => vertexID++;
             EdgeFactory<int, EquatableEdge<int>> edgeFactory = (s, t) => new EquatableEdge<int>(s, t);
 
             var algorithm = new GraphBalancerAlgorithm<int, EquatableEdge<int>>(graph, source, sink, vertexFactory, edgeFactory);
-            algorithm.BalancingSourceAdded += vertex => Assert.AreEqual(source, vertex);
-            algorithm.BalancingSinkAdded += vertex => Assert.AreEqual(sink, vertex);
+            algorithm.BalancingSourceAdded += vertex => Assert.That(source,Is.EqualTo(vertex));
+            algorithm.BalancingSinkAdded += vertex => Assert.That(sink,Is.EqualTo(vertex));
             var surplusSet = new HashSet<int> { 2, 5, 8 };
-            algorithm.SurplusVertexAdded += vertex => Assert.IsTrue(surplusSet.Remove(vertex));
+            algorithm.SurplusVertexAdded += vertex => Assert.That(surplusSet.Remove(vertex),Is.True);
             var deficitSet = new HashSet<int> { 6 };
-            algorithm.DeficientVertexAdded += vertex => Assert.IsTrue(deficitSet.Remove(vertex));
+            algorithm.DeficientVertexAdded += vertex => Assert.That(deficitSet.Remove(vertex),Is.True);
 
             algorithm.Balance();
 
-            Assert.IsTrue(algorithm.Balanced);
-            Assert.AreEqual(source, algorithm.Source);
-            Assert.AreEqual(sink, algorithm.Sink);
+            Assert.That(algorithm.Balanced,Is.True);
+            Assert.That(source,Is.EqualTo(algorithm.Source));
+            Assert.That(sink,Is.EqualTo(algorithm.Sink));
             CollectionAssert.IsEmpty(surplusSet);
             CollectionAssert.IsEmpty(deficitSet);
             CollectionAssert.AreEquivalent(new[] { 2, 5, 8 },algorithm.SurplusVertices);
@@ -327,17 +327,17 @@ namespace QuikGraph.Tests.Algorithms.MaximumFlow
                     new EquatableEdge<int>(6, algorithm.BalancingSink)
                 },
                 algorithm.DeficientEdges);
-            Assert.AreEqual(9, algorithm.BalancingSource);
-            Assert.AreEqual(new EquatableEdge<int>(algorithm.BalancingSource, source), algorithm.BalancingSourceEdge);
-            Assert.AreEqual(10, algorithm.BalancingSink);
-            Assert.AreEqual(new EquatableEdge<int>(sink, algorithm.BalancingSink), algorithm.BalancingSinkEdge);
+            Assert.That(9,Is.EqualTo(algorithm.BalancingSource));
+            Assert.That(new EquatableEdge<int>(algorithm.BalancingSource, source),Is.EqualTo(algorithm.BalancingSourceEdge));
+            Assert.That(10,Is.EqualTo(algorithm.BalancingSink));
+            Assert.That(new EquatableEdge<int>(sink, algorithm.BalancingSink),Is.EqualTo(algorithm.BalancingSinkEdge));
         }
 
         [Test]
         public void Balance_Throws()
         {
             var graph = new BidirectionalGraph<int, Edge<int>>();
-            graph.AddVertexRange(new[] { 1, 2 });
+            graph.AddVertexRange([1, 2]);
             VertexFactory<int> vertexFactory = () => 1;
             EdgeFactory<int, Edge<int>> edgeFactory = (source, target) => new Edge<int>(source, target);
 
@@ -358,10 +358,9 @@ namespace QuikGraph.Tests.Algorithms.MaximumFlow
             var edge56 = new Edge<int>(5, 6);
 
             var graph = new BidirectionalGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[]
-            {
+            graph.AddVerticesAndEdgeRange([
                 edge12, edge13, edge23, edge32, edge34, edge56
-            });
+            ]);
             int vertexID = 6;
             VertexFactory<int> vertexFactory = () => vertexID++;
             EdgeFactory<int, Edge<int>> edgeFactory = (source, target) => new Edge<int>(source, target);
@@ -369,28 +368,28 @@ namespace QuikGraph.Tests.Algorithms.MaximumFlow
             var algorithm = new GraphBalancerAlgorithm<int, Edge<int>>(graph, 1, 3, vertexFactory, edgeFactory);
             algorithm.Balance();
 
-            Assert.IsTrue(algorithm.Balanced);
+            Assert.That(algorithm.Balanced,Is.True);
 
             algorithm.UnBalance();
 
-            Assert.IsFalse(algorithm.Balanced);
-            Assert.AreEqual(1, algorithm.Source);
-            Assert.AreEqual(3, algorithm.Sink);
+            Assert.That(algorithm.Balanced,Is.False);
+            Assert.That(1,Is.EqualTo(algorithm.Source));
+            Assert.That(3,Is.EqualTo(algorithm.Sink));
             CollectionAssert.IsEmpty(algorithm.SurplusVertices);
             CollectionAssert.IsEmpty(algorithm.SurplusEdges);
             CollectionAssert.IsEmpty(algorithm.DeficientVertices);
             CollectionAssert.IsEmpty(algorithm.DeficientEdges);
-            Assert.AreEqual(default(int), algorithm.BalancingSource);
-            Assert.AreEqual(default(Edge<int>), algorithm.BalancingSourceEdge);
-            Assert.AreEqual(default(int), algorithm.BalancingSink);
-            Assert.AreEqual(default(Edge<int>), algorithm.BalancingSinkEdge);
+            Assert.That(default(int),Is.EqualTo(algorithm.BalancingSource));
+            Assert.That(default(Edge<int>),Is.EqualTo(algorithm.BalancingSourceEdge));
+            Assert.That(default(int),Is.EqualTo(algorithm.BalancingSink));
+            Assert.That(default(Edge<int>),Is.EqualTo(algorithm.BalancingSinkEdge));
         }
 
         [Test]
         public void UnBalance_Throws()
         {
             var graph = new BidirectionalGraph<int, Edge<int>>();
-            graph.AddVertexRange(new[] { 1, 2 });
+            graph.AddVertexRange([1, 2]);
             VertexFactory<int> vertexFactory = () => 1;
             EdgeFactory<int, Edge<int>> edgeFactory = (source, target) => new Edge<int>(source, target);
 
@@ -405,7 +404,7 @@ namespace QuikGraph.Tests.Algorithms.MaximumFlow
             var source = new TestVertex("1");
             var sink = new TestVertex("2");
             var graph = new BidirectionalGraph<TestVertex, Edge<TestVertex>>();
-            graph.AddVertexRange(new[] { source, sink });
+            graph.AddVertexRange([source, sink]);
             VertexFactory<TestVertex> vertexFactory = () => new TestVertex();
             EdgeFactory<TestVertex, Edge<TestVertex>> edgeFactory = (s, t) => new Edge<TestVertex>(s, t);
 

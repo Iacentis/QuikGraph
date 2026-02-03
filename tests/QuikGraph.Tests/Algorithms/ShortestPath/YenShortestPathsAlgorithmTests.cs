@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using QuikGraph.Algorithms.ShortestPath;
 
 namespace QuikGraph.Tests.Algorithms.ShortestPath
@@ -17,7 +18,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
             Func<EquatableTaggedEdge<int, double>, double> Weights = _ => 1.0;
 
             var graph = new AdjacencyGraph<int, EquatableTaggedEdge<int, double>>();
-            graph.AddVertexRange(new[] { 1, 2 });
+            graph.AddVertexRange([1, 2]);
             // ReSharper disable ObjectCreationAsStatement
             Assert.DoesNotThrow(() => new YenShortestPathsAlgorithm<int>(graph, 1, 2, int.MaxValue));
             Assert.DoesNotThrow(() => new YenShortestPathsAlgorithm<int>(graph, 1, 2, 10));
@@ -49,7 +50,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
                 () => new YenShortestPathsAlgorithm<TestVertex>(graph, vertex1, vertex2, int.MaxValue));
 
             graph = new AdjacencyGraph<TestVertex, EquatableTaggedEdge<TestVertex, double>>();
-            graph.AddVertexRange(new[] { vertex1, vertex2 });
+            graph.AddVertexRange([vertex1, vertex2]);
 
             Assert.Throws<ArgumentNullException>(
                 () => new YenShortestPathsAlgorithm<TestVertex>(null, vertex1, vertex2, int.MaxValue));
@@ -134,23 +135,23 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
             // 1 => 1-2-3-5
             // 2 => 1-3-5
             // Consistently checking the result
-            Assert.AreEqual(2, paths.Length);
+            Assert.That(2,Is.EqualTo(paths.Length));
             // 1
             EquatableTaggedEdge<char, double>[] path0 = paths[0].ToArray();
-            Assert.AreEqual(path0[0], edges[0]);
-            Assert.AreEqual(path0[1], edges[3]);
-            Assert.AreEqual(path0[2], edges[5]);
+            Assert.That(path0[0],Is.EqualTo(edges[0]));
+            Assert.That(path0[1],Is.EqualTo(edges[3]));
+            Assert.That(path0[2],Is.EqualTo(edges[5]));
             // 2
             EquatableTaggedEdge<char, double>[] path1 = paths[1].ToArray();
-            Assert.AreEqual(path1[0], edges[1]);
-            Assert.AreEqual(path1[1], edges[5]);
+            Assert.That(path1[0],Is.EqualTo(edges[1]));
+            Assert.That(path1[1],Is.EqualTo(edges[5]));
         }
 
         [Test]
         public void GraphWithMultiplePaths()
         {
             var graph = new AdjacencyGraph<string, EquatableTaggedEdge<string, double>>(false);
-            graph.AddVertexRange(new[] { "A", "B", "C", "D" });
+            graph.AddVertexRange(["A", "B", "C", "D"]);
             var edges = new[]
             {
                 new EquatableTaggedEdge<string, double>("A", "B", 5),
@@ -169,20 +170,20 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
             // 2 => A-C-D
             // 3 => A-B-C-D
             // Consistently checking the result
-            Assert.AreEqual(3, paths.Length);
+            Assert.That(3,Is.EqualTo(paths.Length));
             // 1
             EquatableTaggedEdge<string, double>[] path0 = paths[0].ToArray();
-            Assert.AreEqual(path0[0], edges[0]);
-            Assert.AreEqual(path0[1], edges[3]);
+            Assert.That(path0[0],Is.EqualTo(edges[0]));
+            Assert.That(path0[1],Is.EqualTo(edges[3]));
             // 2
             EquatableTaggedEdge<string, double>[] path1 = paths[1].ToArray();
-            Assert.AreEqual(path1[0], edges[1]);
-            Assert.AreEqual(path1[1], edges[4]);
+            Assert.That(path1[0],Is.EqualTo(edges[1]));
+            Assert.That(path1[1],Is.EqualTo(edges[4]));
             // 3
             EquatableTaggedEdge<string, double>[] path2 = paths[2].ToArray();
-            Assert.AreEqual(path2[0], edges[0]);
-            Assert.AreEqual(path2[1], edges[2]);
-            Assert.AreEqual(path2[2], edges[4]);
+            Assert.That(path2[0],Is.EqualTo(edges[0]));
+            Assert.That(path2[1],Is.EqualTo(edges[2]));
+            Assert.That(path2[2],Is.EqualTo(edges[4]));
         }
 
         [Test]
@@ -215,7 +216,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
             // 4 => C-E-D-F-H
             // 5 => C-D-F-H
             // Consistently checking the result
-            Assert.AreEqual(5, paths.Length);
+            Assert.That(5,Is.EqualTo(paths.Length));
             CheckFiveFirstPaths(paths);
 
 
@@ -232,21 +233,21 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
             // 6 => C-E-D-F-G-H
             // 7 => C-D-F-G-H
             // Consistently checking the result
-            Assert.AreEqual(7, paths.Length);
+            Assert.That(7,Is.EqualTo(paths.Length));
             CheckFiveFirstPaths(paths);
             // 6
             EquatableTaggedEdge<char, double>[] path5 = paths[5].ToArray();
-            Assert.AreEqual(path5[0], edges[1]);    // C-E
-            Assert.AreEqual(path5[1], edges[3]);    // E-D
-            Assert.AreEqual(path5[2], edges[2]);    // D-F
-            Assert.AreEqual(path5[3], edges[6]);    // F-G
-            Assert.AreEqual(path5[4], edges[8]);    // G-H
+            Assert.That(path5[0],Is.EqualTo(edges[1]));    // C-E
+            Assert.That(path5[1],Is.EqualTo(edges[3]));    // E-D
+            Assert.That(path5[2],Is.EqualTo(edges[2]));    // D-F
+            Assert.That(path5[3],Is.EqualTo(edges[6]));    // F-G
+            Assert.That(path5[4],Is.EqualTo(edges[8]));    // G-H
             // 7
             EquatableTaggedEdge<char, double>[] path6 = paths[6].ToArray();
-            Assert.AreEqual(path6[0], edges[0]);    // C-D
-            Assert.AreEqual(path6[1], edges[2]);    // D-F
-            Assert.AreEqual(path6[2], edges[6]);    // F-G
-            Assert.AreEqual(path6[3], edges[8]);    // G-H
+            Assert.That(path6[0],Is.EqualTo(edges[0]));    // C-D
+            Assert.That(path6[1],Is.EqualTo(edges[2]));    // D-F
+            Assert.That(path6[2],Is.EqualTo(edges[6]));    // F-G
+            Assert.That(path6[3],Is.EqualTo(edges[8]));    // G-H
 
             #region Local function
 
@@ -254,31 +255,31 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
             {
                 // 1
                 EquatableTaggedEdge<char, double>[] path0 = ps[0].ToArray();
-                Assert.AreEqual(path0[0], edges[1]);    // C-E
-                Assert.AreEqual(path0[1], edges[4]);    // E-F
-                Assert.AreEqual(path0[2], edges[7]);    // F-H
+                Assert.That(path0[0],Is.EqualTo(edges[1]));    // C-E
+                Assert.That(path0[1],Is.EqualTo(edges[4]));    // E-F
+                Assert.That(path0[2],Is.EqualTo(edges[7]));    // F-H
                 // 2
                 EquatableTaggedEdge<char, double>[] path1 = ps[1].ToArray();
-                Assert.AreEqual(path1[0], edges[1]);    // C-E
-                Assert.AreEqual(path1[1], edges[5]);    // E-G
-                Assert.AreEqual(path1[2], edges[8]);    // G-H
+                Assert.That(path1[0],Is.EqualTo(edges[1]));    // C-E
+                Assert.That(path1[1],Is.EqualTo(edges[5]));    // E-G
+                Assert.That(path1[2],Is.EqualTo(edges[8]));    // G-H
                 // 3
                 EquatableTaggedEdge<char, double>[] path2 = ps[2].ToArray();
-                Assert.AreEqual(path2[0], edges[1]);    // C-E
-                Assert.AreEqual(path2[1], edges[4]);    // E-F
-                Assert.AreEqual(path2[2], edges[6]);    // F-G
-                Assert.AreEqual(path2[3], edges[8]);    // G-H
+                Assert.That(path2[0],Is.EqualTo(edges[1]));    // C-E
+                Assert.That(path2[1],Is.EqualTo(edges[4]));    // E-F
+                Assert.That(path2[2],Is.EqualTo(edges[6]));    // F-G
+                Assert.That(path2[3],Is.EqualTo(edges[8]));    // G-H
                 // 4
                 EquatableTaggedEdge<char, double>[] path3 = ps[3].ToArray();
-                Assert.AreEqual(path3[0], edges[1]);    // C-E
-                Assert.AreEqual(path3[1], edges[3]);    // E-D
-                Assert.AreEqual(path3[2], edges[2]);    // D-F
-                Assert.AreEqual(path3[3], edges[7]);    // F-H
+                Assert.That(path3[0],Is.EqualTo(edges[1]));    // C-E
+                Assert.That(path3[1],Is.EqualTo(edges[3]));    // E-D
+                Assert.That(path3[2],Is.EqualTo(edges[2]));    // D-F
+                Assert.That(path3[3],Is.EqualTo(edges[7]));    // F-H
                 // 5
                 EquatableTaggedEdge<char, double>[] path4 = ps[4].ToArray();
-                Assert.AreEqual(path4[0], edges[0]);    // C-D
-                Assert.AreEqual(path4[1], edges[2]);    // D-F
-                Assert.AreEqual(path4[2], edges[7]);    // F-H
+                Assert.That(path4[0],Is.EqualTo(edges[0]));    // C-D
+                Assert.That(path4[1],Is.EqualTo(edges[2]));    // D-F
+                Assert.That(path4[2],Is.EqualTo(edges[7]));    // F-H
             }
 
             #endregion
@@ -314,8 +315,8 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
                 var g = new AdjacencyGraph<char, EquatableTaggedEdge<char, double>>(true);
 
                 g.AddVertexRange("123456");
-                edges = new[]
-                {
+                edges =
+                [
                     new EquatableTaggedEdge<char, double>('1', '2', 7),
                     new EquatableTaggedEdge<char, double>('1', '3', 9),
                     new EquatableTaggedEdge<char, double>('1', '6', 14),
@@ -325,7 +326,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
                     new EquatableTaggedEdge<char, double>('3', '6', 2),
                     new EquatableTaggedEdge<char, double>('4', '5', 6),
                     new EquatableTaggedEdge<char, double>('5', '6', 9)
-                };
+                ];
                 g.AddEdgeRange(edges);
 
                 return g;
@@ -343,23 +344,23 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
                 // 2 => 1-2-4-5
                 // 3 => 1-2-3-4-5
                 // Consistently checking the result
-                Assert.AreEqual(3, paths.Length);
+                Assert.That(3,Is.EqualTo(paths.Length));
                 // 1
                 EquatableTaggedEdge<char, double>[] path0 = paths[0].ToArray();
-                Assert.AreEqual(path0[0], graphEdges[1]);
-                Assert.AreEqual(path0[1], graphEdges[5]);
-                Assert.AreEqual(path0[2], graphEdges[7]);
+                Assert.That(path0[0],Is.EqualTo(graphEdges[1]));
+                Assert.That(path0[1],Is.EqualTo(graphEdges[5]));
+                Assert.That(path0[2],Is.EqualTo(graphEdges[7]));
                 // 2
                 EquatableTaggedEdge<char, double>[] path1 = paths[1].ToArray();
-                Assert.AreEqual(path1[0], graphEdges[0]);
-                Assert.AreEqual(path1[1], graphEdges[4]);
-                Assert.AreEqual(path1[2], graphEdges[7]);
+                Assert.That(path1[0],Is.EqualTo(graphEdges[0]));
+                Assert.That(path1[1],Is.EqualTo(graphEdges[4]));
+                Assert.That(path1[2],Is.EqualTo(graphEdges[7]));
                 // 3
                 EquatableTaggedEdge<char, double>[] path2 = paths[2].ToArray();
-                Assert.AreEqual(path2[0], graphEdges[0]);
-                Assert.AreEqual(path2[1], graphEdges[3]);
-                Assert.AreEqual(path2[2], graphEdges[5]);
-                Assert.AreEqual(path2[3], graphEdges[7]);
+                Assert.That(path2[0],Is.EqualTo(graphEdges[0]));
+                Assert.That(path2[1],Is.EqualTo(graphEdges[3]));
+                Assert.That(path2[2],Is.EqualTo(graphEdges[5]));
+                Assert.That(path2[3],Is.EqualTo(graphEdges[7]));
             }
 
             #endregion
@@ -377,17 +378,16 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
             var path1 = new YenShortestPathsAlgorithm<int>.SortedPath(edges);
             var path2 = new YenShortestPathsAlgorithm<int>.SortedPath(edges);
 
-            var path3 = new YenShortestPathsAlgorithm<int>.SortedPath(new[]
-            {
+            var path3 = new YenShortestPathsAlgorithm<int>.SortedPath([
                 new EquatableTaggedEdge<int, double>(1, 2, 1.0),
                 new EquatableTaggedEdge<int, double>(2, 3, 1.0),
                 new EquatableTaggedEdge<int, double>(3, 4, 1.0)
-            });
+            ]);
 
-            Assert.AreEqual(path1.GetHashCode(), path1.GetHashCode());
-            Assert.AreNotEqual(path1.GetHashCode(), path2.GetHashCode());
-            Assert.AreNotEqual(path1.GetHashCode(), path3.GetHashCode());
-            Assert.AreNotEqual(path2.GetHashCode(), path3.GetHashCode());
+            Assert.That(path1.GetHashCode(),Is.EqualTo(path1.GetHashCode()));
+            Assert.That(path1.GetHashCode(),Is.Not.EqualTo(path2.GetHashCode()));
+            Assert.That(path1.GetHashCode(),Is.Not.EqualTo(path3.GetHashCode()));
+            Assert.That(path2.GetHashCode(),Is.Not.EqualTo(path3.GetHashCode()));
         }
 
         [Test]
@@ -401,11 +401,11 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
             };
 
             var path = new YenShortestPathsAlgorithm<int>.SortedPath(edges);
-            CollectionAssert.AreEqual(edges, path);
+            CollectionAssert.AreEqual(edges,path);
 
             CollectionAssert.IsEmpty(
                 new YenShortestPathsAlgorithm<int>.SortedPath(
-                    Enumerable.Empty<EquatableTaggedEdge<int, double>>()));
+                    []));
         }
     }
 }

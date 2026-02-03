@@ -1,4 +1,4 @@
-using JetBrains.Annotations;
+
 
 namespace QuikGraph
 {
@@ -7,6 +7,6 @@ namespace QuikGraph
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <returns>The created vertex.</returns>
-    [NotNull]
+
     public delegate TVertex VertexFactory<out TVertex>();
 }

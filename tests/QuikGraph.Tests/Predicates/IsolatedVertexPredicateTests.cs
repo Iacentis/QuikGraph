@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Predicates;
 
@@ -29,10 +28,10 @@ namespace QuikGraph.Tests.Predicates
             Assert.Throws<ArgumentNullException>(() => new IsolatedVertexPredicate<int, Edge<int>>(null));
         }
 
-        [NotNull, ItemNotNull]
+
         private static IEnumerable<TestCaseData> PredicateTestCases
         {
-            [UsedImplicitly]
+
             get
             {
                 yield return new TestCaseData(new BidirectionalGraph<int, Edge<int>>());
@@ -40,8 +39,8 @@ namespace QuikGraph.Tests.Predicates
         }
 
         [TestCaseSource(nameof(PredicateTestCases))]
-        public void Predicate<TGraph>([NotNull] TGraph graph)
-            where TGraph 
+        public void Predicate<TGraph>( TGraph graph)
+            where TGraph
             : IBidirectionalGraph<int, Edge<int>>
             , IMutableVertexSet<int>
             , IMutableEdgeListGraph<int, Edge<int>>
@@ -50,42 +49,42 @@ namespace QuikGraph.Tests.Predicates
 
             graph.AddVertex(1);
             graph.AddVertex(2);
-            Assert.IsTrue(predicate.Test(1));
-            Assert.IsTrue(predicate.Test(2));
+            Assert.That(predicate.Test(1),Is.True);
+            Assert.That(predicate.Test(2),Is.True);
 
             graph.AddVertex(3);
             var edge13 = new Edge<int>(1, 3);
             graph.AddEdge(edge13);
-            Assert.IsFalse(predicate.Test(1));
-            Assert.IsTrue(predicate.Test(2));
-            Assert.IsFalse(predicate.Test(3));
+            Assert.That(predicate.Test(1),Is.False);
+            Assert.That(predicate.Test(2),Is.True);
+            Assert.That(predicate.Test(3),Is.False);
 
             var edge12 = new Edge<int>(1, 2);
             graph.AddEdge(edge12);
-            Assert.IsFalse(predicate.Test(1));
-            Assert.IsFalse(predicate.Test(2));
-            Assert.IsFalse(predicate.Test(3));
+            Assert.That(predicate.Test(1),Is.False);
+            Assert.That(predicate.Test(2),Is.False);
+            Assert.That(predicate.Test(3),Is.False);
 
             var edge23 = new Edge<int>(2, 3);
             graph.AddEdge(edge23);
-            Assert.IsFalse(predicate.Test(1));
-            Assert.IsFalse(predicate.Test(2));
-            Assert.IsFalse(predicate.Test(3));
+            Assert.That(predicate.Test(1),Is.False);
+            Assert.That(predicate.Test(2),Is.False);
+            Assert.That(predicate.Test(3),Is.False);
 
             graph.RemoveEdge(edge23);
-            Assert.IsFalse(predicate.Test(1));
-            Assert.IsFalse(predicate.Test(2));
-            Assert.IsFalse(predicate.Test(3));
+            Assert.That(predicate.Test(1),Is.False);
+            Assert.That(predicate.Test(2),Is.False);
+            Assert.That(predicate.Test(3),Is.False);
 
             graph.RemoveEdge(edge12);
-            Assert.IsFalse(predicate.Test(1));
-            Assert.IsTrue(predicate.Test(2));
-            Assert.IsFalse(predicate.Test(3));
+            Assert.That(predicate.Test(1),Is.False);
+            Assert.That(predicate.Test(2),Is.True);
+            Assert.That(predicate.Test(3),Is.False);
 
             graph.RemoveEdge(edge13);
-            Assert.IsTrue(predicate.Test(1));
-            Assert.IsTrue(predicate.Test(2));
-            Assert.IsTrue(predicate.Test(3));
+            Assert.That(predicate.Test(1),Is.True);
+            Assert.That(predicate.Test(2),Is.True);
+            Assert.That(predicate.Test(3),Is.True);
         }
 
         [Test]

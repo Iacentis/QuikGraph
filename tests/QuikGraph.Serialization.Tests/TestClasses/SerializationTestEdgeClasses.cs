@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Xml.Serialization;
-using NotNullAttribute = JetBrains.Annotations.NotNullAttribute;
 
 namespace QuikGraph.Serialization.Tests
 {
@@ -11,18 +10,18 @@ namespace QuikGraph.Serialization.Tests
     public sealed class TestEdge : Edge<TestVertex>
     {
         public TestEdge(
-            [NotNull] TestVertex source,
-            [NotNull] TestVertex target,
-            [NotNull] string id)
+             TestVertex source,
+             TestVertex target,
+             string id)
             : base(source, target)
         {
             ID = id;
         }
 
         public TestEdge(
-            [NotNull] TestVertex source,
-            [NotNull] TestVertex target,
-            [NotNull] string id,
+             TestVertex source,
+             TestVertex target,
+             string id,
             string @string,
             int @int,
             long @long,
@@ -39,7 +38,7 @@ namespace QuikGraph.Serialization.Tests
             Bool = @bool;
         }
 
-        [NotNull]
+
         public string ID { get; }
 
         [XmlAttribute("e_string")]
@@ -64,21 +63,21 @@ namespace QuikGraph.Serialization.Tests
         public float Float { get; set; }
     }
 
-#if SUPPORTS_SERIALIZATION
+
     [Serializable]
-#endif
+
     public class EquatableTestEdge : EquatableEdge<EquatableTestVertex>, IEquatable<EquatableTestEdge>
     {
         public EquatableTestEdge(
-            [NotNull] EquatableTestVertex source,
-            [NotNull] EquatableTestVertex target,
-            [NotNull] string id)
+             EquatableTestVertex source,
+             EquatableTestVertex target,
+             string id)
             : base(source, target)
         {
             ID = id;
         }
 
-        [NotNull]
+
         public string ID { get; }
 
         [XmlAttribute("e_string")]
@@ -102,7 +101,7 @@ namespace QuikGraph.Serialization.Tests
         [XmlAttribute("e_float")]
         public float Float { get; set; }
 
-        public virtual bool DataContentEquals([NotNull] EquatableTestEdge other)
+        public virtual bool DataContentEquals( EquatableTestEdge other)
         {
             return GetType() == other.GetType()
                    && string.Equals(ID, other.ID)
@@ -145,15 +144,15 @@ namespace QuikGraph.Serialization.Tests
         }
     }
 
-#if SUPPORTS_SERIALIZATION
+
     [Serializable]
-#endif
+
     public sealed class EquatableAdditionalDataTestEdge : EquatableTestEdge, IEquatable<EquatableAdditionalDataTestEdge>
     {
         public EquatableAdditionalDataTestEdge(
-            [NotNull] EquatableTestVertex source,
-            [NotNull] EquatableTestVertex target,
-            [NotNull] string id,
+             EquatableTestVertex source,
+             EquatableTestVertex target,
+             string id,
             double data)
             : base(source, target, id)
         {
@@ -191,15 +190,15 @@ namespace QuikGraph.Serialization.Tests
     public sealed class TestEdgeNoSetter : Edge<TestVertex>
     {
         public TestEdgeNoSetter(
-            [NotNull] TestVertex source,
-            [NotNull] TestVertex target,
-            [NotNull] string id)
+             TestVertex source,
+             TestVertex target,
+             string id)
             : base(source, target)
         {
             ID = id;
         }
 
-        [NotNull]
+
         public string ID { get; }
 
         [XmlAttribute("e_string")]

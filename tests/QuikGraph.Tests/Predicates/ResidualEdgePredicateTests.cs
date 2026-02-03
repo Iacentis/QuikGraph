@@ -41,9 +41,9 @@ namespace QuikGraph.Tests.Predicates
             predicate.ResidualCapacities.Add(edge13, 0);
             predicate.ResidualCapacities.Add(edge31, 1);
 
-            Assert.IsFalse(predicate.Test(edge12));
-            Assert.IsFalse(predicate.Test(edge13));
-            Assert.IsTrue(predicate.Test(edge31));
+            Assert.That(predicate.Test(edge12),Is.False);
+            Assert.That(predicate.Test(edge13),Is.False);
+            Assert.That(predicate.Test(edge31),Is.True);
         }
 
         [Test]

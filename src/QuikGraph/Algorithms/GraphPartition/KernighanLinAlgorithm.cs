@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using JetBrains.Annotations;
+using System.Diagnostics.Contracts;
 using System.Linq;
-#if !SUPPORTS_SORTEDSET
-using QuikGraph.Collections;
-#endif
+
+
 
 namespace QuikGraph.Algorithms.GraphPartition
 {
@@ -34,7 +33,7 @@ namespace QuikGraph.Algorithms.GraphPartition
         /// <param name="nbIterations">Number of iterations to perform.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public KernighanLinAlgorithm(
-            [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
+            IUndirectedGraph<TVertex, TEdge> visitedGraph,
             int nbIterations)
             : base(visitedGraph)
         {
@@ -52,7 +51,7 @@ namespace QuikGraph.Algorithms.GraphPartition
             public TVertex Vertex1 { get; }
             public TVertex Vertex2 { get; }
 
-            public SwapPair([NotNull] TVertex vertex1, [NotNull] TVertex vertex2)
+            public SwapPair(TVertex vertex1, TVertex vertex2)
             {
                 Debug.Assert(vertex1 != null);
                 Debug.Assert(vertex2 != null);
@@ -89,7 +88,7 @@ namespace QuikGraph.Algorithms.GraphPartition
             return new Partition<TVertex>(_vertexSetA, _vertexSetB, minCost);
         }
 
-        private double SingleSwap([NotNull, ItemNotNull] ICollection<SwapPair> swaps)
+        private double SingleSwap(ICollection<SwapPair> swaps)
         {
             SwapPair maxPair = null;
             double maxGain = double.MinValue;
@@ -121,7 +120,7 @@ namespace QuikGraph.Algorithms.GraphPartition
         }
 
         [Pure]
-        private double GetVertexCost([NotNull] TVertex vertex)
+        private double GetVertexCost(TVertex vertex)
         {
             Debug.Assert(vertex != null);
 
@@ -148,8 +147,7 @@ namespace QuikGraph.Algorithms.GraphPartition
         }
 
         [Pure]
-        [NotNull, ItemNotNull]
-        private IEnumerable<TVertex> GetNeighbors([NotNull] TVertex vertex)
+        private IEnumerable<TVertex> GetNeighbors(TVertex vertex)
         {
             Debug.Assert(vertex != null);
 
@@ -169,10 +167,10 @@ namespace QuikGraph.Algorithms.GraphPartition
         }
 
         private static void SwapVertices(
-            [NotNull, ItemNotNull] ISet<TVertex> setA,
-            [NotNull] TVertex vertexA,
-            [NotNull, ItemNotNull] ISet<TVertex> setB,
-            [NotNull] TVertex vertexB)
+            ISet<TVertex> setA,
+            TVertex vertexA,
+            ISet<TVertex> setB,
+            TVertex vertexB)
         {
             Debug.Assert(setA != null);
             Debug.Assert(vertexA != null);
@@ -211,7 +209,7 @@ namespace QuikGraph.Algorithms.GraphPartition
         /// Searches for an edge that links <paramref name="vertexFromA"/> and <paramref name="vertexFromB"/>.
         /// </summary>
         [Pure]
-        private bool FindEdge([NotNull] TVertex vertexFromA, [NotNull] TVertex vertexFromB, out TEdge foundEdge)
+        private bool FindEdge(TVertex vertexFromA, TVertex vertexFromB, out TEdge foundEdge)
         {
             foreach (TEdge edge in VisitedGraph.AdjacentEdges(vertexFromA))
             {

@@ -1,0 +1,16 @@
+<Project>
+    <PropertyGroup>
+        <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+        <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageVersion Include="BenchmarkDotNet" Version="0.15.8"/>
+        <PackageVersion Include="NUnit" Version="4.4.0"/>
+        <PackageVersion Include="NUnit3TestAdapter" Version="6.1.0"/>
+        <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.1"/>
+        <PackageVersion Include="AutomaticGraphLayout" Version="1.1.12"/>
+        <PackageVersion Include="AutomaticGraphLayout.Drawing" Version="1.1.12"/>
+        <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.102"/>
+        <PackageVersion Include="HtmlAgilityPack" Version="1.12.4"/>
+    </ItemGroup>
+</Project>

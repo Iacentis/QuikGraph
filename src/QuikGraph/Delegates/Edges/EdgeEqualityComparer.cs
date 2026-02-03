@@ -1,4 +1,4 @@
-using JetBrains.Annotations;
+
 
 namespace QuikGraph
 {
@@ -11,7 +11,7 @@ namespace QuikGraph
     /// <param name="target">Target vertex to compare with.</param>
     /// <returns>True if the <paramref name="edge"/> vertices matches given ones, false otherwise.</returns>
     public delegate bool EdgeEqualityComparer<in TVertex>(
-        [NotNull] IEdge<TVertex> edge,
-        [NotNull] TVertex source,
-        [NotNull] TVertex target);
+         IEdge<TVertex> edge,
+         TVertex source,
+         TVertex target);
 }

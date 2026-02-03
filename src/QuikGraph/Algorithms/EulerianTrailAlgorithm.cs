@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Linq;
-using JetBrains.Annotations;
+
 using QuikGraph.Algorithms.Observers;
 using QuikGraph.Algorithms.Search;
 using QuikGraph.Algorithms.Services;
@@ -19,13 +20,13 @@ namespace QuikGraph.Algorithms
         , ITreeBuilderAlgorithm<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
-        [NotNull, ItemNotNull]
+
         private readonly List<TEdge> _temporaryCircuit = new List<TEdge>();
 
-        [CanBeNull]
+
         private TVertex _currentVertex;
 
-        [NotNull, ItemNotNull]
+
         private List<TEdge> _temporaryEdges = new List<TEdge>();
 
         /// <summary>
@@ -34,7 +35,7 @@ namespace QuikGraph.Algorithms
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public EulerianTrailAlgorithm(
-            [NotNull] IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph)
+             IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph)
             : this(null, visitedGraph)
         {
         }
@@ -46,38 +47,38 @@ namespace QuikGraph.Algorithms
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public EulerianTrailAlgorithm(
-            [CanBeNull] IAlgorithmComponent host,
-            [NotNull] IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph)
+             IAlgorithmComponent host,
+             IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph)
             : base(host, visitedGraph)
         {
             _currentVertex = default(TVertex);
         }
 
-        [NotNull, ItemNotNull]
+
         private List<TEdge> _circuit = new List<TEdge>();
 
         /// <summary>
         /// Circuit.
         /// </summary>
-        [NotNull, ItemNotNull]
+
         public TEdge[] Circuit => _circuit.ToArray();
 
         [Pure]
-        private bool NotInCircuit([NotNull] TEdge edge)
+        private bool NotInCircuit( TEdge edge)
         {
             return !_circuit.Contains(edge)
                    && !_temporaryCircuit.Contains(edge);
         }
 
         [Pure]
-        [NotNull, ItemNotNull]
-        private IEnumerable<TEdge> SelectOutEdgesNotInCircuit([NotNull] TVertex vertex)
+
+        private IEnumerable<TEdge> SelectOutEdgesNotInCircuit( TVertex vertex)
         {
             return VisitedGraph.OutEdges(vertex).Where(NotInCircuit);
         }
 
         [Pure]
-        private bool TrySelectSingleOutEdgeNotInCircuit([NotNull] TVertex vertex, out TEdge edge)
+        private bool TrySelectSingleOutEdgeNotInCircuit( TVertex vertex, out TEdge edge)
         {
             IEnumerable<TEdge> edgesNotInCircuit = SelectOutEdgesNotInCircuit(vertex);
             using (IEnumerator<TEdge> enumerator = edgesNotInCircuit.GetEnumerator())
@@ -96,7 +97,7 @@ namespace QuikGraph.Algorithms
         /// <inheritdoc />
         public event EdgeAction<TVertex, TEdge> TreeEdge;
 
-        private void OnTreeEdge([NotNull] TEdge edge)
+        private void OnTreeEdge( TEdge edge)
         {
             Debug.Assert(edge != null);
 
@@ -108,7 +109,7 @@ namespace QuikGraph.Algorithms
         /// </summary>
         public event EdgeAction<TVertex, TEdge> CircuitEdge;
 
-        private void OnCircuitEdge([NotNull] TEdge edge)
+        private void OnCircuitEdge( TEdge edge)
         {
             Debug.Assert(edge != null);
 
@@ -120,14 +121,14 @@ namespace QuikGraph.Algorithms
         /// </summary>
         public event EdgeAction<TVertex, TEdge> VisitEdge;
 
-        private void OnVisitEdge([NotNull] TEdge edge)
+        private void OnVisitEdge( TEdge edge)
         {
             Debug.Assert(edge != null);
 
             VisitEdge?.Invoke(edge);
         }
 
-        private bool Search([NotNull] TVertex vertex)
+        private bool Search( TVertex vertex)
         {
             Debug.Assert(vertex != null);
 
@@ -187,10 +188,9 @@ namespace QuikGraph.Algorithms
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         [Pure]
         public static int ComputeEulerianPathCount(
-            [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> graph)
+             IVertexAndEdgeListGraph<TVertex, TEdge> graph)
         {
-            if (graph is null)
-                throw new ArgumentNullException(nameof(graph));
+            ArgumentNullException.ThrowIfNull(graph);
 
             if (graph.EdgeCount < graph.VertexCount)
                 return 0;
@@ -282,7 +282,7 @@ namespace QuikGraph.Algorithms
         #endregion
 
         [Pure]
-        private bool HasEdgeToward([NotNull] TVertex u, [NotNull] TVertex v)
+        private bool HasEdgeToward( TVertex u,  TVertex v)
         {
             Debug.Assert(u != null);
             Debug.Assert(v != null);
@@ -294,9 +294,9 @@ namespace QuikGraph.Algorithms
 
         [Pure]
         private bool FindAdjacentOddVertex(
-            [NotNull] TVertex u,
-            [NotNull, ItemNotNull] ICollection<TVertex> oddVertices,
-            [NotNull, InstantHandle] EdgeFactory<TVertex, TEdge> edgeFactory,
+             TVertex u,
+             ICollection<TVertex> oddVertices,
+             EdgeFactory<TVertex, TEdge> edgeFactory,
             out bool foundAdjacent)
         {
             bool found = false;
@@ -332,11 +332,10 @@ namespace QuikGraph.Algorithms
         /// Number of odd vertices is not even, failed to add temporary edge to <see cref="AlgorithmBase{TGraph}.VisitedGraph"/>,
         /// or failed to compute eulerian trail.
         /// </exception>
-        [NotNull, ItemNotNull]
-        public TEdge[] AddTemporaryEdges([NotNull, InstantHandle] EdgeFactory<TVertex, TEdge> edgeFactory)
+
+        public TEdge[] AddTemporaryEdges( EdgeFactory<TVertex, TEdge> edgeFactory)
         {
-            if (edgeFactory is null)
-                throw new ArgumentNullException(nameof(edgeFactory));
+            ArgumentNullException.ThrowIfNull(edgeFactory);
 
             // First gather odd edges
             List<TVertex> oddVertices = VisitedGraph.OddVertices().ToList();
@@ -378,10 +377,10 @@ namespace QuikGraph.Algorithms
         }
 
         private void AddTemporaryEdge(
-            [NotNull] TVertex u,
-            [NotNull] TVertex v,
-            [NotNull, ItemNotNull] ICollection<TVertex> oddVertices,
-            [NotNull, InstantHandle] EdgeFactory<TVertex, TEdge> edgeFactory)
+             TVertex u,
+             TVertex v,
+             ICollection<TVertex> oddVertices,
+             EdgeFactory<TVertex, TEdge> edgeFactory)
         {
             TEdge tempEdge = edgeFactory(u, v);
             if (!VisitedGraph.AddEdge(tempEdge))
@@ -416,7 +415,7 @@ namespace QuikGraph.Algorithms
         /// of trails spans the entire set of edges.
         /// </remarks>
         /// <returns>Eulerian trail set.</returns>
-        [NotNull, ItemNotNull]
+
         public IEnumerable<ICollection<TEdge>> Trails()
         {
             var trail = new List<TEdge>();
@@ -460,7 +459,7 @@ namespace QuikGraph.Algorithms
         /// </para>
         /// <para>
         /// If the current edge is temporary, the current trail is finished and
-        /// added to the trail collection. The shortest path between the 
+        /// added to the trail collection. The shortest path between the
         /// start vertex <paramref name="startingVertex"/> and the target vertex of the
         /// temporary edge is then used to start the new trail. This shortest
         /// path is computed using the <see cref="BreadthFirstSearchAlgorithm{TVertex,TEdge}"/>.
@@ -470,8 +469,8 @@ namespace QuikGraph.Algorithms
         /// <returns>Eulerian trail set, all starting at <paramref name="startingVertex"/>.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="startingVertex"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.InvalidOperationException">Eulerian trail not computed yet.</exception>
-        [NotNull, ItemNotNull]
-        public IEnumerable<ICollection<TEdge>> Trails([NotNull] TVertex startingVertex)
+
+        public IEnumerable<ICollection<TEdge>> Trails( TVertex startingVertex)
         {
             if (startingVertex == null)
                 throw new ArgumentNullException(nameof(startingVertex));
@@ -480,7 +479,7 @@ namespace QuikGraph.Algorithms
         }
 
         [Pure]
-        private int FindFirstEdgeInCircuit([NotNull] TVertex startingVertex)
+        private int FindFirstEdgeInCircuit( TVertex startingVertex)
         {
             int i;
             for (i = 0; i < _circuit.Count; ++i)
@@ -498,8 +497,8 @@ namespace QuikGraph.Algorithms
             return i;
         }
 
-        [NotNull, ItemNotNull]
-        private IEnumerable<ICollection<TEdge>> TrailsInternal([NotNull] TVertex startingVertex)
+
+        private IEnumerable<ICollection<TEdge>> TrailsInternal( TVertex startingVertex)
         {
             int index = FindFirstEdgeInCircuit(startingVertex);
 

@@ -1,8 +1,7 @@
-﻿#if SUPPORTS_SERIALIZATION
+﻿
 using System;
-#endif
+
 using System.Diagnostics;
-using JetBrains.Annotations;
 using QuikGraph.Graphviz.Dot;
 
 namespace QuikGraph.Graphviz
@@ -10,13 +9,13 @@ namespace QuikGraph.Graphviz
     /// <summary>
     /// Arguments of an event related to the formatting of an edge.
     /// </summary>
-#if SUPPORTS_SERIALIZATION
+
     [Serializable]
-#endif
+
     public sealed class FormatVertexEventArgs<TVertex> : VertexEventArgs<TVertex>
     {
         /// <summary />
-        internal FormatVertexEventArgs([NotNull] TVertex vertex, [NotNull] GraphvizVertex vertexFormat)
+        internal FormatVertexEventArgs( TVertex vertex,  GraphvizVertex vertexFormat)
             : base(vertex)
         {
             Debug.Assert(vertexFormat != null);
@@ -27,7 +26,7 @@ namespace QuikGraph.Graphviz
         /// <summary>
         /// Vertex format.
         /// </summary>
-        [NotNull]
+
         public GraphvizVertex VertexFormat { get; }
     }
 }

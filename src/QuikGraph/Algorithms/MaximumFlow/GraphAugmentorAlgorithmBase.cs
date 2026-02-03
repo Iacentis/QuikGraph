@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
 
 namespace QuikGraph.Algorithms.MaximumFlow
@@ -27,10 +26,10 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexFactory"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/>.</exception>
         protected GraphAugmentorAlgorithmBase(
-            [CanBeNull] IAlgorithmComponent host,
-            [NotNull] TGraph visitedGraph,
-            [NotNull] VertexFactory<TVertex> vertexFactory,
-            [NotNull] EdgeFactory<TVertex, TEdge> edgeFactory)
+             IAlgorithmComponent host,
+             TGraph visitedGraph,
+             VertexFactory<TVertex> vertexFactory,
+             EdgeFactory<TVertex, TEdge> edgeFactory)
             : base(host, visitedGraph)
         {
             VertexFactory = vertexFactory ?? throw new ArgumentNullException(nameof(vertexFactory));
@@ -40,13 +39,13 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <summary>
         /// Vertex factory method.
         /// </summary>
-        [NotNull]
+
         public VertexFactory<TVertex> VertexFactory { get; }
 
         /// <summary>
         /// Edge factory method.
         /// </summary>
-        [NotNull]
+
         public EdgeFactory<TVertex, TEdge> EdgeFactory { get; }
 
         /// <summary>
@@ -64,13 +63,13 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// </summary>
         public bool Augmented { get; private set; }
 
-        [NotNull, ItemNotNull]
+
         private readonly List<TEdge> _augmentedEdges = new List<TEdge>();
 
         /// <summary>
         /// Gets the collections of edges added to augment the graph.
         /// </summary>
-        [NotNull, ItemNotNull]
+
         public TEdge[] AugmentedEdges => _augmentedEdges.ToArray();
 
         /// <summary>
@@ -78,7 +77,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// </summary>
         public event VertexAction<TVertex> SuperSourceAdded;
 
-        private void OnSuperSourceAdded([NotNull] TVertex vertex)
+        private void OnSuperSourceAdded( TVertex vertex)
         {
             Debug.Assert(vertex != null);
 
@@ -90,7 +89,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// </summary>
         public event VertexAction<TVertex> SuperSinkAdded;
 
-        private void OnSuperSinkAdded([NotNull] TVertex vertex)
+        private void OnSuperSinkAdded( TVertex vertex)
         {
             Debug.Assert(vertex != null);
 
@@ -102,7 +101,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// </summary>
         public event EdgeAction<TVertex, TEdge> EdgeAdded;
 
-        private void OnEdgeAdded([NotNull] TEdge edge)
+        private void OnEdgeAdded( TEdge edge)
         {
             Debug.Assert(edge != null);
 
@@ -157,7 +156,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// </summary>
         /// <param name="source">Source vertex.</param>
         /// <param name="target">Target vertex.</param>
-        protected void AddAugmentedEdge([NotNull] TVertex source, [NotNull] TVertex target)
+        protected void AddAugmentedEdge( TVertex source,  TVertex target)
         {
             Debug.Assert(source != null);
             Debug.Assert(target != null);

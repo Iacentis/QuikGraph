@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Xml;
-#if SUPPORTS_GRAPHS_SERIALIZATION
+using System.Diagnostics.Contracts;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Xml;
 using System.Xml.XPath;
-#endif
-using JetBrains.Annotations;
+
 
 namespace QuikGraph.Serialization
 {
@@ -15,7 +14,6 @@ namespace QuikGraph.Serialization
     /// </summary>
     public static class SerializationExtensions
     {
-#if SUPPORTS_GRAPHS_SERIALIZATION
         /// <summary>
         /// Serializes the <paramref name="graph"/> to the <paramref name="stream"/> using the .NET serialization binary formatter.
         /// </summary>
@@ -26,20 +24,16 @@ namespace QuikGraph.Serialization
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="stream"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="stream"/> is not writable.</exception>
-#if DEPRECATE_BINARY_SERIALIZATION
         [Obsolete(
             "Binary serialization on old .NET targets is deprecated.\n" +
             "Consider using another kind of serialization or updating to at least .NET Framework 4.6.1+, .NET Standard 2.0+ or .NET 5.0+.")]
-#endif
         public static void SerializeToBinary<TVertex, TEdge>(
-            [NotNull] this IGraph<TVertex, TEdge> graph,
-            [NotNull] Stream stream)
+            this IGraph<TVertex, TEdge> graph,
+            Stream stream)
             where TEdge : IEdge<TVertex>
         {
-            if (graph == null)
-                throw new ArgumentNullException(nameof(graph));
-            if (stream is null)
-                throw new ArgumentNullException(nameof(stream));
+            ArgumentNullException.ThrowIfNull(graph);
+            ArgumentNullException.ThrowIfNull(stream);
             if (!stream.CanWrite)
                 throw new ArgumentException("Must be a writable stream", nameof(stream));
 
@@ -66,19 +60,16 @@ namespace QuikGraph.Serialization
         /// <exception cref="T:System.ArgumentNullException"><paramref name="stream"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="stream"/> is not readable.</exception>
         [Pure]
-#if DEPRECATE_BINARY_SERIALIZATION
         [Obsolete(
             "Binary deserialization on old .NET targets is deprecated.\n" +
             "Consider using another kind of serialization or updating to at least .NET Framework 4.6.1+, .NET Standard 2.0+ or .NET 5.0+.")]
-#endif
         public static TGraph DeserializeFromBinary<TVertex, TEdge, TGraph>(
-            [NotNull] this Stream stream,
-            [CanBeNull] SerializationBinder binder = null)
+            this Stream stream,
+            SerializationBinder binder = null)
             where TGraph : IGraph<TVertex, TEdge>
             where TEdge : IEdge<TVertex>
         {
-            if (stream is null)
-                throw new ArgumentNullException(nameof(stream));
+            ArgumentNullException.ThrowIfNull(stream);
             if (!stream.CanRead)
                 throw new ArgumentException("Must be a readable stream", nameof(stream));
 
@@ -86,17 +77,16 @@ namespace QuikGraph.Serialization
             object result = formatter.Deserialize(stream);
             return (TGraph)result;
         }
-#endif
 
         [Pure]
         private static TGraph DeserializeFromXmlInternal<TVertex, TEdge, TGraph>(
-            [NotNull] XmlReader reader,
-            [NotNull, InstantHandle] Predicate<XmlReader> graphPredicate,
-            [NotNull, InstantHandle] Predicate<XmlReader> vertexPredicate,
-            [NotNull, InstantHandle] Predicate<XmlReader> edgePredicate,
-            [NotNull, InstantHandle] Func<XmlReader, TGraph> graphFactory,
-            [NotNull, InstantHandle] Func<XmlReader, TVertex> vertexFactory,
-            [NotNull, InstantHandle] Func<XmlReader, TEdge> edgeFactory)
+            XmlReader reader,
+            Predicate<XmlReader> graphPredicate,
+            Predicate<XmlReader> vertexPredicate,
+            Predicate<XmlReader> edgePredicate,
+            Func<XmlReader, TGraph> graphFactory,
+            Func<XmlReader, TVertex> vertexFactory,
+            Func<XmlReader, TEdge> edgeFactory)
             where TGraph : class, IMutableVertexAndEdgeSet<TVertex, TEdge> where TEdge : IEdge<TVertex>
         {
             // Find the graph node
@@ -136,15 +126,14 @@ namespace QuikGraph.Serialization
             return graph;
         }
 
-#if SUPPORTS_GRAPHS_SERIALIZATION
         private static TGraph DeserializeFromXmlInternal<TVertex, TEdge, TGraph>(
-            [NotNull] this IXPathNavigable document,
-            [NotNull] string graphXPath,
-            [NotNull] string vertexXPath,
-            [NotNull] string edgeXPath,
-            [NotNull, InstantHandle] Func<XPathNavigator, TGraph> graphFactory,
-            [NotNull, InstantHandle] Func<XPathNavigator, TVertex> vertexFactory,
-            [NotNull, InstantHandle] Func<XPathNavigator, TEdge> edgeFactory)
+            this IXPathNavigable document,
+            string graphXPath,
+            string vertexXPath,
+            string edgeXPath,
+            Func<XPathNavigator, TGraph> graphFactory,
+            Func<XPathNavigator, TVertex> vertexFactory,
+            Func<XPathNavigator, TEdge> edgeFactory)
             where TGraph : IMutableVertexAndEdgeSet<TVertex, TEdge>
             where TEdge : IEdge<TVertex>
         {
@@ -195,41 +184,34 @@ namespace QuikGraph.Serialization
         /// </exception>
         [Pure]
         public static TGraph DeserializeFromXml<TVertex, TEdge, TGraph>(
-            [NotNull] this IXPathNavigable document,
-            [NotNull] string graphXPath,
-            [NotNull] string vertexXPath,
-            [NotNull] string edgeXPath,
-            [NotNull, InstantHandle] Func<XPathNavigator, TGraph> graphFactory,
-            [NotNull, InstantHandle] Func<XPathNavigator, TVertex> vertexFactory,
-            [NotNull, InstantHandle] Func<XPathNavigator, TEdge> edgeFactory)
+            this IXPathNavigable document,
+            string graphXPath,
+            string vertexXPath,
+            string edgeXPath,
+            Func<XPathNavigator, TGraph> graphFactory,
+            Func<XPathNavigator, TVertex> vertexFactory,
+            Func<XPathNavigator, TEdge> edgeFactory)
             where TGraph : IMutableVertexAndEdgeSet<TVertex, TEdge>
             where TEdge : IEdge<TVertex>
         {
-            if (document is null)
-                throw new ArgumentNullException(nameof(document));
+            ArgumentNullException.ThrowIfNull(document);
             if (string.IsNullOrEmpty(graphXPath))
                 throw new ArgumentException("Graph path cannot be null or empty", nameof(graphXPath));
             if (string.IsNullOrEmpty(vertexXPath))
                 throw new ArgumentException("Vertex path cannot be null or empty", nameof(vertexXPath));
             if (string.IsNullOrEmpty(edgeXPath))
                 throw new ArgumentException("Edge path cannot be null or empty", nameof(edgeXPath));
-            if (graphFactory is null)
-                throw new ArgumentNullException(nameof(graphFactory));
-            if (vertexFactory is null)
-                throw new ArgumentNullException(nameof(vertexFactory));
-            if (edgeFactory is null)
-                throw new ArgumentNullException(nameof(edgeFactory));
+            ArgumentNullException.ThrowIfNull(graphFactory);
+            ArgumentNullException.ThrowIfNull(vertexFactory);
+            ArgumentNullException.ThrowIfNull(edgeFactory);
 
-            return DeserializeFromXmlInternal(
-                document,
-                graphXPath,
+            return document.DeserializeFromXmlInternal(graphXPath,
                 vertexXPath,
                 edgeXPath,
                 graphFactory,
                 vertexFactory,
                 edgeFactory);
         }
-#endif
 
         /// <summary>
         /// Deserializes a graph instance from a generic XML stream, using an <see cref="T:System.Xml.XmlReader"/>.
@@ -255,32 +237,26 @@ namespace QuikGraph.Serialization
         /// <exception cref="T:System.InvalidOperationException">If the graph node cannot be found.</exception>
         [Pure]
         public static TGraph DeserializeFromXml<TVertex, TEdge, TGraph>(
-            [NotNull] this XmlReader reader,
-            [NotNull, InstantHandle] Predicate<XmlReader> graphPredicate,
-            [NotNull, InstantHandle] Predicate<XmlReader> vertexPredicate,
-            [NotNull, InstantHandle] Predicate<XmlReader> edgePredicate,
-            [NotNull, InstantHandle] Func<XmlReader, TGraph> graphFactory,
-            [NotNull, InstantHandle] Func<XmlReader, TVertex> vertexFactory,
-            [NotNull, InstantHandle] Func<XmlReader, TEdge> edgeFactory)
+            this XmlReader reader,
+            Predicate<XmlReader> graphPredicate,
+            Predicate<XmlReader> vertexPredicate,
+            Predicate<XmlReader> edgePredicate,
+            Func<XmlReader, TGraph> graphFactory,
+            Func<XmlReader, TVertex> vertexFactory,
+            Func<XmlReader, TEdge> edgeFactory)
             where TGraph : class, IMutableVertexAndEdgeSet<TVertex, TEdge>
             where TEdge : IEdge<TVertex>
         {
-            if (reader is null)
-                throw new ArgumentNullException(nameof(reader));
-            if (graphPredicate is null)
-                throw new ArgumentNullException(nameof(graphPredicate));
-            if (vertexPredicate is null)
-                throw new ArgumentNullException(nameof(vertexPredicate));
-            if (edgePredicate is null)
-                throw new ArgumentNullException(nameof(edgePredicate));
-            if (graphFactory is null)
-                throw new ArgumentNullException(nameof(graphFactory));
-            if (vertexFactory is null)
-                throw new ArgumentNullException(nameof(vertexFactory));
-            if (edgeFactory is null)
-                throw new ArgumentNullException(nameof(edgeFactory));
+            ArgumentNullException.ThrowIfNull(reader);
+            ArgumentNullException.ThrowIfNull(graphPredicate);
+            ArgumentNullException.ThrowIfNull(vertexPredicate);
+            ArgumentNullException.ThrowIfNull(edgePredicate);
+            ArgumentNullException.ThrowIfNull(graphFactory);
+            ArgumentNullException.ThrowIfNull(vertexFactory);
+            ArgumentNullException.ThrowIfNull(edgeFactory);
 
-            return DeserializeFromXmlInternal(reader, graphPredicate, vertexPredicate, edgePredicate, graphFactory, vertexFactory, edgeFactory);
+            return DeserializeFromXmlInternal(reader, graphPredicate, vertexPredicate, edgePredicate, graphFactory,
+                vertexFactory, edgeFactory);
         }
 
         /// <summary>
@@ -309,29 +285,29 @@ namespace QuikGraph.Serialization
         /// <exception cref="T:System.InvalidOperationException">If the graph node cannot be found.</exception>
         [Pure]
         public static TGraph DeserializeFromXml<TVertex, TEdge, TGraph>(
-            [NotNull] this XmlReader reader,
-            [NotNull] string graphElementName,
-            [NotNull] string vertexElementName,
-            [NotNull] string edgeElementName,
-            [NotNull] string namespaceUri,
-            [NotNull, InstantHandle] Func<XmlReader, TGraph> graphFactory,
-            [NotNull, InstantHandle] Func<XmlReader, TVertex> vertexFactory,
-            [NotNull, InstantHandle] Func<XmlReader, TEdge> edgeFactory)
+            this XmlReader reader,
+            string graphElementName,
+            string vertexElementName,
+            string edgeElementName,
+            string namespaceUri,
+            Func<XmlReader, TGraph> graphFactory,
+            Func<XmlReader, TVertex> vertexFactory,
+            Func<XmlReader, TEdge> edgeFactory)
             where TGraph : class, IMutableVertexAndEdgeSet<TVertex, TEdge>
             where TEdge : IEdge<TVertex>
         {
             if (string.IsNullOrEmpty(graphElementName))
-                throw new ArgumentException($"{nameof(graphElementName)} cannot be null or empty.", nameof(graphElementName));
+                throw new ArgumentException($"{nameof(graphElementName)} cannot be null or empty.",
+                    nameof(graphElementName));
             if (string.IsNullOrEmpty(vertexElementName))
-                throw new ArgumentException($"{nameof(vertexElementName)} cannot be null or empty.", nameof(vertexElementName));
+                throw new ArgumentException($"{nameof(vertexElementName)} cannot be null or empty.",
+                    nameof(vertexElementName));
             if (string.IsNullOrEmpty(edgeElementName))
-                throw new ArgumentException($"{nameof(edgeElementName)} cannot be null or empty.", nameof(edgeElementName));
-            if (namespaceUri is null)
-                throw new ArgumentNullException(nameof(namespaceUri));
+                throw new ArgumentException($"{nameof(edgeElementName)} cannot be null or empty.",
+                    nameof(edgeElementName));
+            ArgumentNullException.ThrowIfNull(namespaceUri);
 
-            return DeserializeFromXml(
-                reader,
-                r => r.Name == graphElementName && r.NamespaceURI == namespaceUri,
+            return reader.DeserializeFromXml(r => r.Name == graphElementName && r.NamespaceURI == namespaceUri,
                 r => r.Name == vertexElementName && r.NamespaceURI == namespaceUri,
                 r => r.Name == edgeElementName && r.NamespaceURI == namespaceUri,
                 graphFactory,
@@ -362,20 +338,18 @@ namespace QuikGraph.Serialization
         /// <exception cref="T:System.ArgumentException"><paramref name="vertexElementName"/> is <see langword="null"/> or empty.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="edgeElementName"/> is <see langword="null"/> or empty.</exception>
         public static void SerializeToXml<TVertex, TEdge, TGraph>(
-            [NotNull] this TGraph graph,
-            [NotNull] XmlWriter writer,
-            [NotNull, InstantHandle] VertexIdentity<TVertex> vertexIdentity,
-            [NotNull, InstantHandle] EdgeIdentity<TVertex, TEdge> edgeIdentity,
-            [NotNull] string graphElementName,
-            [NotNull] string vertexElementName,
-            [NotNull] string edgeElementName,
-            [NotNull] string namespaceUri)
+            this TGraph graph,
+            XmlWriter writer,
+            VertexIdentity<TVertex> vertexIdentity,
+            EdgeIdentity<TVertex, TEdge> edgeIdentity,
+            string graphElementName,
+            string vertexElementName,
+            string edgeElementName,
+            string namespaceUri)
             where TGraph : IEdgeListGraph<TVertex, TEdge>
             where TEdge : IEdge<TVertex>
         {
-            SerializeToXml(
-                graph,
-                writer,
+            graph.SerializeToXml(writer,
                 vertexIdentity,
                 edgeIdentity,
                 graphElementName,
@@ -413,36 +387,35 @@ namespace QuikGraph.Serialization
         /// <exception cref="T:System.ArgumentException"><paramref name="vertexElementName"/> is <see langword="null"/> or empty.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="edgeElementName"/> is <see langword="null"/> or empty.</exception>
         public static void SerializeToXml<TVertex, TEdge, TGraph>(
-            [NotNull] this TGraph graph,
-            [NotNull] XmlWriter writer,
-            [NotNull, InstantHandle] VertexIdentity<TVertex> vertexIdentity,
-            [NotNull, InstantHandle] EdgeIdentity<TVertex, TEdge> edgeIdentity,
-            [NotNull] string graphElementName,
-            [NotNull] string vertexElementName,
-            [NotNull] string edgeElementName,
-            [NotNull] string namespaceUri,
-            [CanBeNull, InstantHandle] Action<XmlWriter, TGraph> writeGraphAttributes,
-            [CanBeNull, InstantHandle] Action<XmlWriter, TVertex> writeVertexAttributes,
-            [CanBeNull, InstantHandle] Action<XmlWriter, TEdge> writeEdgeAttributes)
+            this TGraph graph,
+            XmlWriter writer,
+            VertexIdentity<TVertex> vertexIdentity,
+            EdgeIdentity<TVertex, TEdge> edgeIdentity,
+            string graphElementName,
+            string vertexElementName,
+            string edgeElementName,
+            string namespaceUri,
+            Action<XmlWriter, TGraph> writeGraphAttributes,
+            Action<XmlWriter, TVertex> writeVertexAttributes,
+            Action<XmlWriter, TEdge> writeEdgeAttributes)
             where TGraph : IEdgeListGraph<TVertex, TEdge>
             where TEdge : IEdge<TVertex>
         {
             if (graph == null)
                 throw new ArgumentNullException(nameof(graph));
-            if (writer is null)
-                throw new ArgumentNullException(nameof(writer));
-            if (vertexIdentity is null)
-                throw new ArgumentNullException(nameof(vertexIdentity));
-            if (edgeIdentity is null)
-                throw new ArgumentNullException(nameof(edgeIdentity));
+            ArgumentNullException.ThrowIfNull(writer);
+            ArgumentNullException.ThrowIfNull(vertexIdentity);
+            ArgumentNullException.ThrowIfNull(edgeIdentity);
             if (string.IsNullOrEmpty(graphElementName))
-                throw new ArgumentException($"{nameof(graphElementName)} cannot be null or empty.", nameof(graphElementName));
+                throw new ArgumentException($"{nameof(graphElementName)} cannot be null or empty.",
+                    nameof(graphElementName));
             if (string.IsNullOrEmpty(vertexElementName))
-                throw new ArgumentException($"{nameof(vertexElementName)} cannot be null or empty.", nameof(vertexElementName));
+                throw new ArgumentException($"{nameof(vertexElementName)} cannot be null or empty.",
+                    nameof(vertexElementName));
             if (string.IsNullOrEmpty(edgeElementName))
-                throw new ArgumentException($"{nameof(edgeElementName)} cannot be null or empty.", nameof(edgeElementName));
-            if (namespaceUri is null)
-                throw new ArgumentNullException(nameof(namespaceUri));
+                throw new ArgumentException($"{nameof(edgeElementName)} cannot be null or empty.",
+                    nameof(edgeElementName));
+            ArgumentNullException.ThrowIfNull(namespaceUri);
 
             writer.WriteStartElement(graphElementName, namespaceUri);
 

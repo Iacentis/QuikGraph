@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
+
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using QuikGraph.Algorithms.Search;
 using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
 using static QuikGraph.Tests.GraphTestHelpers;
@@ -18,8 +19,8 @@ namespace QuikGraph.Tests.Algorithms.Search
         #region Test helpers
 
         private static void RunImplicitEdgeDFSAndCheck<TVertex, TEdge>(
-            [NotNull] IEdgeListAndIncidenceGraph<TVertex, TEdge> graph,
-            [NotNull] TVertex sourceVertex,
+             IEdgeListAndIncidenceGraph<TVertex, TEdge> graph,
+             TVertex sourceVertex,
             int maxDepth = int.MaxValue)
             where TEdge : IEdge<TVertex>
         {
@@ -34,7 +35,7 @@ namespace QuikGraph.Tests.Algorithms.Search
 
             dfs.StartEdge += edge =>
             {
-                Assert.IsFalse(parents.ContainsKey(edge));
+                Assert.That(parents.ContainsKey(edge),Is.False);
                 parents[edge] = edge;
                 discoverTimes[edge] = time++;
             };
@@ -43,29 +44,29 @@ namespace QuikGraph.Tests.Algorithms.Search
             {
                 parents[targetEdge] = edge;
 
-                Assert.AreEqual(GraphColor.Gray, dfs.EdgesColors[parents[targetEdge]]);
+                Assert.That(GraphColor.Gray,Is.EqualTo(dfs.EdgesColors[parents[targetEdge]]));
 
                 discoverTimes[targetEdge] = time++;
             };
 
             dfs.TreeEdge += edge =>
             {
-                Assert.AreEqual(GraphColor.Gray, dfs.EdgesColors[edge]);
+                Assert.That(GraphColor.Gray,Is.EqualTo(dfs.EdgesColors[edge]));
             };
 
             dfs.BackEdge += edge =>
             {
-                Assert.AreEqual(GraphColor.Gray, dfs.EdgesColors[edge]);
+                Assert.That(GraphColor.Gray,Is.EqualTo(dfs.EdgesColors[edge]));
             };
 
             dfs.ForwardOrCrossEdge += edge =>
             {
-                Assert.AreEqual(GraphColor.Black, dfs.EdgesColors[edge]);
+                Assert.That(GraphColor.Black,Is.EqualTo(dfs.EdgesColors[edge]));
             };
 
             dfs.FinishEdge += edge =>
             {
-                Assert.AreEqual(GraphColor.Black, dfs.EdgesColors[edge]);
+                Assert.That(GraphColor.Black,Is.EqualTo(dfs.EdgesColors[edge]));
                 finishTimes[edge] = time++;
             };
 
@@ -73,9 +74,9 @@ namespace QuikGraph.Tests.Algorithms.Search
 
             // Check
             if (maxDepth == int.MaxValue)
-                Assert.AreEqual(discoverTimes.Count, finishTimes.Count);
+                Assert.That(discoverTimes.Count,Is.EqualTo(finishTimes.Count));
             else
-                Assert.GreaterOrEqual(discoverTimes.Count, finishTimes.Count);
+                Assert.That(discoverTimes.Count, Is.GreaterThanOrEqualTo(finishTimes.Count));
 
             TEdge[] exploredEdges = finishTimes.Keys.ToArray();
             foreach (TEdge e1 in exploredEdges)
@@ -84,11 +85,12 @@ namespace QuikGraph.Tests.Algorithms.Search
                 {
                     if (!e1.Equals(e2))
                     {
-                        Assert.IsTrue(
+                        Assert.That(
                             finishTimes[e1] < discoverTimes[e2]
                             || finishTimes[e2] < discoverTimes[e1]
                             || (discoverTimes[e2] < discoverTimes[e1] && finishTimes[e1] < finishTimes[e2] && IsDescendant(parents, e1, e2))
-                            || (discoverTimes[e1] < discoverTimes[e2] && finishTimes[e2] < finishTimes[e1] && IsDescendant(parents, e2, e1)));
+                            || (discoverTimes[e1] < discoverTimes[e2] && finishTimes[e2] < finishTimes[e1] && IsDescendant(parents, e2, e1)),
+                            Is.True);
                     }
                 }
             }
@@ -119,7 +121,7 @@ namespace QuikGraph.Tests.Algorithms.Search
             {
                 AssertAlgorithmState(algo, g);
                 CollectionAssert.IsEmpty(algo.EdgesColors);
-                Assert.AreEqual(maxDepth, algo.MaxDepth);
+                Assert.That(maxDepth,Is.EqualTo(algo.MaxDepth));
             }
 
             #endregion

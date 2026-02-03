@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using JetBrains.Annotations;
+
 using QuikGraph.Algorithms.Services;
 
 namespace QuikGraph.Algorithms.RankedShortestPath
@@ -26,9 +26,9 @@ namespace QuikGraph.Algorithms.RankedShortestPath
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceRelaxer"/> is <see langword="null"/>.</exception>
         protected RankedShortestPathAlgorithmBase(
-            [CanBeNull] IAlgorithmComponent host,
-            [NotNull] TGraph visitedGraph,
-            [NotNull] IDistanceRelaxer distanceRelaxer)
+             IAlgorithmComponent host,
+             TGraph visitedGraph,
+             IDistanceRelaxer distanceRelaxer)
             : base(host, visitedGraph)
         {
             DistanceRelaxer = distanceRelaxer ?? throw new ArgumentNullException(nameof(distanceRelaxer));
@@ -56,13 +56,13 @@ namespace QuikGraph.Algorithms.RankedShortestPath
         /// </summary>
         public int ComputedShortestPathCount => _computedShortestPaths?.Count ?? 0;
 
-        [ItemNotNull]
+
         private List<IEnumerable<TEdge>> _computedShortestPaths;
 
         /// <summary>
         /// Enumerable of shortest paths found.
         /// </summary>
-        [NotNull, ItemNotNull]
+
         public IEnumerable<IEnumerable<TEdge>> ComputedShortestPaths
         {
             get
@@ -79,7 +79,7 @@ namespace QuikGraph.Algorithms.RankedShortestPath
         /// Adds the given <paramref name="path"/> to the set of found shortest paths.
         /// </summary>
         /// <param name="path">Path to add.</param>
-        protected void AddComputedShortestPath([NotNull, ItemNotNull] IEnumerable<TEdge> path)
+        protected void AddComputedShortestPath( IEnumerable<TEdge> path)
         {
             Debug.Assert(path != null);
             TEdge[] pathArray = path.ToArray();
@@ -91,7 +91,7 @@ namespace QuikGraph.Algorithms.RankedShortestPath
         /// <summary>
         /// Distance relaxer.
         /// </summary>
-        [NotNull]
+
         public IDistanceRelaxer DistanceRelaxer { get; }
 
         #region AlgorithmBase<TGraph>

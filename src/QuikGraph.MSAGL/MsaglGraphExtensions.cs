@@ -1,5 +1,4 @@
 ﻿using System;
-using JetBrains.Annotations;
 using Microsoft.Msagl.Drawing;
 
 namespace QuikGraph.MSAGL
@@ -18,7 +17,7 @@ namespace QuikGraph.MSAGL
         /// <returns>Graph populator.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         public static MsaglGraphPopulator<TVertex, TEdge> CreateMsaglPopulator<TVertex, TEdge>(
-            [NotNull] this IEdgeListGraph<TVertex, TEdge> graph)
+             this IEdgeListGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
             return new MsaglDefaultGraphPopulator<TVertex, TEdge>(graph);
@@ -35,9 +34,9 @@ namespace QuikGraph.MSAGL
         /// <returns>Graph populator.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         public static MsaglGraphPopulator<TVertex, TEdge> CreateMsaglPopulator<TVertex, TEdge>(
-            [NotNull] this IEdgeListGraph<TVertex, TEdge> graph,
-            [CanBeNull] string format,
-            [CanBeNull] IFormatProvider formatProvider = null)
+             this IEdgeListGraph<TVertex, TEdge> graph,
+             string format,
+             IFormatProvider formatProvider = null)
             where TEdge : IEdge<TVertex>
         {
             return new MsaglToStringGraphPopulator<TVertex, TEdge>(graph, format, formatProvider);
@@ -54,8 +53,8 @@ namespace QuikGraph.MSAGL
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexIdentity"/> is <see langword="null"/>.</exception>
         public static MsaglGraphPopulator<TVertex, TEdge> CreateMsaglPopulator<TVertex, TEdge>(
-            [NotNull] this IEdgeListGraph<TVertex, TEdge> graph,
-            [NotNull] VertexIdentity<TVertex> vertexIdentity)
+             this IEdgeListGraph<TVertex, TEdge> graph,
+             VertexIdentity<TVertex> vertexIdentity)
             where TEdge : IEdge<TVertex>
         {
             return new MsaglIdentifiableGraphPopulator<TVertex, TEdge>(graph, vertexIdentity);
@@ -72,12 +71,12 @@ namespace QuikGraph.MSAGL
         /// <returns>MSAGL Graph.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         public static Graph ToMsaglGraph<TVertex, TEdge>(
-            [NotNull] this IEdgeListGraph<TVertex, TEdge> graph,
-            [CanBeNull] MsaglVertexNodeEventHandler<TVertex> nodeAdded = null,
-            [CanBeNull] MsaglEdgeEventHandler<TVertex, TEdge> edgeAdded = null)
+             this IEdgeListGraph<TVertex, TEdge> graph,
+             MsaglVertexNodeEventHandler<TVertex> nodeAdded = null,
+             MsaglEdgeEventHandler<TVertex, TEdge> edgeAdded = null)
             where TEdge : IEdge<TVertex>
         {
-            MsaglGraphPopulator<TVertex, TEdge> populator = CreateMsaglPopulator(graph);
+            MsaglGraphPopulator<TVertex, TEdge> populator = graph.CreateMsaglPopulator();
             try
             {
                 if (nodeAdded != null)
@@ -120,13 +119,13 @@ namespace QuikGraph.MSAGL
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexIdentity"/> is <see langword="null"/>.</exception>
         public static Graph ToMsaglGraph<TVertex, TEdge>(
-            [NotNull] this IEdgeListGraph<TVertex, TEdge> graph,
-            [NotNull] VertexIdentity<TVertex> vertexIdentity,
-            [CanBeNull] MsaglVertexNodeEventHandler<TVertex> nodeAdded = null,
-            [CanBeNull] MsaglEdgeEventHandler<TVertex, TEdge> edgeAdded = null)
+             this IEdgeListGraph<TVertex, TEdge> graph,
+             VertexIdentity<TVertex> vertexIdentity,
+             MsaglVertexNodeEventHandler<TVertex> nodeAdded = null,
+             MsaglEdgeEventHandler<TVertex, TEdge> edgeAdded = null)
             where TEdge : IEdge<TVertex>
         {
-            MsaglGraphPopulator<TVertex, TEdge> populator = CreateMsaglPopulator(graph, vertexIdentity);
+            MsaglGraphPopulator<TVertex, TEdge> populator = graph.CreateMsaglPopulator(vertexIdentity);
             try
             {
                 if (nodeAdded != null)

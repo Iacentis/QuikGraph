@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Algorithms.Observers;
 using QuikGraph.Algorithms.ShortestPath;
@@ -17,19 +16,20 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
     {
         #region Test helpers
 
-        private static void CheckPath<TVertex, TEdge>([NotNull] TVertex source, [NotNull] TVertex target, [NotNull, ItemNotNull] TEdge[] edges)
+        private static void CheckPath<TVertex, TEdge>(TVertex source, TVertex target, TEdge[] edges)
             where TEdge : IEdge<TVertex>
         {
-            Assert.AreEqual(source, edges[0].Source);
+            Assert.That(source, Is.EqualTo(edges[0].Source));
             for (int i = 0; i < edges.Length - 1; ++i)
-                Assert.AreEqual(edges[i].Target, edges[i + 1].Source);
-            Assert.AreEqual(target, edges[edges.Length - 1].Target);
+                Assert.That(edges[i].Target, Is.EqualTo(edges[i + 1].Source));
+            Assert.That(target, Is.EqualTo(edges[edges.Length - 1].Target));
         }
 
         private static void CompareAlgorithms<TVertex, TEdge, TGraph>(
-            [NotNull] AdjacencyGraph<TVertex, TEdge> graph,
-            [NotNull, InstantHandle] Func<TEdge, double> getDistances,
-            [NotNull, InstantHandle] Func<AdjacencyGraph<TVertex, TEdge>, Func<TEdge, double>, ShortestPathAlgorithmBase<TVertex, TEdge, TGraph>> shortestPathAlgorithmFactory)
+            AdjacencyGraph<TVertex, TEdge> graph,
+            Func<TEdge, double> getDistances,
+            Func<AdjacencyGraph<TVertex, TEdge>, Func<TEdge, double>, ShortestPathAlgorithmBase<TVertex, TEdge, TGraph>>
+                shortestPathAlgorithmFactory)
             where TEdge : IEdge<TVertex>
             where TGraph : IVertexSet<TVertex>
         {
@@ -40,7 +40,8 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
             TVertex[] vertices = graph.Vertices.ToArray();
             foreach (TVertex source in vertices)
             {
-                ShortestPathAlgorithmBase<TVertex, TEdge, TGraph> otherAlgorithm = shortestPathAlgorithmFactory(graph, getDistances);
+                ShortestPathAlgorithmBase<TVertex, TEdge, TGraph> otherAlgorithm =
+                    shortestPathAlgorithmFactory(graph, getDistances);
                 var predecessors = new VertexPredecessorRecorderObserver<TVertex, TEdge>();
                 using (predecessors.Attach(otherAlgorithm))
                     otherAlgorithm.Compute(source);
@@ -52,7 +53,7 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
                         continue;
 
                     bool pathExists = algorithm.TryGetPath(source, target, out IEnumerable<TEdge> floydPath);
-                    Assert.AreEqual(pathExists, otherPaths(target, out IEnumerable<TEdge> otherPath));
+                    Assert.That(pathExists, Is.EqualTo(otherPaths(target, out IEnumerable<TEdge> otherPath)));
 
                     if (pathExists)
                     {
@@ -88,7 +89,8 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         public void FloydVsBellmannGraphML()
         {
             foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_SlowTests())
-                CompareAlgorithms(graph, _ => 1.0, (g, d) => new BellmanFordShortestPathAlgorithm<string, Edge<string>>(g, d));
+                CompareAlgorithms(graph, _ => 1.0,
+                    (g, d) => new BellmanFordShortestPathAlgorithm<string, Edge<string>>(g, d));
         }
 
         [Test]
@@ -96,7 +98,8 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         {
             var distances = new Dictionary<Edge<char>, double>();
             AdjacencyGraph<char, Edge<char>> graph = CreateGraph(distances);
-            CompareAlgorithms(graph, e => distances[e], (g, d) => new DijkstraShortestPathAlgorithm<char, Edge<char>>(g, d));
+            CompareAlgorithms(graph, e => distances[e],
+                (g, d) => new DijkstraShortestPathAlgorithm<char, Edge<char>>(g, d));
         }
 
         [Test]
@@ -104,7 +107,8 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         public void FloydVsDijkstraGraphML()
         {
             foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_SlowTests())
-                CompareAlgorithms(graph, _ => 1, (g, d) => new DijkstraShortestPathAlgorithm<string, Edge<string>>(g, d));
+                CompareAlgorithms(graph, _ => 1,
+                    (g, d) => new DijkstraShortestPathAlgorithm<string, Edge<string>>(g, d));
         }
     }
 }

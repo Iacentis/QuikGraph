@@ -65,37 +65,37 @@ namespace QuikGraph.Tests.Structures
             var edge5 = new TermEdge<int>(1, 2, 0, 1);
             var edge6 = new TermEdge<int>(1, 2, 0, 1);
 
-            Assert.AreEqual(edge1, edge1);
-            Assert.AreEqual(edge3, edge3);
-            Assert.AreEqual(edge5, edge5);
+            Assert.That(edge1,Is.EqualTo(edge1));
+            Assert.That(edge3,Is.EqualTo(edge3));
+            Assert.That(edge5,Is.EqualTo(edge5));
 
-            Assert.AreNotEqual(edge1, edge2);
-            Assert.AreNotEqual(edge2, edge1);
-            Assert.IsFalse(edge1.Equals(edge2));
-            Assert.IsFalse(edge2.Equals(edge1));
+            Assert.That(edge1,Is.Not.EqualTo(edge2));
+            Assert.That(edge2,Is.Not.EqualTo(edge1));
+            Assert.That(edge1.Equals(edge2),Is.False);
+            Assert.That(edge2.Equals(edge1),Is.False);
 
-            Assert.AreNotEqual(edge1, edge3);
-            Assert.AreNotEqual(edge3, edge1);
-            Assert.IsFalse(edge1.Equals(edge3));
-            Assert.IsFalse(edge3.Equals(edge1));
+            Assert.That(edge1,Is.Not.EqualTo(edge3));
+            Assert.That(edge3,Is.Not.EqualTo(edge1));
+            Assert.That(edge1.Equals(edge3),Is.False);
+            Assert.That(edge3.Equals(edge1),Is.False);
 
-            Assert.AreNotEqual(edge1, edge5);
-            Assert.AreNotEqual(edge5, edge1);
-            Assert.IsFalse(edge1.Equals(edge5));
-            Assert.IsFalse(edge5.Equals(edge1));
+            Assert.That(edge1,Is.Not.EqualTo(edge5));
+            Assert.That(edge5,Is.Not.EqualTo(edge1));
+            Assert.That(edge1.Equals(edge5),Is.False);
+            Assert.That(edge5.Equals(edge1),Is.False);
 
-            Assert.AreNotEqual(edge3, edge4);
-            Assert.AreNotEqual(edge4, edge3);
-            Assert.IsFalse(edge3.Equals(edge4));
-            Assert.IsFalse(edge4.Equals(edge3));
+            Assert.That(edge3,Is.Not.EqualTo(edge4));
+            Assert.That(edge4,Is.Not.EqualTo(edge3));
+            Assert.That(edge3.Equals(edge4),Is.False);
+            Assert.That(edge4.Equals(edge3),Is.False);
 
-            Assert.AreNotEqual(edge5, edge6);
-            Assert.AreNotEqual(edge6, edge5);
-            Assert.IsFalse(edge5.Equals(edge6));
-            Assert.IsFalse(edge6.Equals(edge5));
+            Assert.That(edge5,Is.Not.EqualTo(edge6));
+            Assert.That(edge6,Is.Not.EqualTo(edge5));
+            Assert.That(edge5.Equals(edge6),Is.False);
+            Assert.That(edge6.Equals(edge5),Is.False);
 
-            Assert.AreNotEqual(null, edge1);
-            Assert.IsFalse(edge1.Equals(null));
+            Assert.That(edge1,Is.Not.Null);
+            Assert.That(edge1.Equals(null),Is.False);
         }
 
         [Test]
@@ -105,9 +105,9 @@ namespace QuikGraph.Tests.Structures
             var edge2 = new TermEdge<int>(1, 2, 1, 5);
             var edge3 = new TermEdge<int>(2, 1);
 
-            Assert.AreEqual("1 (0) -> 2 (0)", edge1.ToString());
-            Assert.AreEqual("1 (1) -> 2 (5)", edge2.ToString());
-            Assert.AreEqual("2 (0) -> 1 (0)", edge3.ToString());
+            Assert.That("1 (0) -> 2 (0)",Is.EqualTo(edge1.ToString()));
+            Assert.That("1 (1) -> 2 (5)",Is.EqualTo(edge2.ToString()));
+            Assert.That("2 (0) -> 1 (0)",Is.EqualTo(edge3.ToString()));
         }
     }
 }

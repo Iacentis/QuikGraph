@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Globalization;
-#if SUPPORTS_SERIALIZATION
 using System.Runtime.Serialization;
 using System.Security.Permissions;
-#endif
 using static QuikGraph.Utils.MathUtils;
 
 namespace QuikGraph.Graphviz.Dot
@@ -12,14 +10,11 @@ namespace QuikGraph.Graphviz.Dot
     /// <summary>
     /// Graphviz size (float).
     /// </summary>
-#if SUPPORTS_SERIALIZATION
     [Serializable]
-#endif
     [DebuggerDisplay("{" + nameof(Width) + "}x{" + nameof(Height) + "}")]
     public struct GraphvizSizeF
-#if SUPPORTS_SERIALIZATION
         : ISerializable
-#endif
+
     {
         /// <summary>
         /// Width.
@@ -36,7 +31,7 @@ namespace QuikGraph.Graphviz.Dot
         /// <summary>
         /// Indicates if this size is empty.
         /// </summary>
-        public bool IsEmpty =>  IsZero(Width) || IsZero(Height);
+        public bool IsEmpty => IsZero(Width) || IsZero(Height);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GraphvizSizeF"/> struct.
@@ -59,18 +54,17 @@ namespace QuikGraph.Graphviz.Dot
             return string.Format(CultureInfo.InvariantCulture, "{0}x{1}", Width, Height);
         }
 
-#if SUPPORTS_SERIALIZATION
+
         #region ISerializable
 
         private GraphvizSizeF(SerializationInfo info, StreamingContext context)
             : this(
-                (float)info.GetValue("w", typeof(float)),
-                (float)info.GetValue("h", typeof(float)))
+                (float)(info.GetValue("w", typeof(float)) ?? 0),
+                (float)(info.GetValue("h", typeof(float)) ?? 0))
         {
         }
 
         /// <inheritdoc />
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
         void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("w", Width);
@@ -78,20 +72,16 @@ namespace QuikGraph.Graphviz.Dot
         }
 
         #endregion
-#endif
     }
 
     /// <summary>
     /// Graphviz size.
     /// </summary>
-#if SUPPORTS_SERIALIZATION
     [Serializable]
-#endif
     [DebuggerDisplay("{" + nameof(Width) + "}x{" + nameof(Height) + "}")]
     public struct GraphvizSize
-#if SUPPORTS_SERIALIZATION
         : ISerializable
-#endif
+
     {
         /// <summary>
         /// Width.
@@ -131,18 +121,17 @@ namespace QuikGraph.Graphviz.Dot
             return string.Format(CultureInfo.InvariantCulture, "{0}x{1}", Width, Height);
         }
 
-#if SUPPORTS_SERIALIZATION
+
         #region ISerializable
 
         private GraphvizSize(SerializationInfo info, StreamingContext context)
             : this(
-                (int)info.GetValue("w", typeof(int)),
-                (int)info.GetValue("h", typeof(int)))
+                (int)(info.GetValue("w", typeof(int)) ?? 0),
+                (int)(info.GetValue("h", typeof(int)) ?? 0))
         {
         }
 
         /// <inheritdoc />
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
         void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("w", Width);
@@ -150,6 +139,5 @@ namespace QuikGraph.Graphviz.Dot
         }
 
         #endregion
-#endif
     }
 }

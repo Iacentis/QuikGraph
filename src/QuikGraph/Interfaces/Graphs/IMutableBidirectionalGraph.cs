@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations;
+﻿
 
 namespace QuikGraph
 {
@@ -22,20 +22,20 @@ namespace QuikGraph
         /// <returns>Number of edges removed.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="predicate"/> is <see langword="null"/>.</exception>
-        int RemoveInEdgeIf([NotNull] TVertex vertex, [NotNull, InstantHandle] EdgePredicate<TVertex, TEdge> predicate);
+        int RemoveInEdgeIf( TVertex vertex,  EdgePredicate<TVertex, TEdge> predicate);
 
         /// <summary>
         /// Clears in-edges of the given <paramref name="vertex"/>.
         /// </summary>
         /// <param name="vertex">The vertex.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
-        void ClearInEdges([NotNull] TVertex vertex);
+        void ClearInEdges( TVertex vertex);
 
         /// <summary>
         /// Clears in-edges and out-edges of the given <paramref name="vertex"/>.
         /// </summary>
         /// <param name="vertex">The vertex.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
-        void ClearEdges([NotNull] TVertex vertex);
+        void ClearEdges( TVertex vertex);
     }
 }

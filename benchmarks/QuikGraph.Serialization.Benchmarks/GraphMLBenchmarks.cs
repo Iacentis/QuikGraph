@@ -2,8 +2,6 @@
 using System.Text;
 using System.Xml;
 using BenchmarkDotNet.Attributes;
-using QuikGraph;
-using QuikGraph.Serialization;
 
 namespace QuikGraph.Serialization.Benchmarks
 {

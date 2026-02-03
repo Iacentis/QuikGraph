@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using JetBrains.Annotations;
 using static QuikGraph.Utils.DisposableHelpers;
 
 namespace QuikGraph.Algorithms.Observers
@@ -19,7 +18,7 @@ namespace QuikGraph.Algorithms.Observers
         /// </summary>
         /// <param name="edgeWeights">Function that computes the weight for a given edge.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
-        public VertexDistanceRecorderObserver([NotNull] Func<TEdge, double> edgeWeights)
+        public VertexDistanceRecorderObserver( Func<TEdge, double> edgeWeights)
             : this(edgeWeights, DistanceRelaxers.EdgeShortestDistance, new Dictionary<TVertex, double>())
         {
         }
@@ -34,9 +33,9 @@ namespace QuikGraph.Algorithms.Observers
         /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceRelaxer"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="distances"/> is <see langword="null"/>.</exception>
         public VertexDistanceRecorderObserver(
-            [NotNull] Func<TEdge, double> edgeWeights,
-            [NotNull] IDistanceRelaxer distanceRelaxer,
-            [NotNull] IDictionary<TVertex, double> distances)
+             Func<TEdge, double> edgeWeights,
+             IDistanceRelaxer distanceRelaxer,
+             IDictionary<TVertex, double> distances)
         {
             EdgeWeights = edgeWeights ?? throw new ArgumentNullException(nameof(edgeWeights));
             DistanceRelaxer = distanceRelaxer ?? throw new ArgumentNullException(nameof(distanceRelaxer));
@@ -46,19 +45,19 @@ namespace QuikGraph.Algorithms.Observers
         /// <summary>
         /// Distance relaxer.
         /// </summary>
-        [NotNull]
+
         public IDistanceRelaxer DistanceRelaxer { get; }
 
         /// <summary>
         /// Function that computes the weight for a given edge.
         /// </summary>
-        [NotNull]
+
         public Func<TEdge, double> EdgeWeights { get; }
 
         /// <summary>
         /// Distances per vertex.
         /// </summary>
-        [NotNull]
+
         public IDictionary<TVertex, double> Distances { get; }
 
         #region IObserver<TAlgorithm>
@@ -66,8 +65,7 @@ namespace QuikGraph.Algorithms.Observers
         /// <inheritdoc />
         public IDisposable Attach(ITreeBuilderAlgorithm<TVertex, TEdge> algorithm)
         {
-            if (algorithm is null)
-                throw new ArgumentNullException(nameof(algorithm));
+            ArgumentNullException.ThrowIfNull(algorithm);
 
             algorithm.TreeEdge += OnEdgeDiscovered;
             return Finally(() => algorithm.TreeEdge -= OnEdgeDiscovered);
@@ -75,7 +73,7 @@ namespace QuikGraph.Algorithms.Observers
 
         #endregion
 
-        private void OnEdgeDiscovered([NotNull] TEdge edge)
+        private void OnEdgeDiscovered( TEdge edge)
         {
             Debug.Assert(edge != null);
 

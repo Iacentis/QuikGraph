@@ -43,15 +43,15 @@
 //                where TEdge : IEdge<TVertex>
 //            {
 //                AssertAlgorithmState(algo, g);
-//                Assert.AreSame(d, algo.Distances);
+//                Assert.That(d,Is.SameAs(algo.Distances));
 //                if (r is null)
-//                    Assert.IsNotNull(algo.Rand);
+//                    Assert.That(algo.Rand,Is.Not.Null);
 //                else
-//                    Assert.AreSame(r, algo.Rand);
+//                    Assert.That(r,Is.SameAs(algo.Rand));
 //                if (iterations < 0)
 //                    Assert.Positive(algo.MaxIterationCount);
 //                else
-//                    Assert.AreEqual(iterations, algo.MaxIterationCount);
+//                    Assert.That(iterations,Is.EqualTo(algo.MaxIterationCount));
 //            }
 
 //            #endregion

@@ -1,5 +1,5 @@
 ﻿using System;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph.MSAGL
 {
@@ -19,9 +19,9 @@ namespace QuikGraph.MSAGL
         /// <param name="format">Graph format.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public MsaglToStringGraphPopulator(
-            [NotNull] IEdgeListGraph<TVertex, TEdge> visitedGraph,
-            [CanBeNull] string format = null,
-            [CanBeNull] IFormatProvider formatProvider = null)
+             IEdgeListGraph<TVertex, TEdge> visitedGraph,
+             string format = null,
+             IFormatProvider formatProvider = null)
             : base(visitedGraph)
         {
             FormatProvider = formatProvider;
@@ -31,13 +31,13 @@ namespace QuikGraph.MSAGL
         /// <summary>
         /// Vertex format provider.
         /// </summary>
-        [CanBeNull]
+
         public IFormatProvider FormatProvider { get; }
 
         /// <summary>
         /// Vertex id format.
         /// </summary>
-        [NotNull]
+
         public string Format { get; }
 
         /// <inheritdoc />

@@ -2,9 +2,8 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using QuikGraph.Algorithms.GraphPartition;
-#if !SUPPORTS_SORTEDSET
-using QuikGraph.Collections;
-#endif
+
+
 using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
 using static QuikGraph.Tests.TestHelpers;
 
@@ -22,7 +21,7 @@ namespace QuikGraph.Tests.Algorithms.GraphPartitioning
             var graph = new UndirectedGraph<int, TaggedUndirectedEdge<int, double>>();
             var algorithm = new KernighanLinAlgorithm<int, TaggedUndirectedEdge<int, double>>(graph, 42);
             AssertAlgorithmState(algorithm, graph);
-            Assert.AreEqual(default(Partition<int>), algorithm.Partition);
+            Assert.That(default(Partition<int>),Is.EqualTo(algorithm.Partition));
         }
 
         [Test]
@@ -59,7 +58,7 @@ namespace QuikGraph.Tests.Algorithms.GraphPartitioning
             setB.Add(3);
             setB.Add(2);
             var expected = new Partition<int>(setA, setB, 3);
-            Assert.IsTrue(PartitionHelpers.AreEquivalent(expected, algorithm.Partition));
+            Assert.That(PartitionHelpers.AreEquivalent(expected, algorithm.Partition),Is.True);
         }
 
         [Test]
@@ -91,7 +90,7 @@ namespace QuikGraph.Tests.Algorithms.GraphPartitioning
             }
 
             var expected = new Partition<int>(setA, setB, 3);
-            Assert.IsTrue(PartitionHelpers.AreEquivalent(expected, algorithm.Partition));
+            Assert.That(PartitionHelpers.AreEquivalent(expected, algorithm.Partition),Is.True);
         }
 
         /*
@@ -100,13 +99,13 @@ namespace QuikGraph.Tests.Algorithms.GraphPartitioning
          *    *         *
          6****7*********8
          *    **       **
-         *    *  *   *  *  
+         *    *  *   *  *
          *    *    *    *
          *    *  *   *  *
          *    **       **
          3****4*********5
-              *         
-              *         
+              *
+              *
          0****1*********2
         */
         [Test]
@@ -147,7 +146,7 @@ namespace QuikGraph.Tests.Algorithms.GraphPartitioning
             }
 
             var expected = new Partition<int>(setA, setB, 3);
-            Assert.IsTrue(PartitionHelpers.AreEquivalent(expected, algorithm.Partition));
+            Assert.That(PartitionHelpers.AreEquivalent(expected, algorithm.Partition),Is.True);
         }
     }
 }

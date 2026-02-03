@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
-#if SUPPORTS_AGGRESSIVE_INLINING
+
 using System.Runtime.CompilerServices;
-#endif
-using JetBrains.Annotations;
+
+
 using QuikGraph.Graphviz.Dot;
 
 namespace QuikGraph.Graphviz
@@ -19,7 +20,7 @@ namespace QuikGraph.Graphviz
     public class GraphvizAlgorithm<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
-        [NotNull]
+
         private readonly Dictionary<TVertex, int> _verticesIds = new Dictionary<TVertex, int>();
 
         /// <summary>
@@ -27,7 +28,7 @@ namespace QuikGraph.Graphviz
         /// </summary>
         /// <param name="graph">Graph to convert to DOT.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
-        public GraphvizAlgorithm([NotNull] IEdgeListGraph<TVertex, TEdge> graph)
+        public GraphvizAlgorithm( IEdgeListGraph<TVertex, TEdge> graph)
             : this(graph, GraphvizImageType.Png)
         {
         }
@@ -39,7 +40,7 @@ namespace QuikGraph.Graphviz
         /// <param name="imageType">Target output image type.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         public GraphvizAlgorithm(
-            [NotNull] IEdgeListGraph<TVertex, TEdge> graph,
+             IEdgeListGraph<TVertex, TEdge> graph,
             GraphvizImageType imageType)
         {
             ClusterCount = 0;
@@ -53,29 +54,29 @@ namespace QuikGraph.Graphviz
         /// <summary>
         /// Graph format.
         /// </summary>
-        [NotNull]
+
         public GraphvizGraph GraphFormat { get; }
 
         /// <summary>
         /// Common vertex format.
         /// </summary>
-        [NotNull]
+
         public GraphvizVertex CommonVertexFormat { get; }
 
         /// <summary>
         /// Common edge format.
         /// </summary>
-        [NotNull]
+
         public GraphvizEdge CommonEdgeFormat { get; }
 
-        [NotNull]
+
         private IEdgeListGraph<TVertex, TEdge> _visitedGraph;
 
         /// <summary>
         /// Graph to convert.
         /// </summary>
         /// <exception cref="T:System.ArgumentNullException">Set value is <see langword="null"/>.</exception>
-        [NotNull]
+
         public IEdgeListGraph<TVertex, TEdge> VisitedGraph
         {
             get => _visitedGraph;
@@ -100,7 +101,7 @@ namespace QuikGraph.Graphviz
         /// </summary>
         public event FormatClusterEventHandler<TVertex, TEdge> FormatCluster;
 
-        private void OnFormatCluster([NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> cluster)
+        private void OnFormatCluster( IVertexAndEdgeListGraph<TVertex, TEdge> cluster)
         {
             Debug.Assert(cluster != null);
 
@@ -122,7 +123,7 @@ namespace QuikGraph.Graphviz
         /// </summary>
         public event FormatVertexEventHandler<TVertex> FormatVertex;
 
-        private void OnFormatVertex([NotNull] TVertex vertex)
+        private void OnFormatVertex( TVertex vertex)
         {
             Debug.Assert(vertex != null);
 
@@ -147,7 +148,7 @@ namespace QuikGraph.Graphviz
         /// </summary>
         public event FormatEdgeAction<TVertex, TEdge> FormatEdge;
 
-        private void OnFormatEdge([NotNull] TEdge edge)
+        private void OnFormatEdge( TEdge edge)
         {
             Debug.Assert(edge != null);
 
@@ -171,7 +172,7 @@ namespace QuikGraph.Graphviz
         /// </summary>
         /// <returns>DOT serialization of <see cref="VisitedGraph"/>.</returns>
         [Pure]
-        [NotNull]
+
         public string Generate()
         {
             ClusterCount = 0;
@@ -226,11 +227,10 @@ namespace QuikGraph.Graphviz
         /// <returns>File path containing DOT serialization of <see cref="VisitedGraph"/>.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="dot"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="outputFilePath"/> is <see langword="null"/> or empty.</exception>
-        [NotNull]
-        public string Generate([NotNull] IDotEngine dot, [NotNull] string outputFilePath)
+
+        public string Generate( IDotEngine dot,  string outputFilePath)
         {
-            if (dot is null)
-                throw new ArgumentNullException(nameof(dot));
+            ArgumentNullException.ThrowIfNull(dot);
             if (string.IsNullOrEmpty(outputFilePath))
                 throw new ArgumentException("Output file path cannot be null or empty.", nameof(outputFilePath));
 
@@ -238,9 +238,9 @@ namespace QuikGraph.Graphviz
         }
 
         private void WriteClusters(
-            [NotNull, ItemNotNull] ICollection<TVertex> remainingVertices, 
-            [NotNull, ItemNotNull] ICollection<TEdge> remainingEdges, 
-            [NotNull] IClusteredGraph parent)
+             ICollection<TVertex> remainingVertices,
+             ICollection<TEdge> remainingEdges,
+             IClusteredGraph parent)
         {
             Debug.Assert(remainingVertices != null);
             Debug.Assert(remainingEdges != null);
@@ -278,17 +278,17 @@ namespace QuikGraph.Graphviz
             }
         }
 
-#if SUPPORTS_AGGRESSIVE_INLINING
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
-        private void WriteVertex([NotNull] TVertex vertex)
+
+        private void WriteVertex( TVertex vertex)
         {
             Debug.Assert(vertex != null);
 
             OnFormatVertex(vertex);
         }
 
-        private void WriteVertices([NotNull, ItemNotNull] IEnumerable<TVertex> vertices)
+        private void WriteVertices( IEnumerable<TVertex> vertices)
         {
             Debug.Assert(vertices != null);
 
@@ -299,8 +299,8 @@ namespace QuikGraph.Graphviz
         }
 
         private void WriteVertices(
-            [NotNull, ItemNotNull] ICollection<TVertex> remainingVertices,
-            [NotNull, ItemNotNull] IEnumerable<TVertex> vertices)
+             ICollection<TVertex> remainingVertices,
+             IEnumerable<TVertex> vertices)
         {
             Debug.Assert(remainingVertices != null);
             Debug.Assert(vertices != null);
@@ -312,10 +312,10 @@ namespace QuikGraph.Graphviz
             }
         }
 
-#if SUPPORTS_AGGRESSIVE_INLINING
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
-        private void WriteEdge([NotNull] TEdge edge)
+
+        private void WriteEdge( TEdge edge)
         {
             Debug.Assert(edge != null);
 
@@ -326,7 +326,7 @@ namespace QuikGraph.Graphviz
             OnFormatEdge(edge);
         }
 
-        private void WriteEdges([NotNull, ItemNotNull] IEnumerable<TEdge> edges)
+        private void WriteEdges( IEnumerable<TEdge> edges)
         {
             Debug.Assert(edges != null);
 
@@ -338,8 +338,8 @@ namespace QuikGraph.Graphviz
 
 
         private void WriteEdges(
-            [NotNull, ItemNotNull] ICollection<TEdge> remainingEdges,
-            [NotNull, ItemNotNull] IEnumerable<TEdge> edges)
+             ICollection<TEdge> remainingEdges,
+             IEnumerable<TEdge> edges)
         {
             Debug.Assert(remainingEdges != null);
             Debug.Assert(edges != null);

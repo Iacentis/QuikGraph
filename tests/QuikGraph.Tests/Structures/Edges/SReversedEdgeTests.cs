@@ -21,7 +21,7 @@ namespace QuikGraph.Tests.Structures
             var defaultEdge = default(SReversedEdge<int, Edge<int>>);
             // ReSharper disable HeuristicUnreachableCode
             // Justification: Since struct has implicit default constructor it allows initialization of invalid edge
-            Assert.IsNull(defaultEdge.OriginalEdge);
+            Assert.That(defaultEdge.OriginalEdge,Is.Null);
             // ReSharper disable  HeuristicUnreachableCode
             Assert.Throws<NullReferenceException>(() => { int _ = defaultEdge.Source; });
             Assert.Throws<NullReferenceException>(() => { int _ = defaultEdge.Target; });
@@ -38,7 +38,7 @@ namespace QuikGraph.Tests.Structures
             var defaultEdge2 = default(SReversedEdge<TestVertex, Edge<TestVertex>>);
             // ReSharper disable HeuristicUnreachableCode
             // Justification: Since struct has implicit default constructor it allows initialization of invalid edge
-            Assert.IsNull(defaultEdge2.OriginalEdge);
+            Assert.That(defaultEdge2.OriginalEdge,Is.Null);
             // ReSharper disable  HeuristicUnreachableCode
             Assert.Throws<NullReferenceException>(() => { TestVertex _ = defaultEdge2.Source; });
             Assert.Throws<NullReferenceException>(() => { TestVertex _ = defaultEdge2.Target; });
@@ -62,28 +62,28 @@ namespace QuikGraph.Tests.Structures
             var edge3 = new SReversedEdge<int, Edge<int>>(new Edge<int>(1, 2));
             var edge4 = new SReversedEdge<int, Edge<int>>(new Edge<int>(2, 1));
 
-            Assert.AreEqual(edge1, edge1);
+            Assert.That(edge1,Is.EqualTo(edge1));
 
-            Assert.AreEqual(edge1, edge2);
-            Assert.AreEqual(edge2, edge1);
-            Assert.IsTrue(edge1.Equals((object)edge2));
-            Assert.IsTrue(edge1.Equals(edge2));
-            Assert.IsTrue(edge2.Equals(edge1));
+            Assert.That(edge1,Is.EqualTo(edge2));
+            Assert.That(edge2,Is.EqualTo(edge1));
+            Assert.That(edge1.Equals((object)edge2),Is.True);
+            Assert.That(edge1.Equals(edge2),Is.True);
+            Assert.That(edge2.Equals(edge1),Is.True);
 
-            Assert.AreNotEqual(edge1, edge3);
-            Assert.AreNotEqual(edge3, edge1);
-            Assert.IsFalse(edge1.Equals((object)edge3));
-            Assert.IsFalse(edge1.Equals(edge3));
-            Assert.IsFalse(edge3.Equals(edge1));
+            Assert.That(edge1,Is.Not.EqualTo(edge3));
+            Assert.That(edge3,Is.Not.EqualTo(edge1));
+            Assert.That(edge1.Equals((object)edge3),Is.False);
+            Assert.That(edge1.Equals(edge3),Is.False);
+            Assert.That(edge3.Equals(edge1),Is.False);
 
-            Assert.AreNotEqual(edge1, edge4);
-            Assert.AreNotEqual(edge4, edge1);
-            Assert.IsFalse(edge1.Equals((object)edge4));
-            Assert.IsFalse(edge1.Equals(edge4));
-            Assert.IsFalse(edge4.Equals(edge1));
+            Assert.That(edge1,Is.Not.EqualTo(edge4));
+            Assert.That(edge4,Is.Not.EqualTo(edge1));
+            Assert.That(edge1.Equals((object)edge4),Is.False);
+            Assert.That(edge1.Equals(edge4),Is.False);
+            Assert.That(edge4.Equals(edge1),Is.False);
 
-            Assert.AreNotEqual(null, edge1);
-            Assert.IsFalse(edge1.Equals(null));
+            Assert.That(edge1,Is.Not.Null);
+            Assert.That(edge1.Equals(null),Is.False);
         }
 
         [Test]
@@ -92,10 +92,10 @@ namespace QuikGraph.Tests.Structures
             var edge1 = default(SReversedEdge<int, Edge<int>>);
             var edge2 = new SReversedEdge<int, Edge<int>>();
 
-            Assert.AreEqual(edge1, edge2);
-            Assert.AreEqual(edge2, edge1);
-            Assert.IsTrue(edge1.Equals(edge2));
-            Assert.IsTrue(edge2.Equals(edge1));
+            Assert.That(edge1,Is.EqualTo(edge2));
+            Assert.That(edge2,Is.EqualTo(edge1));
+            Assert.That(edge1.Equals(edge2),Is.True);
+            Assert.That(edge2.Equals(edge1),Is.True);
         }
 
         [Test]
@@ -105,13 +105,13 @@ namespace QuikGraph.Tests.Structures
             var edge2 = new SReversedEdge<int, EquatableEdge<int>>(new EquatableEdge<int>(1, 2));
             var edge3 = new SReversedEdge<int, EquatableEdge<int>>(new EquatableEdge<int>(2, 1));
 
-            Assert.AreEqual(edge1, edge1);
-            Assert.AreEqual(edge1, edge2);
-            Assert.IsTrue(edge1.Equals((object)edge2));
-            Assert.AreNotEqual(edge1, edge3);
+            Assert.That(edge1,Is.EqualTo(edge1));
+            Assert.That(edge1,Is.EqualTo(edge2));
+            Assert.That(edge1.Equals((object)edge2),Is.True);
+            Assert.That(edge1,Is.Not.EqualTo(edge3));
 
-            Assert.AreNotEqual(null, edge1);
-            Assert.IsFalse(edge1.Equals(null));
+            Assert.That(edge1,Is.Not.Null);
+            Assert.That(edge1.Equals(null),Is.False);
         }
 
         [Test]
@@ -123,9 +123,9 @@ namespace QuikGraph.Tests.Structures
             var edge3 = new SReversedEdge<int, Edge<int>>(new Edge<int>(1, 2));
             var edge4 = new SReversedEdge<int, Edge<int>>(new Edge<int>(2, 1));
 
-            Assert.AreEqual(edge1.GetHashCode(), edge2.GetHashCode());
-            Assert.AreNotEqual(edge1.GetHashCode(), edge3.GetHashCode());
-            Assert.AreNotEqual(edge1.GetHashCode(), edge4.GetHashCode());
+            Assert.That(edge1.GetHashCode(),Is.EqualTo(edge2.GetHashCode()));
+            Assert.That(edge1.GetHashCode(),Is.Not.EqualTo(edge3.GetHashCode()));
+            Assert.That(edge1.GetHashCode(),Is.Not.EqualTo(edge4.GetHashCode()));
         }
 
         [Test]
@@ -134,7 +134,7 @@ namespace QuikGraph.Tests.Structures
             var edge1 = default(SReversedEdge<int, Edge<int>>);
             var edge2 = new SReversedEdge<int, Edge<int>>();
 
-            Assert.AreEqual(edge1.GetHashCode(), edge2.GetHashCode());
+            Assert.That(edge1.GetHashCode(),Is.EqualTo(edge2.GetHashCode()));
         }
 
         [Test]
@@ -144,9 +144,9 @@ namespace QuikGraph.Tests.Structures
             var edge2 = new SReversedEdge<int, Edge<int>>(new Edge<int>(2, 1));
             var edge3 = new SReversedEdge<int, UndirectedEdge<int>>(new UndirectedEdge<int>(1, 2));
 
-            Assert.AreEqual("R(1 -> 2)", edge1.ToString());
-            Assert.AreEqual("R(2 -> 1)", edge2.ToString());
-            Assert.AreEqual("R(1 <-> 2)", edge3.ToString());
+            Assert.That("R(1 -> 2)",Is.EqualTo(edge1.ToString()));
+            Assert.That("R(2 -> 1)",Is.EqualTo(edge2.ToString()));
+            Assert.That("R(1 <-> 2)",Is.EqualTo(edge3.ToString()));
         }
     }
 }

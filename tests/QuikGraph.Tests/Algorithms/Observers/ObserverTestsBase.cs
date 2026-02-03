@@ -1,5 +1,4 @@
 using System;
-using JetBrains.Annotations;
 using NUnit.Framework;
 
 namespace QuikGraph.Tests.Algorithms.Observers
@@ -10,7 +9,7 @@ namespace QuikGraph.Tests.Algorithms.Observers
     internal abstract class ObserverTestsBase
     {
         protected static void Attach_Throws_Test<TAlgorithm>(
-            [NotNull] QuikGraph.Algorithms.Observers.IObserver<TAlgorithm> observer) 
+             QuikGraph.Algorithms.Observers.IObserver<TAlgorithm> observer)
             where TAlgorithm : class
         {
             // ReSharper disable once AssignNullToNotNullAttribute
