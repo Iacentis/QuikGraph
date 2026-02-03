@@ -14,6 +14,14 @@ namespace QuikGraph.Serialization.Tests
     [TestFixture]
     internal sealed class SystemSerializationTests
     {
+        [SetUp]
+        public void SetUp()
+        {
+#if NET9_0_OR_GREATER
+            Assert.Ignore("BinaryFormatter is not supported on .NET 9+.");
+#endif
+        }
+
         #region Helpers
 
         [Pure]

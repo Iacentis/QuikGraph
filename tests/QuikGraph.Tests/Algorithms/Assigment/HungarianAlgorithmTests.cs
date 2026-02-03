@@ -99,46 +99,46 @@ namespace QuikGraph.Tests.Algorithms.Assignment
             Assert.That(2,Is.EqualTo(tasks[2]));
 
             Assert.That(3,Is.EqualTo(iterations.Length));
-            CollectionAssert.AreEqual(
-                new[]
+            Assert.That(
+                iterations.Select(iteration => iteration.Matrix),
+                Is.EqualTo(new[]
                 {
                     new[,] { { 0, 1, 2 }, { 0, 0, 0 }, { 1, 1, 0 } },
                     new[,] { { 0, 1, 2 }, { 0, 0, 0 }, { 1, 1, 0 } },
                     new[,] { { 0, 1, 2 }, { 0, 0, 0 }, { 1, 1, 0 } }
-                },
-                iterations.Select(iteration => iteration.Matrix));
-            CollectionAssert.AreEqual(
-                new[]
+                }));
+            Assert.That(
+                iterations.Select(iteration => iteration.Mask),
+                Is.EqualTo(new[]
                 {
                     new[,] { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 } },
                     new[,] { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 } },
                     new[,] { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 } }
-                },
-                iterations.Select(iteration => iteration.Mask));
-            CollectionAssert.AreEqual(
-                new[]
+                }));
+            Assert.That(
+                iterations.Select(iteration => iteration.RowsCovered),
+                Is.EqualTo(new[]
                 {
                     new[] { false, false, false },
                     new[] { false, false, false },
                     new[] { false, false, false }
-                },
-                iterations.Select(iteration => iteration.RowsCovered));
-            CollectionAssert.AreEqual(
-                new[]
+                }));
+            Assert.That(
+                iterations.Select(iteration => iteration.ColumnsCovered),
+                Is.EqualTo(new[]
                 {
                     new[] { false, false, false },
                     new[] { true,  true,  true },
                     new[] { true,  true,  true }
-                },
-                iterations.Select(iteration => iteration.ColumnsCovered));
-            CollectionAssert.AreEqual(
-                new[]
+                }));
+            Assert.That(
+                iterations.Select(iteration => iteration.Step),
+                Is.EqualTo(new[]
                 {
                     HungarianAlgorithm.Steps.Init,
                     HungarianAlgorithm.Steps.Step1,
                     HungarianAlgorithm.Steps.End
-                },
-                iterations.Select(iteration => iteration.Step));
+                }));
         }
 
         [Test]
@@ -169,8 +169,9 @@ namespace QuikGraph.Tests.Algorithms.Assignment
             Assert.That(3,Is.EqualTo(tasks[3])); // J4 to be done by W4
 
             Assert.That(11,Is.EqualTo(iterations.Length));
-            CollectionAssert.AreEqual(
-                new[]
+            Assert.That(
+                iterations.Select(iteration => iteration.Matrix),
+                Is.EqualTo(new[]
                 {
                     new[,] { { 13, 14, 0, 23 }, { 40, 0, 12, 55 }, { 6, 64, 0, 81 }, { 0, 1, 90, 15 } },
                     new[,] { { 13, 14, 0, 23 }, { 40, 0, 12, 55 }, { 6, 64, 0, 81 }, { 0, 1, 90, 15 } },
@@ -183,10 +184,10 @@ namespace QuikGraph.Tests.Algorithms.Assignment
                     new[,] { { 7, 14, 0, 2 }, { 34, 0, 12, 34 }, { 0, 64, 0, 60 }, { 0, 7, 96, 0 } },
                     new[,] { { 7, 14, 0, 2 }, { 34, 0, 12, 34 }, { 0, 64, 0, 60 }, { 0, 7, 96, 0 } },
                     new[,] { { 7, 14, 0, 2 }, { 34, 0, 12, 34 }, { 0, 64, 0, 60 }, { 0, 7, 96, 0 } }
-                },
-                iterations.Select(iteration => iteration.Matrix));
-            CollectionAssert.AreEqual(
-                new[]
+                }));
+            Assert.That(
+                iterations.Select(iteration => iteration.Mask),
+                Is.EqualTo(new[]
                 {
                     new[,] { { 0, 0, 1, 0 }, { 0, 1, 0, 0 }, { 0, 0, 0, 0 }, { 1, 0, 0, 0 } },
                     new[,] { { 0, 0, 1, 0 }, { 0, 1, 0, 0 }, { 0, 0, 0, 0 }, { 1, 0, 0, 0 } },
@@ -199,10 +200,10 @@ namespace QuikGraph.Tests.Algorithms.Assignment
                     new[,] { { 0, 0, 1, 0 }, { 0, 1, 0, 0 }, { 1, 0, 0, 0 }, { 0, 0, 0, 1 } },
                     new[,] { { 0, 0, 1, 0 }, { 0, 1, 0, 0 }, { 1, 0, 0, 0 }, { 0, 0, 0, 1 } },
                     new[,] { { 0, 0, 1, 0 }, { 0, 1, 0, 0 }, { 1, 0, 0, 0 }, { 0, 0, 0, 1 } }
-                },
-                iterations.Select(iteration => iteration.Mask));
-            CollectionAssert.AreEqual(
-                new[]
+                }));
+            Assert.That(
+                iterations.Select(iteration => iteration.RowsCovered),
+                Is.EqualTo(new[]
                 {
                     new[] { false, false, false, false },
                     new[] { false, false, false, false },
@@ -215,10 +216,10 @@ namespace QuikGraph.Tests.Algorithms.Assignment
                     new[] { false, false, false, false },
                     new[] { false, false, false, false },
                     new[] { false, false, false, false }
-                },
-                iterations.Select(iteration => iteration.RowsCovered));
-            CollectionAssert.AreEqual(
-                new[]
+                }));
+            Assert.That(
+                iterations.Select(iteration => iteration.ColumnsCovered),
+                Is.EqualTo(new[]
                 {
                     new[] { false, false, false, false },
                     new[] { true,  true,  true,  false },
@@ -231,10 +232,10 @@ namespace QuikGraph.Tests.Algorithms.Assignment
                     new[] { false, false, false, false },
                     new[] { true,  true,  true,  true },
                     new[] { true,  true,  true,  true }
-                },
-                iterations.Select(iteration => iteration.ColumnsCovered));
-            CollectionAssert.AreEqual(
-                new[]
+                }));
+            Assert.That(
+                iterations.Select(iteration => iteration.Step),
+                Is.EqualTo(new[]
                 {
                     HungarianAlgorithm.Steps.Init,
                     HungarianAlgorithm.Steps.Step1,
@@ -247,8 +248,7 @@ namespace QuikGraph.Tests.Algorithms.Assignment
                     HungarianAlgorithm.Steps.Step3,
                     HungarianAlgorithm.Steps.Step1,
                     HungarianAlgorithm.Steps.End
-                },
-                iterations.Select(iteration => iteration.Step));
+                }));
         }
     }
 }

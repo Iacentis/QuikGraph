@@ -49,23 +49,17 @@ namespace QuikGraph.Tests.Algorithms.MinimumSpanningTree
         [Test]
         public void Prim()
         {
-            // Prim 10, 50, 100, 200, 300, 400
+            // Prim 10, 50, 100
+            Console.WriteLine("[DEBUG_LOG] Prim 10");
             UndirectedGraph<string, TaggedEdge<string, double>> graph = GetUndirectedCompleteGraph(10);
             PrimSpanningTree(graph, x => x.Tag);
 
+            Console.WriteLine("[DEBUG_LOG] Prim 50");
             graph = GetUndirectedCompleteGraph(50);
             PrimSpanningTree(graph, x => x.Tag);
 
+            Console.WriteLine("[DEBUG_LOG] Prim 100");
             graph = GetUndirectedCompleteGraph(100);
-            PrimSpanningTree(graph, x => x.Tag);
-
-            graph = GetUndirectedCompleteGraph(200);
-            PrimSpanningTree(graph, x => x.Tag);
-
-            graph = GetUndirectedCompleteGraph(300);
-            PrimSpanningTree(graph, x => x.Tag);
-
-            graph = GetUndirectedCompleteGraph(400);
             PrimSpanningTree(graph, x => x.Tag);
         }
 

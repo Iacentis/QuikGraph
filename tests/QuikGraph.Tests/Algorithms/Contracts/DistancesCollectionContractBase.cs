@@ -149,7 +149,7 @@ namespace QuikGraph.Tests.Algorithms.Contracts
             IDistancesCollection<int> algorithm = CreateAlgorithmAndMaybeDoComputation(scenario);
 
             bool distanceFound = algorithm.TryGetDistance(2, out _);
-            Assert.That(distanceFound, Is.False,
+            Assert.That(distanceFound, Is.True,
                 "Distance should have been found since the vertex is accessible from root.");
         }
 

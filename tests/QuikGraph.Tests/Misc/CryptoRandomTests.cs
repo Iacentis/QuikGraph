@@ -65,7 +65,7 @@ namespace QuikGraph.Tests.Utils
             void AssertBetween(int value, int min, int max)
             {
                 Assert.That(value, Is.LessThanOrEqualTo(max));
-                Assert.That(value, Is.LessThanOrEqualTo(min));
+                Assert.That(value, Is.GreaterThanOrEqualTo(min));
             }
 
             #endregion
