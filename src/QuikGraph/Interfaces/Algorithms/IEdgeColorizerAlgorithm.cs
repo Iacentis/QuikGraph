@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph.Algorithms
 {
@@ -14,7 +14,7 @@ namespace QuikGraph.Algorithms
         /// <summary>
         /// Treated edges with their colors (colorized edges).
         /// </summary>
-        [NotNull]
+
         IDictionary<TEdge, GraphColor> EdgesColors { get; }
     }
 }

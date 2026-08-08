@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph.Algorithms.RandomWalks
 {
@@ -12,7 +12,7 @@ namespace QuikGraph.Algorithms.RandomWalks
     public sealed class RoundRobinEdgeChain<TVertex, TEdge> : IEdgeChain<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
-        [NotNull]
+
         private readonly Dictionary<TVertex, int> _outEdgeIndices = new Dictionary<TVertex, int>();
 
         /// <inheritdoc />

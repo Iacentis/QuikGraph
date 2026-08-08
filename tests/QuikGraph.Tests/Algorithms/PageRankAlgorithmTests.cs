@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using QuikGraph.Algorithms.Ranking;
 using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
 
@@ -60,28 +61,28 @@ namespace QuikGraph.Tests.Algorithms
                 CollectionAssert.IsEmpty(algo.Ranks);
                 if (d >= 0)
                 {
-                    Assert.AreEqual(d, algo.Damping);
+                    Assert.That(algo.Damping, Is.EqualTo(d));
                 }
                 else
                 {
-                    Assert.GreaterOrEqual(algo.Damping, 0);
-                    Assert.LessOrEqual(algo.Damping, 1);
+                    Assert.That(algo.Damping, Is.AtLeast(0));
+                    Assert.That(algo.Damping, Is.AtMost(1));
                 }
                 if (t >= 0)
                 {
-                    Assert.AreEqual(t, algo.Tolerance);
+                    Assert.That(algo.Tolerance, Is.EqualTo(t));
                 }
                 else
                 {
-                    Assert.GreaterOrEqual(algo.Tolerance, 0);
+                    Assert.That(algo.Tolerance, Is.AtLeast(0));
                 }
                 if (iterations > 0)
                 {
-                    Assert.AreEqual(iterations, algo.MaxIterations);
+                    Assert.That(iterations,Is.EqualTo(algo.MaxIterations));
                 }
                 else
                 {
-                    Assert.Positive(algo.MaxIterations);
+                    Assert.That(algo.MaxIterations, Is.Positive);
                 }
             }
 
@@ -115,8 +116,7 @@ namespace QuikGraph.Tests.Algorithms
         public void PageRank()
         {
             var graph = new BidirectionalGraph<string, Edge<string>>();
-            graph.AddVerticesAndEdgeRange(new[]
-            {
+            graph.AddVerticesAndEdgeRange([
                 new Edge<string>("Amazon", "Twitter"),
                 new Edge<string>("Amazon", "Microsoft"),
                 new Edge<string>("Microsoft", "Amazon"),
@@ -127,7 +127,7 @@ namespace QuikGraph.Tests.Algorithms
                 new Edge<string>("Facebook", "Twitter"),
                 new Edge<string>("Twitter", "Microsoft"),
                 new Edge<string>("Apple", "Twitter")
-            });
+            ]);
 
             var algorithm = new PageRankAlgorithm<string, Edge<string>>(graph);
             algorithm.Compute();
@@ -136,12 +136,12 @@ namespace QuikGraph.Tests.Algorithms
             CollectionAssert.AreEqual(
                 new[] { "Microsoft", "Twitter", "Amazon", "Facebook", "Apple" },
                 order);
-            Assert.Positive(algorithm.GetRanksSum());
+            Assert.That(algorithm.GetRanksSum(), Is.Positive);
             double rankSum = algorithm.Ranks.Sum(pair => pair.Value);
-            Assert.AreEqual(rankSum, algorithm.GetRanksSum());
+            Assert.That(rankSum,Is.EqualTo(algorithm.GetRanksSum()));
 
-            Assert.Positive(algorithm.GetRanksSum());
-            Assert.AreEqual(rankSum / graph.VertexCount, algorithm.GetRanksMean());
+            Assert.That(algorithm.GetRanksSum(), Is.Positive);
+            Assert.That(rankSum / graph.VertexCount,Is.EqualTo(algorithm.GetRanksMean()));
         }
     }
 }

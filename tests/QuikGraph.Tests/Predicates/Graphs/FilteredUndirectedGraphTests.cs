@@ -39,12 +39,12 @@ namespace QuikGraph.Tests.Predicates
                 where TEdge : IEdge<TVertex>
                 where TGraph : IUndirectedGraph<TVertex, TEdge>
             {
-                Assert.AreSame(graph, g.BaseGraph);
-                Assert.IsFalse(g.IsDirected);
-                Assert.AreEqual(parallelEdges, g.AllowParallelEdges);
-                Assert.AreSame(vertexPredicate, g.VertexPredicate);
-                Assert.AreSame(edgePredicate, g.EdgePredicate);
-                Assert.IsNotNull(g.EdgeEqualityComparer);
+                Assert.That(graph,Is.SameAs(g.BaseGraph));
+                Assert.That(g.IsDirected,Is.False);
+                Assert.That(parallelEdges,Is.EqualTo(g.AllowParallelEdges));
+                Assert.That(vertexPredicate,Is.SameAs(g.VertexPredicate));
+                Assert.That(edgePredicate,Is.SameAs(g.EdgePredicate));
+                Assert.That(g.EdgeEqualityComparer,Is.Not.Null);
                 AssertEmptyGraph(g);
             }
 
@@ -282,7 +282,7 @@ namespace QuikGraph.Tests.Predicates
                 vertex => vertex < 4,
                 _ => true);
 
-            graph2.AddVertexRange(new[] { 1, 2, 3, 4, 5 });
+            graph2.AddVertexRange([1, 2, 3, 4, 5]);
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             Assert.Throws<VertexNotFoundException>(() => filteredGraph2.AdjacentEdges(4));
             Assert.Throws<VertexNotFoundException>(() => filteredGraph2.AdjacentEdges(5));

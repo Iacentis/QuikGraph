@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph.Algorithms.RandomWalks
 {
@@ -19,7 +19,7 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
-        public RandomWalkAlgorithm([NotNull] IImplicitGraph<TVertex, TEdge> visitedGraph)
+        public RandomWalkAlgorithm( IImplicitGraph<TVertex, TEdge> visitedGraph)
             : this(visitedGraph, new NormalizedMarkovEdgeChain<TVertex, TEdge>())
         {
         }
@@ -32,20 +32,20 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeChain"/> is <see langword="null"/>.</exception>
         public RandomWalkAlgorithm(
-            [NotNull] IImplicitGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] IEdgeChain<TVertex, TEdge> edgeChain)
+             IImplicitGraph<TVertex, TEdge> visitedGraph,
+             IEdgeChain<TVertex, TEdge> edgeChain)
             : base(null, visitedGraph)
         {
             _edgeChain = edgeChain ?? throw new ArgumentNullException(nameof(edgeChain));
         }
 
-        [NotNull]
+
         private IEdgeChain<TVertex, TEdge> _edgeChain;
 
         /// <summary>
         /// Edge chain strategy for the random walk.
         /// </summary>
-        [NotNull]
+
         public IEdgeChain<TVertex, TEdge> EdgeChain
         {
             get => _edgeChain;
@@ -55,7 +55,7 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// <summary>
         /// Predicate to prematurely ends the walk.
         /// </summary>
-        [CanBeNull]
+
         public EdgePredicate<TVertex, TEdge> EndPredicate { get; set; }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// </summary>
         public event VertexAction<TVertex> StartVertex;
 
-        private void OnStartVertex([NotNull] TVertex vertex)
+        private void OnStartVertex( TVertex vertex)
         {
             Debug.Assert(vertex != null);
 
@@ -87,7 +87,7 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// </summary>
         public event EdgeAction<TVertex, TEdge> TreeEdge;
 
-        private void OnTreeEdge([NotNull] TEdge edge)
+        private void OnTreeEdge( TEdge edge)
         {
             Debug.Assert(edge != null);
 
@@ -111,7 +111,7 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// </summary>
         /// <param name="root">Root vertex.</param>
         /// <exception cref="VertexNotFoundException"><paramref name="root"/> is not part of <see cref="AlgorithmBase{TGraph}.VisitedGraph"/>.</exception>
-        public void Generate([NotNull] TVertex root)
+        public void Generate( TVertex root)
         {
             Generate(root, 100);
         }
@@ -122,7 +122,7 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// <param name="root">Root vertex.</param>
         /// <param name="walkCount">Number of steps for the random walk.</param>VertexNotFoundException
         /// <exception cref="VertexNotFoundException"><paramref name="root"/> is not part of <see cref="AlgorithmBase{TGraph}.VisitedGraph"/>.</exception>
-        public void Generate([NotNull] TVertex root, int walkCount)
+        public void Generate( TVertex root, int walkCount)
         {
             AssertRootInGraph(root);
 

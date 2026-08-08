@@ -1,12 +1,14 @@
 ﻿using System;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph.Petri
 {
-#if SUPPORTS_SERIALIZATION
+    /// <summary>
+    ///
+    /// </summary>
+    /// <typeparam name="TToken"></typeparam>
     [Serializable]
-#endif
-    internal sealed class Arc<TToken> : Edge<IPetriVertex>, IArc<TToken>
+    public sealed class Arc<TToken> : Edge<IPetriVertex>, IArc<TToken>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Arc{TToken}"/> class.
@@ -15,7 +17,7 @@ namespace QuikGraph.Petri
         /// <param name="transition">Transition (Target).</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="place"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="transition"/> is <see langword="null"/>.</exception>
-        public Arc([NotNull] IPlace<TToken> place, [NotNull] ITransition<TToken> transition)
+        public Arc(IPlace<TToken> place, ITransition<TToken> transition)
             : base(place, transition)
         {
             Place = place;
@@ -30,7 +32,7 @@ namespace QuikGraph.Petri
         /// <param name="place">Place (Target).</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="transition"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="place"/> is <see langword="null"/>.</exception>
-        public Arc([NotNull] ITransition<TToken> transition, [NotNull] IPlace<TToken> place)
+        public Arc(ITransition<TToken> transition, IPlace<TToken> place)
             : base(place, transition)
         {
             Place = place;
@@ -47,7 +49,7 @@ namespace QuikGraph.Petri
         /// <inheritdoc />
         public ITransition<TToken> Transition { get; }
 
-        [NotNull]
+
         private IExpression<TToken> _annotation = new IdentityExpression<TToken>();
 
         /// <inheritdoc />

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph
 {
@@ -26,8 +26,8 @@ namespace QuikGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="tryGetOutEdges"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="tryGetInEdges"/> is <see langword="null"/>.</exception>
         public DelegateBidirectionalIncidenceGraph(
-            [NotNull] TryFunc<TVertex, IEnumerable<TEdge>> tryGetOutEdges,
-            [NotNull] TryFunc<TVertex, IEnumerable<TEdge>> tryGetInEdges,
+             TryFunc<TVertex, IEnumerable<TEdge>> tryGetOutEdges,
+             TryFunc<TVertex, IEnumerable<TEdge>> tryGetInEdges,
             bool allowParallelEdges = true)
             : base(tryGetOutEdges, allowParallelEdges)
         {
@@ -37,7 +37,7 @@ namespace QuikGraph
         /// <summary>
         /// Getter of in-edges.
         /// </summary>
-        [NotNull]
+
         private readonly TryFunc<TVertex, IEnumerable<TEdge>> _tryGetInEdgesFunc;
 
         #region IBidirectionalImplicitGraph<TVertex,TEdge>

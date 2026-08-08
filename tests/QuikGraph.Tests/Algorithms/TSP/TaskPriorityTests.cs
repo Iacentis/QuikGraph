@@ -25,37 +25,37 @@ namespace QuikGraph.Tests.Algorithms.TSP
             var priority4 = new TaskPriority(1.0, 1);
             var priority5 = new TaskPriority(2.0, 1);
 
-            Assert.AreEqual(priority1, priority1);
-            Assert.AreEqual(priority1, priority2);
-            Assert.IsTrue(priority1 == priority2);
-            Assert.IsTrue(priority2 == priority1);
-            Assert.IsFalse(priority1 != priority2);
-            Assert.IsFalse(priority2 != priority1);
+            Assert.That(priority1,Is.EqualTo(priority1));
+            Assert.That(priority1,Is.EqualTo(priority2));
+            Assert.That(priority1 == priority2,Is.True);
+            Assert.That(priority2 == priority1,Is.True);
+            Assert.That(priority1 != priority2,Is.False);
+            Assert.That(priority2 != priority1,Is.False);
 
-            Assert.AreNotEqual(priority1, priority3);
-            Assert.IsFalse(priority1 == priority3);
-            Assert.IsFalse(priority3 == priority1);
-            Assert.IsTrue(priority1 != priority3);
-            Assert.IsTrue(priority3 != priority1);
+            Assert.That(priority1,Is.Not.EqualTo(priority3));
+            Assert.That(priority1 == priority3,Is.False);
+            Assert.That(priority3 == priority1,Is.False);
+            Assert.That(priority1 != priority3,Is.True);
+            Assert.That(priority3 != priority1,Is.True);
 
-            Assert.AreNotEqual(priority1, priority4);
-            Assert.IsFalse(priority1 == priority4);
-            Assert.IsFalse(priority4 == priority1);
-            Assert.IsTrue(priority1 != priority4);
-            Assert.IsTrue(priority4 != priority1);
+            Assert.That(priority1,Is.Not.EqualTo(priority4));
+            Assert.That(priority1 == priority4,Is.False);
+            Assert.That(priority4 == priority1,Is.False);
+            Assert.That(priority1 != priority4,Is.True);
+            Assert.That(priority4 != priority1,Is.True);
 
-            Assert.AreNotEqual(priority1, priority5);
-            Assert.IsFalse(priority1 == priority5);
-            Assert.IsFalse(priority5 == priority1);
-            Assert.IsTrue(priority1 != priority5);
-            Assert.IsTrue(priority5 != priority1);
+            Assert.That(priority1,Is.Not.EqualTo(priority5));
+            Assert.That(priority1 == priority5,Is.False);
+            Assert.That(priority5 == priority1,Is.False);
+            Assert.That(priority1 != priority5,Is.True);
+            Assert.That(priority5 != priority1,Is.True);
 
-            Assert.AreNotEqual(null, priority1);
-            Assert.IsFalse(priority1.Equals(null));
-            Assert.IsFalse(priority1 == null);
-            Assert.IsFalse(null == priority1);
-            Assert.IsTrue(priority1 != null);
-            Assert.IsTrue(null != priority1);
+            Assert.That(priority1,Is.Not.Null);
+            Assert.That(priority1.Equals(null),Is.False);
+            Assert.That(priority1 == null,Is.False);
+            Assert.That(null == priority1,Is.False);
+            Assert.That(priority1 != null,Is.True);
+            Assert.That(null != priority1,Is.True);
         }
 
         [Test]
@@ -65,8 +65,8 @@ namespace QuikGraph.Tests.Algorithms.TSP
             var priority2 = new TaskPriority(1.0, 2);
             var priority3 = new TaskPriority(2.0, 2);
 
-            Assert.AreEqual(priority1.GetHashCode(), priority2.GetHashCode());
-            Assert.AreNotEqual(priority1.GetHashCode(), priority3.GetHashCode());
+            Assert.That(priority1.GetHashCode(),Is.EqualTo(priority2.GetHashCode()));
+            Assert.That(priority1.GetHashCode(),Is.Not.EqualTo(priority3.GetHashCode()));
         }
 
         [Test]
@@ -77,25 +77,25 @@ namespace QuikGraph.Tests.Algorithms.TSP
             var priority3 = new TaskPriority(2.0, 2);
             var priority4 = new TaskPriority(1.0, 1);
 
-            Assert.IsFalse(priority1 < priority2);
-            Assert.IsTrue(priority1 <= priority2);
-            Assert.IsFalse(priority1 > priority2);
-            Assert.IsTrue(priority1 >= priority2);
+            Assert.That(priority1 < priority2,Is.False);
+            Assert.That(priority1 <= priority2,Is.True);
+            Assert.That(priority1 > priority2,Is.False);
+            Assert.That(priority1 >= priority2,Is.True);
 
-            Assert.IsTrue(priority1 < priority3);
-            Assert.IsTrue(priority1 <= priority3);
-            Assert.IsFalse(priority1 > priority3);
-            Assert.IsFalse(priority1 >= priority3);
+            Assert.That(priority1 < priority3,Is.True);
+            Assert.That(priority1 <= priority3,Is.True);
+            Assert.That(priority1 > priority3,Is.False);
+            Assert.That(priority1 >= priority3,Is.False);
 
-            Assert.IsTrue(priority1 < priority4);
-            Assert.IsTrue(priority1 <= priority4);
-            Assert.IsFalse(priority1 > priority4);
-            Assert.IsFalse(priority1 >= priority4);
+            Assert.That(priority1 < priority4,Is.True);
+            Assert.That(priority1 <= priority4,Is.True);
+            Assert.That(priority1 > priority4,Is.False);
+            Assert.That(priority1 >= priority4,Is.False);
 
-            Assert.IsFalse(priority1 < null);
-            Assert.IsFalse(priority1 <= null);
-            Assert.IsTrue(priority1 > null);
-            Assert.IsTrue(priority1 >= null);
+            Assert.That(priority1 < null,Is.False);
+            Assert.That(priority1 <= null,Is.False);
+            Assert.That(priority1 > null,Is.True);
+            Assert.That(priority1 >= null,Is.True);
         }
     }
 }

@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
-using JetBrains.Annotations;
+
 using QuikGraph.Algorithms.ConnectedComponents;
 
 namespace QuikGraph.Algorithms
@@ -15,7 +16,7 @@ namespace QuikGraph.Algorithms
     public class IsEulerianGraphAlgorithm<TVertex, TEdge>
         where TEdge : IUndirectedEdge<TVertex>
     {
-        [NotNull]
+
         private readonly UndirectedGraph<TVertex, TEdge> _graph;
 
         /// <summary>
@@ -23,10 +24,9 @@ namespace QuikGraph.Algorithms
         /// </summary>
         /// <param name="graph">Graph to check.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
-        public IsEulerianGraphAlgorithm([NotNull] IUndirectedGraph<TVertex, TEdge> graph)
+        public IsEulerianGraphAlgorithm( IUndirectedGraph<TVertex, TEdge> graph)
         {
-            if (graph is null)
-                throw new ArgumentNullException(nameof(graph));
+            ArgumentNullException.ThrowIfNull(graph);
 
             // Create new graph without parallel edges
             var newGraph = new UndirectedGraph<TVertex, TEdge>(
@@ -52,7 +52,7 @@ namespace QuikGraph.Algorithms
         }
 
         [Pure]
-        private static TrueIndexes FirstAndSecondIndexOfTrue([NotNull] bool[] data)
+        private static TrueIndexes FirstAndSecondIndexOfTrue( bool[] data)
         {
             // If no true elements returns (null, null)
             // If only one true element, returns (indexOfTrue, null)
@@ -102,7 +102,7 @@ namespace QuikGraph.Algorithms
         }
 
         [Pure]
-        private bool SatisfiesEulerianCondition([NotNull] TVertex vertex)
+        private bool SatisfiesEulerianCondition( TVertex vertex)
         {
             return _graph.AdjacentDegree(vertex) % 2 == 0;
         }
@@ -143,7 +143,7 @@ namespace QuikGraph.Algorithms
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         [Pure]
         public static bool IsEulerian<TVertex, TEdge>(
-            [NotNull] IUndirectedGraph<TVertex, TEdge> graph)
+             IUndirectedGraph<TVertex, TEdge> graph)
             where TEdge : IUndirectedEdge<TVertex>
         {
             return new IsEulerianGraphAlgorithm<TVertex, TEdge>(graph).IsEulerian();

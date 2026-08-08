@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using JetBrains.Annotations;
+using System.Diagnostics.Contracts;
+
 
 namespace QuikGraph.Collections
 {
@@ -9,43 +10,38 @@ namespace QuikGraph.Collections
     /// Disjoint-set implementation with path compression and union-by-rank optimizations.
     /// </summary>
     /// <typeparam name="T">Element type.</typeparam>
-#if SUPPORTS_SERIALIZATION
     [Serializable]
-#endif
     public class ForestDisjointSet<T> : IDisjointSet<T>
     {
-#if DEBUG
         [DebuggerDisplay("{" + nameof(_id) + "}:{" + nameof(Rank) + "}->{" + nameof(Parent) + "}")]
-#endif
         private sealed class Element
         {
-#if DEBUG
             private readonly int _id;
+
             // ReSharper disable once StaticMemberInGenericType
             private static int _nextId;
-#endif
 
-            [CanBeNull]
+
             public Element Parent { get; set; }
 
             public int Rank { get; set; }
 
-            [NotNull]
+
             public T Value { get; }
 
-            public Element([NotNull] T value)
+            public Element(T value)
             {
                 Debug.Assert(value != null);
-#if DEBUG
+
                 _id = _nextId++;
-#endif
+
                 Parent = null;
                 Rank = 0;
                 Value = value;
             }
         }
 
-        [NotNull]
+
         private readonly Dictionary<T, Element> _elements;
 
         /// <summary>
@@ -125,8 +121,7 @@ namespace QuikGraph.Collections
         #endregion
 
         [Pure]
-        [NotNull]
-        private static Element FindNoCompression([NotNull] Element element)
+        private static Element FindNoCompression(Element element)
         {
             Debug.Assert(element != null);
 
@@ -146,8 +141,7 @@ namespace QuikGraph.Collections
         /// </summary>
         /// <param name="element">Element to search parent.</param>
         /// <returns>Root parent element.</returns>
-        [NotNull]
-        private static Element Find([NotNull] Element element)
+        private static Element Find(Element element)
         {
             Debug.Assert(element != null);
 
@@ -158,7 +152,7 @@ namespace QuikGraph.Collections
             return root;
         }
 
-        private static void CompressPath([NotNull] Element element, [NotNull] Element root)
+        private static void CompressPath(Element element, Element root)
         {
             Debug.Assert(element != null);
             Debug.Assert(root != null);
@@ -173,7 +167,7 @@ namespace QuikGraph.Collections
             }
         }
 
-        private bool Union([NotNull] Element left, [NotNull] Element right)
+        private bool Union(Element left, Element right)
         {
             Debug.Assert(left != null);
             Debug.Assert(right != null);

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using JetBrains.Annotations;
 using QuikGraph.Algorithms.Search;
 using QuikGraph.Algorithms.Services;
 using QuikGraph.Collections;
@@ -29,8 +28,8 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
         public UndirectedDijkstraShortestPathAlgorithm(
-            [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] Func<TEdge, double> edgeWeights)
+             IUndirectedGraph<TVertex, TEdge> visitedGraph,
+             Func<TEdge, double> edgeWeights)
             : base(null, visitedGraph, edgeWeights)
         {
         }
@@ -45,9 +44,9 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceRelaxer"/> is <see langword="null"/>.</exception>
         public UndirectedDijkstraShortestPathAlgorithm(
-            [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] Func<TEdge, double> edgeWeights,
-            [NotNull] IDistanceRelaxer distanceRelaxer)
+             IUndirectedGraph<TVertex, TEdge> visitedGraph,
+             Func<TEdge, double> edgeWeights,
+             IDistanceRelaxer distanceRelaxer)
             : this(null, visitedGraph, edgeWeights, distanceRelaxer)
         {
         }
@@ -63,10 +62,10 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceRelaxer"/> is <see langword="null"/>.</exception>
         public UndirectedDijkstraShortestPathAlgorithm(
-            [CanBeNull] IAlgorithmComponent host,
-            [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] Func<TEdge, double> edgeWeights,
-            [NotNull] IDistanceRelaxer distanceRelaxer)
+             IAlgorithmComponent host,
+             IUndirectedGraph<TVertex, TEdge> visitedGraph,
+             Func<TEdge, double> edgeWeights,
+             IDistanceRelaxer distanceRelaxer)
             : base(host, visitedGraph, edgeWeights, distanceRelaxer)
         {
         }
@@ -115,7 +114,7 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// </summary>
         public event UndirectedEdgeAction<TVertex, TEdge> EdgeNotRelaxed;
 
-        private void OnEdgeNotRelaxed([NotNull] TEdge edge, bool reversed)
+        private void OnEdgeNotRelaxed( TEdge edge, bool reversed)
         {
             Debug.Assert(edge != null);
 
@@ -192,7 +191,7 @@ namespace QuikGraph.Algorithms.ShortestPath
 
         #endregion
 
-        private void ComputeFromRoot([NotNull] TVertex rootVertex)
+        private void ComputeFromRoot( TVertex rootVertex)
         {
             Debug.Assert(rootVertex != null);
             Debug.Assert(VisitedGraph.ContainsVertex(rootVertex));
@@ -203,7 +202,7 @@ namespace QuikGraph.Algorithms.ShortestPath
             ComputeNoInit(rootVertex);
         }
 
-        private void ComputeNoInit([NotNull] TVertex root)
+        private void ComputeNoInit( TVertex root)
         {
             Debug.Assert(root != null);
             Debug.Assert(VisitedGraph.ContainsVertex(root));
@@ -221,9 +220,9 @@ namespace QuikGraph.Algorithms.ShortestPath
                 bfs.DiscoverVertex += DiscoverVertex;
                 bfs.StartVertex += StartVertex;
                 bfs.ExamineEdge += ExamineEdge;
-#if DEBUG
+
                 bfs.ExamineEdge += edge => AssertHeap();
-#endif
+
                 bfs.ExamineVertex += ExamineVertex;
                 bfs.FinishVertex += FinishVertex;
 

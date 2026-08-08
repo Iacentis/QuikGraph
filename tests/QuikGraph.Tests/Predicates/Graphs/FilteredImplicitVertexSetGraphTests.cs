@@ -54,11 +54,11 @@ namespace QuikGraph.Tests.Predicates
                 where TEdge : IEdge<TVertex>
                 where TGraph : IGraph<TVertex, TEdge>, IImplicitVertexSet<TVertex>
             {
-                Assert.AreSame(expectedGraph, g.BaseGraph);
-                Assert.AreEqual(isDirected, g.IsDirected);
-                Assert.AreEqual(parallelEdges, g.AllowParallelEdges);
-                Assert.AreSame(vertexPredicate, g.VertexPredicate);
-                Assert.AreSame(edgePredicate, g.EdgePredicate);
+                Assert.That(expectedGraph,Is.SameAs(g.BaseGraph));
+                Assert.That(isDirected,Is.EqualTo(g.IsDirected));
+                Assert.That(parallelEdges,Is.EqualTo(g.AllowParallelEdges));
+                Assert.That(vertexPredicate,Is.SameAs(g.VertexPredicate));
+                Assert.That(edgePredicate,Is.SameAs(g.EdgePredicate));
             }
 
             #endregion
@@ -122,7 +122,7 @@ namespace QuikGraph.Tests.Predicates
             var graph = new AdjacencyGraph<int, Edge<int>>();
             ContainsVertex_Test(
                 graph,
-                (vertexPredicate, edgePredicate) => 
+                (vertexPredicate, edgePredicate) =>
                     new FilteredImplicitVertexSet<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(
                         graph,
                         vertexPredicate,

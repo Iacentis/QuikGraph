@@ -1,4 +1,4 @@
-using JetBrains.Annotations;
+
 
 namespace QuikGraph
 {
@@ -9,7 +9,7 @@ namespace QuikGraph
     /// <typeparam name="TEdge">Edge type.</typeparam>
     /// <param name="edge">Edge to compute identity.</param>
     /// <returns>The <paramref name="edge"/> identity.</returns>
-    [NotNull]
-    public delegate string EdgeIdentity<TVertex, in TEdge>([NotNull] TEdge edge)
+
+    public delegate string EdgeIdentity<TVertex, in TEdge>( TEdge edge)
         where TEdge : IEdge<TVertex>;
 }

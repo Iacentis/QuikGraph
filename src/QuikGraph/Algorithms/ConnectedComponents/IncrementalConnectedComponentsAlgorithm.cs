@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
 using QuikGraph.Collections;
 
@@ -14,7 +13,7 @@ namespace QuikGraph.Algorithms.ConnectedComponents
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public sealed class IncrementalConnectedComponentsAlgorithm<TVertex, TEdge>
         : AlgorithmBase<IMutableVertexAndEdgeSet<TVertex, TEdge>>
-        , IDisposable
+            , IDisposable
         where TEdge : IEdge<TVertex>
     {
         private ForestDisjointSet<TVertex> _sets;
@@ -27,7 +26,7 @@ namespace QuikGraph.Algorithms.ConnectedComponents
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public IncrementalConnectedComponentsAlgorithm(
-            [NotNull] IMutableVertexAndEdgeSet<TVertex, TEdge> visitedGraph)
+            IMutableVertexAndEdgeSet<TVertex, TEdge> visitedGraph)
             : this(null, visitedGraph)
         {
         }
@@ -39,8 +38,8 @@ namespace QuikGraph.Algorithms.ConnectedComponents
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public IncrementalConnectedComponentsAlgorithm(
-            [CanBeNull] IAlgorithmComponent host,
-            [NotNull] IMutableVertexAndEdgeSet<TVertex, TEdge> visitedGraph)
+            IAlgorithmComponent host,
+            IMutableVertexAndEdgeSet<TVertex, TEdge> visitedGraph)
             : base(host, visitedGraph)
         {
         }
@@ -119,6 +118,7 @@ namespace QuikGraph.Algorithms.ConnectedComponents
                 {
                     representatives[representative] = index = representatives.Count;
                 }
+
                 _components[vertex] = index;
             }
 
@@ -127,22 +127,23 @@ namespace QuikGraph.Algorithms.ConnectedComponents
             return new KeyValuePair<int, IDictionary<TVertex, int>>(_sets.SetCount, _components);
         }
 
-        private void OnVertexAdded([NotNull] TVertex vertex)
+        private void OnVertexAdded(TVertex vertex)
         {
             _sets.MakeSet(vertex);
         }
 
-        private void OnEdgeAdded([NotNull] TEdge edge)
+        private void OnEdgeAdded(TEdge edge)
         {
             _sets.Union(edge.Source, edge.Target);
         }
 
-        private static void OnVertexRemoved([NotNull] TVertex vertex)
+        private static void OnVertexRemoved(TVertex vertex)
         {
-            throw new InvalidOperationException("Vertex removal is not supported for incremental connected components.");
+            throw new InvalidOperationException(
+                "Vertex removal is not supported for incremental connected components.");
         }
 
-        private static void OnEdgeRemoved([NotNull] TEdge edge)
+        private static void OnEdgeRemoved(TEdge edge)
         {
             throw new InvalidOperationException("Edge removal is not supported for incremental connected components.");
         }

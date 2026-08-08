@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Text;
-using JetBrains.Annotations;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using QuikGraph.Collections;
 using static QuikGraph.Collections.HeapConstants;
 using static QuikGraph.Tests.AssertHelpers;
@@ -21,122 +22,121 @@ namespace QuikGraph.Tests.Collections
         /// Checks heap invariant values.
         /// </summary>
         private static void AssertInvariants<TPriority, TValue>(
-            [NotNull] BinaryHeap<TPriority, TValue> heap)
+            BinaryHeap<TPriority, TValue> heap)
         {
-            Assert.IsTrue(heap.Capacity >= 0, "Capacity test failed.");
-            Assert.IsTrue(heap.Count >= 0, "Count test failed.");
-            Assert.IsTrue(heap.Count <= heap.Capacity, "Count and capacity comparison failed.");
-            Assert.IsTrue(heap.IsConsistent(), "IsConsistent test failed.");
+            Assert.That(heap.Capacity >= 0, "Capacity test failed.");
+            Assert.That(heap.Count >= 0, Is.True, "Count test failed.");
+            Assert.That(heap.Count <= heap.Capacity, Is.True, "Count and capacity comparison failed.");
+            Assert.That(heap.IsConsistent(), Is.True, "IsConsistent test failed.");
         }
 
         private static void AssertHeapSize<TPriority, TValue>(
-            [NotNull] BinaryHeap<TPriority, TValue> heap,
+            BinaryHeap<TPriority, TValue> heap,
             int expectedCount)
         {
             AssertInvariants(heap);
-            Assert.AreEqual(expectedCount, heap.Count);
+            Assert.That(expectedCount, Is.EqualTo(heap.Count));
         }
 
         private static void AssertHeapSizes<TPriority, TValue>(
-            [NotNull] BinaryHeap<TPriority, TValue> heap,
+            BinaryHeap<TPriority, TValue> heap,
             int expectedCapacity,
             int expectedCount)
         {
             AssertHeapSize(heap, expectedCount);
-            Assert.AreEqual(expectedCapacity, heap.Capacity);
+            Assert.That(expectedCapacity, Is.EqualTo(heap.Capacity));
         }
 
         // ReSharper disable once InconsistentNaming
         [Pure]
-        [NotNull]
         private static BinaryHeap<int, int> GetHeapFromTopologicalSortOfDCT8()
         {
             var heap = new BinaryHeap<int, int>(20)
             {
-                {0, 255},
-                {0, 256},
-                {0, 257},
-                {0, 258},
-                {0, 259},
-                {0, 260},
-                {0, 261},
-                {0, 262},
-                {2, 263},
-                {2, 264},
-                {2, 265},
-                {2, 266},
-                {2, 267},
-                {2, 268},
-                {2, 269},
-                {2, 270},
-                {1, 271},
-                {1, 272},
-                {1, 273},
-                {1, 274},
-                {1, 275},
-                {1, 276},
-                {1, 277},
-                {1, 278},
-                {2, 279},
-                {2, 280},
-                {1, 281},
-                {1, 282},
-                {1, 283},
-                {1, 284},
-                {2, 285},
-                {2, 286},
-                {2, 287},
-                {2, 288},
-                {1, 289},
-                {1, 290},
-                {1, 291},
-                {1, 292},
-                {1, 293},
-                {1, 294},
-                {1, 295},
-                {1, 296},
-                {1, 297},
-                {1, 298},
-                {1, 299},
-                {2, 300},
-                {2, 301},
-                {2, 302},
-                {2, 303},
-                {1, 304},
-                {1, 305},
-                {1, 306},
-                {1, 307},
-                {2, 308},
-                {2, 309},
-                {2, 310},
-                {1, 311},
-                {2, 312},
-                {2, 313},
-                {2, 314},
-                {1, 315},
-                {1, 316},
-                {1, 317},
-                {1, 318},
-                {2, 319},
-                {2, 320},
-                {2, 321},
-                {2, 322},
-                {2, 323},
-                {2, 324},
-                {1, 325},
-                {2, 326},
-                {2, 327},
-                {2, 328},
-                {2, 329},
-                {1, 330},
-                {1, 331},
-                {1, 332},
-                {1, 333},
-                {0, 334},
-                {0, 335},
-                {0, 336},
-                {0, 337},
-                {0, 338}
+                { 0, 255 },
+                { 0, 256 },
+                { 0, 257 },
+                { 0, 258 },
+                { 0, 259 },
+                { 0, 260 },
+                { 0, 261 },
+                { 0, 262 },
+                { 2, 263 },
+                { 2, 264 },
+                { 2, 265 },
+                { 2, 266 },
+                { 2, 267 },
+                { 2, 268 },
+                { 2, 269 },
+                { 2, 270 },
+                { 1, 271 },
+                { 1, 272 },
+                { 1, 273 },
+                { 1, 274 },
+                { 1, 275 },
+                { 1, 276 },
+                { 1, 277 },
+                { 1, 278 },
+                { 2, 279 },
+                { 2, 280 },
+                { 1, 281 },
+                { 1, 282 },
+                { 1, 283 },
+                { 1, 284 },
+                { 2, 285 },
+                { 2, 286 },
+                { 2, 287 },
+                { 2, 288 },
+                { 1, 289 },
+                { 1, 290 },
+                { 1, 291 },
+                { 1, 292 },
+                { 1, 293 },
+                { 1, 294 },
+                { 1, 295 },
+                { 1, 296 },
+                { 1, 297 },
+                { 1, 298 },
+                { 1, 299 },
+                { 2, 300 },
+                { 2, 301 },
+                { 2, 302 },
+                { 2, 303 },
+                { 1, 304 },
+                { 1, 305 },
+                { 1, 306 },
+                { 1, 307 },
+                { 2, 308 },
+                { 2, 309 },
+                { 2, 310 },
+                { 1, 311 },
+                { 2, 312 },
+                { 2, 313 },
+                { 2, 314 },
+                { 1, 315 },
+                { 1, 316 },
+                { 1, 317 },
+                { 1, 318 },
+                { 2, 319 },
+                { 2, 320 },
+                { 2, 321 },
+                { 2, 322 },
+                { 2, 323 },
+                { 2, 324 },
+                { 1, 325 },
+                { 2, 326 },
+                { 2, 327 },
+                { 2, 328 },
+                { 2, 329 },
+                { 1, 330 },
+                { 1, 331 },
+                { 1, 332 },
+                { 1, 333 },
+                { 0, 334 },
+                { 0, 335 },
+                { 0, 336 },
+                { 0, 337 },
+                { 0, 338 }
             };
             AssertInvariants(heap);
 
@@ -173,9 +173,9 @@ namespace QuikGraph.Tests.Collections
                 int expectedCapacity,
                 Comparison<TPriority> expectedComparer)
             {
-                Assert.AreEqual(0, heap.Count);
-                Assert.AreEqual(expectedCapacity, heap.Capacity);
-                Assert.AreEqual(expectedComparer, heap.PriorityComparison);
+                Assert.That(0, Is.EqualTo(heap.Count));
+                Assert.That(expectedCapacity, Is.EqualTo(heap.Capacity));
+                Assert.That(expectedComparer, Is.EqualTo(heap.PriorityComparison));
             }
 
             void AssertHeapBaseProperties<TPriority, TValue>(
@@ -197,7 +197,8 @@ namespace QuikGraph.Tests.Collections
             Assert.Throws<ArgumentNullException>(() => new BinaryHeap<int, Edge<int>>(12, null));
             Assert.Throws<ArgumentOutOfRangeException>(() => new BinaryHeap<int, Edge<int>>(-1));
             Assert.Throws<ArgumentOutOfRangeException>(() => new BinaryHeap<int, Edge<int>>(-1, null));
-            Assert.Throws<ArgumentOutOfRangeException>(() => new BinaryHeap<int, Edge<int>>(-1, (x, y) => x.CompareTo(y)));
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+                new BinaryHeap<int, Edge<int>>(-1, (x, y) => x.CompareTo(y)));
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }
@@ -290,150 +291,150 @@ namespace QuikGraph.Tests.Collections
                 {
                     var heap = new BinaryHeap<int, TValue>();
 
-                    Assert.AreEqual(-1, heap.IndexOf(value1));
-                    Assert.AreEqual(-1, heap.IndexOf(value2));
-                    Assert.AreEqual(-1, heap.IndexOf(default));
+                    Assert.That(-1, Is.EqualTo(heap.IndexOf(value1)));
+                    Assert.That(-1, Is.EqualTo(heap.IndexOf(value2)));
+                    Assert.That(-1, Is.EqualTo(heap.IndexOf(default)));
 
                     heap.Add(10, value1);
-                    Assert.AreEqual(0, heap.IndexOf(value1));
-                    Assert.AreEqual(-1, heap.IndexOf(value2));
-                    Assert.AreEqual(-1, heap.IndexOf(default));
+                    Assert.That(0, Is.EqualTo(heap.IndexOf(value1)));
+                    Assert.That(-1, Is.EqualTo(heap.IndexOf(value2)));
+                    Assert.That(-1, Is.EqualTo(heap.IndexOf(default)));
 
                     heap.Add(2, value2);
-                    Assert.AreEqual(1, heap.IndexOf(value1));
-                    Assert.AreEqual(0, heap.IndexOf(value2));
-                    Assert.AreEqual(-1, heap.IndexOf(default));
+                    Assert.That(1, Is.EqualTo(heap.IndexOf(value1)));
+                    Assert.That(0, Is.EqualTo(heap.IndexOf(value2)));
+                    Assert.That(-1, Is.EqualTo(heap.IndexOf(default)));
 
                     heap.Add(5, default);
-                    Assert.AreEqual(1, heap.IndexOf(value1));
-                    Assert.AreEqual(0, heap.IndexOf(value2));
-                    Assert.AreEqual(2, heap.IndexOf(default));
+                    Assert.That(1, Is.EqualTo(heap.IndexOf(value1)));
+                    Assert.That(0, Is.EqualTo(heap.IndexOf(value2)));
+                    Assert.That(2, Is.EqualTo(heap.IndexOf(default)));
 
                     heap.Add(1, value1);
-                    Assert.AreEqual(0, heap.IndexOf(value1));
-                    Assert.AreEqual(1, heap.IndexOf(value2));
-                    Assert.AreEqual(2, heap.IndexOf(default));
+                    Assert.That(0, Is.EqualTo(heap.IndexOf(value1)));
+                    Assert.That(1, Is.EqualTo(heap.IndexOf(value2)));
+                    Assert.That(2, Is.EqualTo(heap.IndexOf(default)));
 
 
                     heap.RemoveMinimum();
-                    Assert.AreEqual(1, heap.IndexOf(value1));
-                    Assert.AreEqual(0, heap.IndexOf(value2));
-                    Assert.AreEqual(2, heap.IndexOf(default));
+                    Assert.That(1, Is.EqualTo(heap.IndexOf(value1)));
+                    Assert.That(0, Is.EqualTo(heap.IndexOf(value2)));
+                    Assert.That(2, Is.EqualTo(heap.IndexOf(default)));
 
                     heap.RemoveMinimum();
-                    Assert.AreEqual(1, heap.IndexOf(value1));
-                    Assert.AreEqual(-1, heap.IndexOf(value2));
-                    Assert.AreEqual(0, heap.IndexOf(default));
+                    Assert.That(1, Is.EqualTo(heap.IndexOf(value1)));
+                    Assert.That(-1, Is.EqualTo(heap.IndexOf(value2)));
+                    Assert.That(0, Is.EqualTo(heap.IndexOf(default)));
 
                     heap.RemoveMinimum();
-                    Assert.AreEqual(0, heap.IndexOf(value1));
-                    Assert.AreEqual(-1, heap.IndexOf(value2));
-                    Assert.AreEqual(-1, heap.IndexOf(default));
+                    Assert.That(0, Is.EqualTo(heap.IndexOf(value1)));
+                    Assert.That(-1, Is.EqualTo(heap.IndexOf(value2)));
+                    Assert.That(-1, Is.EqualTo(heap.IndexOf(default)));
 
                     heap.RemoveMinimum();
-                    Assert.AreEqual(-1, heap.IndexOf(value1));
-                    Assert.AreEqual(-1, heap.IndexOf(value2));
-                    Assert.AreEqual(-1, heap.IndexOf(default));
+                    Assert.That(-1, Is.EqualTo(heap.IndexOf(value1)));
+                    Assert.That(-1, Is.EqualTo(heap.IndexOf(value2)));
+                    Assert.That(-1, Is.EqualTo(heap.IndexOf(default)));
                 }
 
                 void IndexOfInternalTest2()
                 {
                     var heap = new BinaryHeap<int, TValue>();
 
-                    Assert.AreEqual(-1, heap.IndexOf(value1));
-                    Assert.AreEqual(-1, heap.IndexOf(value2));
-                    Assert.AreEqual(-1, heap.IndexOf(default));
+                    Assert.That(-1, Is.EqualTo(heap.IndexOf(value1)));
+                    Assert.That(-1, Is.EqualTo(heap.IndexOf(value2)));
+                    Assert.That(-1, Is.EqualTo(heap.IndexOf(default)));
 
                     heap.Add(10, value1);
-                    Assert.AreEqual(0, heap.IndexOf(value1));
-                    Assert.AreEqual(-1, heap.IndexOf(value2));
-                    Assert.AreEqual(-1, heap.IndexOf(default));
+                    Assert.That(0, Is.EqualTo(heap.IndexOf(value1)));
+                    Assert.That(-1, Is.EqualTo(heap.IndexOf(value2)));
+                    Assert.That(-1, Is.EqualTo(heap.IndexOf(default)));
 
                     heap.Add(2, value2);
-                    Assert.AreEqual(1, heap.IndexOf(value1));
-                    Assert.AreEqual(0, heap.IndexOf(value2));
-                    Assert.AreEqual(-1, heap.IndexOf(default));
+                    Assert.That(1, Is.EqualTo(heap.IndexOf(value1)));
+                    Assert.That(0, Is.EqualTo(heap.IndexOf(value2)));
+                    Assert.That(-1, Is.EqualTo(heap.IndexOf(default)));
 
                     heap.Add(5, default);
-                    Assert.AreEqual(1, heap.IndexOf(value1));
-                    Assert.AreEqual(0, heap.IndexOf(value2));
-                    Assert.AreEqual(2, heap.IndexOf(default));
+                    Assert.That(1, Is.EqualTo(heap.IndexOf(value1)));
+                    Assert.That(0, Is.EqualTo(heap.IndexOf(value2)));
+                    Assert.That(2, Is.EqualTo(heap.IndexOf(default)));
 
                     heap.Add(1, value1);
-                    Assert.AreEqual(0, heap.IndexOf(value1));
-                    Assert.AreEqual(1, heap.IndexOf(value2));
-                    Assert.AreEqual(2, heap.IndexOf(default));
+                    Assert.That(0, Is.EqualTo(heap.IndexOf(value1)));
+                    Assert.That(1, Is.EqualTo(heap.IndexOf(value2)));
+                    Assert.That(2, Is.EqualTo(heap.IndexOf(default)));
 
 
                     heap.RemoveMinimum();
-                    Assert.AreEqual(1, heap.IndexOf(value1));
-                    Assert.AreEqual(0, heap.IndexOf(value2));
-                    Assert.AreEqual(2, heap.IndexOf(default));
+                    Assert.That(1, Is.EqualTo(heap.IndexOf(value1)));
+                    Assert.That(0, Is.EqualTo(heap.IndexOf(value2)));
+                    Assert.That(2, Is.EqualTo(heap.IndexOf(default)));
 
                     heap.RemoveMinimum();
-                    Assert.AreEqual(1, heap.IndexOf(value1));
-                    Assert.AreEqual(-1, heap.IndexOf(value2));
-                    Assert.AreEqual(0, heap.IndexOf(default));
+                    Assert.That(1, Is.EqualTo(heap.IndexOf(value1)));
+                    Assert.That(-1, Is.EqualTo(heap.IndexOf(value2)));
+                    Assert.That(0, Is.EqualTo(heap.IndexOf(default)));
 
                     heap.RemoveMinimum();
-                    Assert.AreEqual(0, heap.IndexOf(value1));
-                    Assert.AreEqual(-1, heap.IndexOf(value2));
-                    Assert.AreEqual(-1, heap.IndexOf(default));
+                    Assert.That(0, Is.EqualTo(heap.IndexOf(value1)));
+                    Assert.That(-1, Is.EqualTo(heap.IndexOf(value2)));
+                    Assert.That(-1, Is.EqualTo(heap.IndexOf(default)));
 
                     heap.RemoveMinimum();
-                    Assert.AreEqual(-1, heap.IndexOf(value1));
-                    Assert.AreEqual(-1, heap.IndexOf(value2));
-                    Assert.AreEqual(-1, heap.IndexOf(default));
+                    Assert.That(-1, Is.EqualTo(heap.IndexOf(value1)));
+                    Assert.That(-1, Is.EqualTo(heap.IndexOf(value2)));
+                    Assert.That(-1, Is.EqualTo(heap.IndexOf(default)));
                 }
 
                 void IndexOfSamePriorityInternalTest()
                 {
                     var heap = new BinaryHeap<int, TValue>();
 
-                    Assert.AreEqual(-1, heap.IndexOf(value1));
-                    Assert.AreEqual(-1, heap.IndexOf(value2));
-                    Assert.AreEqual(-1, heap.IndexOf(default));
+                    Assert.That(-1, Is.EqualTo(heap.IndexOf(value1)));
+                    Assert.That(-1, Is.EqualTo(heap.IndexOf(value2)));
+                    Assert.That(-1, Is.EqualTo(heap.IndexOf(default)));
 
                     heap.Add(1, value1);
-                    Assert.AreEqual(0, heap.IndexOf(value1));
-                    Assert.AreEqual(-1, heap.IndexOf(value2));
-                    Assert.AreEqual(-1, heap.IndexOf(default));
+                    Assert.That(0, Is.EqualTo(heap.IndexOf(value1)));
+                    Assert.That(-1, Is.EqualTo(heap.IndexOf(value2)));
+                    Assert.That(-1, Is.EqualTo(heap.IndexOf(default)));
 
                     heap.Add(1, value2);
-                    Assert.AreEqual(0, heap.IndexOf(value1));
-                    Assert.AreEqual(1, heap.IndexOf(value2));
-                    Assert.AreEqual(-1, heap.IndexOf(default));
+                    Assert.That(0, Is.EqualTo(heap.IndexOf(value1)));
+                    Assert.That(1, Is.EqualTo(heap.IndexOf(value2)));
+                    Assert.That(-1, Is.EqualTo(heap.IndexOf(default)));
 
                     heap.Add(1, default);
-                    Assert.AreEqual(0, heap.IndexOf(value1));
-                    Assert.AreEqual(1, heap.IndexOf(value2));
-                    Assert.AreEqual(2, heap.IndexOf(default));
+                    Assert.That(0, Is.EqualTo(heap.IndexOf(value1)));
+                    Assert.That(1, Is.EqualTo(heap.IndexOf(value2)));
+                    Assert.That(2, Is.EqualTo(heap.IndexOf(default)));
 
                     heap.Add(1, value2);
-                    Assert.AreEqual(0, heap.IndexOf(value1));
-                    Assert.AreEqual(1, heap.IndexOf(value2));
-                    Assert.AreEqual(2, heap.IndexOf(default));
+                    Assert.That(0, Is.EqualTo(heap.IndexOf(value1)));
+                    Assert.That(1, Is.EqualTo(heap.IndexOf(value2)));
+                    Assert.That(2, Is.EqualTo(heap.IndexOf(default)));
 
 
                     heap.RemoveMinimum();
-                    Assert.AreEqual(-1, heap.IndexOf(value1));
-                    Assert.AreEqual(0, heap.IndexOf(value2));   // There is another value2 at index 1 at this step
-                    Assert.AreEqual(2, heap.IndexOf(default));
+                    Assert.That(-1, Is.EqualTo(heap.IndexOf(value1)));
+                    Assert.That(0, Is.EqualTo(heap.IndexOf(value2))); // There is another value2 at index 1 at this step
+                    Assert.That(2, Is.EqualTo(heap.IndexOf(default)));
 
                     heap.RemoveMinimum();
-                    Assert.AreEqual(-1, heap.IndexOf(value1));
-                    Assert.AreEqual(1, heap.IndexOf(value2));
-                    Assert.AreEqual(0, heap.IndexOf(default));
+                    Assert.That(-1, Is.EqualTo(heap.IndexOf(value1)));
+                    Assert.That(1, Is.EqualTo(heap.IndexOf(value2)));
+                    Assert.That(0, Is.EqualTo(heap.IndexOf(default)));
 
                     heap.RemoveMinimum();
-                    Assert.AreEqual(-1, heap.IndexOf(value1));
-                    Assert.AreEqual(0, heap.IndexOf(value2));
-                    Assert.AreEqual(-1, heap.IndexOf(default));
+                    Assert.That(-1, Is.EqualTo(heap.IndexOf(value1)));
+                    Assert.That(0, Is.EqualTo(heap.IndexOf(value2)));
+                    Assert.That(-1, Is.EqualTo(heap.IndexOf(default)));
 
                     heap.RemoveMinimum();
-                    Assert.AreEqual(-1, heap.IndexOf(value1));
-                    Assert.AreEqual(-1, heap.IndexOf(value2));
-                    Assert.AreEqual(-1, heap.IndexOf(default));
+                    Assert.That(-1, Is.EqualTo(heap.IndexOf(value1)));
+                    Assert.That(-1, Is.EqualTo(heap.IndexOf(value2)));
+                    Assert.That(-1, Is.EqualTo(heap.IndexOf(default)));
                 }
 
                 #endregion
@@ -594,7 +595,7 @@ namespace QuikGraph.Tests.Collections
                     AssertHeapSize(heap, 6);
 
                     KeyValuePair<double, TValue> pair = heap.Minimum();
-                    Assert.AreEqual(1.0, pair.Key);
+                    Assert.That(1.0, Is.EqualTo(pair.Key));
                     AssertEqual(value2, pair.Value);
                     AssertHeapSize(heap, 6);
 
@@ -603,7 +604,7 @@ namespace QuikGraph.Tests.Collections
                     AssertHeapSize(heap, 4);
 
                     pair = heap.Minimum();
-                    Assert.AreEqual(3.0, pair.Key);
+                    Assert.That(3.0, Is.EqualTo(pair.Key));
                     AssertEqual(value1, pair.Value);
                     AssertHeapSize(heap, 4);
 
@@ -613,7 +614,7 @@ namespace QuikGraph.Tests.Collections
                     AssertHeapSize(heap, 1);
 
                     pair = heap.Minimum();
-                    Assert.AreEqual(10.0, pair.Key);
+                    Assert.That(10.0, Is.EqualTo(pair.Key));
                     AssertEqual(value3, pair.Value);
                     AssertHeapSize(heap, 1);
                 }
@@ -635,7 +636,7 @@ namespace QuikGraph.Tests.Collections
                     AssertHeapSize(heap, 6);
 
                     KeyValuePair<TestPriority, TValue> pair = heap.Minimum();
-                    Assert.AreSame(priority1, pair.Key);
+                    Assert.That(priority1, Is.SameAs(pair.Key));
                     AssertEqual(value2, pair.Value);
                     AssertHeapSize(heap, 6);
 
@@ -644,7 +645,7 @@ namespace QuikGraph.Tests.Collections
                     AssertHeapSize(heap, 4);
 
                     pair = heap.Minimum();
-                    Assert.AreSame(priority3, pair.Key);
+                    Assert.That(priority3, Is.SameAs(pair.Key));
                     AssertEqual(value1, pair.Value);
                     AssertHeapSize(heap, 4);
 
@@ -654,7 +655,7 @@ namespace QuikGraph.Tests.Collections
                     AssertHeapSize(heap, 1);
 
                     pair = heap.Minimum();
-                    Assert.AreSame(priority10, pair.Key);
+                    Assert.That(priority10, Is.SameAs(pair.Key));
                     AssertEqual(value3, pair.Value);
                     AssertHeapSize(heap, 1);
                 }
@@ -672,7 +673,7 @@ namespace QuikGraph.Tests.Collections
                     AssertHeapSize(heap, 5);
 
                     KeyValuePair<double, TValue> pair = heap.Minimum();
-                    Assert.AreEqual(1.0, pair.Key);
+                    Assert.That(1.0, Is.EqualTo(pair.Key));
                     AssertEqual(value3, pair.Value);
                     AssertHeapSize(heap, 5);
 
@@ -681,7 +682,7 @@ namespace QuikGraph.Tests.Collections
                     AssertHeapSize(heap, 3);
 
                     pair = heap.Minimum();
-                    Assert.AreEqual(1.0, pair.Key);
+                    Assert.That(1.0, Is.EqualTo(pair.Key));
                     AssertEqual(value2, pair.Value);
                     AssertHeapSize(heap, 3);
 
@@ -690,7 +691,7 @@ namespace QuikGraph.Tests.Collections
                     AssertHeapSize(heap, 1);
 
                     pair = heap.Minimum();
-                    Assert.AreEqual(1.0, pair.Key);
+                    Assert.That(1.0, Is.EqualTo(pair.Key));
                     AssertEqual(value2, pair.Value);
                     AssertHeapSize(heap, 1);
                 }
@@ -752,32 +753,32 @@ namespace QuikGraph.Tests.Collections
                     AssertHeapSize(heap, 6);
 
                     KeyValuePair<double, TValue> pair = heap.RemoveMinimum();
-                    Assert.AreEqual(1.0, pair.Key);
+                    Assert.That(1.0, Is.EqualTo(pair.Key));
                     AssertEqual(value2, pair.Value);
                     AssertHeapSize(heap, 5);
 
                     pair = heap.RemoveMinimum();
-                    Assert.AreEqual(2.0, pair.Key);
+                    Assert.That(2.0, Is.EqualTo(pair.Key));
                     AssertEqual(value2, pair.Value);
                     AssertHeapSize(heap, 4);
 
                     pair = heap.RemoveMinimum();
-                    Assert.AreEqual(3.0, pair.Key);
+                    Assert.That(3.0, Is.EqualTo(pair.Key));
                     AssertEqual(value4, pair.Value);
                     AssertHeapSize(heap, 3);
 
                     pair = heap.RemoveMinimum();
-                    Assert.AreEqual(6.0, pair.Key);
+                    Assert.That(6.0, Is.EqualTo(pair.Key));
                     AssertEqual(default, pair.Value);
                     AssertHeapSize(heap, 2);
 
                     pair = heap.RemoveMinimum();
-                    Assert.AreEqual(9.0, pair.Key);
+                    Assert.That(9.0, Is.EqualTo(pair.Key));
                     AssertEqual(value3, pair.Value);
                     AssertHeapSize(heap, 1);
 
                     pair = heap.RemoveMinimum();
-                    Assert.AreEqual(10.0, pair.Key);
+                    Assert.That(10.0, Is.EqualTo(pair.Key));
                     AssertEqual(value1, pair.Value);
                     AssertHeapSize(heap, 0);
                 }
@@ -802,32 +803,32 @@ namespace QuikGraph.Tests.Collections
                     AssertHeapSize(heap, 6);
 
                     KeyValuePair<TestPriority, TValue> pair = heap.RemoveMinimum();
-                    Assert.AreSame(priority1, pair.Key);
+                    Assert.That(priority1, Is.SameAs(pair.Key));
                     AssertEqual(value2, pair.Value);
                     AssertHeapSize(heap, 5);
 
                     pair = heap.RemoveMinimum();
-                    Assert.AreSame(priority2, pair.Key);
+                    Assert.That(priority2, Is.SameAs(pair.Key));
                     AssertEqual(value2, pair.Value);
                     AssertHeapSize(heap, 4);
 
                     pair = heap.RemoveMinimum();
-                    Assert.AreSame(priority3, pair.Key);
+                    Assert.That(priority3, Is.SameAs(pair.Key));
                     AssertEqual(value4, pair.Value);
                     AssertHeapSize(heap, 3);
 
                     pair = heap.RemoveMinimum();
-                    Assert.AreSame(priority6, pair.Key);
+                    Assert.That(priority6, Is.SameAs(pair.Key));
                     AssertEqual(default, pair.Value);
                     AssertHeapSize(heap, 2);
 
                     pair = heap.RemoveMinimum();
-                    Assert.AreSame(priority9, pair.Key);
+                    Assert.That(priority9, Is.SameAs(pair.Key));
                     AssertEqual(value3, pair.Value);
                     AssertHeapSize(heap, 1);
 
                     pair = heap.RemoveMinimum();
-                    Assert.AreSame(priority10, pair.Key);
+                    Assert.That(priority10, Is.SameAs(pair.Key));
                     AssertEqual(value1, pair.Value);
                     AssertHeapSize(heap, 0);
                 }
@@ -845,27 +846,27 @@ namespace QuikGraph.Tests.Collections
                     AssertHeapSize(heap, 5);
 
                     KeyValuePair<int, TValue> pair = heap.RemoveMinimum();
-                    Assert.AreEqual(1, pair.Key);
+                    Assert.That(1, Is.EqualTo(pair.Key));
                     AssertEqual(value1, pair.Value);
                     AssertHeapSize(heap, 4);
 
                     pair = heap.RemoveMinimum();
-                    Assert.AreEqual(1, pair.Key);
+                    Assert.That(1, Is.EqualTo(pair.Key));
                     AssertEqual(value4, pair.Value);
                     AssertHeapSize(heap, 3);
 
                     pair = heap.RemoveMinimum();
-                    Assert.AreEqual(1, pair.Key);
+                    Assert.That(1, Is.EqualTo(pair.Key));
                     AssertEqual(value2, pair.Value);
                     AssertHeapSize(heap, 2);
 
                     pair = heap.RemoveMinimum();
-                    Assert.AreEqual(1, pair.Key);
+                    Assert.That(1, Is.EqualTo(pair.Key));
                     AssertEqual(value3, pair.Value);
                     AssertHeapSize(heap, 1);
 
                     pair = heap.RemoveMinimum();
-                    Assert.AreEqual(1, pair.Key);
+                    Assert.That(1, Is.EqualTo(pair.Key));
                     AssertEqual(value2, pair.Value);
                     AssertHeapSize(heap, 0);
                 }
@@ -928,42 +929,42 @@ namespace QuikGraph.Tests.Collections
                     AssertHeapSize(heap, 2);
 
                     KeyValuePair<double, TValue> pair = heap.Minimum();
-                    Assert.AreEqual(1.0, pair.Key);
+                    Assert.That(1.0, Is.EqualTo(pair.Key));
                     AssertEqual(value1, pair.Value);
 
-                    heap.Update(10.0, value1);  // Priority from 1.0 to 10.0
+                    heap.Update(10.0, value1); // Priority from 1.0 to 10.0
                     AssertHeapSize(heap, 2);
 
                     pair = heap.Minimum();
-                    Assert.AreEqual(5.0, pair.Key);
+                    Assert.That(5.0, Is.EqualTo(pair.Key));
                     AssertEqual(value2, pair.Value);
 
-                    heap.Update(11.0, value2);  // Priority from 5.0 to 11.0
+                    heap.Update(11.0, value2); // Priority from 5.0 to 11.0
                     AssertHeapSize(heap, 2);
 
                     pair = heap.Minimum();
-                    Assert.AreEqual(10.0, pair.Key);
+                    Assert.That(10.0, Is.EqualTo(pair.Key));
                     AssertEqual(value1, pair.Value);
 
-                    heap.Update(2.0, value3);  // Added with priority 2.0
+                    heap.Update(2.0, value3); // Added with priority 2.0
                     AssertHeapSize(heap, 3);
 
                     pair = heap.Minimum();
-                    Assert.AreEqual(2.0, pair.Key);
+                    Assert.That(2.0, Is.EqualTo(pair.Key));
                     AssertEqual(value3, pair.Value);
 
-                    heap.Update(2.0, value3);  // Already with the given priority
+                    heap.Update(2.0, value3); // Already with the given priority
                     AssertHeapSize(heap, 3);
 
                     pair = heap.Minimum();
-                    Assert.AreEqual(2.0, pair.Key);
+                    Assert.That(2.0, Is.EqualTo(pair.Key));
                     AssertEqual(value3, pair.Value);
 
-                    heap.Update(1.0, value3);  // Priority from 2.0 to 1.0
+                    heap.Update(1.0, value3); // Priority from 2.0 to 1.0
                     AssertHeapSize(heap, 3);
 
                     pair = heap.Minimum();
-                    Assert.AreEqual(1.0, pair.Key);
+                    Assert.That(1.0, Is.EqualTo(pair.Key));
                     AssertEqual(value3, pair.Value);
                 }
 
@@ -979,45 +980,45 @@ namespace QuikGraph.Tests.Collections
                     AssertHeapSize(heap, 2);
 
                     KeyValuePair<TestPriority, TValue> pair = heap.Minimum();
-                    Assert.AreSame(priority1, pair.Key);
+                    Assert.That(priority1, Is.SameAs(pair.Key));
                     AssertEqual(value1, pair.Value);
 
                     var priority10 = new TestPriority(10);
-                    heap.Update(priority10, value1);  // Priority from 1 to 10
+                    heap.Update(priority10, value1); // Priority from 1 to 10
                     AssertHeapSize(heap, 2);
 
                     pair = heap.Minimum();
-                    Assert.AreSame(priority5, pair.Key);
+                    Assert.That(priority5, Is.SameAs(pair.Key));
                     AssertEqual(value2, pair.Value);
 
-                    heap.Update(new TestPriority(11), value2);  // Priority from 5 to 11
+                    heap.Update(new TestPriority(11), value2); // Priority from 5 to 11
                     AssertHeapSize(heap, 2);
 
                     pair = heap.Minimum();
-                    Assert.AreSame(priority10, pair.Key);
+                    Assert.That(priority10, Is.SameAs(pair.Key));
                     AssertEqual(value1, pair.Value);
 
                     var priority2 = new TestPriority(2);
-                    heap.Update(priority2, value3);  // Added with priority 2
+                    heap.Update(priority2, value3); // Added with priority 2
                     AssertHeapSize(heap, 3);
 
                     pair = heap.Minimum();
-                    Assert.AreSame(priority2, pair.Key);
+                    Assert.That(priority2, Is.SameAs(pair.Key));
                     AssertEqual(value3, pair.Value);
 
                     var priority2Bis = new TestPriority(2);
-                    heap.Update(priority2Bis, value3);  // Already with the given priority
+                    heap.Update(priority2Bis, value3); // Already with the given priority
                     AssertHeapSize(heap, 3);
 
                     pair = heap.Minimum();
-                    Assert.AreSame(priority2Bis, pair.Key);
+                    Assert.That(priority2Bis, Is.SameAs(pair.Key));
                     AssertEqual(value3, pair.Value);
 
-                    heap.Update(priority1, value3);  // Priority from 2 to 1
+                    heap.Update(priority1, value3); // Priority from 2 to 1
                     AssertHeapSize(heap, 3);
 
                     pair = heap.Minimum();
-                    Assert.AreSame(priority1, pair.Key);
+                    Assert.That(priority1, Is.SameAs(pair.Key));
                     AssertEqual(value3, pair.Value);
                 }
 
@@ -1031,28 +1032,28 @@ namespace QuikGraph.Tests.Collections
                     AssertHeapSize(heap, 2);
 
                     KeyValuePair<double, TValue> pair = heap.Minimum();
-                    Assert.AreEqual(1.0, pair.Key);
+                    Assert.That(1.0, Is.EqualTo(pair.Key));
                     AssertEqual(value1, pair.Value);
 
-                    heap.Update(1.0, value1);  // Already with the given priority
+                    heap.Update(1.0, value1); // Already with the given priority
                     AssertHeapSize(heap, 2);
 
                     pair = heap.Minimum();
-                    Assert.AreEqual(1.0, pair.Key);
+                    Assert.That(1.0, Is.EqualTo(pair.Key));
                     AssertEqual(value1, pair.Value);
 
-                    heap.Update(1.0, value2);  // Already with the given priority
+                    heap.Update(1.0, value2); // Already with the given priority
                     AssertHeapSize(heap, 2);
 
                     pair = heap.Minimum();
-                    Assert.AreEqual(1.0, pair.Key);
+                    Assert.That(1.0, Is.EqualTo(pair.Key));
                     AssertEqual(value1, pair.Value);
 
                     heap.Update(1.0, value3);
                     AssertHeapSize(heap, 3);
 
                     pair = heap.Minimum();
-                    Assert.AreEqual(1.0, pair.Key);
+                    Assert.That(1.0, Is.EqualTo(pair.Key));
                     AssertEqual(value1, pair.Value);
                 }
 
@@ -1106,35 +1107,35 @@ namespace QuikGraph.Tests.Collections
                     AssertHeapSize(heap, 2);
 
                     KeyValuePair<double, TValue> pair = heap.Minimum();
-                    Assert.AreEqual(1.0, pair.Key);
+                    Assert.That(1.0, Is.EqualTo(pair.Key));
                     AssertEqual(value1, pair.Value);
 
-                    Assert.IsFalse(heap.MinimumUpdate(10.0, value1));  // Priority not updated
+                    Assert.That(heap.MinimumUpdate(10.0, value1), Is.False); // Priority not updated
                     AssertHeapSize(heap, 2);
 
                     pair = heap.Minimum();
-                    Assert.AreEqual(1.0, pair.Key);
+                    Assert.That(1.0, Is.EqualTo(pair.Key));
                     AssertEqual(value1, pair.Value);
 
-                    Assert.IsTrue(heap.MinimumUpdate(0.5, value2));  // Priority from 5.0 to 0.5
+                    Assert.That(heap.MinimumUpdate(0.5, value2), Is.True); // Priority from 5.0 to 0.5
                     AssertHeapSize(heap, 2);
 
                     pair = heap.Minimum();
-                    Assert.AreEqual(0.5, pair.Key);
+                    Assert.That(0.5, Is.EqualTo(pair.Key));
                     AssertEqual(value2, pair.Value);
 
-                    Assert.IsTrue(heap.MinimumUpdate(0.25, value3));  // Added with priority 0.25
+                    Assert.That(heap.MinimumUpdate(0.25, value3), Is.True); // Added with priority 0.25
                     AssertHeapSize(heap, 3);
 
                     pair = heap.Minimum();
-                    Assert.AreEqual(0.25, pair.Key);
+                    Assert.That(0.25, Is.EqualTo(pair.Key));
                     AssertEqual(value3, pair.Value);
 
-                    Assert.IsTrue(heap.MinimumUpdate(0.25, value3));  // Already with the given priority
+                    Assert.That(heap.MinimumUpdate(0.25, value3), Is.True); // Already with the given priority
                     AssertHeapSize(heap, 3);
 
                     pair = heap.Minimum();
-                    Assert.AreEqual(0.25, pair.Key);
+                    Assert.That(0.25, Is.EqualTo(pair.Key));
                     AssertEqual(value3, pair.Value);
                 }
 
@@ -1150,39 +1151,40 @@ namespace QuikGraph.Tests.Collections
                     AssertHeapSize(heap, 2);
 
                     KeyValuePair<TestPriority, TValue> pair = heap.Minimum();
-                    Assert.AreSame(priority1, pair.Key);
+                    Assert.That(priority1, Is.SameAs(pair.Key));
                     AssertEqual(value1, pair.Value);
 
                     var priority10 = new TestPriority(10);
-                    Assert.IsFalse(heap.MinimumUpdate(priority10, value1));  // Priority not updated
+                    Assert.That(heap.MinimumUpdate(priority10, value1), Is.False); // Priority not updated
                     AssertHeapSize(heap, 2);
 
                     pair = heap.Minimum();
-                    Assert.AreSame(priority1, pair.Key);
+                    Assert.That(priority1, Is.SameAs(pair.Key));
                     AssertEqual(value1, pair.Value);
 
                     var priority0 = new TestPriority(0);
-                    Assert.IsTrue(heap.MinimumUpdate(priority0, value2));  // Priority from 5 to 0
+                    Assert.That(heap.MinimumUpdate(priority0, value2), Is.True); // Priority from 5 to 0
                     AssertHeapSize(heap, 2);
 
                     pair = heap.Minimum();
-                    Assert.AreSame(priority0, pair.Key);
+                    Assert.That(priority0, Is.SameAs(pair.Key));
                     AssertEqual(value2, pair.Value);
 
                     var priorityMinus1 = new TestPriority(-1);
-                    Assert.IsTrue(heap.MinimumUpdate(priorityMinus1, value3));  // Added with priority -1
+                    Assert.That(heap.MinimumUpdate(priorityMinus1, value3), Is.True); // Added with priority -1
                     AssertHeapSize(heap, 3);
 
                     pair = heap.Minimum();
-                    Assert.AreSame(priorityMinus1, pair.Key);
+                    Assert.That(priorityMinus1, Is.SameAs(pair.Key));
                     AssertEqual(value3, pair.Value);
 
                     var priorityMinus1Bis = new TestPriority(-1);
-                    Assert.IsTrue(heap.MinimumUpdate(priorityMinus1Bis, value3));  // Already with the given priority
+                    Assert.That(heap.MinimumUpdate(priorityMinus1Bis, value3),
+                        Is.True); // Already with the given priority
                     AssertHeapSize(heap, 3);
 
                     pair = heap.Minimum();
-                    Assert.AreSame(priorityMinus1Bis, pair.Key);
+                    Assert.That(priorityMinus1Bis, Is.SameAs(pair.Key));
                     AssertEqual(value3, pair.Value);
                 }
 
@@ -1196,28 +1198,28 @@ namespace QuikGraph.Tests.Collections
                     AssertHeapSize(heap, 2);
 
                     KeyValuePair<double, TValue> pair = heap.Minimum();
-                    Assert.AreEqual(1.0, pair.Key);
+                    Assert.That(1.0, Is.EqualTo(pair.Key));
                     AssertEqual(value1, pair.Value);
 
-                    Assert.IsTrue(heap.MinimumUpdate(1.0, value1));  // Already with the given priority
+                    Assert.That(heap.MinimumUpdate(1.0, value1), Is.True); // Already with the given priority
                     AssertHeapSize(heap, 2);
 
                     pair = heap.Minimum();
-                    Assert.AreEqual(1.0, pair.Key);
+                    Assert.That(1.0, Is.EqualTo(pair.Key));
                     AssertEqual(value1, pair.Value);
 
-                    Assert.IsTrue(heap.MinimumUpdate(1.0, value2));  // Already with the given priority
+                    Assert.That(heap.MinimumUpdate(1.0, value2), Is.True); // Already with the given priority
                     AssertHeapSize(heap, 2);
 
                     pair = heap.Minimum();
-                    Assert.AreEqual(1.0, pair.Key);
+                    Assert.That(1.0, Is.EqualTo(pair.Key));
                     AssertEqual(value1, pair.Value);
 
-                    Assert.IsTrue(heap.MinimumUpdate(1.0, value3));
+                    Assert.That(heap.MinimumUpdate(1.0, value3), Is.True);
                     AssertHeapSize(heap, 3);
 
                     pair = heap.Minimum();
-                    Assert.AreEqual(1.0, pair.Key);
+                    Assert.That(1.0, Is.EqualTo(pair.Key));
                     AssertEqual(value1, pair.Value);
                 }
 
@@ -1244,10 +1246,8 @@ namespace QuikGraph.Tests.Collections
             CollectionAssert.AreEquivalent(
                 new[]
                 {
-                    new KeyValuePair<double, int>(1.0, 1),
-                    new KeyValuePair<double, int>(5.0, 4),
-                    new KeyValuePair<double, int>(10.0, 2),
-                    new KeyValuePair<double, int>(12.0, 1)
+                    new KeyValuePair<double, int>(1.0, 1), new KeyValuePair<double, int>(5.0, 4),
+                    new KeyValuePair<double, int>(10.0, 2), new KeyValuePair<double, int>(12.0, 1)
                 },
                 heap);
 
@@ -1255,25 +1255,24 @@ namespace QuikGraph.Tests.Collections
             CollectionAssert.AreEquivalent(
                 new[]
                 {
-                    new KeyValuePair<double, int>(5.0, 4),
-                    new KeyValuePair<double, int>(10.0, 2),
+                    new KeyValuePair<double, int>(5.0, 4), new KeyValuePair<double, int>(10.0, 2),
                     new KeyValuePair<double, int>(12.0, 1)
                 },
                 heap);
 
             using (IEnumerator<KeyValuePair<double, int>> enumerator = heap.GetEnumerator())
             {
-                Assert.IsTrue(enumerator.MoveNext());
-                Assert.IsTrue(enumerator.MoveNext());
-                Assert.IsTrue(enumerator.MoveNext());
-                Assert.IsFalse(enumerator.MoveNext());
+                Assert.That(enumerator.MoveNext(), Is.True);
+                Assert.That(enumerator.MoveNext(), Is.True);
+                Assert.That(enumerator.MoveNext(), Is.True);
+                Assert.That(enumerator.MoveNext(), Is.False);
 
                 enumerator.Reset();
 
-                Assert.IsTrue(enumerator.MoveNext());
-                Assert.IsTrue(enumerator.MoveNext());
-                Assert.IsTrue(enumerator.MoveNext());
-                Assert.IsFalse(enumerator.MoveNext());
+                Assert.That(enumerator.MoveNext(), Is.True);
+                Assert.That(enumerator.MoveNext(), Is.True);
+                Assert.That(enumerator.MoveNext(), Is.True);
+                Assert.That(enumerator.MoveNext(), Is.False);
             }
 
             while (heap.Count > 0)
@@ -1287,11 +1286,14 @@ namespace QuikGraph.Tests.Collections
         [Test]
         public void EnumerateHeap_Throws()
         {
-            var heap = new BinaryHeap<double, int> {{1.0, 1}, {12.0, 1}, {10.0, 2}, {5.0, 4}};
+            var heap = new BinaryHeap<double, int> { { 1.0, 1 }, { 12.0, 1 }, { 10.0, 2 }, { 5.0, 4 } };
 
             using (IEnumerator<KeyValuePair<double, int>> enumerator = heap.GetEnumerator())
             {
-                Assert.Throws<InvalidOperationException>(() => { var _ = enumerator.Current; });
+                Assert.Throws<InvalidOperationException>(() =>
+                {
+                    var _ = enumerator.Current;
+                });
             }
 
             using (IEnumerator<KeyValuePair<double, int>> enumerator = heap.GetEnumerator())
@@ -1299,7 +1301,10 @@ namespace QuikGraph.Tests.Collections
                 for (int i = 0; i <= heap.Count; ++i)
                     enumerator.MoveNext();
 
-                Assert.Throws<InvalidOperationException>(() => { var _ = enumerator.Current; });
+                Assert.Throws<InvalidOperationException>(() =>
+                {
+                    var _ = enumerator.Current;
+                });
             }
 
             using (IEnumerator<KeyValuePair<double, int>> enumerator = heap.GetEnumerator())
@@ -1308,7 +1313,10 @@ namespace QuikGraph.Tests.Collections
 
                 heap.Add(111.111, 12);
 
-                Assert.Throws<InvalidOperationException>(() => { var _ = enumerator.Current; });
+                Assert.Throws<InvalidOperationException>(() =>
+                {
+                    var _ = enumerator.Current;
+                });
                 Assert.Throws<InvalidOperationException>(() => enumerator.MoveNext());
                 Assert.Throws<InvalidOperationException>(() => enumerator.Reset());
             }
@@ -1319,7 +1327,10 @@ namespace QuikGraph.Tests.Collections
 
                 heap.RemoveMinimum();
 
-                Assert.Throws<InvalidOperationException>(() => { var _ = enumerator.Current; });
+                Assert.Throws<InvalidOperationException>(() =>
+                {
+                    var _ = enumerator.Current;
+                });
                 Assert.Throws<InvalidOperationException>(() => enumerator.MoveNext());
                 Assert.Throws<InvalidOperationException>(() => enumerator.Reset());
             }
@@ -1330,7 +1341,10 @@ namespace QuikGraph.Tests.Collections
 
                 heap.Update(13.0, 42);
 
-                Assert.Throws<InvalidOperationException>(() => { var _ = enumerator.Current; });
+                Assert.Throws<InvalidOperationException>(() =>
+                {
+                    var _ = enumerator.Current;
+                });
                 Assert.Throws<InvalidOperationException>(() => enumerator.MoveNext());
                 Assert.Throws<InvalidOperationException>(() => enumerator.Reset());
             }
@@ -1342,7 +1356,10 @@ namespace QuikGraph.Tests.Collections
                 heap.Update(12.0, 42);
 
                 // No new or removed element
-                Assert.DoesNotThrow(() => { var _ = enumerator.Current; });
+                Assert.DoesNotThrow(() =>
+                {
+                    var _ = enumerator.Current;
+                });
                 Assert.DoesNotThrow(() => enumerator.MoveNext());
                 Assert.DoesNotThrow(() => enumerator.Reset());
             }
@@ -1353,7 +1370,10 @@ namespace QuikGraph.Tests.Collections
 
                 heap.MinimumUpdate(12.0, 25);
 
-                Assert.Throws<InvalidOperationException>(() => { var _ = enumerator.Current; });
+                Assert.Throws<InvalidOperationException>(() =>
+                {
+                    var _ = enumerator.Current;
+                });
                 Assert.Throws<InvalidOperationException>(() => enumerator.MoveNext());
                 Assert.Throws<InvalidOperationException>(() => enumerator.Reset());
             }
@@ -1365,7 +1385,10 @@ namespace QuikGraph.Tests.Collections
                 heap.MinimumUpdate(1.0, 42);
 
                 // No new or removed element
-                Assert.DoesNotThrow(() => { var _ = enumerator.Current; });
+                Assert.DoesNotThrow(() =>
+                {
+                    var _ = enumerator.Current;
+                });
                 Assert.DoesNotThrow(() => enumerator.MoveNext());
                 Assert.DoesNotThrow(() => enumerator.Reset());
             }
@@ -1374,11 +1397,11 @@ namespace QuikGraph.Tests.Collections
         #region Test helpers
 
         private static void ToStringCommon<TValue>(
-            [NotNull] TValue value1,
-            [NotNull] TValue value2,
-            [NotNull] TValue value3,
-            [NotNull] TValue value4,
-            [NotNull, InstantHandle] Func<BinaryHeap<int, TValue>, string> toString)
+            TValue value1,
+            TValue value2,
+            TValue value3,
+            TValue value4,
+            Func<BinaryHeap<int, TValue>, string> toString)
         {
             var heap = new BinaryHeap<int, TValue>();
 
@@ -1409,7 +1432,7 @@ namespace QuikGraph.Tests.Collections
         }
 
         private static void ToStringClassCommon<TValue>(
-            [NotNull, InstantHandle] Func<BinaryHeap<int, TValue>, string> toString)
+            Func<BinaryHeap<int, TValue>, string> toString)
             where TValue : class
         {
             var heap = new BinaryHeap<int, TValue>();
@@ -1427,19 +1450,19 @@ namespace QuikGraph.Tests.Collections
         }
 
         private static void ToString2Common<TValue>(
-            [NotNull] TValue value1,
-            [NotNull] TValue value2,
-            [NotNull] TValue value3,
-            [NotNull] TValue value4)
+            TValue value1,
+            TValue value2,
+            TValue value3,
+            TValue value4)
         {
             ToStringCommon(value1, value2, value3, value4, heap => heap.ToString2());
         }
 
         private static void ToStringTreeCommon<TValue>(
-            [NotNull] TValue value1,
-            [NotNull] TValue value2,
-            [NotNull] TValue value3,
-            [NotNull] TValue value4)
+            TValue value1,
+            TValue value2,
+            TValue value3,
+            TValue value4)
         {
             ToStringCommon(value1, value2, value3, value4, heap => heap.ToStringTree());
         }
@@ -1469,21 +1492,21 @@ namespace QuikGraph.Tests.Collections
         {
             var heap = new BinaryHeap<int, int>(20)
             {
-                {1, 0},
-                {2, 1},
-                {1, 2},
-                {2, 3},
-                {2, 4},
-                {1, 5},
-                {1, 6},
-                {2, 7},
-                {2, 8},
-                {2, 9},
-                {2, 10},
-                {1, 11},
-                {1, 12},
-                {1, 13},
-                {1, 14}
+                { 1, 0 },
+                { 2, 1 },
+                { 1, 2 },
+                { 2, 3 },
+                { 2, 4 },
+                { 1, 5 },
+                { 1, 6 },
+                { 2, 7 },
+                { 2, 8 },
+                { 2, 9 },
+                { 2, 10 },
+                { 1, 11 },
+                { 1, 12 },
+                { 1, 13 },
+                { 1, 14 }
             };
 
             string toString =
@@ -1515,21 +1538,21 @@ namespace QuikGraph.Tests.Collections
         {
             var heap = new BinaryHeap<int, int>(20)
             {
-                {1, 0},
-                {2, 1},
-                {1, 2},
-                {2, 3},
-                {2, 4},
-                {1, 5},
-                {1, 6},
-                {2, 7},
-                {2, 8},
-                {2, 9},
-                {2, 10},
-                {1, 11},
-                {1, 12},
-                {1, 13},
-                {1, 14}
+                { 1, 0 },
+                { 2, 1 },
+                { 1, 2 },
+                { 2, 3 },
+                { 2, 4 },
+                { 1, 5 },
+                { 1, 6 },
+                { 2, 7 },
+                { 2, 8 },
+                { 2, 9 },
+                { 2, 10 },
+                { 1, 11 },
+                { 1, 12 },
+                { 1, 13 },
+                { 1, 14 }
             };
 
             var toString = new StringBuilder($"{Consistent}{Environment.NewLine}");
@@ -1689,10 +1712,7 @@ namespace QuikGraph.Tests.Collections
 
                 heap.Add(12.0, value4);
                 CollectionAssert.AreEqual(
-                    new[]
-                    {
-                        new KeyValuePair<double, TValue>(12.0, value4)
-                    },
+                    new[] { new KeyValuePair<double, TValue>(12.0, value4) },
                     heap.ToPairsArray());
             }
 

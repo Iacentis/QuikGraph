@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
-using JetBrains.Annotations;
+
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using QuikGraph.Algorithms.RandomWalks;
 using QuikGraph.Algorithms.Search;
 using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
@@ -18,8 +20,8 @@ namespace QuikGraph.Tests.Algorithms.RandomWalks
         #region Test helpers
 
         private static void RunCyclePoppingRandomTreeAndCheck<TVertex, TEdge>(
-            [NotNull] IVertexListGraph<TVertex, TEdge> graph,
-            [NotNull] TVertex root)
+             IVertexListGraph<TVertex, TEdge> graph,
+             TVertex root)
             where TEdge : IEdge<TVertex>
         {
             var randomChain = new Random(123456);
@@ -34,30 +36,30 @@ namespace QuikGraph.Tests.Algorithms.RandomWalks
             };
             algorithm.InitializeVertex += vertex =>
             {
-                Assert.AreEqual(GraphColor.White, algorithm.VerticesColors[vertex]);
+                Assert.That(GraphColor.White,Is.EqualTo(algorithm.VerticesColors[vertex]));
             };
 
             algorithm.FinishVertex += vertex =>
             {
-                Assert.AreEqual(GraphColor.Black, algorithm.VerticesColors[vertex]);
+                Assert.That(GraphColor.Black,Is.EqualTo(algorithm.VerticesColors[vertex]));
             };
 
             algorithm.Compute(root);
 
-            Assert.AreEqual(graph.VertexCount, algorithm.VerticesColors.Count);
+            Assert.That(graph.VertexCount,Is.EqualTo(algorithm.VerticesColors.Count));
             foreach (TVertex vertex in graph.Vertices)
             {
-                Assert.AreEqual(GraphColor.Black, algorithm.VerticesColors[vertex]);
+                Assert.That(GraphColor.Black,Is.EqualTo(algorithm.VerticesColors[vertex]));
             }
 
             AssertIsTree(root, algorithm.Successors);
         }
 
         [Pure]
-        [NotNull]
+
         private static IVertexListGraph<TVertex, TEdge> MakeGraph<TVertex, TEdge>(
-            [NotNull] TVertex root,
-            [NotNull] IDictionary<TVertex, TEdge> successors)
+             TVertex root,
+             IDictionary<TVertex, TEdge> successors)
             where TEdge : IEdge<TVertex>
         {
             var graph = new AdjacencyGraph<TVertex, TEdge>();
@@ -70,8 +72,8 @@ namespace QuikGraph.Tests.Algorithms.RandomWalks
         }
 
         private static void AssertIsTree<TVertex, TEdge>(
-            [NotNull] TVertex root,
-            [NotNull] IDictionary<TVertex, TEdge> successors)
+             TVertex root,
+             IDictionary<TVertex, TEdge> successors)
             where TEdge : IEdge<TVertex>
         {
             IVertexListGraph<TVertex, TEdge> graph = MakeGraph(root, successors);
@@ -117,13 +119,13 @@ namespace QuikGraph.Tests.Algorithms.RandomWalks
             {
                 AssertAlgorithmState(algo, g);
                 if (chain is null)
-                    Assert.IsNotNull(algo.EdgeChain);
+                    Assert.That(algo.EdgeChain,Is.Not.Null);
                 else
-                    Assert.AreSame(chain, algo.EdgeChain);
+                    Assert.That(chain,Is.SameAs(algo.EdgeChain));
                 if (rand is null)
-                    Assert.IsNotNull(algo.Rand);
+                    Assert.That(algo.Rand,Is.Not.Null);
                 else
-                    Assert.AreSame(rand, algo.Rand);
+                    Assert.That(rand,Is.SameAs(algo.Rand));
                 CollectionAssert.IsEmpty(algo.Successors);
                 CollectionAssert.IsEmpty(algo.VerticesColors);
             }
@@ -240,8 +242,8 @@ namespace QuikGraph.Tests.Algorithms.RandomWalks
             var algorithm = new CyclePoppingRandomTreeAlgorithm<int, Edge<int>>(graph, chain);
             algorithm.Compute(1);
 
-            Assert.AreEqual(GraphColor.Black, algorithm.GetVertexColor(1));
-            Assert.AreEqual(GraphColor.Black, algorithm.GetVertexColor(2));
+            Assert.That(GraphColor.Black,Is.EqualTo(algorithm.GetVertexColor(1)));
+            Assert.That(GraphColor.Black,Is.EqualTo(algorithm.GetVertexColor(2)));
         }
 
         [Test]
@@ -277,7 +279,7 @@ namespace QuikGraph.Tests.Algorithms.RandomWalks
                 }
             }
 
-            // Create cross edges 
+            // Create cross edges
             foreach (Edge<int> edge in graph.Edges)
                 graph.AddEdge(new Edge<int>(edge.Target, edge.Source));
 
@@ -310,13 +312,12 @@ namespace QuikGraph.Tests.Algorithms.RandomWalks
         public void SmallGraphWithCycles()
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[]
-            {
+            graph.AddVerticesAndEdgeRange([
                 new Edge<int>(0, 1),
                 new Edge<int>(1, 0),
                 new Edge<int>(1, 2),
                 new Edge<int>(2, 1)
-            });
+            ]);
 
             RunCyclePoppingRandomTreeAndCheck(graph, 0);
             RunCyclePoppingRandomTreeAndCheck(graph, 1);
@@ -402,9 +403,9 @@ namespace QuikGraph.Tests.Algorithms.RandomWalks
         }
 
         [Pure]
-        [NotNull]
+
         public static CyclePoppingRandomTreeAlgorithm<T, Edge<T>> CreateAlgorithmAndMaybeDoComputation<T>(
-            [NotNull] ContractScenario<T> scenario)
+             ContractScenario<T> scenario)
         {
             var graph = new AdjacencyGraph<T, Edge<T>>();
             graph.AddVerticesAndEdgeRange(scenario.EdgesInGraph.Select(e => new Edge<T>(e.Source, e.Target)));

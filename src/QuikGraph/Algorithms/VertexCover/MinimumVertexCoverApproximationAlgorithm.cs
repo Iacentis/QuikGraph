@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using JetBrains.Annotations;
+
 using QuikGraph.Collections;
 using QuikGraph.Utils;
 
@@ -16,10 +16,10 @@ namespace QuikGraph.Algorithms.VertexCover
     public sealed class MinimumVertexCoverApproximationAlgorithm<TVertex, TEdge> : AlgorithmBase<IUndirectedGraph<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
     {
-        [NotNull]
+
         private readonly VertexList<TVertex> _coverSet = new VertexList<TVertex>();
 
-        [NotNull]
+
         private readonly Random _rng;
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace QuikGraph.Algorithms.VertexCover
         /// <param name="graph">Graph to compute the cover.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         public MinimumVertexCoverApproximationAlgorithm(
-            [NotNull] IUndirectedGraph<TVertex, TEdge> graph)
+             IUndirectedGraph<TVertex, TEdge> graph)
             : this(graph, new CryptoRandom())
         {
         }
@@ -42,8 +42,8 @@ namespace QuikGraph.Algorithms.VertexCover
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="rng"/> is <see langword="null"/>.</exception>
         public MinimumVertexCoverApproximationAlgorithm(
-            [NotNull] IUndirectedGraph<TVertex, TEdge> graph,
-            [NotNull] Random rng)
+             IUndirectedGraph<TVertex, TEdge> graph,
+             Random rng)
             : base(graph)
         {
             _rng = rng ?? throw new ArgumentNullException(nameof(rng));

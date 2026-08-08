@@ -25,8 +25,8 @@ namespace QuikGraph.Petri.Tests
         public void Constructor()
         {
             var transition = new Transition<int>("MyTransition");
-            Assert.AreEqual("MyTransition", transition.Name);
-            Assert.IsInstanceOf<AlwaysTrueConditionExpression<int>>(transition.Condition);
+            Assert.That("MyTransition", Is.EqualTo(transition.Name));
+            Assert.That(transition.Condition, Is.InstanceOf<AlwaysTrueConditionExpression<int>>());
         }
 
         [Test]
@@ -41,11 +41,11 @@ namespace QuikGraph.Petri.Tests
         public void Condition()
         {
             var transition = new Transition<int>("MyTransition");
-            Assert.IsNotNull(transition.Condition);
+            Assert.That(transition.Condition, Is.Not.Null);
 
             var newCondition = new AlwaysFalseCondition();
             transition.Condition = newCondition;
-            Assert.AreSame(newCondition, transition.Condition);
+            Assert.That(newCondition, Is.SameAs(transition.Condition));
 
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
@@ -56,10 +56,10 @@ namespace QuikGraph.Petri.Tests
         public void ObjectToString()
         {
             var transition = new Transition<int>("TestName");
-            Assert.AreEqual("T(TestName)", transition.ToString());
+            Assert.That("T(TestName)", Is.EqualTo(transition.ToString()));
 
             transition = new Transition<int>("OtherTestName");
-            Assert.AreEqual("T(OtherTestName)", transition.ToString());
+            Assert.That("T(OtherTestName)", Is.EqualTo(transition.ToString()));
         }
     }
 }

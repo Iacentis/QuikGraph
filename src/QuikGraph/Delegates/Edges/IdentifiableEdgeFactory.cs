@@ -1,4 +1,4 @@
-using JetBrains.Annotations;
+
 
 namespace QuikGraph
 {
@@ -11,7 +11,7 @@ namespace QuikGraph
     /// <param name="target">Edge target vertex.</param>
     /// <param name="id">Edge id.</param>
     /// <returns>The created vertex.</returns>
-    [NotNull]
-    public delegate TEdge IdentifiableEdgeFactory<in TVertex, out TEdge>([NotNull] TVertex source, [NotNull] TVertex target, [NotNull] string id)
+
+    public delegate TEdge IdentifiableEdgeFactory<in TVertex, out TEdge>( TVertex source,  TVertex target,  string id)
         where TEdge : IEdge<TVertex>;
 }

@@ -14,16 +14,16 @@ namespace QuikGraph.Tests.Events
             var edge = new Edge<int>(1, 2);
 
             var args = new UndirectedEdgeEventArgs<int, Edge<int>>(edge, false);
-            Assert.IsFalse(args.Reversed);
-            Assert.AreSame(edge, args.Edge);
-            Assert.AreEqual(1, args.Source);
-            Assert.AreEqual(2, args.Target);
+            Assert.That(args.Reversed,Is.False);
+            Assert.That(edge,Is.SameAs(args.Edge));
+            Assert.That(1,Is.EqualTo(args.Source));
+            Assert.That(2,Is.EqualTo(args.Target));
 
             args = new UndirectedEdgeEventArgs<int, Edge<int>>(edge, true);
-            Assert.IsTrue(args.Reversed);
-            Assert.AreSame(edge, args.Edge);
-            Assert.AreEqual(2, args.Source);
-            Assert.AreEqual(1, args.Target);
+            Assert.That(args.Reversed,Is.True);
+            Assert.That(edge,Is.SameAs(args.Edge));
+            Assert.That(2,Is.EqualTo(args.Source));
+            Assert.That(1,Is.EqualTo(args.Target));
         }
 
         [Test]

@@ -20,7 +20,7 @@ namespace QuikGraph.Data.Tests
             DataSetGraph graph = dataSet.ToGraph();
 
             AssertEmptyGraph(graph);
-            Assert.AreSame(dataSet, graph.DataSet);
+            Assert.That(dataSet,Is.SameAs(graph.DataSet));
 
             // Only tables data set
             dataSet = new DataSet();
@@ -37,9 +37,9 @@ namespace QuikGraph.Data.Tests
 
             graph = dataSet.ToGraph();
 
-            AssertHasVertices(graph, new[] { ships, modules });
+            AssertHasVertices(graph, [ships, modules]);
             AssertNoEdge(graph);
-            Assert.AreSame(dataSet, graph.DataSet);
+            Assert.That(dataSet,Is.SameAs(graph.DataSet));
 
 
             // Table with relations
@@ -88,16 +88,15 @@ namespace QuikGraph.Data.Tests
 
             graph = dataSet.ToGraph();
 
-            AssertHasVertices(graph, new[] { computers, users, printers, phones });
+            AssertHasVertices(graph, [computers, users, printers, phones]);
             AssertHasRelations(
                 graph,
-                new[]
-                {
+                [
                     new DataRelationEdge(use),
                     new DataRelationEdge(connectedTo),
                     new DataRelationEdge(phoneWith)
-                });
-            Assert.AreSame(dataSet, graph.DataSet);
+                ]);
+            Assert.That(dataSet,Is.SameAs(graph.DataSet));
         }
 
         [Test]
@@ -115,10 +114,10 @@ namespace QuikGraph.Data.Tests
             DataSetGraph graph = new DataSet().ToGraph();
             string expectedDot =
                 @"digraph G {" + Environment.NewLine
-                + @"node [shape=record, style=solid];" + Environment.NewLine
-                + @"}";
+                               + @"node [shape=record, style=solid];" + Environment.NewLine
+                               + @"}";
 
-            Assert.AreEqual(expectedDot, graph.ToGraphviz());
+            Assert.That(expectedDot,Is.EqualTo(graph.ToGraphviz()));
 
             var dataSet = new DataSet();
 
@@ -160,18 +159,22 @@ namespace QuikGraph.Data.Tests
 
             expectedDot =
                 @"digraph G {" + Environment.NewLine
-                + @"node [shape=record, style=solid];" + Environment.NewLine
-                + @"0 [shape=record, label=""Devices | +\ deviceId\ :\ Int32\ unique\n+\ versionId\ :\ Int32\n+\ name\ :\ String""];" + Environment.NewLine
-                + @"1 [shape=record, label=""Tasks | +\ deviceId\ :\ Int32\n+\ actionId\ :\ Int32\n+\ task\ :\ String""];" + Environment.NewLine
-                + @"2 [shape=record, label=""Actions | +\ actionId\ :\ Int32\ unique\n+\ action\ :\ String""];" + Environment.NewLine
-                + @"3 [shape=record, label=""Versions | +\ versionId\ :\ Int32\ unique\n+\ name\ :\ String""];" + Environment.NewLine
-                + @"0 -> 1 [label=""DevicesToTasks""];" + Environment.NewLine
-                + @"2 -> 1 [label=""ActionsToTasks""];" + Environment.NewLine
-                + @"3 -> 0 [label=""VersionsToDevices""];" + Environment.NewLine
-                + @"}";
+                               + @"node [shape=record, style=solid];" + Environment.NewLine
+                               + @"0 [shape=record, label=""Devices | +\ deviceId\ :\ Int32\ unique\n+\ versionId\ :\ Int32\n+\ name\ :\ String""];" +
+                               Environment.NewLine
+                               + @"1 [shape=record, label=""Tasks | +\ deviceId\ :\ Int32\n+\ actionId\ :\ Int32\n+\ task\ :\ String""];" +
+                               Environment.NewLine
+                               + @"2 [shape=record, label=""Actions | +\ actionId\ :\ Int32\ unique\n+\ action\ :\ String""];" +
+                               Environment.NewLine
+                               + @"3 [shape=record, label=""Versions | +\ versionId\ :\ Int32\ unique\n+\ name\ :\ String""];" +
+                               Environment.NewLine
+                               + @"0 -> 1 [label=""DevicesToTasks""];" + Environment.NewLine
+                               + @"2 -> 1 [label=""ActionsToTasks""];" + Environment.NewLine
+                               + @"3 -> 0 [label=""VersionsToDevices""];" + Environment.NewLine
+                               + @"}";
 
             graph = dataSet.ToGraph();
-            Assert.AreEqual(expectedDot, graph.ToGraphviz());
+            Assert.That(expectedDot,Is.EqualTo(graph.ToGraphviz()));
         }
 
         [Test]

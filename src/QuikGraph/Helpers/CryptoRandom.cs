@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Security.Cryptography;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph.Utils
 {
@@ -13,10 +13,10 @@ namespace QuikGraph.Utils
     /// </remarks>
     public class CryptoRandom : Random
     {
-        [NotNull]
+
         private readonly RandomNumberGenerator _rng = RandomNumberGenerator.Create();
 
-        [NotNull]
+
         private readonly byte[] _uint32Buffer = new byte[4];
 
         /// <summary>
@@ -83,8 +83,7 @@ namespace QuikGraph.Utils
         /// <inheritdoc />
         public override void NextBytes(byte[] buffer)
         {
-            if (buffer is null)
-                throw new ArgumentNullException(nameof(buffer));
+            ArgumentNullException.ThrowIfNull(buffer);
             _rng.GetBytes(buffer);
         }
     }

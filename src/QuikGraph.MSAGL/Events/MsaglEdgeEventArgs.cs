@@ -1,5 +1,4 @@
 ﻿using System;
-using JetBrains.Annotations;
 using Microsoft.Msagl.Drawing;
 
 namespace QuikGraph.MSAGL
@@ -20,7 +19,7 @@ namespace QuikGraph.MSAGL
         /// <param name="msaglEdge">Concerned <see cref="T:Microsoft.Msagl.Drawing.Edge"/>.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edge"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="msaglEdge"/> is <see langword="null"/>.</exception>
-        public MsaglEdgeEventArgs([NotNull] TEdge edge, [NotNull] Edge msaglEdge)
+        public MsaglEdgeEventArgs( TEdge edge,  Edge msaglEdge)
             : base(edge)
         {
             MsaglEdge = msaglEdge ?? throw new ArgumentNullException(nameof(msaglEdge));
@@ -29,7 +28,7 @@ namespace QuikGraph.MSAGL
         /// <summary>
         /// <see cref="T:Microsoft.Msagl.Drawing.Edge"/> concerned by the event.
         /// </summary>
-        [NotNull]
+
         public Edge MsaglEdge { get; }
     }
 }

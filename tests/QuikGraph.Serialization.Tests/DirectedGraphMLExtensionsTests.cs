@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
-using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Algorithms;
 using QuikGraph.Serialization.DirectedGraphML;
@@ -23,61 +22,60 @@ namespace QuikGraph.Serialization.Tests
         #region Test helpers
 
         private static void SerializeAndRead(
-            [NotNull] DirectedGraph graph,
-            [NotNull, InstantHandle] Func<DirectedGraph, string> onSerialize,
-            [NotNull, InstantHandle] Action<string> checkSerializedContent)
+            DirectedGraph graph,
+            Func<DirectedGraph, string> onSerialize,
+            Action<string> checkSerializedContent)
         {
             string xml = onSerialize(graph);
             checkSerializedContent(xml);
         }
 
         private static void AssertGraphContentEquivalent<TEdge>(
-            [NotNull] IEdgeListGraph<string, TEdge> graph,
-            [NotNull] DirectedGraph directedGraph)
+            IEdgeListGraph<string, TEdge> graph,
+            DirectedGraph directedGraph)
             where TEdge : IEdge<string>
         {
             // Vertices
-            Assert.AreEqual(graph.VertexCount, directedGraph.Nodes.Length);
+            Assert.That(graph.VertexCount, Is.EqualTo(directedGraph.Nodes.Length));
 
             string[] expectedNodes = graph.Vertices.ToArray();
             for (int i = 0; i < graph.VertexCount; ++i)
             {
-                Assert.AreEqual(expectedNodes[i], directedGraph.Nodes[i].Id);
+                Assert.That(expectedNodes[i], Is.EqualTo(directedGraph.Nodes[i].Id));
             }
 
             // Edges
-            Assert.AreEqual(graph.EdgeCount, directedGraph.Links.Length);
+            Assert.That(graph.EdgeCount, Is.EqualTo(directedGraph.Links.Length));
 
             TEdge[] expectedEdges = graph.Edges.ToArray();
             for (int i = 0; i < graph.EdgeCount; ++i)
             {
-                Assert.AreEqual(expectedEdges[i].Source, directedGraph.Links[i].Source);
-                Assert.AreEqual(expectedEdges[i].Target, directedGraph.Links[i].Target);
+                Assert.That(expectedEdges[i].Source, Is.EqualTo(directedGraph.Links[i].Source));
+                Assert.That(expectedEdges[i].Target, Is.EqualTo(directedGraph.Links[i].Target));
             }
         }
 
         #endregion
 
-        [NotNull]
+
         private const string XmlHeaderRegex = @"<\?xml\ version=""1\.0""(\ encoding=""utf-(8|16)""|)\?>";
 
-        [NotNull]
+
         private static readonly string WriteThrowsTestFilePath =
             Path.Combine(GetTemporaryTestDirectory(), "serialization_from_directegraph_to_xml_throws_test.xml");
 
-        [NotNull, ItemNotNull]
+
         private static IEnumerable<TestCaseData> WriteXmlTestCases
         {
-            [UsedImplicitly]
             get
             {
                 Func<DirectedGraph, string> serialize1 = graph =>
                 {
-                    string filePath = 
+                    string filePath =
                         Path.Combine(GetTemporaryTestDirectory(), "serialization_from_directegraph_to_xml_test.xml");
 
                     graph.WriteXml(filePath);
-                    Assert.IsTrue(File.Exists(filePath));
+                    Assert.That(File.Exists(filePath), Is.True);
                     return File.ReadAllText(filePath);
                 };
                 yield return new TestCaseData(serialize1);
@@ -134,51 +132,27 @@ namespace QuikGraph.Serialization.Tests
 
         [TestCaseSource(nameof(WriteXmlTestCases))]
         public void WriteXml(
-            [NotNull] Func<DirectedGraph, string> onSerialize)
+            Func<DirectedGraph, string> onSerialize)
         {
             var graph = new DirectedGraph();
             var persons = new List<DirectedGraphNode>();
-            var jacob = new DirectedGraphNode
-            {
-                Id = "Jacob"
-            };
+            var jacob = new DirectedGraphNode { Id = "Jacob" };
             persons.Add(jacob);
 
-            var john = new DirectedGraphNode
-            {
-                Id = "John"
-            };
+            var john = new DirectedGraphNode { Id = "John" };
             persons.Add(john);
 
-            var jonathon = new DirectedGraphNode
-            {
-                Id = "Jonathon"
-            };
+            var jonathon = new DirectedGraphNode { Id = "Jonathon" };
             persons.Add(jonathon);
 
-            var emanuel = new DirectedGraphNode
-            {
-                Id = "Emanuel"
-            };
+            var emanuel = new DirectedGraphNode { Id = "Emanuel" };
             persons.Add(emanuel);
 
             var relations = new List<DirectedGraphLink>
             {
-                new DirectedGraphLink
-                {
-                    Source = jacob.Id,
-                    Target = john.Id
-                },
-                new DirectedGraphLink
-                {
-                    Source = john.Id,
-                    Target = jonathon.Id
-                },
-                new DirectedGraphLink
-                {
-                    Source = jonathon.Id,
-                    Target = emanuel.Id
-                }
+                new DirectedGraphLink { Source = jacob.Id, Target = john.Id },
+                new DirectedGraphLink { Source = john.Id, Target = jonathon.Id },
+                new DirectedGraphLink { Source = jonathon.Id, Target = emanuel.Id }
             };
 
             graph.Nodes = persons.ToArray();
@@ -197,6 +171,7 @@ namespace QuikGraph.Serialization.Tests
                         graphContent.Append(
                             $@"<Node\s*Id=""{node.Id}""\s*\/>\s*");
                     }
+
                     graphContent.Append(@"<\/Nodes>\s*");
 
                     graphContent.Append(@"<Links>\s*");
@@ -205,11 +180,12 @@ namespace QuikGraph.Serialization.Tests
                         graphContent.Append(
                             $@"<Link\s*Source=""{link.Source}""\s*Target=""{link.Target}""\s*\/>\s*");
                     }
+
                     graphContent.Append(@"<\/Links>");
 
                     var regex = new Regex(
                         $@"{XmlHeaderRegex}\s*<DirectedGraph\s*.*?\s*>\s*{graphContent}\s*<\/DirectedGraph>");
-                    Assert.IsTrue(regex.Match(content).Success);
+                    Assert.That(regex.Match(content).Success, Is.True);
                 });
         }
 
@@ -220,48 +196,34 @@ namespace QuikGraph.Serialization.Tests
             var directedGraph = new DirectedGraph();
 
             // Filepath
-            Assert.Throws<ArgumentNullException>(
-                () => ((DirectedGraph)null).WriteXml(WriteThrowsTestFilePath));
-            Assert.Throws<ArgumentException>(
-                () => directedGraph.WriteXml((string)null));
-            Assert.Throws<ArgumentException>(
-                () => directedGraph.WriteXml(""));
-            Assert.Throws<ArgumentException>(
-                () => ((DirectedGraph)null).WriteXml((string)null));
-            Assert.Throws<ArgumentException>(
-                () => ((DirectedGraph)null).WriteXml(""));
+            Assert.Throws<ArgumentNullException>(() => ((DirectedGraph)null).WriteXml(WriteThrowsTestFilePath));
+            Assert.Throws<ArgumentException>(() => directedGraph.WriteXml((string)null));
+            Assert.Throws<ArgumentException>(() => directedGraph.WriteXml(""));
+            Assert.Throws<ArgumentException>(() => ((DirectedGraph)null).WriteXml((string)null));
+            Assert.Throws<ArgumentException>(() => ((DirectedGraph)null).WriteXml(""));
 
             // XML writer
             using (XmlWriter writer = XmlWriter.Create(WriteThrowsTestFilePath))
             {
-                Assert.Throws<ArgumentNullException>(
-                    () => ((DirectedGraph)null).WriteXml(writer));
-                Assert.Throws<ArgumentNullException>(
-                    () => directedGraph.WriteXml((XmlWriter)null));
-                Assert.Throws<ArgumentNullException>(
-                    () => ((DirectedGraph)null).WriteXml((XmlWriter)null));
+                Assert.Throws<ArgumentNullException>(() => ((DirectedGraph)null).WriteXml(writer));
+                Assert.Throws<ArgumentNullException>(() => directedGraph.WriteXml((XmlWriter)null));
+                Assert.Throws<ArgumentNullException>(() => ((DirectedGraph)null).WriteXml((XmlWriter)null));
             }
 
             // Stream
             using (var writer = new MemoryStream())
             {
-                Assert.Throws<ArgumentNullException>(
-                    () => ((DirectedGraph)null).WriteXml(writer));
-                Assert.Throws<ArgumentNullException>(
-                    () => directedGraph.WriteXml((Stream)null));
-                Assert.Throws<ArgumentNullException>(
-                    () => ((DirectedGraph)null).WriteXml((Stream)null));
+                Assert.Throws<ArgumentNullException>(() => ((DirectedGraph)null).WriteXml(writer));
+                Assert.Throws<ArgumentNullException>(() => directedGraph.WriteXml((Stream)null));
+                Assert.Throws<ArgumentNullException>(() => ((DirectedGraph)null).WriteXml((Stream)null));
             }
 
             // TextWriter
             using (var writer = new StreamWriter(WriteThrowsTestFilePath))
             {
-                Assert.Throws<ArgumentNullException>(
-                    () => ((DirectedGraph)null).WriteXml(writer));
-                Assert.Throws<ArgumentNullException>(
-                    () => directedGraph.WriteXml((TextWriter)null));
-                Assert.Throws<ArgumentNullException>(
-                    () => ((DirectedGraph)null).WriteXml((TextWriter)null));
+                Assert.Throws<ArgumentNullException>(() => ((DirectedGraph)null).WriteXml(writer));
+                Assert.Throws<ArgumentNullException>(() => directedGraph.WriteXml((TextWriter)null));
+                Assert.Throws<ArgumentNullException>(() => ((DirectedGraph)null).WriteXml((TextWriter)null));
             }
             // ReSharper restore AssignNullToNotNullAttribute
         }
@@ -272,7 +234,7 @@ namespace QuikGraph.Serialization.Tests
             foreach (AdjacencyGraph<string, Edge<string>> graph in TestGraphFactory.GetAdjacencyGraphs_All())
             {
                 DirectedGraph directedGraph = graph.ToDirectedGraphML();
-                Assert.IsNotNull(graph);
+                Assert.That(graph, Is.Not.Null);
 
                 AssertGraphContentEquivalent(graph, directedGraph);
             }
@@ -287,7 +249,7 @@ namespace QuikGraph.Serialization.Tests
                 DirectedGraph directedGraph = graph.ToDirectedGraphML(
                     vertex => vertex,
                     _ => (++i).ToString());
-                Assert.IsNotNull(graph);
+                Assert.That(graph, Is.Not.Null);
 
                 AssertGraphContentEquivalent(graph, directedGraph);
             }
@@ -303,21 +265,20 @@ namespace QuikGraph.Serialization.Tests
                     vertex => vertex,
                     _ => (GraphColor)random.Next(0, 3));
 
-                DirectedGraph directedGraph = graph.ToDirectedGraphML(
-                    vertex =>
-                    {
-                        Assert.IsNotNull(vertex);
-                        return verticesColors[vertex];
-                    });
-                Assert.IsNotNull(graph);
+                DirectedGraph directedGraph = graph.ToDirectedGraphML(vertex =>
+                {
+                    Assert.That(vertex, Is.Not.Null);
+                    return verticesColors[vertex];
+                });
+                Assert.That(graph, Is.Not.Null);
 
                 AssertGraphContentEquivalent(graph, directedGraph);
 
                 foreach (DirectedGraphNode node in directedGraph.Nodes)
                 {
-                    Assert.AreEqual(
+                    Assert.That(
                         ColorToStringColor(verticesColors[node.Id]),
-                        node.Background);
+                        Is.EqualTo(node.Background));
                 }
             }
 
@@ -355,21 +316,21 @@ namespace QuikGraph.Serialization.Tests
                     graph.GetEdgeIdentity(),
                     (vertex, node) =>
                     {
-                        Assert.IsNotNull(vertex);
-                        Assert.IsNotNull(node);
+                        Assert.That(vertex, Is.Not.Null);
+                        Assert.That(node, Is.Not.Null);
                         ++formattedNodes;
                     },
                     (edge, link) =>
                     {
-                        Assert.IsNotNull(edge);
-                        Assert.IsNotNull(link);
+                        Assert.That(edge, Is.Not.Null);
+                        Assert.That(link, Is.Not.Null);
                         ++formattedEdges;
                     });
                 // ReSharper restore ParameterOnlyUsedForPreconditionCheck.Local
-                Assert.IsNotNull(graph);
+                Assert.That(graph, Is.Not.Null);
 
-                Assert.AreEqual(graph.VertexCount, formattedNodes);
-                Assert.AreEqual(graph.EdgeCount, formattedEdges);
+                Assert.That(graph.VertexCount, Is.EqualTo(formattedNodes));
+                Assert.That(graph.EdgeCount, Is.EqualTo(formattedEdges));
                 AssertGraphContentEquivalent(graph, directedGraph);
             }
         }
@@ -380,65 +341,54 @@ namespace QuikGraph.Serialization.Tests
             var graph = new AdjacencyGraph<string, Edge<string>>();
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(
-                () => ((AdjacencyGraph<string, Edge<string>>)null).ToDirectedGraphML());
+            Assert.Throws<ArgumentNullException>(() =>
+                ((AdjacencyGraph<string, Edge<string>>)null).ToDirectedGraphML());
 
 
-            Assert.Throws<ArgumentNullException>(
-                () => ((AdjacencyGraph<string, Edge<string>>)null).ToDirectedGraphML(_ => GraphColor.Black));
-            Assert.Throws<ArgumentNullException>(
-                () => graph.ToDirectedGraphML(null));
-            Assert.Throws<ArgumentNullException>(
-                () => ((AdjacencyGraph<string, Edge<string>>)null).ToDirectedGraphML(null));
+            Assert.Throws<ArgumentNullException>(() =>
+                ((AdjacencyGraph<string, Edge<string>>)null).ToDirectedGraphML(_ => GraphColor.Black));
+            Assert.Throws<ArgumentNullException>(() => graph.ToDirectedGraphML(null));
+            Assert.Throws<ArgumentNullException>(() =>
+                ((AdjacencyGraph<string, Edge<string>>)null).ToDirectedGraphML(null));
 
 
-            Assert.Throws<ArgumentNullException>(
-                () => ((AdjacencyGraph<string, Edge<string>>)null).ToDirectedGraphML(
-                    vertex => vertex,
-                    edge => $"{edge.Source}_{edge.Target}"));
-            Assert.Throws<ArgumentNullException>(
-                () => ((AdjacencyGraph<string, Edge<string>>)null).ToDirectedGraphML(
-                    null,
-                    edge => $"{edge.Source}_{edge.Target}"));
-            Assert.Throws<ArgumentNullException>(
-                () => ((AdjacencyGraph<string, Edge<string>>)null).ToDirectedGraphML(
-                    vertex => vertex,
-                    null));
-            Assert.Throws<ArgumentNullException>(
-                () => graph.ToDirectedGraphML(
-                    null,
-                    null));
-            Assert.Throws<ArgumentNullException>(
-                () => ((AdjacencyGraph<string, Edge<string>>)null).ToDirectedGraphML(
-                    null,
-                    null));
+            Assert.Throws<ArgumentNullException>(() => ((AdjacencyGraph<string, Edge<string>>)null).ToDirectedGraphML(
+                vertex => vertex,
+                edge => $"{edge.Source}_{edge.Target}"));
+            Assert.Throws<ArgumentNullException>(() => ((AdjacencyGraph<string, Edge<string>>)null).ToDirectedGraphML(
+                null,
+                edge => $"{edge.Source}_{edge.Target}"));
+            Assert.Throws<ArgumentNullException>(() => ((AdjacencyGraph<string, Edge<string>>)null).ToDirectedGraphML(
+                vertex => vertex,
+                null));
+            Assert.Throws<ArgumentNullException>(() => graph.ToDirectedGraphML(
+                null,
+                null));
+            Assert.Throws<ArgumentNullException>(() => ((AdjacencyGraph<string, Edge<string>>)null).ToDirectedGraphML(
+                null,
+                null));
 
 
-            Assert.Throws<ArgumentNullException>(
-                () => ((AdjacencyGraph<string, Edge<string>>)null).ToDirectedGraphML(
-                    vertex => vertex,
-                    edge => $"{edge.Source}_{edge.Target}",
-                    null, null));
-            Assert.Throws<ArgumentNullException>(
-                () => ((AdjacencyGraph<string, Edge<string>>)null).ToDirectedGraphML(
-                    null,
-                    edge => $"{edge.Source}_{edge.Target}",
-                    null, null));
-            Assert.Throws<ArgumentNullException>(
-                () => ((AdjacencyGraph<string, Edge<string>>)null).ToDirectedGraphML(
-                    vertex => vertex,
-                    null,
-                    null, null));
-            Assert.Throws<ArgumentNullException>(
-                () => graph.ToDirectedGraphML(
-                    null,
-                    null,
-                    null, null));
-            Assert.Throws<ArgumentNullException>(
-                () => ((AdjacencyGraph<string, Edge<string>>)null).ToDirectedGraphML(
-                    null,
-                    null,
-                    null, null));
+            Assert.Throws<ArgumentNullException>(() => ((AdjacencyGraph<string, Edge<string>>)null).ToDirectedGraphML(
+                vertex => vertex,
+                edge => $"{edge.Source}_{edge.Target}",
+                null, null));
+            Assert.Throws<ArgumentNullException>(() => ((AdjacencyGraph<string, Edge<string>>)null).ToDirectedGraphML(
+                null,
+                edge => $"{edge.Source}_{edge.Target}",
+                null, null));
+            Assert.Throws<ArgumentNullException>(() => ((AdjacencyGraph<string, Edge<string>>)null).ToDirectedGraphML(
+                vertex => vertex,
+                null,
+                null, null));
+            Assert.Throws<ArgumentNullException>(() => graph.ToDirectedGraphML(
+                null,
+                null,
+                null, null));
+            Assert.Throws<ArgumentNullException>(() => ((AdjacencyGraph<string, Edge<string>>)null).ToDirectedGraphML(
+                null,
+                null,
+                null, null));
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }

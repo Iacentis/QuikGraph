@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using QuikGraph.Algorithms;
 using QuikGraph.Algorithms.Condensation;
 using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
@@ -18,25 +18,25 @@ namespace QuikGraph.Tests.Algorithms.Condensation
         #region Test helpers
 
         private static void RunEdgesCondensationAndCheck<TVertex, TEdge>(
-            [NotNull] IBidirectionalGraph<TVertex, TEdge> graph,
-            [NotNull] VertexPredicate<TVertex> predicate)
+            IBidirectionalGraph<TVertex, TEdge> graph,
+            VertexPredicate<TVertex> predicate)
             where TEdge : IEdge<TVertex>
         {
             IMutableBidirectionalGraph<TVertex, MergedEdge<TVertex, TEdge>> condensedGraph =
                 graph.CondensateEdges(predicate);
 
-            Assert.IsNotNull(condensedGraph);
-            Assert.LessOrEqual(condensedGraph.VertexCount, graph.VertexCount);
+            Assert.That(condensedGraph, Is.Not.Null);
+            Assert.That(condensedGraph.VertexCount, Is.AtMost(graph.VertexCount));
 
             TVertex[] vertices = condensedGraph.Vertices.ToArray();
             foreach (MergedEdge<TVertex, TEdge> edge in condensedGraph.Edges)
             {
-                Assert.Contains(edge.Source, vertices);
-                Assert.Contains(edge.Target, vertices);
+                Assert.That(vertices, Does.Contain(edge.Source));
+                Assert.That(vertices, Does.Contain(edge.Target));
 
-                Assert.Positive(edge.Edges.Count);
-                Assert.Contains(edge.Edges.First().Source, vertices);
-                Assert.Contains(edge.Edges.Last().Target, vertices);
+                Assert.That(edge.Edges.Count, Is.Positive);
+                Assert.That(vertices, Does.Contain(edge.Edges.First().Source));
+                Assert.That(vertices, Does.Contain(edge.Edges.Last().Target));
             }
         }
 
@@ -48,7 +48,8 @@ namespace QuikGraph.Tests.Algorithms.Condensation
             VertexPredicate<int> vertexPredicate = _ => true;
             var graph = new BidirectionalGraph<int, Edge<int>>();
             var condensedGraph = new BidirectionalGraph<int, MergedEdge<int, Edge<int>>>();
-            var algorithm = new EdgeMergeCondensationGraphAlgorithm<int, Edge<int>>(graph, condensedGraph, vertexPredicate);
+            var algorithm =
+                new EdgeMergeCondensationGraphAlgorithm<int, Edge<int>>(graph, condensedGraph, vertexPredicate);
             AssertAlgorithmProperties(algorithm, graph, condensedGraph, vertexPredicate);
 
             #region Local function
@@ -61,8 +62,8 @@ namespace QuikGraph.Tests.Algorithms.Condensation
                 where TEdge : IEdge<TVertex>
             {
                 AssertAlgorithmState(algo, g);
-                Assert.AreSame(predicate, algo.VertexPredicate);
-                Assert.AreSame(cg, algo.CondensedGraph);
+                Assert.That(predicate, Is.SameAs(algo.VertexPredicate));
+                Assert.That(cg, Is.SameAs(algo.CondensedGraph));
             }
 
             #endregion
@@ -77,28 +78,27 @@ namespace QuikGraph.Tests.Algorithms.Condensation
 
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(
-                () => new EdgeMergeCondensationGraphAlgorithm<int, Edge<int>>(graph, condensedGraph, null));
-            Assert.Throws<ArgumentNullException>(
-                () => new EdgeMergeCondensationGraphAlgorithm<int, Edge<int>>(graph, null, vertexPredicate));
-            Assert.Throws<ArgumentNullException>(
-                () => new EdgeMergeCondensationGraphAlgorithm<int, Edge<int>>(null, condensedGraph, vertexPredicate));
-            Assert.Throws<ArgumentNullException>(
-                () => new EdgeMergeCondensationGraphAlgorithm<int, Edge<int>>(graph, null, null));
-            Assert.Throws<ArgumentNullException>(
-                () => new EdgeMergeCondensationGraphAlgorithm<int, Edge<int>>(null, condensedGraph, null));
-            Assert.Throws<ArgumentNullException>(
-                () => new EdgeMergeCondensationGraphAlgorithm<int, Edge<int>>(null, null, vertexPredicate));
-            Assert.Throws<ArgumentNullException>(
-                () => new EdgeMergeCondensationGraphAlgorithm<int, Edge<int>>(null, null, null));
+            Assert.Throws<ArgumentNullException>(() =>
+                new EdgeMergeCondensationGraphAlgorithm<int, Edge<int>>(graph, condensedGraph, null));
+            Assert.Throws<ArgumentNullException>(() =>
+                new EdgeMergeCondensationGraphAlgorithm<int, Edge<int>>(graph, null, vertexPredicate));
+            Assert.Throws<ArgumentNullException>(() =>
+                new EdgeMergeCondensationGraphAlgorithm<int, Edge<int>>(null, condensedGraph, vertexPredicate));
+            Assert.Throws<ArgumentNullException>(() =>
+                new EdgeMergeCondensationGraphAlgorithm<int, Edge<int>>(graph, null, null));
+            Assert.Throws<ArgumentNullException>(() =>
+                new EdgeMergeCondensationGraphAlgorithm<int, Edge<int>>(null, condensedGraph, null));
+            Assert.Throws<ArgumentNullException>(() =>
+                new EdgeMergeCondensationGraphAlgorithm<int, Edge<int>>(null, null, vertexPredicate));
+            Assert.Throws<ArgumentNullException>(() =>
+                new EdgeMergeCondensationGraphAlgorithm<int, Edge<int>>(null, null, null));
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }
 
-        [NotNull, ItemNotNull]
+
         private static IEnumerable<TestCaseData> EdgeCondensationAllVerticesTestCases
         {
-            [UsedImplicitly]
             get
             {
                 var edge12 = new Edge<int>(1, 2);
@@ -120,34 +120,32 @@ namespace QuikGraph.Tests.Algorithms.Condensation
                 var edge82 = new Edge<int>(8, 2);
 
                 var graph1 = new BidirectionalGraph<int, Edge<int>>();
-                graph1.AddVerticesAndEdgeRange(new[]
-                {
+                graph1.AddVerticesAndEdgeRange([
                     edge12, edge13, edge23, edge42, edge43, edge45,
                     edge56, edge57, edge76, edge71, edge89, edge82
-                });
+                ]);
 
                 yield return new TestCaseData(graph1);
 
                 var graph2 = new BidirectionalGraph<int, Edge<int>>();
-                graph2.AddVerticesAndEdgeRange(new[]
-                {
+                graph2.AddVerticesAndEdgeRange([
                     edge12, edge13, edge23, edge42, edge43,
                     edge56, edge57, edge76, edge89
-                });
+                ]);
 
                 yield return new TestCaseData(graph2);
             }
         }
 
         [TestCaseSource(nameof(EdgeCondensationAllVerticesTestCases))]
-        public void EdgeCondensationAllVertices([NotNull] IBidirectionalGraph<int, Edge<int>> graph)
+        public void EdgeCondensationAllVertices(IBidirectionalGraph<int, Edge<int>> graph)
         {
             IMutableBidirectionalGraph<int, MergedEdge<int, Edge<int>>> condensedGraph =
                 graph.CondensateEdges(_ => true);
 
-            Assert.IsNotNull(condensedGraph);
-            Assert.AreEqual(graph.VertexCount, condensedGraph.VertexCount);
-            Assert.AreEqual(graph.EdgeCount, condensedGraph.EdgeCount);
+            Assert.That(condensedGraph, Is.Not.Null);
+            Assert.That(graph.VertexCount, Is.EqualTo(condensedGraph.VertexCount));
+            Assert.That(graph.EdgeCount, Is.EqualTo(condensedGraph.EdgeCount));
             CollectionAssert.AreEquivalent(graph.Vertices, condensedGraph.Vertices);
             CollectionAssert.AreEquivalent(graph.Edges, condensedGraph.Edges.SelectMany(e => e.Edges));
         }
@@ -176,25 +174,26 @@ namespace QuikGraph.Tests.Algorithms.Condensation
             var edge82 = new Edge<int>(8, 2);
 
             var graph = new BidirectionalGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[]
-            {
+            graph.AddVerticesAndEdgeRange([
                 edge12, edge13, edge23, edge38, edge42, edge43, edge44,
                 edge45, edge56, edge57, edge76, edge71, edge89, edge82
-            });
+            ]);
 
             IMutableBidirectionalGraph<int, MergedEdge<int, Edge<int>>> condensedGraph =
                 graph.CondensateEdges(v => v == 4 || v == 8);
 
-            Assert.IsNotNull(condensedGraph);
-            Assert.AreEqual(2, condensedGraph.VertexCount);
-            Assert.AreEqual(6, condensedGraph.EdgeCount);
+            Assert.That(condensedGraph, Is.Not.Null);
+            Assert.That(2, Is.EqualTo(condensedGraph.VertexCount));
+            Assert.That(6, Is.EqualTo(condensedGraph.EdgeCount));
             CollectionAssert.AreEquivalent(new[] { 4, 8 }, condensedGraph.Vertices);
             CollectionAssert.AreEquivalent(new[] { edge82, edge23, edge38 }, condensedGraph.Edges.ElementAt(0).Edges);
             CollectionAssert.AreEquivalent(new[] { edge44 }, condensedGraph.Edges.ElementAt(1).Edges);
             CollectionAssert.AreEquivalent(new[] { edge43, edge38 }, condensedGraph.Edges.ElementAt(2).Edges);
             CollectionAssert.AreEquivalent(new[] { edge42, edge23, edge38 }, condensedGraph.Edges.ElementAt(3).Edges);
-            CollectionAssert.AreEquivalent(new[] { edge45, edge57, edge71, edge13, edge38 }, condensedGraph.Edges.ElementAt(4).Edges);
-            CollectionAssert.AreEquivalent(new[] { edge45, edge57, edge71, edge12, edge23, edge38 }, condensedGraph.Edges.ElementAt(5).Edges);
+            CollectionAssert.AreEquivalent(new[] { edge45, edge57, edge71, edge13, edge38 },
+                condensedGraph.Edges.ElementAt(4).Edges);
+            CollectionAssert.AreEquivalent(new[] { edge45, edge57, edge71, edge12, edge23, edge38 },
+                condensedGraph.Edges.ElementAt(5).Edges);
         }
 
         [Test]
@@ -202,7 +201,8 @@ namespace QuikGraph.Tests.Algorithms.Condensation
         public void EdgeCondensation()
         {
             var rand = new Random(123456);
-            foreach (BidirectionalGraph<string, Edge<string>> graph in TestGraphFactory.GetBidirectionalGraphs_SlowTests())
+            foreach (BidirectionalGraph<string, Edge<string>> graph in
+                     TestGraphFactory.GetBidirectionalGraphs_SlowTests())
             {
                 RunEdgesCondensationAndCheck(graph, _ => true);
                 RunEdgesCondensationAndCheck(graph, _ => rand.Next(0, 1) == 1);

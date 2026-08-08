@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using JetBrains.Annotations;
+
 using QuikGraph.Collections;
 
 namespace QuikGraph
@@ -13,14 +13,14 @@ namespace QuikGraph
     /// <remarks>Vertex list graph for out-edges only and dictionary cache for in-edges.</remarks>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type</typeparam>
-#if SUPPORTS_SERIALIZATION
+
     [Serializable]
-#endif
+
     [DebuggerDisplay("VertexCount = {" + nameof(VertexCount) + "}, EdgeCount = {" + nameof(EdgeCount) + "}")]
     public class BidirectionalAdapterGraph<TVertex, TEdge> : IBidirectionalGraph<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
-        [NotNull]
+
         private readonly IVertexAndEdgeListGraph<TVertex, TEdge> _baseGraph;
 
         /// <summary>
@@ -28,7 +28,7 @@ namespace QuikGraph
         /// </summary>
         /// <param name="baseGraph">Wrapped graph.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="baseGraph"/> is <see langword="null"/>.</exception>
-        public BidirectionalAdapterGraph([NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> baseGraph)
+        public BidirectionalAdapterGraph( IVertexAndEdgeListGraph<TVertex, TEdge> baseGraph)
         {
             _baseGraph = baseGraph ?? throw new ArgumentNullException(nameof(baseGraph));
             _inEdges = new Dictionary<TVertex, EdgeList<TVertex, TEdge>>(_baseGraph.VertexCount);
@@ -98,7 +98,7 @@ namespace QuikGraph
 
         #endregion
 
-        #region IIncidenceGraph<TVertex,TEdge> 
+        #region IIncidenceGraph<TVertex,TEdge>
 
         /// <inheritdoc />
         public bool ContainsEdge(TVertex source, TVertex target)
@@ -156,7 +156,7 @@ namespace QuikGraph
 
         #region IBidirectionalIncidenceGraph<TVertex,TEdge>
 
-        [NotNull]
+
         private readonly Dictionary<TVertex, EdgeList<TVertex, TEdge>> _inEdges;
 
         /// <inheritdoc />

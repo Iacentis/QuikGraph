@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
+using System.Diagnostics.Contracts;
 using QuikGraph.Algorithms.ConnectedComponents;
 
 namespace QuikGraph.Algorithms.Condensation
@@ -20,7 +20,7 @@ namespace QuikGraph.Algorithms.Condensation
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
-        public CondensationGraphAlgorithm([NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph)
+        public CondensationGraphAlgorithm( IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph)
             : base(visitedGraph)
         {
         }
@@ -105,7 +105,7 @@ namespace QuikGraph.Algorithms.Condensation
         #endregion
 
         [Pure]
-        private int ComputeComponentCount([NotNull] IDictionary<TVertex, int> components)
+        private int ComputeComponentCount( IDictionary<TVertex, int> components)
         {
             IConnectedComponentAlgorithm<TVertex, TEdge, IVertexListGraph<TVertex, TEdge>> componentAlgorithm;
             if (StronglyConnected)

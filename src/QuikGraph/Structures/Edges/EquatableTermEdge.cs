@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph
 {
@@ -9,9 +9,9 @@ namespace QuikGraph
     /// An <see cref="ITermEdge{TVertex}"/> implementation that supports equality (directed edge).
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
-#if SUPPORTS_SERIALIZATION
+
     [Serializable]
-#endif
+
     [DebuggerDisplay("{" + nameof(Source) + "}->{" + nameof(Target) + "}")]
     public class EquatableTermEdge<TVertex> : TermEdge<TVertex>, IEquatable<EquatableTermEdge<TVertex>>
     {
@@ -23,7 +23,7 @@ namespace QuikGraph
         /// <param name="target">The target vertex.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
-        public EquatableTermEdge([NotNull] TVertex source, [NotNull] TVertex target)
+        public EquatableTermEdge( TVertex source,  TVertex target)
             : base(source, target)
         {
         }
@@ -40,7 +40,7 @@ namespace QuikGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="sourceTerminal"/> is negative.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="targetTerminal"/> is negative.</exception>
-        public EquatableTermEdge([NotNull] TVertex source, [NotNull] TVertex target, int sourceTerminal, int targetTerminal)
+        public EquatableTermEdge( TVertex source,  TVertex target, int sourceTerminal, int targetTerminal)
             : base(source, target, sourceTerminal, targetTerminal)
         {
         }

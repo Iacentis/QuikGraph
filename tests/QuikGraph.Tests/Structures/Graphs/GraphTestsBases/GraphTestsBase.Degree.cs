@@ -1,5 +1,4 @@
 using System;
-using JetBrains.Annotations;
 using NUnit.Framework;
 
 namespace QuikGraph.Tests.Structures
@@ -9,7 +8,7 @@ namespace QuikGraph.Tests.Structures
         #region Degree
 
         protected static void Degree_Test(
-            [NotNull] IMutableBidirectionalGraph<int, Edge<int>> graph)
+             IMutableBidirectionalGraph<int, Edge<int>> graph)
         {
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 3);
@@ -18,19 +17,19 @@ namespace QuikGraph.Tests.Structures
             var edge5 = new Edge<int>(3, 2);
             var edge6 = new Edge<int>(3, 3);
 
-            graph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
+            graph.AddVerticesAndEdgeRange([edge1, edge2, edge3, edge4, edge5, edge6]);
             graph.AddVertex(5);
 
-            Assert.AreEqual(3, graph.Degree(1));
-            Assert.AreEqual(3, graph.Degree(2));
-            Assert.AreEqual(4, graph.Degree(3)); // Self edge
-            Assert.AreEqual(2, graph.Degree(4));
-            Assert.AreEqual(0, graph.Degree(5));
+            Assert.That(3,Is.EqualTo(graph.Degree(1)));
+            Assert.That(3,Is.EqualTo(graph.Degree(2)));
+            Assert.That(4,Is.EqualTo(graph.Degree(3))); // Self edge
+            Assert.That(2,Is.EqualTo(graph.Degree(4)));
+            Assert.That(0,Is.EqualTo(graph.Degree(5)));
         }
 
         protected static void Degree_ImmutableGraph_Test(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
-            [NotNull, InstantHandle] Func<IBidirectionalIncidenceGraph<int, Edge<int>>> createGraph)
+             IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+             Func<IBidirectionalIncidenceGraph<int, Edge<int>>> createGraph)
         {
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 3);
@@ -39,19 +38,19 @@ namespace QuikGraph.Tests.Structures
             var edge5 = new Edge<int>(3, 2);
             var edge6 = new Edge<int>(3, 3);
 
-            wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
+            wrappedGraph.AddVerticesAndEdgeRange([edge1, edge2, edge3, edge4, edge5, edge6]);
             wrappedGraph.AddVertex(5);
             IBidirectionalIncidenceGraph<int, Edge<int>> graph = createGraph();
 
-            Assert.AreEqual(3, graph.Degree(1));
-            Assert.AreEqual(3, graph.Degree(2));
-            Assert.AreEqual(4, graph.Degree(3)); // Self edge
-            Assert.AreEqual(2, graph.Degree(4));
-            Assert.AreEqual(0, graph.Degree(5));
+            Assert.That(3,Is.EqualTo(graph.Degree(1)));
+            Assert.That(3,Is.EqualTo(graph.Degree(2)));
+            Assert.That(4,Is.EqualTo(graph.Degree(3))); // Self edge
+            Assert.That(2,Is.EqualTo(graph.Degree(4)));
+            Assert.That(0,Is.EqualTo(graph.Degree(5)));
         }
 
         protected static void Degree_ImmutableVertices_Test(
-            [NotNull] BidirectionalMatrixGraph<Edge<int>> graph)
+             BidirectionalMatrixGraph<Edge<int>> graph)
         {
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 3);
@@ -60,18 +59,18 @@ namespace QuikGraph.Tests.Structures
             var edge5 = new Edge<int>(3, 2);
             var edge6 = new Edge<int>(3, 3);
 
-            graph.AddEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
+            graph.AddEdgeRange([edge1, edge2, edge3, edge4, edge5, edge6]);
 
-            Assert.AreEqual(0, graph.Degree(0));
-            Assert.AreEqual(3, graph.Degree(1));
-            Assert.AreEqual(3, graph.Degree(2));
-            Assert.AreEqual(4, graph.Degree(3)); // Self edge
-            Assert.AreEqual(2, graph.Degree(4));
+            Assert.That(0,Is.EqualTo(graph.Degree(0)));
+            Assert.That(3,Is.EqualTo(graph.Degree(1)));
+            Assert.That(3,Is.EqualTo(graph.Degree(2)));
+            Assert.That(4,Is.EqualTo(graph.Degree(3))); // Self edge
+            Assert.That(2,Is.EqualTo(graph.Degree(4)));
         }
 
         protected static void Degree_ImmutableGraph_ReversedTest(
-            [NotNull] IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
-            [NotNull, InstantHandle] Func<IBidirectionalIncidenceGraph<int, SReversedEdge<int, Edge<int>>>> createGraph)
+             IMutableVertexAndEdgeSet<int, Edge<int>> wrappedGraph,
+             Func<IBidirectionalIncidenceGraph<int, SReversedEdge<int, Edge<int>>>> createGraph)
         {
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(1, 3);
@@ -80,19 +79,19 @@ namespace QuikGraph.Tests.Structures
             var edge5 = new Edge<int>(3, 2);
             var edge6 = new Edge<int>(3, 3);
 
-            wrappedGraph.AddVerticesAndEdgeRange(new[] { edge1, edge2, edge3, edge4, edge5, edge6 });
+            wrappedGraph.AddVerticesAndEdgeRange([edge1, edge2, edge3, edge4, edge5, edge6]);
             wrappedGraph.AddVertex(5);
             IBidirectionalIncidenceGraph<int, SReversedEdge<int, Edge<int>>> graph = createGraph();
 
-            Assert.AreEqual(3, graph.Degree(1));
-            Assert.AreEqual(3, graph.Degree(2));
-            Assert.AreEqual(4, graph.Degree(3)); // Self edge
-            Assert.AreEqual(2, graph.Degree(4));
-            Assert.AreEqual(0, graph.Degree(5));
+            Assert.That(3,Is.EqualTo(graph.Degree(1)));
+            Assert.That(3,Is.EqualTo(graph.Degree(2)));
+            Assert.That(4,Is.EqualTo(graph.Degree(3))); // Self edge
+            Assert.That(2,Is.EqualTo(graph.Degree(4)));
+            Assert.That(0,Is.EqualTo(graph.Degree(5)));
         }
 
         protected static void Degree_Throws_Test<TVertex, TEdge>(
-            [NotNull] IBidirectionalIncidenceGraph<TVertex, TEdge> graph)
+             IBidirectionalIncidenceGraph<TVertex, TEdge> graph)
             where TVertex : class, IEquatable<TVertex>, new()
             where TEdge : IEdge<TVertex>
         {
@@ -104,7 +103,7 @@ namespace QuikGraph.Tests.Structures
         }
 
         protected static void Degree_Throws_Matrix_Test<TEdge>(
-            [NotNull] BidirectionalMatrixGraph<TEdge> graph)
+             BidirectionalMatrixGraph<TEdge> graph)
             where TEdge : class, IEdge<int>
         {
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed

@@ -17,8 +17,8 @@ namespace QuikGraph.MSAGL.Tests
             var node = new Node("1");
             var args = new MsaglVertexEventArgs<TestVertex>(vertex, node);
 
-            Assert.AreSame(vertex, args.Vertex);
-            Assert.AreSame(node, args.Node);
+            Assert.That(vertex,Is.SameAs(args.Vertex));
+            Assert.That(node,Is.SameAs(args.Node));
         }
 
         [Test]
@@ -26,7 +26,7 @@ namespace QuikGraph.MSAGL.Tests
         {
             var vertex = new TestVertex("1");
             var node = new Node("1");
-            
+
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(

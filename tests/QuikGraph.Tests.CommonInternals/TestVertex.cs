@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations;
+﻿
 
 namespace QuikGraph.Tests
 {
@@ -14,12 +14,12 @@ namespace QuikGraph.Tests
         {
         }
 
-        public TestVertex([NotNull] string name)
+        public TestVertex( string name)
         {
             Name = name;
         }
 
-        [NotNull]
+
         public string Name { get; }
     }
 }

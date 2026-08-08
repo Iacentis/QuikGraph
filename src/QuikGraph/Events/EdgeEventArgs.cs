@@ -1,5 +1,5 @@
 ﻿using System;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph
 {
@@ -8,9 +8,9 @@ namespace QuikGraph
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
-#if SUPPORTS_SERIALIZATION
+
     [Serializable]
-#endif
+
     public class EdgeEventArgs<TVertex, TEdge> : EventArgs
         where TEdge : IEdge<TVertex>
     {
@@ -19,7 +19,7 @@ namespace QuikGraph
         /// </summary>
         /// <param name="edge">Concerned edge.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edge"/> is <see langword="null"/>.</exception>
-        public EdgeEventArgs([NotNull] TEdge edge)
+        public EdgeEventArgs( TEdge edge)
         {
             if (edge == null)
                 throw new ArgumentNullException(nameof(edge));
@@ -30,7 +30,7 @@ namespace QuikGraph
         /// <summary>
         /// Edge concerned by the event.
         /// </summary>
-        [NotNull]
+
         public TEdge Edge { get; }
     }
 }

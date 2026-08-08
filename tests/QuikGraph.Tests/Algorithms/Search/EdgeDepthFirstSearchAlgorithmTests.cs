@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using QuikGraph.Algorithms.Search;
 using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
 using static QuikGraph.Tests.GraphTestHelpers;
@@ -17,7 +17,7 @@ namespace QuikGraph.Tests.Algorithms.Search
         #region Test helpers
 
         private static void RunEdgeDFSAndCheck<TVertex, TEdge>(
-            [NotNull] IEdgeListAndIncidenceGraph<TVertex, TEdge> graph,
+            IEdgeListAndIncidenceGraph<TVertex, TEdge> graph,
             int maxDepth = int.MaxValue)
             where TEdge : IEdge<TVertex>
         {
@@ -25,20 +25,17 @@ namespace QuikGraph.Tests.Algorithms.Search
             var discoverTimes = new Dictionary<TEdge, int>();
             var finishTimes = new Dictionary<TEdge, int>();
             int time = 0;
-            var dfs = new EdgeDepthFirstSearchAlgorithm<TVertex, TEdge>(graph)
-            {
-                MaxDepth = maxDepth
-            };
+            var dfs = new EdgeDepthFirstSearchAlgorithm<TVertex, TEdge>(graph) { MaxDepth = maxDepth };
 
             dfs.InitializeEdge += edge =>
             {
-                Assert.AreEqual(GraphColor.White, dfs.EdgesColors[edge]);
+                Assert.That(GraphColor.White, Is.EqualTo(dfs.EdgesColors[edge]));
             };
 
             dfs.StartEdge += edge =>
             {
-                Assert.AreEqual(GraphColor.White, dfs.EdgesColors[edge]);
-                Assert.IsFalse(parents.ContainsKey(edge));
+                Assert.That(GraphColor.White, Is.EqualTo(dfs.EdgesColors[edge]));
+                Assert.That(parents.ContainsKey(edge), Is.False);
                 parents[edge] = edge;
                 discoverTimes[edge] = time++;
             };
@@ -47,30 +44,30 @@ namespace QuikGraph.Tests.Algorithms.Search
             {
                 parents[targetEdge] = edge;
 
-                Assert.AreEqual(GraphColor.White, dfs.EdgesColors[targetEdge]);
-                Assert.AreEqual(GraphColor.Gray, dfs.EdgesColors[parents[targetEdge]]);
+                Assert.That(GraphColor.White, Is.EqualTo(dfs.EdgesColors[targetEdge]));
+                Assert.That(GraphColor.Gray, Is.EqualTo(dfs.EdgesColors[parents[targetEdge]]));
 
                 discoverTimes[targetEdge] = time++;
             };
 
             dfs.TreeEdge += edge =>
             {
-                Assert.AreEqual(GraphColor.Gray, dfs.EdgesColors[edge]);
+                Assert.That(GraphColor.Gray, Is.EqualTo(dfs.EdgesColors[edge]));
             };
 
             dfs.BackEdge += edge =>
             {
-                Assert.AreEqual(GraphColor.Gray, dfs.EdgesColors[edge]);
+                Assert.That(GraphColor.Gray, Is.EqualTo(dfs.EdgesColors[edge]));
             };
 
             dfs.ForwardOrCrossEdge += edge =>
             {
-                Assert.AreEqual(GraphColor.Black, dfs.EdgesColors[edge]);
+                Assert.That(GraphColor.Black, Is.EqualTo(dfs.EdgesColors[edge]));
             };
 
             dfs.FinishEdge += edge =>
             {
-                Assert.AreEqual(GraphColor.Black, dfs.EdgesColors[edge]);
+                Assert.That(GraphColor.Black, Is.EqualTo(dfs.EdgesColors[edge]));
                 finishTimes[edge] = time++;
             };
 
@@ -80,8 +77,8 @@ namespace QuikGraph.Tests.Algorithms.Search
             // All vertices should be black
             foreach (TEdge edge in graph.Edges)
             {
-                Assert.IsTrue(dfs.EdgesColors.ContainsKey(edge));
-                Assert.AreEqual(dfs.EdgesColors[edge], GraphColor.Black);
+                Assert.That(dfs.EdgesColors.ContainsKey(edge), Is.True);
+                Assert.That(dfs.EdgesColors[edge], Is.EqualTo(GraphColor.Black));
             }
 
             foreach (TEdge e1 in graph.Edges)
@@ -90,11 +87,13 @@ namespace QuikGraph.Tests.Algorithms.Search
                 {
                     if (!e1.Equals(e2))
                     {
-                        Assert.IsTrue(
+                        Assert.That(
                             finishTimes[e1] < discoverTimes[e2]
                             || finishTimes[e2] < discoverTimes[e1]
-                            || (discoverTimes[e2] < discoverTimes[e1] && finishTimes[e1] < finishTimes[e2] && IsDescendant(parents, e1, e2))
-                            || (discoverTimes[e1] < discoverTimes[e2] && finishTimes[e2] < finishTimes[e1] && IsDescendant(parents, e2, e1)));
+                            || (discoverTimes[e2] < discoverTimes[e1] && finishTimes[e1] < finishTimes[e2] &&
+                                IsDescendant(parents, e1, e2))
+                            || (discoverTimes[e1] < discoverTimes[e2] && finishTimes[e2] < finishTimes[e1] &&
+                                IsDescendant(parents, e2, e1)), Is.True);
                     }
                 }
             }
@@ -136,9 +135,9 @@ namespace QuikGraph.Tests.Algorithms.Search
                 if (vColors is null)
                     CollectionAssert.IsEmpty(algo.EdgesColors);
                 else
-                    Assert.AreSame(vColors, algo.EdgesColors);
-                Assert.AreEqual(maxDepth, algo.MaxDepth);
-                Assert.AreEqual(processAllComponents, algo.ProcessAllComponents);
+                    Assert.That(vColors, Is.SameAs(algo.EdgesColors));
+                Assert.That(maxDepth, Is.EqualTo(algo.MaxDepth));
+                Assert.That(processAllComponents, Is.EqualTo(algo.ProcessAllComponents));
             }
 
             #endregion
@@ -152,26 +151,24 @@ namespace QuikGraph.Tests.Algorithms.Search
             var graph = new AdjacencyGraph<int, Edge<int>>();
             var edgesColors = new Dictionary<Edge<int>, GraphColor>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(null));
+            Assert.Throws<ArgumentNullException>(() => new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(null));
 
-            Assert.Throws<ArgumentNullException>(
-                () => new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(graph, null));
-            Assert.Throws<ArgumentNullException>(
-                () => new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(null, edgesColors));
-            Assert.Throws<ArgumentNullException>(
-                () => new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(null, null));
+            Assert.Throws<ArgumentNullException>(() => new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(graph, null));
+            Assert.Throws<ArgumentNullException>(() =>
+                new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(null, edgesColors));
+            Assert.Throws<ArgumentNullException>(() => new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(null, null));
 
-            Assert.Throws<ArgumentNullException>(
-                () => new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(null, null, edgesColors));
-            Assert.Throws<ArgumentNullException>(
-                () => new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(null, graph, null));
-            Assert.Throws<ArgumentNullException>(
-                () => new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(null, null, null));
+            Assert.Throws<ArgumentNullException>(() =>
+                new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(null, null, edgesColors));
+            Assert.Throws<ArgumentNullException>(() =>
+                new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(null, graph, null));
+            Assert.Throws<ArgumentNullException>(() =>
+                new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(null, null, null));
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
 
-            Assert.Throws<ArgumentOutOfRangeException>(() => new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(graph).MaxDepth = -1);
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+                new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(graph).MaxDepth = -1);
         }
 
         #region Rooted algorithm
@@ -230,8 +227,7 @@ namespace QuikGraph.Tests.Algorithms.Search
         public void ComputeWithRoot_Throws()
         {
             var graph = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
-            ComputeWithRoot_Throws_Test(
-                () => new EdgeDepthFirstSearchAlgorithm<TestVertex, Edge<TestVertex>>(graph));
+            ComputeWithRoot_Throws_Test(() => new EdgeDepthFirstSearchAlgorithm<TestVertex, Edge<TestVertex>>(graph));
         }
 
         #endregion
@@ -262,12 +258,11 @@ namespace QuikGraph.Tests.Algorithms.Search
             var edge86 = new Edge<int>(8, 6);
 
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[]
-            {
+            graph.AddVerticesAndEdgeRange([
                 edge12, edge13, edge21, edge24, edge25,
 
                 edge67, edge68, edge86
-            });
+            ]);
 
             var algorithm = new EdgeDepthFirstSearchAlgorithm<int, Edge<int>>(graph)
             {
@@ -282,10 +277,10 @@ namespace QuikGraph.Tests.Algorithms.Search
             else
             {
                 QuikGraphAssert.TrueForAll(
-                    new[] { edge12, edge13, edge24, edge25 },
+                    [edge12, edge13, edge24, edge25],
                     edge => algorithm.EdgesColors[edge] == GraphColor.Black);
                 QuikGraphAssert.TrueForAll(
-                    new[] { edge67, edge68, edge86 },
+                    [edge67, edge68, edge86],
                     edge => algorithm.EdgesColors[edge] == GraphColor.White);
             }
         }

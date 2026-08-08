@@ -53,7 +53,7 @@ namespace QuikGraph.MSAGL.Tests
                 where TEdge : IEdge<TVertex>
             {
                 AssertAlgorithmState(p, g);
-                Assert.IsNull(p.MsaglGraph);
+                Assert.That(p.MsaglGraph,Is.Null);
             }
 
             #endregion

@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Linq;
-#if SUPPORTS_SERIALIZATION && NETSTANDARD2_0
 using System.Runtime.Serialization;
-using System.Security.Permissions;
-#endif
-using JetBrains.Annotations;
+
 
 namespace QuikGraph
 {
@@ -15,17 +13,11 @@ namespace QuikGraph
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type</typeparam>
-#if SUPPORTS_SERIALIZATION
     [Serializable]
-#endif
     [DebuggerDisplay("VertexCount = {" + nameof(VertexCount) + "}, EdgeCount = {" + nameof(EdgeCount) + "}")]
     public sealed class ArrayUndirectedGraph<TVertex, TEdge> : IUndirectedGraph<TVertex, TEdge>
-#if SUPPORTS_CLONEABLE
         , ICloneable
-#endif
-#if SUPPORTS_SERIALIZATION && NETSTANDARD2_0
         , ISerializable
-#endif
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -33,10 +25,9 @@ namespace QuikGraph
         /// </summary>
         /// <param name="baseGraph">Wrapped graph.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="baseGraph"/> is <see langword="null"/>.</exception>
-        public ArrayUndirectedGraph([NotNull] IUndirectedGraph<TVertex, TEdge> baseGraph)
+        public ArrayUndirectedGraph(IUndirectedGraph<TVertex, TEdge> baseGraph)
         {
-            if (baseGraph is null)
-                throw new ArgumentNullException(nameof(baseGraph));
+            ArgumentNullException.ThrowIfNull(baseGraph);
 
             AllowParallelEdges = baseGraph.AllowParallelEdges;
             EdgeEqualityComparer = baseGraph.EdgeEqualityComparer;
@@ -73,7 +64,7 @@ namespace QuikGraph
         /// <inheritdoc />
         public int VertexCount => _vertexEdges.Count;
 
-        [NotNull]
+
         private readonly IDictionary<TVertex, TEdge[]> _vertexEdges;
 
         /// <inheritdoc />
@@ -102,7 +93,7 @@ namespace QuikGraph
         /// <inheritdoc />
         public int EdgeCount { get; }
 
-        [NotNull, ItemNotNull]
+
         private readonly IList<TEdge> _edges;
 
         /// <inheritdoc />
@@ -147,7 +138,7 @@ namespace QuikGraph
                 throw new ArgumentNullException(nameof(vertex));
 
             if (_vertexEdges.TryGetValue(vertex, out TEdge[] edges))
-                return edges.Sum(edge => edge.IsSelfEdge() ? 2 : 1);    // Self edge count twice
+                return edges.Sum(edge => edge.IsSelfEdge() ? 2 : 1); // Self edge count twice
             throw new VertexNotFoundException();
         }
 
@@ -185,7 +176,8 @@ namespace QuikGraph
 
             if (_vertexEdges.TryGetValue(source, out TEdge[] adjacentEdges))
             {
-                foreach (TEdge adjacentEdge in adjacentEdges.Where(adjacentEdge => EdgeEqualityComparer(adjacentEdge, source, target)))
+                foreach (TEdge adjacentEdge in adjacentEdges.Where(adjacentEdge =>
+                             EdgeEqualityComparer(adjacentEdge, source, target)))
                 {
                     edge = adjacentEdge;
                     return true;
@@ -198,22 +190,21 @@ namespace QuikGraph
 
         #endregion
 
-#if SUPPORTS_SERIALIZATION && NETSTANDARD2_0
+
         #region ISerializable
 
         private ArrayUndirectedGraph(SerializationInfo info, StreamingContext context)
         {
-            AllowParallelEdges = (bool)info.GetValue("AllowParallelEdges", typeof(bool));
+            AllowParallelEdges = (bool)(info.GetValue("AllowParallelEdges", typeof(bool)) ?? false);
             _vertexEdges = (IDictionary<TVertex, TEdge[]>)info.GetValue(
                 "VertexEdges",
                 typeof(IDictionary<TVertex, TEdge[]>));
             _edges = (IList<TEdge>)info.GetValue("Edges", typeof(IList<TEdge>));
             EdgeEqualityComparer = EdgeExtensions.GetUndirectedVertexEquality<TVertex, TEdge>();
-            EdgeCount = _edges.Count;
+            EdgeCount = _edges?.Count ?? 0;
         }
 
         /// <inheritdoc />
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
         void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("AllowParallelEdges", AllowParallelEdges);
@@ -222,7 +213,7 @@ namespace QuikGraph
         }
 
         #endregion
-#endif
+
 
         #region ICloneable
 
@@ -231,19 +222,18 @@ namespace QuikGraph
         /// </summary>
         /// <returns>This graph.</returns>
         [Pure]
-        [NotNull]
         public ArrayUndirectedGraph<TVertex, TEdge> Clone()
         {
             return this;
         }
 
-#if SUPPORTS_CLONEABLE
+
         /// <inheritdoc />
         object ICloneable.Clone()
         {
             return Clone();
         }
-#endif
+
         #endregion
     }
 }

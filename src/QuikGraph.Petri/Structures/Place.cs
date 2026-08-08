@@ -2,24 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using JetBrains.Annotations;
-#if REQUIRE_STRING_COMPATIBILITY
 using static QuikGraph.Utils.StringUtils;
-#endif
+
 
 namespace QuikGraph.Petri
 {
-#if SUPPORTS_SERIALIZATION
+    /// <summary>
+    ///
+    /// </summary>
+    /// <typeparam name="TToken"></typeparam>
     [Serializable]
-#endif
-    internal sealed class Place<TToken> : IPlace<TToken>
+    public sealed class Place<TToken> : IPlace<TToken>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Place{TToken}"/> class.
         /// </summary>
         /// <param name="name">Place name.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="name"/> is <see langword="null"/>.</exception>
-        public Place([NotNull] string name)
+        public Place(string name)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
         }
@@ -43,11 +43,7 @@ namespace QuikGraph.Petri
             }
 
             builder.Append(
-#if REQUIRE_STRING_COMPATIBILITY
-                Join(
-#else
                 string.Join(
-#endif
                     Environment.NewLine + "\t", Marking.Select(token => token.GetType().Name)));
 
             return builder.ToString();

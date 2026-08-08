@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph
 {
@@ -24,7 +25,7 @@ namespace QuikGraph
         /// </param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="tryGetOutEdges"/> is <see langword="null"/>.</exception>
         public DelegateIncidenceGraph(
-            [NotNull] TryFunc<TVertex, IEnumerable<TEdge>> tryGetOutEdges,
+             TryFunc<TVertex, IEnumerable<TEdge>> tryGetOutEdges,
             bool allowParallelEdges = true)
             : base(tryGetOutEdges, allowParallelEdges)
         {
@@ -33,7 +34,7 @@ namespace QuikGraph
         #region IIncidenceGraph<TVertex,TEdge>
 
         [Pure]
-        internal virtual bool ContainsEdgeInternal([NotNull] TVertex source, [NotNull] TVertex target)
+        internal virtual bool ContainsEdgeInternal( TVertex source,  TVertex target)
         {
             return TryGetEdge(source, target, out _);
         }

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using JetBrains.Annotations;
+
 using QuikGraph.Collections;
 
 namespace QuikGraph.Algorithms.TopologicalSort
@@ -14,10 +14,10 @@ namespace QuikGraph.Algorithms.TopologicalSort
     public sealed class SourceFirstTopologicalSortAlgorithm<TVertex, TEdge> : AlgorithmBase<IVertexAndEdgeListGraph<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
     {
-        [NotNull]
+
         private readonly BinaryQueue<TVertex, int> _heap;
 
-        [NotNull, ItemNotNull]
+
         private readonly IList<TVertex> _sortedVertices;
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace QuikGraph.Algorithms.TopologicalSort
         /// <param name="capacity">Sorted vertices capacity.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public SourceFirstTopologicalSortAlgorithm(
-            [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
+             IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
             int capacity = -1)
             : base(visitedGraph)
         {
@@ -38,13 +38,13 @@ namespace QuikGraph.Algorithms.TopologicalSort
         /// <summary>
         /// Sorted vertices.
         /// </summary>
-        [ItemNotNull]
+
         public TVertex[] SortedVertices { get; private set; }
 
         /// <summary>
         /// Vertices in-degrees.
         /// </summary>
-        [NotNull]
+
         public IDictionary<TVertex, int> InDegrees { get; } = new Dictionary<TVertex, int>();
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace QuikGraph.Algorithms.TopologicalSort
         /// </summary>
         public event VertexAction<TVertex> VertexAdded;
 
-        private void OnVertexAdded([NotNull] TVertex vertex)
+        private void OnVertexAdded( TVertex vertex)
         {
             Debug.Assert(vertex != null);
 

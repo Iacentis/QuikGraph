@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using QuikGraph.Graphviz.Dot;
 
 namespace QuikGraph.Graphviz.Tests
@@ -16,16 +16,16 @@ namespace QuikGraph.Graphviz.Tests
         public void Constructor()
         {
             var edgeLabel = new GraphvizEdgeLabel();
-            Assert.AreEqual(-25.0, edgeLabel.Angle);
-            Assert.AreEqual(1.0, edgeLabel.Distance);
-            Assert.IsTrue(edgeLabel.Float);
-            Assert.IsNull(edgeLabel.Font);
-            Assert.AreEqual(GraphvizColor.Black, edgeLabel.FontColor);
-            Assert.IsFalse(edgeLabel.IsHtmlLabel);
-            Assert.IsNull(edgeLabel.Value);
+            Assert.That(-25.0,Is.EqualTo(edgeLabel.Angle));
+            Assert.That(1.0,Is.EqualTo(edgeLabel.Distance));
+            Assert.That(edgeLabel.Float,Is.True);
+            Assert.That(edgeLabel.Font,Is.Null);
+            Assert.That(GraphvizColor.Black,Is.EqualTo(edgeLabel.FontColor));
+            Assert.That(edgeLabel.IsHtmlLabel,Is.False);
+            Assert.That(edgeLabel.Value,Is.Null);
         }
 
-        [NotNull, ItemNotNull]
+
         private static IEnumerable<TestCaseData> AddParametersTestCases
         {
             get
@@ -93,8 +93,8 @@ namespace QuikGraph.Graphviz.Tests
 
         [TestCaseSource(nameof(AddParametersTestCases))]
         public void AddParameters(
-            [NotNull] GraphvizEdgeLabel label,
-            [NotNull] Dictionary<string, object> expectedParameters)
+             GraphvizEdgeLabel label,
+             Dictionary<string, object> expectedParameters)
         {
             var parameters = new Dictionary<string, object>();
             label.AddParameters(parameters);

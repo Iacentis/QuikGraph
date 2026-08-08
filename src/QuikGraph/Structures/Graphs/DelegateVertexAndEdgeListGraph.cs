@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Linq;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph
 {
@@ -28,8 +29,8 @@ namespace QuikGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertices"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="tryGetOutEdges"/> is <see langword="null"/>.</exception>
         public DelegateVertexAndEdgeListGraph(
-            [NotNull, ItemNotNull] IEnumerable<TVertex> vertices,
-            [NotNull] TryFunc<TVertex, IEnumerable<TEdge>> tryGetOutEdges,
+             IEnumerable<TVertex> vertices,
+             TryFunc<TVertex, IEnumerable<TEdge>> tryGetOutEdges,
             bool allowParallelEdges = true)
             : base(tryGetOutEdges, allowParallelEdges)
         {
@@ -44,7 +45,7 @@ namespace QuikGraph
         /// <inheritdoc />
         public int VertexCount => _vertices.Count();
 
-        [NotNull]
+
         private readonly IEnumerable<TVertex> _vertices;
 
         /// <inheritdoc />
@@ -60,7 +61,7 @@ namespace QuikGraph
             get
             {
                 if (VertexCount == 0)
-                    return true; // No vertex => must be empty 
+                    return true; // No vertex => must be empty
                 return _vertices.All(vertex => !OutEdges(vertex).Any());
             }
         }
@@ -90,7 +91,7 @@ namespace QuikGraph
 
         // Should override parent implementation since the provided delegate
         // may not be accurate to check a vertex is present or not.
-        // In case a vertex is part of an edge returned by user delegate 
+        // In case a vertex is part of an edge returned by user delegate
         // but not part of the graph.
         /// <inheritdoc />
         internal override bool ContainsVertexInternal(TVertex vertex)
@@ -105,7 +106,7 @@ namespace QuikGraph
 
         #region IIncidenceGraph<TVertex,TEdge>
 
-        private bool FilterEdges([NotNull] TEdge edge, [NotNull] TVertex vertex)
+        private bool FilterEdges( TEdge edge,  TVertex vertex)
         {
             return IsInGraph(edge, vertex) && EqualityComparer<TVertex>.Default.Equals(edge.Source, vertex);
         }
@@ -117,7 +118,7 @@ namespace QuikGraph
         /// in the graph before.
         /// </summary>
         [Pure]
-        private bool IsInGraph([NotNull] TEdge edge, [NotNull] TVertex vertex)
+        private bool IsInGraph( TEdge edge,  TVertex vertex)
         {
             Debug.Assert(edge != null);
             Debug.Assert(vertex != null);
@@ -127,7 +128,7 @@ namespace QuikGraph
 
         // Should override parent implementation since the provided delegate
         // may not be accurate to check an edge is present or not.
-        // In case source or target is part of an edge returned by user delegate 
+        // In case source or target is part of an edge returned by user delegate
         // but not part of the graph.
         /// <inheritdoc />
         internal override bool ContainsEdgeInternal(TVertex source, TVertex target)

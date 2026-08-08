@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using JetBrains.Annotations;
+
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using QuikGraph.Algorithms.TopologicalSort;
 using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
 using static QuikGraph.Tests.QuikGraphUnitTestsHelpers;
@@ -17,14 +18,14 @@ namespace QuikGraph.Tests.Algorithms
     {
         #region Test helpers
 
-        private static void RunTopologicalSortAndCheck<TVertex, TEdge>([NotNull] IVertexListGraph<TVertex, TEdge> graph)
+        private static void RunTopologicalSortAndCheck<TVertex, TEdge>( IVertexListGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
             var algorithm = new TopologicalSortAlgorithm<TVertex, TEdge>(graph);
             algorithm.Compute();
 
-            Assert.IsNotNull(algorithm.SortedVertices);
-            Assert.AreEqual(graph.VertexCount, algorithm.SortedVertices.Length);
+            Assert.That(algorithm.SortedVertices,Is.Not.Null);
+            Assert.That(graph.VertexCount,Is.EqualTo(algorithm.SortedVertices.Length));
         }
 
         #endregion
@@ -53,7 +54,7 @@ namespace QuikGraph.Tests.Algorithms
                 where TEdge : IEdge<TVertex>
             {
                 AssertAlgorithmState(algo, g);
-                Assert.IsNull(algo.SortedVertices);
+                Assert.That(algo.SortedVertices,Is.Null);
             }
 
             #endregion
@@ -107,8 +108,7 @@ namespace QuikGraph.Tests.Algorithms
         public void SimpleGraph()
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[]
-            {
+            graph.AddVerticesAndEdgeRange([
                 new Edge<int>(1, 2),
                 new Edge<int>(2, 3),
                 new Edge<int>(2, 6),
@@ -118,7 +118,7 @@ namespace QuikGraph.Tests.Algorithms
                 new Edge<int>(5, 6),
                 new Edge<int>(7, 5),
                 new Edge<int>(7, 8)
-            });
+            ]);
 
             var algorithm = new TopologicalSortAlgorithm<int, Edge<int>>(graph);
             algorithm.Compute();
@@ -132,8 +132,7 @@ namespace QuikGraph.Tests.Algorithms
         public void ForestGraph()
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[]
-            {
+            graph.AddVerticesAndEdgeRange([
                 new Edge<int>(0, 1),
                 new Edge<int>(1, 2),
                 new Edge<int>(1, 3),
@@ -141,7 +140,7 @@ namespace QuikGraph.Tests.Algorithms
                 new Edge<int>(3, 4),
 
                 new Edge<int>(5, 6)
-            });
+            ]);
 
             var algorithm = new TopologicalSortAlgorithm<int, Edge<int>>(graph);
             algorithm.Compute();
@@ -155,15 +154,14 @@ namespace QuikGraph.Tests.Algorithms
         public void GraphWithSelfEdge_Throws()
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[]
-            {
+            graph.AddVerticesAndEdgeRange([
                 new Edge<int>(0, 1),
                 new Edge<int>(1, 2),
                 new Edge<int>(1, 3),
                 new Edge<int>(2, 3),
                 new Edge<int>(2, 2),
                 new Edge<int>(3, 4)
-            });
+            ]);
 
             var algorithm = new TopologicalSortAlgorithm<int, Edge<int>>(graph);
             Assert.Throws<NonAcyclicGraphException>(() => algorithm.Compute());
@@ -187,13 +185,12 @@ namespace QuikGraph.Tests.Algorithms
         public void TopologicalSort_Throws()
         {
             var cyclicGraph = new AdjacencyGraph<int, Edge<int>>();
-            cyclicGraph.AddVerticesAndEdgeRange(new[]
-            {
+            cyclicGraph.AddVerticesAndEdgeRange([
                 new Edge<int>(1, 2),
                 new Edge<int>(2, 3),
                 new Edge<int>(1, 4),
                 new Edge<int>(3, 1)
-            });
+            ]);
 
             var algorithm = new TopologicalSortAlgorithm<int, Edge<int>>(cyclicGraph);
             Assert.Throws<NonAcyclicGraphException>(() => algorithm.Compute());
@@ -224,9 +221,9 @@ namespace QuikGraph.Tests.Algorithms
         {
             /* A puzzle from Facebook Seattle opening party:
             http://www.facebook.com/note.php?note_id=146727365346299
-            You are given a list of relationships between the letters in a single word, all of which are in the form: 
-            "The first occurrence of A comes before N occurrences of B." 
-            You can safely assume that you have all such relationships except for any in which N would be 0. 
+            You are given a list of relationships between the letters in a single word, all of which are in the form:
+            "The first occurrence of A comes before N occurrences of B."
+            You can safely assume that you have all such relationships except for any in which N would be 0.
             Determine the original word, then go to http://www.facebook.com/seattle/[insert-word-here] to find the second part of the puzzle.
 
             The first occurrence of 'e' comes before 1 occurrence of 's'.
@@ -300,7 +297,7 @@ namespace QuikGraph.Tests.Algorithms
             }
             string word = builder.ToString();
 
-            Assert.AreEqual("invitees", word);
+            Assert.That("invitees",Is.EqualTo(word));
         }
     }
 }

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.IO;
 using System.Net;
 using System.Text;
-using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Graphviz.Dot;
 
@@ -19,52 +19,47 @@ namespace QuikGraph.Graphviz.Tests
         public void ToGraphviz()
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[]
-            {
-                new Edge<int>(1, 2),
-                new Edge<int>(2, 3),
-                new Edge<int>(3, 1)
-            });
-            graph.AddVertexRange(new[] { 4, 5 });
+            graph.AddVerticesAndEdgeRange([new Edge<int>(1, 2), new Edge<int>(2, 3), new Edge<int>(3, 1)]);
+            graph.AddVertexRange([4, 5]);
 
             string expectedDot =
                 "digraph G {" + Environment.NewLine
-                 + "0;" + Environment.NewLine
-                 + "1;" + Environment.NewLine
-                 + "2;" + Environment.NewLine
-                 + "3;" + Environment.NewLine
-                 + "4;" + Environment.NewLine
-                 + "0 -> 1;" + Environment.NewLine
-                 + "1 -> 2;" + Environment.NewLine
-                 + "2 -> 0;" + Environment.NewLine
-                 + "}";
+                              + "0;" + Environment.NewLine
+                              + "1;" + Environment.NewLine
+                              + "2;" + Environment.NewLine
+                              + "3;" + Environment.NewLine
+                              + "4;" + Environment.NewLine
+                              + "0 -> 1;" + Environment.NewLine
+                              + "1 -> 2;" + Environment.NewLine
+                              + "2 -> 0;" + Environment.NewLine
+                              + "}";
             string dotGraph = graph.ToGraphviz();
-            Assert.AreEqual(expectedDot, dotGraph);
+            Assert.That(expectedDot, Is.EqualTo(dotGraph));
         }
 
         [Test]
         public void ToGraphviz_DelegateGraph()
         {
-            int[] vertices = { 1, 2, 3, 4, 5 };
+            int[] vertices = [1, 2, 3, 4, 5];
             var graph = new DelegateVertexAndEdgeListGraph<int, Edge<int>>(
                 vertices,
-                (int vertex, out IEnumerable<Edge<int>> outEdges) =>
+                (vertex, out outEdges) =>
                 {
                     if (vertex == 1)
                     {
-                        outEdges = new[] { new Edge<int>(1, 2), new Edge<int>(1, 3) };
+                        outEdges = [new Edge<int>(1, 2), new Edge<int>(1, 3)];
                         return true;
                     }
 
                     if (vertex == 2)
                     {
-                        outEdges = new[] { new Edge<int>(2, 4) };
+                        outEdges = [new Edge<int>(2, 4)];
                         return true;
                     }
 
                     if (vertex is 3 or 4 or 5)
                     {
-                        outEdges = new Edge<int>[] { };
+                        outEdges = [];
                         return true;
                     }
 
@@ -74,87 +69,77 @@ namespace QuikGraph.Graphviz.Tests
 
             string expectedDot =
                 @"digraph G {" + Environment.NewLine
-                + @"0;" + Environment.NewLine
-                + @"1;" + Environment.NewLine
-                + @"2;" + Environment.NewLine
-                + @"3;" + Environment.NewLine
-                + @"4;" + Environment.NewLine
-                + @"0 -> 1;" + Environment.NewLine
-                + @"0 -> 2;" + Environment.NewLine
-                + @"1 -> 3;" + Environment.NewLine
-                + @"}";
+                               + @"0;" + Environment.NewLine
+                               + @"1;" + Environment.NewLine
+                               + @"2;" + Environment.NewLine
+                               + @"3;" + Environment.NewLine
+                               + @"4;" + Environment.NewLine
+                               + @"0 -> 1;" + Environment.NewLine
+                               + @"0 -> 2;" + Environment.NewLine
+                               + @"1 -> 3;" + Environment.NewLine
+                               + @"}";
             string dotGraph = graph.ToGraphviz();
-            Assert.AreEqual(expectedDot, dotGraph);
+            Assert.That(expectedDot, Is.EqualTo(dotGraph));
         }
 
         [Test]
         public void ToGraphviz_EquatableEdgeDelegateGraph()
         {
-            int[] vertices = { 1, 2, 3, 4, 5 };
+            int[] vertices = [1, 2, 3, 4, 5];
             var graph = new DelegateVertexAndEdgeListGraph<int, EquatableEdge<int>>(
                 vertices,
-                (int vertex, out IEnumerable<EquatableEdge<int>> outEdges) =>
+                (vertex, out outEdges) =>
                 {
-                    if (vertex == 1)
+                    switch (vertex)
                     {
-                        outEdges = new[] { new EquatableEdge<int>(1, 2), new EquatableEdge<int>(1, 3) };
-                        return true;
+                        case 1:
+                            outEdges = [new EquatableEdge<int>(1, 2), new EquatableEdge<int>(1, 3)];
+                            return true;
+                        case 2:
+                            outEdges = [new EquatableEdge<int>(2, 4)];
+                            return true;
+                        case 3 or 4 or 5:
+                            outEdges = [];
+                            return true;
+                        default:
+                            outEdges = null;
+                            return false;
                     }
-
-                    if (vertex == 2)
-                    {
-                        outEdges = new[] { new EquatableEdge<int>(2, 4) };
-                        return true;
-                    }
-
-                    if (vertex is 3 or 4 or 5)
-                    {
-                        outEdges = new EquatableEdge<int>[] { };
-                        return true;
-                    }
-
-                    outEdges = null;
-                    return false;
                 });
 
             string expectedDot =
                 @"digraph G {" + Environment.NewLine
-                + @"0;" + Environment.NewLine
-                + @"1;" + Environment.NewLine
-                + @"2;" + Environment.NewLine
-                + @"3;" + Environment.NewLine
-                + @"4;" + Environment.NewLine
-                + @"0 -> 1;" + Environment.NewLine
-                + @"0 -> 2;" + Environment.NewLine
-                + @"1 -> 3;" + Environment.NewLine
-                + @"}";
+                               + @"0;" + Environment.NewLine
+                               + @"1;" + Environment.NewLine
+                               + @"2;" + Environment.NewLine
+                               + @"3;" + Environment.NewLine
+                               + @"4;" + Environment.NewLine
+                               + @"0 -> 1;" + Environment.NewLine
+                               + @"0 -> 2;" + Environment.NewLine
+                               + @"1 -> 3;" + Environment.NewLine
+                               + @"}";
             string dotGraph = graph.ToGraphviz();
-            Assert.AreEqual(expectedDot, dotGraph);
+            Assert.That(expectedDot, Is.EqualTo(dotGraph));
         }
 
         [Test]
         public void ToGraphvizWithEmptyInit()
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[]
-            {
-                new Edge<int>(1, 2),
-                new Edge<int>(2, 3),
-                new Edge<int>(3, 1)
-            });
-            graph.AddVertexRange(new[] { 4, 5 });
+            graph.AddVerticesAndEdgeRange([new Edge<int>(1, 2), new Edge<int>(2, 3), new Edge<int>(3, 1)]);
+            graph.AddVertexRange([4, 5]);
 
             string expectedDot =
                 "digraph G {" + Environment.NewLine
-                + "0;" + Environment.NewLine
-                + "1;" + Environment.NewLine
-                + "2;" + Environment.NewLine
-                + "3;" + Environment.NewLine
-                + "4;" + Environment.NewLine
-                + "0 -> 1;" + Environment.NewLine
-                + "1 -> 2;" + Environment.NewLine
-                + "2 -> 0;" + Environment.NewLine
-                + "}";
+                              + "0;" + Environment.NewLine
+                              + "1;" + Environment.NewLine
+                              + "2;" + Environment.NewLine
+                              + "3;" + Environment.NewLine
+                              + "4;" + Environment.NewLine
+                              + "0 -> 1;" + Environment.NewLine
+                              + "1 -> 2;" + Environment.NewLine
+                              + "2 -> 0;" + Environment.NewLine
+                              + "}";
             string dotGraph = graph.ToGraphviz(algorithm =>
             {
                 algorithm.FormatCluster += (_, _) =>
@@ -167,57 +152,49 @@ namespace QuikGraph.Graphviz.Tests
                 {
                 };
             });
-            Assert.AreEqual(expectedDot, dotGraph);
+            Assert.That(expectedDot, Is.EqualTo(dotGraph));
         }
 
         [Test]
         public void ToGraphvizWithInit()
         {
             var wrappedGraph = new AdjacencyGraph<int, Edge<int>>();
-            wrappedGraph.AddVerticesAndEdgeRange(new[]
-            {
-                new Edge<int>(1, 2),
-                new Edge<int>(1, 3),
-                new Edge<int>(2, 4)
-            });
+            wrappedGraph.AddVerticesAndEdgeRange(
+                [new Edge<int>(1, 2), new Edge<int>(1, 3), new Edge<int>(2, 4)]);
             wrappedGraph.AddVertex(5);
             var clusteredGraph = new ClusteredAdjacencyGraph<int, Edge<int>>(wrappedGraph);
             ClusteredAdjacencyGraph<int, Edge<int>> subGraph1 = clusteredGraph.AddCluster();
-            subGraph1.AddVerticesAndEdgeRange(new[]
-            {
-                new Edge<int>(6, 7),
-                new Edge<int>(7, 8)
-            });
+            subGraph1.AddVerticesAndEdgeRange([new Edge<int>(6, 7), new Edge<int>(7, 8)]);
             ClusteredAdjacencyGraph<int, Edge<int>> subGraph2 = clusteredGraph.AddCluster();
             subGraph2.AddVerticesAndEdge(new Edge<int>(9, 10));
             subGraph2.AddVertex(11);
 
             string expectedDot =
                 @"digraph G {" + Environment.NewLine
-                + @"node [shape=diamond];" + Environment.NewLine
-                + @"edge [tooltip=""Test Edge""];" + Environment.NewLine
-                + @"subgraph cluster1 {" + Environment.NewLine
-                + @"5 [label=""Test Vertex 6""];" + Environment.NewLine
-                + @"6 [label=""Test Vertex 7""];" + Environment.NewLine
-                + @"7 [label=""Test Vertex 8""];" + Environment.NewLine
-                + @"5 -> 6;" + Environment.NewLine
-                + @"6 -> 7;" + Environment.NewLine
-                + @"}" + Environment.NewLine
-                + @"subgraph cluster2 {" + Environment.NewLine
-                + @"8 [label=""Test Vertex 9""];" + Environment.NewLine
-                + @"9 [label=""Test Vertex 10""];" + Environment.NewLine
-                + @"10 [label=""Test Vertex 11""];" + Environment.NewLine
-                + @"8 -> 9;" + Environment.NewLine
-                + @"}" + Environment.NewLine
-                + @"0 [label=""Test Vertex 1""];" + Environment.NewLine
-                + @"1 [label=""Test Vertex 2""];" + Environment.NewLine
-                + @"2 [label=""Test Vertex 3""];" + Environment.NewLine
-                + @"3 [label=""Test Vertex 4""];" + Environment.NewLine
-                + @"4 [label=""Test Vertex 5""];" + Environment.NewLine
-                + @"0 -> 1;" + Environment.NewLine
-                + @"0 -> 2;" + Environment.NewLine
-                + @"1 -> 3;" + Environment.NewLine
-                + @"}";
+                               + @"node [shape=diamond];" + Environment.NewLine
+                               + @"edge [tooltip=""Test Edge""];" + Environment.NewLine
+                               + @"subgraph cluster1 {" + Environment.NewLine
+                               + @"5 [label=""Test Vertex 6""];" + Environment.NewLine
+                               + @"6 [label=""Test Vertex 7""];" + Environment.NewLine
+                               + @"7 [label=""Test Vertex 8""];" + Environment.NewLine
+                               + @"5 -> 6;" + Environment.NewLine
+                               + @"6 -> 7;" + Environment.NewLine
+                               + @"}" + Environment.NewLine
+                               + @"subgraph cluster2 {" + Environment.NewLine
+                               + @"8 [label=""Test Vertex 9""];" + Environment.NewLine
+                               + @"9 [label=""Test Vertex 10""];" + Environment.NewLine
+                               + @"10 [label=""Test Vertex 11""];" + Environment.NewLine
+                               + @"8 -> 9;" + Environment.NewLine
+                               + @"}" + Environment.NewLine
+                               + @"0 [label=""Test Vertex 1""];" + Environment.NewLine
+                               + @"1 [label=""Test Vertex 2""];" + Environment.NewLine
+                               + @"2 [label=""Test Vertex 3""];" + Environment.NewLine
+                               + @"3 [label=""Test Vertex 4""];" + Environment.NewLine
+                               + @"4 [label=""Test Vertex 5""];" + Environment.NewLine
+                               + @"0 -> 1;" + Environment.NewLine
+                               + @"0 -> 2;" + Environment.NewLine
+                               + @"1 -> 3;" + Environment.NewLine
+                               + @"}";
             string dotGraph = clusteredGraph.ToGraphviz(algorithm =>
             {
                 algorithm.CommonVertexFormat.Shape = GraphvizVertexShape.Diamond;
@@ -227,34 +204,29 @@ namespace QuikGraph.Graphviz.Tests
                     args.VertexFormat.Label = $"Test Vertex {args.Vertex}";
                 };
             });
-            Assert.AreEqual(expectedDot, dotGraph);
+            Assert.That(expectedDot, Is.EqualTo(dotGraph));
         }
 
         [Test]
         public void ToGraphvizWithInit2()
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[]
-            {
-                new Edge<int>(1, 2),
-                new Edge<int>(1, 3),
-                new Edge<int>(2, 4)
-            });
+            graph.AddVerticesAndEdgeRange([new Edge<int>(1, 2), new Edge<int>(1, 3), new Edge<int>(2, 4)]);
             graph.AddVertex(5);
 
             string expectedDot =
                 @"digraph G {" + Environment.NewLine
-                + @"node [style=bold];" + Environment.NewLine
-                + @"edge [color=""#F0FFFFFF""];" + Environment.NewLine
-                + @"0 [tooltip=""Tooltip for Test Vertex 1""];" + Environment.NewLine
-                + @"1 [tooltip=""Tooltip for Test Vertex 2""];" + Environment.NewLine
-                + @"2 [tooltip=""Tooltip for Test Vertex 3""];" + Environment.NewLine
-                + @"3 [tooltip=""Tooltip for Test Vertex 4""];" + Environment.NewLine
-                + @"4 [tooltip=""Tooltip for Test Vertex 5""];" + Environment.NewLine
-                + @"0 -> 1 [tooltip=""Tooltip for Test Edge 1 -> 2""];" + Environment.NewLine
-                + @"0 -> 2 [tooltip=""Tooltip for Test Edge 1 -> 3""];" + Environment.NewLine
-                + @"1 -> 3 [tooltip=""Tooltip for Test Edge 2 -> 4""];" + Environment.NewLine
-                + @"}";
+                               + @"node [style=bold];" + Environment.NewLine
+                               + @"edge [color=""#F0FFFFFF""];" + Environment.NewLine
+                               + @"0 [tooltip=""Tooltip for Test Vertex 1""];" + Environment.NewLine
+                               + @"1 [tooltip=""Tooltip for Test Vertex 2""];" + Environment.NewLine
+                               + @"2 [tooltip=""Tooltip for Test Vertex 3""];" + Environment.NewLine
+                               + @"3 [tooltip=""Tooltip for Test Vertex 4""];" + Environment.NewLine
+                               + @"4 [tooltip=""Tooltip for Test Vertex 5""];" + Environment.NewLine
+                               + @"0 -> 1 [tooltip=""Tooltip for Test Edge 1 -> 2""];" + Environment.NewLine
+                               + @"0 -> 2 [tooltip=""Tooltip for Test Edge 1 -> 3""];" + Environment.NewLine
+                               + @"1 -> 3 [tooltip=""Tooltip for Test Edge 2 -> 4""];" + Environment.NewLine
+                               + @"}";
             string dotGraph = graph.ToGraphviz(algorithm =>
             {
                 algorithm.CommonVertexFormat.Style = GraphvizVertexStyle.Bold;
@@ -268,34 +240,30 @@ namespace QuikGraph.Graphviz.Tests
                     args.EdgeFormat.ToolTip = $"Tooltip for Test Edge {args.Edge.Source} -> {args.Edge.Target}";
                 };
             });
-            Assert.AreEqual(expectedDot, dotGraph);
+            Assert.That(expectedDot, Is.EqualTo(dotGraph));
         }
 
         [Test]
         public void ToGraphvizWithInit_Record()
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[]
-            {
-                new Edge<int>(1, 2),
-                new Edge<int>(1, 3),
-                new Edge<int>(2, 4)
-            });
+            graph.AddVerticesAndEdgeRange([new Edge<int>(1, 2), new Edge<int>(1, 3), new Edge<int>(2, 4)]);
             graph.AddVertex(5);
 
             string expectedDot =
                 @"digraph G {" + Environment.NewLine
-                + @"node [tooltip=""Vertex""];" + Environment.NewLine
-                + @"edge [tooltip=""Edge""];" + Environment.NewLine
-                + @"0 [shape=record, label=""Vertex\ 1 | Generated\ Record""];" + Environment.NewLine
-                + @"1 [shape=record, label=""Vertex\ 2 | Custom\ Record | { Top | Bottom }""];" + Environment.NewLine
-                + @"2 [shape=box, label=""Vertex 3 label""];" + Environment.NewLine
-                + @"3 [shape=record, label=""Vertex\ 4 | Generated\ Record""];" + Environment.NewLine
-                + @"4 [shape=record, label=""Vertex\ 5 | Generated\ Record""];" + Environment.NewLine
-                + @"0 -> 1;" + Environment.NewLine
-                + @"0 -> 2;" + Environment.NewLine
-                + @"1 -> 3;" + Environment.NewLine
-                + @"}";
+                               + @"node [tooltip=""Vertex""];" + Environment.NewLine
+                               + @"edge [tooltip=""Edge""];" + Environment.NewLine
+                               + @"0 [shape=record, label=""Vertex\ 1 | Generated\ Record""];" + Environment.NewLine
+                               + @"1 [shape=record, label=""Vertex\ 2 | Custom\ Record | { Top | Bottom }""];" +
+                               Environment.NewLine
+                               + @"2 [shape=box, label=""Vertex 3 label""];" + Environment.NewLine
+                               + @"3 [shape=record, label=""Vertex\ 4 | Generated\ Record""];" + Environment.NewLine
+                               + @"4 [shape=record, label=""Vertex\ 5 | Generated\ Record""];" + Environment.NewLine
+                               + @"0 -> 1;" + Environment.NewLine
+                               + @"0 -> 2;" + Environment.NewLine
+                               + @"1 -> 3;" + Environment.NewLine
+                               + @"}";
             string dotGraph = graph.ToGraphviz(algorithm =>
             {
                 algorithm.CommonVertexFormat.ToolTip = "Vertex";
@@ -327,34 +295,29 @@ namespace QuikGraph.Graphviz.Tests
                     }
                 };
             });
-            Assert.AreEqual(expectedDot, dotGraph);
+            Assert.That(expectedDot, Is.EqualTo(dotGraph));
         }
 
         [Test]
         public void ToGraphvizWithInit_Record2()
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[]
-            {
-                new Edge<int>(1, 2),
-                new Edge<int>(1, 3),
-                new Edge<int>(2, 4)
-            });
+            graph.AddVerticesAndEdgeRange([new Edge<int>(1, 2), new Edge<int>(1, 3), new Edge<int>(2, 4)]);
             graph.AddVertex(5);
 
             string expectedDot =
                 @"digraph G {" + Environment.NewLine
-                + @"node [shape=record];" + Environment.NewLine
-                + @"edge [tooltip=""Edge""];" + Environment.NewLine
-                + @"0 [label=""Vertex\ 1 | Generated\ Record""];" + Environment.NewLine
-                + @"1 [label=""Vertex\ 2 | Custom\ Record | { Top | Bottom }""];" + Environment.NewLine
-                + @"2 [shape=box, label=""Vertex 3 label""];" + Environment.NewLine
-                + @"3 [label=""Vertex\ 4 | Generated\ Record""];" + Environment.NewLine
-                + @"4 [label=""Vertex\ 5 | Generated\ Record""];" + Environment.NewLine
-                + @"0 -> 1;" + Environment.NewLine
-                + @"0 -> 2;" + Environment.NewLine
-                + @"1 -> 3;" + Environment.NewLine
-                + @"}";
+                               + @"node [shape=record];" + Environment.NewLine
+                               + @"edge [tooltip=""Edge""];" + Environment.NewLine
+                               + @"0 [label=""Vertex\ 1 | Generated\ Record""];" + Environment.NewLine
+                               + @"1 [label=""Vertex\ 2 | Custom\ Record | { Top | Bottom }""];" + Environment.NewLine
+                               + @"2 [shape=box, label=""Vertex 3 label""];" + Environment.NewLine
+                               + @"3 [label=""Vertex\ 4 | Generated\ Record""];" + Environment.NewLine
+                               + @"4 [label=""Vertex\ 5 | Generated\ Record""];" + Environment.NewLine
+                               + @"0 -> 1;" + Environment.NewLine
+                               + @"0 -> 2;" + Environment.NewLine
+                               + @"1 -> 3;" + Environment.NewLine
+                               + @"}";
             string dotGraph = graph.ToGraphviz(algorithm =>
             {
                 algorithm.CommonVertexFormat.Shape = GraphvizVertexShape.Record;
@@ -384,14 +347,14 @@ namespace QuikGraph.Graphviz.Tests
                     }
                 };
             });
-            Assert.AreEqual(expectedDot, dotGraph);
+            Assert.That(expectedDot, Is.EqualTo(dotGraph));
         }
 
         [Test]
         public void ToGraphvizWithInit_Throws()
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            
+
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(() => graph.ToGraphviz(null));
@@ -401,7 +364,6 @@ namespace QuikGraph.Graphviz.Tests
 
         private class TestWebRequestCreate : IWebRequestCreate
         {
-            [NotNull]
             private static readonly object LockObject = new object();
 
             private static WebRequest _nextRequest;
@@ -423,25 +385,27 @@ namespace QuikGraph.Graphviz.Tests
                 return _nextRequest;
             }
 
+            [Obsolete("Obsolete")]
             public static void CreateFailTestRequest()
             {
                 var request = new TestWebRequest();
                 NextRequest = request;
             }
 
-            public static void CreateTestRequest([NotNull] string response)
+            [Obsolete("Obsolete")]
+            public static void CreateTestRequest(string response)
             {
                 var request = new TestWebRequest(response);
                 NextRequest = request;
             }
         }
 
+        [Obsolete("Obsolete")]
         private class TestWebRequest : WebRequest
         {
-            [NotNull]
             private readonly MemoryStream _requestStream = new MemoryStream();
-            
-            [CanBeNull]
+
+
             private readonly MemoryStream _responseStream;
 
             /// <inheritdoc />
@@ -457,7 +421,7 @@ namespace QuikGraph.Graphviz.Tests
             {
             }
 
-            public TestWebRequest([NotNull] string response)
+            public TestWebRequest(string response)
             {
                 _responseStream = new MemoryStream(Encoding.UTF8.GetBytes(response));
             }
@@ -477,10 +441,9 @@ namespace QuikGraph.Graphviz.Tests
 
         private class TestWebResponse : WebResponse
         {
-            [CanBeNull]
             private readonly Stream _responseStream;
 
-            public TestWebResponse([CanBeNull] Stream responseStream)
+            public TestWebResponse(Stream responseStream)
             {
                 _responseStream = responseStream;
             }
@@ -497,23 +460,18 @@ namespace QuikGraph.Graphviz.Tests
         #region Test helpers
 
         [Pure]
-        [NotNull]
         private static AdjacencyGraph<int, Edge<int>> CreateTestGraph()
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[]
-            {
-                new Edge<int>(1, 2),
-                new Edge<int>(2, 3),
-                new Edge<int>(3, 1)
-            });
-            graph.AddVertexRange(new[] { 4, 5 });
+            graph.AddVerticesAndEdgeRange([new Edge<int>(1, 2), new Edge<int>(2, 3), new Edge<int>(3, 1)]);
+            graph.AddVertexRange([4, 5]);
             return graph;
         }
 
         #endregion
 
         [Test]
+        [Obsolete("Obsolete")]
         public void ToSvg()
         {
             const string expectedSvg = "Mock SVG content";
@@ -525,11 +483,12 @@ namespace QuikGraph.Graphviz.Tests
             AdjacencyGraph<int, Edge<int>> graph = CreateTestGraph();
 
 #pragma warning disable CS0618
-            Assert.AreEqual(expectedSvg, graph.ToSvg());
+            Assert.That(expectedSvg, Is.EqualTo(graph.ToSvg()));
 #pragma warning restore CS0618
         }
 
         [Test]
+        [Obsolete("Obsolete")]
         public void ToSvg_Failure()
         {
             WebRequest.RegisterPrefix(
@@ -540,11 +499,12 @@ namespace QuikGraph.Graphviz.Tests
             AdjacencyGraph<int, Edge<int>> graph = CreateTestGraph();
 
 #pragma warning disable CS0618
-            Assert.IsEmpty(graph.ToSvg());
+            Assert.That(graph.ToSvg(), Is.Empty);
 #pragma warning restore CS0618
         }
 
         [Test]
+        [Obsolete("Obsolete")]
         public void ToSvgWithInit()
         {
             const string expectedSvg = "Mock SVG content";
@@ -556,12 +516,12 @@ namespace QuikGraph.Graphviz.Tests
             AdjacencyGraph<int, Edge<int>> graph = CreateTestGraph();
 
 #pragma warning disable CS0618
-            Assert.AreEqual(
+            Assert.That(
                 expectedSvg,
-                graph.ToSvg(algorithm =>
+                Is.EqualTo(graph.ToSvg(algorithm =>
                 {
                     algorithm.CommonVertexFormat.ToolTip = "Test vertex";
-                }));
+                })));
 #pragma warning restore CS0618
         }
 
@@ -578,6 +538,7 @@ namespace QuikGraph.Graphviz.Tests
         }
 
         [Test]
+        [Obsolete("Obsolete")]
         public void ToSvgWithInit_Failure()
         {
             WebRequest.RegisterPrefix(
@@ -588,12 +549,11 @@ namespace QuikGraph.Graphviz.Tests
             AdjacencyGraph<int, Edge<int>> graph = CreateTestGraph();
 
 #pragma warning disable CS0618
-            Assert.IsEmpty(
-                graph.ToSvg(
-                    algorithm =>
-                    {
-                        algorithm.CommonVertexFormat.ToolTip = "Test vertex";
-                    }));
+            Assert.That(
+                graph.ToSvg(algorithm =>
+                {
+                    algorithm.CommonVertexFormat.ToolTip = "Test vertex";
+                }), Is.Empty);
 #pragma warning restore CS0618
         }
 

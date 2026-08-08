@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Linq;
-using JetBrains.Annotations;
+
 using QuikGraph.Algorithms.Services;
 
 namespace QuikGraph.Algorithms.ShortestPath
@@ -33,9 +34,9 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
         protected UndirectedShortestPathAlgorithmBase(
-            [CanBeNull] IAlgorithmComponent host,
-            [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] Func<TEdge, double> edgeWeights)
+             IAlgorithmComponent host,
+             IUndirectedGraph<TVertex, TEdge> visitedGraph,
+             Func<TEdge, double> edgeWeights)
             : this(host, visitedGraph, edgeWeights, DistanceRelaxers.ShortestDistance)
         {
         }
@@ -51,10 +52,10 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceRelaxer"/> is <see langword="null"/>.</exception>
         protected UndirectedShortestPathAlgorithmBase(
-            [CanBeNull] IAlgorithmComponent host,
-            [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] Func<TEdge, double> edgeWeights,
-            [NotNull] IDistanceRelaxer distanceRelaxer)
+             IAlgorithmComponent host,
+             IUndirectedGraph<TVertex, TEdge> visitedGraph,
+             Func<TEdge, double> edgeWeights,
+             IDistanceRelaxer distanceRelaxer)
             : base(host, visitedGraph)
         {
             Weights = edgeWeights ?? throw new ArgumentNullException(nameof(edgeWeights));
@@ -72,7 +73,7 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// </summary>
         /// <param name="vertex">The vertex to get the distance for.</param>
         [Pure]
-        protected double GetVertexDistance([NotNull] TVertex vertex)
+        protected double GetVertexDistance( TVertex vertex)
         {
             return _distances[vertex];
         }
@@ -82,7 +83,7 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// </summary>
         /// <param name="vertex">The vertex to get the distance for.</param>
         /// <param name="distance">The distance.</param>
-        protected void SetVertexDistance([NotNull] TVertex vertex, double distance)
+        protected void SetVertexDistance( TVertex vertex, double distance)
         {
             _distances[vertex] = distance;
         }
@@ -119,7 +120,7 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// Gets the function that gives access to distances from a vertex.
         /// </summary>
         [Pure]
-        [NotNull]
+
         protected Func<TVertex, double> DistancesIndexGetter()
         {
             return AlgorithmExtensions.GetIndexer(_distances);
@@ -128,13 +129,13 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <summary>
         /// Function that given an edge return the weight of this edge.
         /// </summary>
-        [NotNull]
+
         public Func<TEdge, double> Weights { get; }
 
         /// <summary>
         /// Distance relaxer.
         /// </summary>
-        [NotNull]
+
         public IDistanceRelaxer DistanceRelaxer { get; }
 
         #region AlgorithmBase<TGraph>
@@ -179,7 +180,7 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// </summary>
         /// <param name="edge">Concerned edge.</param>
         /// <param name="reversed">Indicates if the edge is reversed.</param>
-        protected virtual void OnTreeEdge([NotNull] TEdge edge, bool reversed)
+        protected virtual void OnTreeEdge( TEdge edge, bool reversed)
         {
             Debug.Assert(edge != null);
 
@@ -195,7 +196,7 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <param name="source">Source vertex.</param>
         /// <param name="target">Target vertex.</param>
         /// <returns>True if relaxation decreased the target vertex distance, false otherwise.</returns>
-        protected bool Relax([NotNull] TEdge edge, [NotNull] TVertex source, [NotNull] TVertex target)
+        protected bool Relax( TEdge edge,  TVertex source,  TVertex target)
         {
             Debug.Assert(edge != null);
             Debug.Assert(source != null);

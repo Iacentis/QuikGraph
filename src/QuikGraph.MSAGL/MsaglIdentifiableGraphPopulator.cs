@@ -1,5 +1,4 @@
 ﻿using System;
-using JetBrains.Annotations;
 using Microsoft.Msagl.Drawing;
 
 namespace QuikGraph.MSAGL
@@ -12,7 +11,7 @@ namespace QuikGraph.MSAGL
     public sealed class MsaglIdentifiableGraphPopulator<TVertex, TEdge> : MsaglGraphPopulator<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
-        [NotNull]
+
         private readonly VertexIdentity<TVertex> _vertexIdentity;
 
         /// <summary>
@@ -23,8 +22,8 @@ namespace QuikGraph.MSAGL
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexIdentity"/> is <see langword="null"/>.</exception>
         public MsaglIdentifiableGraphPopulator(
-            [NotNull] IEdgeListGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] VertexIdentity<TVertex> vertexIdentity)
+             IEdgeListGraph<TVertex, TEdge> visitedGraph,
+             VertexIdentity<TVertex> vertexIdentity)
             : base(visitedGraph)
         {
             _vertexIdentity = vertexIdentity ?? throw new ArgumentNullException(nameof(vertexIdentity));

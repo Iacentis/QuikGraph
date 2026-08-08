@@ -38,11 +38,11 @@ namespace QuikGraph.Data.Tests
 
             void CheckRelation(DataRelationEdge e, DataRelation r)
             {
-                Assert.IsNotNull(e.Source);
-                Assert.AreSame(r.ParentTable, e.Source);
+                Assert.That(e.Source,Is.Not.Null);
+                Assert.That(r.ParentTable,Is.SameAs(e.Source));
 
-                Assert.IsNotNull(e.Target);
-                Assert.AreSame(r.ChildTable, e.Target);
+                Assert.That(e.Target,Is.Not.Null);
+                Assert.That(r.ChildTable,Is.SameAs(e.Target));
             }
 
             #endregion
@@ -67,20 +67,20 @@ namespace QuikGraph.Data.Tests
             var relation2 = new DataRelation("CustomersOrders", customerIdCol, orderIdCol);
             var relation3 = new DataRelation("CustomersOrders", orderIdCol, customerIdCol);
 
-            Assert.AreEqual(relation1, relation1);
+            Assert.That(relation1,Is.EqualTo(relation1));
 
-            Assert.AreNotEqual(relation1, relation2);
-            Assert.AreNotEqual(relation2, relation1);
-            Assert.IsFalse(relation1.Equals(relation2));
-            Assert.IsFalse(relation2.Equals(relation1));
+            Assert.That(relation1,Is.Not.EqualTo(relation2));
+            Assert.That(relation2,Is.Not.EqualTo(relation1));
+            Assert.That(relation1.Equals(relation2),Is.False);
+            Assert.That(relation2.Equals(relation1),Is.False);
 
-            Assert.AreNotEqual(relation1, relation3);
-            Assert.AreNotEqual(relation3, relation1);
-            Assert.IsFalse(relation1.Equals(relation3));
-            Assert.IsFalse(relation3.Equals(relation1));
+            Assert.That(relation1,Is.Not.EqualTo(relation3));
+            Assert.That(relation3,Is.Not.EqualTo(relation1));
+            Assert.That(relation1.Equals(relation3),Is.False);
+            Assert.That(relation3.Equals(relation1),Is.False);
 
-            Assert.AreNotEqual(null, relation1);
-            Assert.IsFalse(relation1.Equals(null));
+            Assert.That(relation1,Is.Not.Null);
+            Assert.That(relation1.Equals(null),Is.False);
 
             #region Local function
 

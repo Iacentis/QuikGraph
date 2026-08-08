@@ -1,5 +1,5 @@
 using System;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph.Algorithms.RandomWalks
 {
@@ -14,7 +14,7 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// <summary>
         /// Random number generator for a Markov process to do random walks.
         /// </summary>
-        [NotNull]
+
         Random Rand { get; set; }
     }
 }

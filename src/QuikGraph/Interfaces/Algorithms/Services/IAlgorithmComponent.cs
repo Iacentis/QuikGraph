@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations;
+﻿using System.Diagnostics.Contracts;
 
 namespace QuikGraph.Algorithms.Services
 {
@@ -10,7 +10,7 @@ namespace QuikGraph.Algorithms.Services
         /// <summary>
         /// Algorithm common services.
         /// </summary>
-        [NotNull]
+
         IAlgorithmServices Services { get; }
 
         /// <summary>
@@ -19,7 +19,7 @@ namespace QuikGraph.Algorithms.Services
         /// <typeparam name="T">Service type.</typeparam>
         /// <returns>Found service, otherwise <see langword="null"/>.</returns>
         [Pure]
-        [CanBeNull]
+
         T GetService<T>();
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace QuikGraph.Algorithms.Services
         /// <param name="service">Found service.</param>
         /// <returns>True if the service was found, false otherwise.</returns>
         [Pure]
-        [ContractAnnotation("=> true, service:notnull;=> false, service:null")]
+
         bool TryGetService<T>(out T service);
     }
 }

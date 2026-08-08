@@ -1,5 +1,4 @@
 ﻿using System;
-using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Algorithms;
 
@@ -10,7 +9,7 @@ namespace QuikGraph.Tests.Algorithms.Contracts
     /// </summary>
     internal sealed class DistancesCollectionTryGetDistanceContract : DistancesCollectionContractBase
     {
-        public DistancesCollectionTryGetDistanceContract([NotNull] Type algorithmToTest)
+        public DistancesCollectionTryGetDistanceContract( Type algorithmToTest)
             : base(algorithmToTest)
         {
         }
@@ -20,8 +19,8 @@ namespace QuikGraph.Tests.Algorithms.Contracts
         {
             var scenario = new ContractScenario<int>
             {
-                EdgesInGraph = new[] { new Edge<int>(1, 2) },
-                AccessibleVerticesFromRoot = new[] { 2 },
+                EdgesInGraph = [new Edge<int>(1, 2)],
+                AccessibleVerticesFromRoot = [2],
                 Root = 1,
                 DoComputation = true
             };
@@ -29,7 +28,7 @@ namespace QuikGraph.Tests.Algorithms.Contracts
             IDistancesCollection<int> algorithm = CreateAlgorithmAndMaybeDoComputation(scenario);
 
             bool distanceFound = algorithm.TryGetDistance(3, out _);
-            Assert.False(distanceFound, "No distance should have been found since the vertex does not exist.");
+            Assert.That(distanceFound, Is.False, "No distance should have been found since the vertex does not exist.");
         }
 
         [Test]
@@ -37,9 +36,9 @@ namespace QuikGraph.Tests.Algorithms.Contracts
         {
             var scenario = new ContractScenario<int>
             {
-                EdgesInGraph = new[] { new Edge<int>(1, 2) },
+                EdgesInGraph = [new Edge<int>(1, 2)],
                 SingleVerticesInGraph = new int[0],
-                AccessibleVerticesFromRoot = new[] { 2 },
+                AccessibleVerticesFromRoot = [2],
                 Root = 1,
                 DoComputation = false
             };
@@ -54,9 +53,9 @@ namespace QuikGraph.Tests.Algorithms.Contracts
         {
             var scenario = new ContractScenario<string>
             {
-                EdgesInGraph = new[] { new Edge<string>("1", "2") },
+                EdgesInGraph = [new Edge<string>("1", "2")],
                 SingleVerticesInGraph = new string[0],
-                AccessibleVerticesFromRoot = new[] { "2" },
+                AccessibleVerticesFromRoot = ["2"],
                 Root = "1",
                 DoComputation = false
             };
@@ -73,8 +72,8 @@ namespace QuikGraph.Tests.Algorithms.Contracts
         {
             var scenario = new ContractScenario<int>
             {
-                EdgesInGraph = new[] { new Edge<int>(1, 2) },
-                AccessibleVerticesFromRoot = new[] { 2 },
+                EdgesInGraph = [new Edge<int>(1, 2)],
+                AccessibleVerticesFromRoot = [2],
                 Root = 1,
                 DoComputation = true
             };
@@ -82,7 +81,7 @@ namespace QuikGraph.Tests.Algorithms.Contracts
             IDistancesCollection<int> algorithm = CreateAlgorithmAndMaybeDoComputation(scenario);
 
             bool distanceFound = algorithm.TryGetDistance(2, out _);
-            Assert.True(distanceFound, "Distance should have been found since the vertex is accessible from root.");
+            Assert.That(distanceFound, Is.True, "Distance should have been found since the vertex is accessible from root.");
         }
 
         [Test]
@@ -90,9 +89,9 @@ namespace QuikGraph.Tests.Algorithms.Contracts
         {
             var scenario = new ContractScenario<int>
             {
-                EdgesInGraph = new[] { new Edge<int>(1, 2) },
-                SingleVerticesInGraph = new[] { 3 },
-                AccessibleVerticesFromRoot = new[] { 2 },
+                EdgesInGraph = [new Edge<int>(1, 2)],
+                SingleVerticesInGraph = [3],
+                AccessibleVerticesFromRoot = [2],
                 Root = 1,
                 DoComputation = true
             };
@@ -100,7 +99,7 @@ namespace QuikGraph.Tests.Algorithms.Contracts
             IDistancesCollection<int> algorithm = CreateAlgorithmAndMaybeDoComputation(scenario);
 
             bool distanceFound = algorithm.TryGetDistance(3, out _);
-            Assert.True(distanceFound, "Distance should have been found since the vertex exist in the graph.");
+            Assert.That(distanceFound, Is.True, "Distance should have been found since the vertex exist in the graph.");
         }
     }
 }

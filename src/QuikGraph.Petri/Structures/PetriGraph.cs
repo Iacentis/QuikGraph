@@ -1,12 +1,12 @@
-#if SUPPORTS_SERIALIZATION
+
 using System;
-#endif
+
 
 namespace QuikGraph.Petri
 {
-#if SUPPORTS_SERIALIZATION
+
     [Serializable]
-#endif
+
     internal sealed class PetriGraph<TToken> : BidirectionalGraph<IPetriVertex, IArc<TToken>>, IPetriGraph<TToken>
     {
         /// <summary>

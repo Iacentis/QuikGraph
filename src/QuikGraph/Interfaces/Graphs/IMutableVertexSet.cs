@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph
 {
@@ -20,7 +20,7 @@ namespace QuikGraph
         /// <param name="vertex">Vertex to add.</param>
         /// <returns>True if the vertex was added, false otherwise.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
-        bool AddVertex([NotNull] TVertex vertex);
+        bool AddVertex( TVertex vertex);
 
         /// <summary>
         /// Adds given vertices to this set.
@@ -30,7 +30,7 @@ namespace QuikGraph
         /// <exception cref="T:System.ArgumentNullException">
         /// <paramref name="vertices"/> is <see langword="null"/> or at least one of them is <see langword="null"/>.
         /// </exception>
-        int AddVertexRange([NotNull, ItemNotNull] IEnumerable<TVertex> vertices);
+        int AddVertexRange( IEnumerable<TVertex> vertices);
 
         /// <summary>
         /// Fired when a vertex is removed from this set.
@@ -43,7 +43,7 @@ namespace QuikGraph
         /// <param name="vertex">Vertex to remove.</param>
         /// <returns>True if the vertex was removed, false otherwise.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
-        bool RemoveVertex([NotNull] TVertex vertex);
+        bool RemoveVertex( TVertex vertex);
 
         /// <summary>
         /// Removes all vertices matching the given <paramref name="predicate"/>.
@@ -51,6 +51,6 @@ namespace QuikGraph
         /// <param name="predicate">Predicate to check on each vertex.</param>
         /// <returns>The number of vertex removed.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="predicate"/> is <see langword="null"/>.</exception>
-        int RemoveVertexIf([NotNull, InstantHandle] VertexPredicate<TVertex> predicate);
+        int RemoveVertexIf( VertexPredicate<TVertex> predicate);
     }
 }

@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Linq;
-using JetBrains.Annotations;
+
 using static QuikGraph.Utils.DisposableHelpers;
 
 namespace QuikGraph.Algorithms.Observers
@@ -12,9 +13,9 @@ namespace QuikGraph.Algorithms.Observers
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
-#if SUPPORTS_SERIALIZATION
+
     [Serializable]
-#endif
+
     public sealed class EdgePredecessorRecorderObserver<TVertex, TEdge> : IObserver<IEdgePredecessorRecorderAlgorithm<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
     {
@@ -32,7 +33,7 @@ namespace QuikGraph.Algorithms.Observers
         /// <param name="edgesPredecessors">Edges predecessors.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgesPredecessors"/> is <see langword="null"/>.</exception>
         public EdgePredecessorRecorderObserver(
-            [NotNull] IDictionary<TEdge, TEdge> edgesPredecessors)
+             IDictionary<TEdge, TEdge> edgesPredecessors)
         {
             EdgesPredecessors = edgesPredecessors ?? throw new ArgumentNullException(nameof(edgesPredecessors));
             EndPathEdges = new List<TEdge>();
@@ -41,13 +42,13 @@ namespace QuikGraph.Algorithms.Observers
         /// <summary>
         /// Edges predecessors.
         /// </summary>
-        [NotNull]
+
         public IDictionary<TEdge, TEdge> EdgesPredecessors { get; }
 
         /// <summary>
         /// Path ending edges.
         /// </summary>
-        [NotNull]
+
         public ICollection<TEdge> EndPathEdges { get; }
 
         #region IObserver<TAlgorithm>
@@ -55,8 +56,7 @@ namespace QuikGraph.Algorithms.Observers
         /// <inheritdoc />
         public IDisposable Attach(IEdgePredecessorRecorderAlgorithm<TVertex, TEdge> algorithm)
         {
-            if (algorithm is null)
-                throw new ArgumentNullException(nameof(algorithm));
+            ArgumentNullException.ThrowIfNull(algorithm);
 
             algorithm.DiscoverTreeEdge += OnEdgeDiscovered;
             algorithm.FinishEdge += OnEdgeFinished;
@@ -77,8 +77,8 @@ namespace QuikGraph.Algorithms.Observers
         /// <returns>Edge path.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="startingEdge"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull, ItemNotNull]
-        public ICollection<TEdge> Path([NotNull] TEdge startingEdge)
+
+        public ICollection<TEdge> Path( TEdge startingEdge)
         {
             if (startingEdge == null)
                 throw new ArgumentNullException(nameof(startingEdge));
@@ -101,7 +101,7 @@ namespace QuikGraph.Algorithms.Observers
         /// </summary>
         /// <returns>Enumerable of paths.</returns>
         [Pure]
-        [NotNull, ItemNotNull]
+
         public IEnumerable<ICollection<TEdge>> AllPaths()
         {
             return EndPathEdges.Select(Path);
@@ -116,15 +116,14 @@ namespace QuikGraph.Algorithms.Observers
         /// <exception cref="T:System.ArgumentNullException"><paramref name="startingEdge"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="colors"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull, ItemNotNull]
+
         public ICollection<TEdge> MergedPath(
-            [NotNull] TEdge startingEdge,
-            [NotNull] IDictionary<TEdge, GraphColor> colors)
+             TEdge startingEdge,
+             IDictionary<TEdge, GraphColor> colors)
         {
             if (startingEdge == null)
                 throw new ArgumentNullException(nameof(startingEdge));
-            if (colors is null)
-                throw new ArgumentNullException(nameof(colors));
+            ArgumentNullException.ThrowIfNull(colors);
 
             var path = new List<TEdge>();
 
@@ -159,7 +158,7 @@ namespace QuikGraph.Algorithms.Observers
         /// </summary>
         /// <returns>Enumerable of merged paths.</returns>
         [Pure]
-        [NotNull, ItemNotNull]
+
         public IEnumerable<ICollection<TEdge>> AllMergedPaths()
         {
             var colors = new Dictionary<TEdge, GraphColor>();
@@ -173,7 +172,7 @@ namespace QuikGraph.Algorithms.Observers
             return EndPathEdges.Select(edge => MergedPath(edge, colors));
         }
 
-        private void OnEdgeDiscovered([NotNull] TEdge edge, [NotNull] TEdge targetEdge)
+        private void OnEdgeDiscovered( TEdge edge,  TEdge targetEdge)
         {
             Debug.Assert(edge != null);
             Debug.Assert(targetEdge != null);
@@ -184,7 +183,7 @@ namespace QuikGraph.Algorithms.Observers
             }
         }
 
-        private void OnEdgeFinished([NotNull] TEdge finishedEdge)
+        private void OnEdgeFinished( TEdge finishedEdge)
         {
             Debug.Assert(finishedEdge != null);
 

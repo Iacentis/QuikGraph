@@ -17,7 +17,7 @@ namespace QuikGraph.Data.Tests
         /// <inheritdoc />
         public string Run(GraphvizImageType imageType, string dot, string outputFilePath)
         {
-            Assert.AreEqual(ExpectedDot, dot);
+            Assert.That(ExpectedDot,Is.EqualTo(dot));
             return outputFilePath;
         }
     }

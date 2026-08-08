@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using JetBrains.Annotations;
+using System.Diagnostics.Contracts;
 using NUnit.Framework;
-using NotNullAttribute = JetBrains.Annotations.NotNullAttribute;
 
 namespace QuikGraph.Tests
 {
@@ -19,12 +18,12 @@ namespace QuikGraph.Tests
         /// <param name="values">Values to check.</param>
         /// <param name="onValue">Predicate.</param>
         public static void TrueForAll<T>(
-            [NotNull, ItemCanBeNull] IEnumerable<T> values,
-            [NotNull, InstantHandle] Predicate<T> onValue)
+            IEnumerable<T> values,
+            Predicate<T> onValue)
         {
             foreach (T value in values)
             {
-                Assert.IsTrue(onValue(value));
+                Assert.That(onValue(value), Is.True);
             }
         }
 
@@ -32,11 +31,11 @@ namespace QuikGraph.Tests
         /// Asserts implication is true (if <paramref name="value" /> is true,
         /// <paramref name="impliedValue" /> should hold).
         /// </summary>
-        public static void ImpliesIsTrue(bool value, [NotNull, InstantHandle] Func<bool> impliedValue)
+        public static void ImpliesIsTrue(bool value, Func<bool> impliedValue)
         {
             if (!value)
                 return;
-            Assert.IsTrue(impliedValue());
+            Assert.That(impliedValue(), Is.True);
         }
 
         /// <summary>
@@ -48,8 +47,8 @@ namespace QuikGraph.Tests
         /// the same type, otherwise false.</returns>
         private static bool EqualExceptions(Exception left, Exception right)
         {
-            Assert.IsNotNull(left);
-            Assert.IsNotNull(right);
+            Assert.That(left, Is.Not.Null);
+            Assert.That(right, Is.Not.Null);
             return left.GetType() == right.GetType();
         }
 
@@ -61,14 +60,14 @@ namespace QuikGraph.Tests
             /// <summary>
             /// Contains the exception object, if any.
             /// </summary>
-            [CanBeNull]
+
             public Exception Exception { get; }
 
             /// <summary>
             /// Initializes a new instance of the structure.
             /// </summary>
             /// <param name="exception">The exception object.</param>
-            public CatchResult([CanBeNull] Exception exception)
+            public CatchResult(Exception exception)
             {
                 Exception = exception;
             }
@@ -91,7 +90,7 @@ namespace QuikGraph.Tests
         /// <param name="action">An <see cref="Action"/> delegate that performs a user-defined action.</param>
         /// <returns>Returns a <see cref="CatchResult"/> structure that contains an exception object,
         /// if an exception was thrown.</returns>
-        private static CatchResult Catch([NotNull, InstantHandle] Action action)
+        private static CatchResult Catch(Action action)
         {
             try
             {
@@ -112,25 +111,28 @@ namespace QuikGraph.Tests
         /// <param name="right">An <see cref="Action"/> delegate that performs a user-defined action.</param>
         /// <remarks>"Same behavior" is defined as both delegates throwing the same exception or neither delegate throwing an exception.</remarks>
         public static void AreBehaviorsEqual(
-            [NotNull, InstantHandle] Action left,
-            [NotNull, InstantHandle] Action right)
+            Action left,
+            Action right)
         {
             CatchResult catchResult1 = Catch(left);
             CatchResult catchResult2 = Catch(right);
             if (!catchResult1.HasException)
             {
-                Assert.IsTrue(
+                Assert.That(
                     (!catchResult2.HasException ? 1 : 0) != 0,
+                    Is.True,
                     $"returned <> raised '{catchResult2.ExceptionType}'");
             }
             else
             {
-                Assert.IsTrue(
+                Assert.That(
                     (catchResult2.HasException ? 1 : 0) != 0,
+                    Is.True,
                     $"raised '{catchResult1.ExceptionType}' <> returned");
 
-                Assert.IsTrue(
+                Assert.That(
                     ((EqualExceptions(catchResult1.Exception, catchResult2.Exception)) ? 1 : 0) != 0,
+                    Is.True,
                     $"raised '{catchResult1.ExceptionType}' <> raised '{catchResult2.ExceptionType}'");
             }
         }
@@ -144,20 +146,20 @@ namespace QuikGraph.Tests
             /// <summary>
             /// Contains the return value, if any.
             /// </summary>
-            [CanBeNull]
+
             public T Value { get; }
 
             /// <summary>
             /// Contains the exception, if any.
             /// </summary>
-            [CanBeNull]
+
             public Exception Exception { get; }
 
             /// <summary>
             /// Initializes a new instance of <see cref="CatchResult{T}" />.
             /// </summary>
             /// <param name="value">A return value.</param>
-            public CatchResult([CanBeNull] T value)
+            public CatchResult(T value)
             {
                 Value = value;
                 Exception = null;
@@ -167,7 +169,7 @@ namespace QuikGraph.Tests
             /// Initializes a new instance of <see cref="CatchResult{T}" />.
             /// </summary>
             /// <param name="exception">An exception object.</param>
-            public CatchResult([NotNull] Exception exception)
+            public CatchResult(Exception exception)
             {
                 Value = default;
                 Exception = exception;
@@ -185,6 +187,7 @@ namespace QuikGraph.Tests
                     value = Value;
                     return true;
                 }
+
                 value = default;
                 return false;
             }
@@ -225,7 +228,7 @@ namespace QuikGraph.Tests
         /// and returns a value of type <typeparamref name="T"/>.</param>
         /// <returns>Returns a <see cref="CatchResult"/> structure that contains a return value or,
         /// if an exception was thrown, an exception object.</returns>
-        private static CatchResult<T> Catch<T>([NotNull, InstantHandle] Func<T> function)
+        private static CatchResult<T> Catch<T>(Func<T> function)
         {
             try
             {
@@ -245,29 +248,31 @@ namespace QuikGraph.Tests
         /// <param name="right">A <see cref="Func{TResult}"/> delegate that performs a user-defined action and returns a value of type <typeparamref name="T"/>.</param>
         /// <remarks>"Same behavior" is defined as both delegates returning the same value or both delegates throwing the same exception.</remarks>
         public static void AreBehaviorsEqual<T>(
-            [NotNull, InstantHandle] Func<T> left,
-            [NotNull, InstantHandle] Func<T> right)
+            Func<T> left,
+            Func<T> right)
         {
             CatchResult<T> catchResult1 = Catch(left);
             CatchResult<T> catchResult2 = Catch(right);
             if (catchResult1.HasValue)
             {
-                Assert.IsTrue(
-                    (catchResult2.HasValue ? 1 : 0) != 0,
+                Assert.That((catchResult2.HasValue ? 1 : 0) != 0, Is.True,
                     $"result '{catchResult1.Value}' <> raised '{catchResult2.ExceptionType}'");
 
-                Assert.IsTrue(
+                Assert.That(
                     (EqualityComparer<T>.Default.Equals(catchResult1.Value, catchResult2.Value) ? 1 : 0) != 0,
+                    Is.True,
                     $"result '{catchResult1.Value}' <> result '{catchResult2.Value}'");
             }
             else
             {
-                Assert.IsTrue(
+                Assert.That(
                     (catchResult2.HasException ? 1 : 0) != 0,
+                    Is.True,
                     $"raised '{catchResult1.ExceptionType}' <> return '{catchResult2.Value}'");
 
-                Assert.IsTrue(
+                Assert.That(
                     (EqualExceptions(catchResult1.Exception, catchResult2.Exception) ? 1 : 0) != 0,
+                    Is.True,
                     $"raised '{catchResult1.ExceptionType}' <> raised '{catchResult2.ExceptionType}'");
             }
         }
@@ -279,14 +284,14 @@ namespace QuikGraph.Tests
         [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
         public static void DoubleForEach<T>(IEnumerable<T> enumerable)
         {
-            Assert.IsNotNull(enumerable);
+            Assert.That(enumerable, Is.Not.Null);
             using (IEnumerator<T> enumerator1 = enumerable.GetEnumerator())
             {
-                Assert.IsNotNull(enumerator1);
+                Assert.That(enumerator1, Is.Not.Null);
                 using (IEnumerator<T> enumerator2 = enumerable.GetEnumerator())
                 {
-                    Assert.IsNotNull(enumerator2);
-                    Assert.AreEqual(enumerator1.MoveNext(), enumerator2.MoveNext());
+                    Assert.That(enumerator2, Is.Not.Null);
+                    Assert.That(enumerator1.MoveNext(), Is.EqualTo(enumerator2.MoveNext()));
                 }
             }
         }
@@ -297,10 +302,10 @@ namespace QuikGraph.Tests
         /// <param name="enumerable">Enumerable.</param>
         public static void MoveNextAndReset<T>(IEnumerable<T> enumerable)
         {
-            Assert.IsNotNull(enumerable);
+            Assert.That(enumerable, Is.Not.Null);
             using (IEnumerator<T> enumerator = enumerable.GetEnumerator())
             {
-                Assert.IsNotNull(enumerator);
+                Assert.That(enumerator, Is.Not.Null);
                 bool expected = enumerator.MoveNext();
                 try
                 {
@@ -310,8 +315,9 @@ namespace QuikGraph.Tests
                 {
                     return;
                 }
+
                 bool actual = enumerator.MoveNext();
-                Assert.AreEqual(expected, actual);
+                Assert.That(expected, Is.EqualTo(actual));
             }
         }
     }

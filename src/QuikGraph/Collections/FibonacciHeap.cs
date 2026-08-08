@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph.Collections
 {
@@ -12,16 +12,16 @@ namespace QuikGraph.Collections
     /// </summary>
     /// <typeparam name="TValue">Value type.</typeparam>
     /// <typeparam name="TPriority">Priority metric type.</typeparam>
-#if SUPPORTS_SERIALIZATION
+
     [Serializable]
-#endif
+
     [DebuggerDisplay("Count = {" + nameof(Count) + "}")]
     public sealed class FibonacciHeap<TPriority, TValue> : IEnumerable<KeyValuePair<TPriority, TValue>>
     {
-        [NotNull, ItemNotNull]
+
         private readonly FibonacciHeapLinkedList<TPriority, TValue> _cells;
 
-        [NotNull]
+
         private readonly Dictionary<int, FibonacciHeapCell<TPriority, TValue>> _degreeToCell;
 
         // Used to control the direction of the heap, set to 1 if the Heap is increasing,
@@ -51,7 +51,7 @@ namespace QuikGraph.Collections
         /// <param name="direction">Heap direction.</param>
         /// <param name="priorityComparison">Priority comparer.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="priorityComparison"/> is <see langword="null"/>.</exception>
-        public FibonacciHeap(HeapDirection direction, [NotNull] Comparison<TPriority> priorityComparison)
+        public FibonacciHeap(HeapDirection direction,  Comparison<TPriority> priorityComparison)
         {
             _cells = new FibonacciHeapLinkedList<TPriority, TValue>();
             _degreeToCell = new Dictionary<int, FibonacciHeapCell<TPriority, TValue>>();
@@ -64,7 +64,7 @@ namespace QuikGraph.Collections
         /// <summary>
         /// Priority comparer.
         /// </summary>
-        [NotNull]
+
         public Comparison<TPriority> PriorityComparison { get; }
 
         /// <summary>
@@ -93,7 +93,7 @@ namespace QuikGraph.Collections
         /// <param name="priority">Value priority.</param>
         /// <param name="value">Value to add.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="priority"/> is <see langword="null"/>.</exception>
-        public FibonacciHeapCell<TPriority, TValue> Enqueue([NotNull] TPriority priority, [CanBeNull] TValue value)
+        public FibonacciHeapCell<TPriority, TValue> Enqueue( TPriority priority,  TValue value)
         {
             if (priority == null)
                 throw new ArgumentNullException(nameof(priority));
@@ -131,10 +131,9 @@ namespace QuikGraph.Collections
         /// <param name="newPriority">New priority.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="cell"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="newPriority"/> is <see langword="null"/>.</exception>
-        public void ChangeKey([NotNull] FibonacciHeapCell<TPriority, TValue> cell, [NotNull] TPriority newPriority)
+        public void ChangeKey( FibonacciHeapCell<TPriority, TValue> cell,  TPriority newPriority)
         {
-            if (cell is null)
-                throw new ArgumentNullException(nameof(cell));
+            ArgumentNullException.ThrowIfNull(cell);
             if (newPriority == null)
                 throw new ArgumentNullException(nameof(newPriority));
 
@@ -142,8 +141,8 @@ namespace QuikGraph.Collections
         }
 
         private void ChangeKeyInternal(
-            [NotNull] FibonacciHeapCell<TPriority, TValue> cell,
-            [CanBeNull] TPriority newKey, // Null authorized if deleting the cell
+             FibonacciHeapCell<TPriority, TValue> cell,
+             TPriority newKey, // Null authorized if deleting the cell
             bool deletingCell)
         {
             Debug.Assert(cell != null);
@@ -168,8 +167,8 @@ namespace QuikGraph.Collections
         }
 
         private void UpdateCellSameDirection(
-            [NotNull] FibonacciHeapCell<TPriority, TValue> cell,
-            [CanBeNull] TPriority newKey,
+             FibonacciHeapCell<TPriority, TValue> cell,
+             TPriority newKey,
             bool deletingCell)
         {
             cell.Priority = newKey;
@@ -187,7 +186,7 @@ namespace QuikGraph.Collections
                 _cells.AddLast(cell);
 
                 // This loop is the cascading cut, we continue to cut
-                // ancestors of the cell reduced until we hit a root 
+                // ancestors of the cell reduced until we hit a root
                 // or we found an unmarked ancestor
                 while (parentCell.Marked && parentCell.Parent != null)
                 {
@@ -218,7 +217,7 @@ namespace QuikGraph.Collections
             }
         }
 
-        private void UpdateCellOppositeDirection([NotNull] FibonacciHeapCell<TPriority, TValue> cell, [NotNull] TPriority newKey)
+        private void UpdateCellOppositeDirection( FibonacciHeapCell<TPriority, TValue> cell,  TPriority newKey)
         {
             cell.Priority = newKey;
             if (cell.Children != null)
@@ -259,7 +258,7 @@ namespace QuikGraph.Collections
         /// parents if necessary.
         /// </summary>
         /// <param name="cell">Cell to update.</param>
-        private void UpdateCellsDegree([NotNull] FibonacciHeapCell<TPriority, TValue> cell)
+        private void UpdateCellsDegree( FibonacciHeapCell<TPriority, TValue> cell)
         {
             Debug.Assert(cell != null);
             Debug.Assert(cell.Children != null);
@@ -288,10 +287,9 @@ namespace QuikGraph.Collections
         /// </summary>
         /// <param name="cell">Cell to delete.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="cell"/> is <see langword="null"/>.</exception>
-        public void Delete([NotNull] FibonacciHeapCell<TPriority, TValue> cell)
+        public void Delete( FibonacciHeapCell<TPriority, TValue> cell)
         {
-            if (cell is null)
-                throw new ArgumentNullException(nameof(cell));
+            ArgumentNullException.ThrowIfNull(cell);
 
             ChangeKeyInternal(cell, default(TPriority), true);
             Dequeue();
@@ -370,8 +368,8 @@ namespace QuikGraph.Collections
             }
         }
 
-        [CanBeNull]
-        private FibonacciHeapCell<TPriority, TValue> ReduceCell([NotNull] ref FibonacciHeapCell<TPriority, TValue> cell)
+
+        private FibonacciHeapCell<TPriority, TValue> ReduceCell( ref FibonacciHeapCell<TPriority, TValue> cell)
         {
             FibonacciHeapCell<TPriority, TValue> nextCell = cell.Next;
             while (_degreeToCell.TryGetValue(cell.Degree, out FibonacciHeapCell<TPriority, TValue> currentDegreeCell)
@@ -408,8 +406,8 @@ namespace QuikGraph.Collections
         /// <param name="parentCell">Parent cell.</param>
         /// <param name="childCell">Child cell.</param>
         private void ReduceCells(
-            [NotNull] FibonacciHeapCell<TPriority, TValue> parentCell,
-            [NotNull] FibonacciHeapCell<TPriority, TValue> childCell)
+             FibonacciHeapCell<TPriority, TValue> parentCell,
+             FibonacciHeapCell<TPriority, TValue> childCell)
         {
             Debug.Assert(parentCell != null);
             Debug.Assert(parentCell.Children != null);
@@ -432,10 +430,9 @@ namespace QuikGraph.Collections
         /// <param name="heap">Heap to merge.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="heap"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.InvalidOperationException"><paramref name="heap"/> is not in the same direction as this heap.</exception>
-        public void Merge([NotNull] FibonacciHeap<TPriority, TValue> heap)
+        public void Merge( FibonacciHeap<TPriority, TValue> heap)
         {
-            if (heap is null)
-                throw new ArgumentNullException(nameof(heap));
+            ArgumentNullException.ThrowIfNull(heap);
             if (heap.Direction != Direction)
                 throw new InvalidOperationException("Heaps must go in the same direction when merging.");
             if (heap.IsEmpty)
@@ -490,7 +487,7 @@ namespace QuikGraph.Collections
         /// Enumerator for this heap that <see cref="Dequeue"/> elements in the same time.
         /// </summary>
         /// <returns>Heap elements.</returns>
-        [NotNull]
+
         public IEnumerable<KeyValuePair<TPriority, TValue>> GetDestructiveEnumerator()
         {
             while (!IsEmpty)
@@ -504,12 +501,12 @@ namespace QuikGraph.Collections
 
         private struct CellLevel
         {
-            [NotNull]
+
             public FibonacciHeapCell<TPriority, TValue> Cell { get; }
 
             public int Level { get; }
 
-            public CellLevel([NotNull] FibonacciHeapCell<TPriority, TValue> cell, int level)
+            public CellLevel( FibonacciHeapCell<TPriority, TValue> cell, int level)
             {
                 Cell = cell;
                 Level = level;

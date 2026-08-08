@@ -1,6 +1,6 @@
-#if !SUPPORTS_SORTEDSET
+
 using System.Security;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph.Utils
 {
@@ -13,13 +13,12 @@ namespace QuikGraph.Utils
         private readonly int _length;
 
         // Ptr to stack alloc'd array of ints
-        [SecurityCritical]
-        private readonly int* _arrayPtr;
+        [SecurityCritical] private readonly int* _arrayPtr;
 
         // Array of ints
         private readonly int[] _array;
 
-        // Whether to operate on stack alloc'd or heap alloc'd array 
+        // Whether to operate on stack alloc'd or heap alloc'd array
         private readonly bool _useStackAlloc;
 
         /// <summary>
@@ -40,7 +39,7 @@ namespace QuikGraph.Utils
         /// </summary>
         /// <param name="bitArray">int array to hold bits</param>
         /// <param name="length">length of int array</param>
-        internal BitHelper([NotNull] int[] bitArray, int length)
+        internal BitHelper( int[] bitArray, int length)
         {
             _array = bitArray;
             _length = length;
@@ -83,6 +82,7 @@ namespace QuikGraph.Utils
                 {
                     return ((_arrayPtr[bitArrayIndex] & (MarkedBitFlag << (bitPosition % IntSize))) != 0);
                 }
+
                 return false;
             }
             else
@@ -92,6 +92,7 @@ namespace QuikGraph.Utils
                 {
                     return ((_array[bitArrayIndex] & (MarkedBitFlag << (bitPosition % IntSize))) != 0);
                 }
+
                 return false;
             }
         }
@@ -106,4 +107,3 @@ namespace QuikGraph.Utils
         }
     }
 }
-#endif

@@ -1,4 +1,3 @@
-using JetBrains.Annotations;
 using NUnit.Framework;
 
 namespace QuikGraph.Tests.Graphs
@@ -12,47 +11,47 @@ namespace QuikGraph.Tests.Graphs
         #region Test helpers
 
         private static void AssertDegreeSumEqualsTwiceEdgeCount<TVertex, TEdge>(
-            [NotNull] IBidirectionalGraph<TVertex, TEdge> graph)
+             IBidirectionalGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
             int totalDegree = 0;
             foreach (TVertex vertex in graph.Vertices)
                 totalDegree += graph.Degree(vertex);
 
-            Assert.AreEqual(graph.EdgeCount * 2, totalDegree);
+            Assert.That(graph.EdgeCount * 2,Is.EqualTo(totalDegree));
         }
 
         private static void AssertInDegreeSumEqualsEdgeCount<TVertex, TEdge>(
-            [NotNull] IBidirectionalGraph<TVertex, TEdge> graph)
+             IBidirectionalGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
             int totalInDegree = 0;
             foreach (TVertex vertex in graph.Vertices)
                 totalInDegree += graph.InDegree(vertex);
 
-            Assert.AreEqual(graph.EdgeCount, totalInDegree);
+            Assert.That(graph.EdgeCount,Is.EqualTo(totalInDegree));
         }
 
         private static void OutDegreeSumEqualsEdgeCount<TVertex, TEdge>(
-            [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> graph)
+             IVertexAndEdgeListGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
             int totalOutDegree = 0;
             foreach (TVertex vertex in graph.Vertices)
                 totalOutDegree += graph.OutDegree(vertex);
 
-            Assert.AreEqual(graph.EdgeCount, totalOutDegree);
+            Assert.That(graph.EdgeCount,Is.EqualTo(totalOutDegree));
         }
 
         private static void AssertAdjacentDegreeSumEqualsTwiceEdgeCount<TVertex, TEdge>(
-            [NotNull] IUndirectedGraph<TVertex, TEdge> graph)
+             IUndirectedGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
             int totalAdjacentDegree = 0;
             foreach (TVertex vertex in graph.Vertices)
                 totalAdjacentDegree += graph.AdjacentDegree(vertex);
 
-            Assert.AreEqual(graph.EdgeCount * 2, totalAdjacentDegree);
+            Assert.That(graph.EdgeCount * 2,Is.EqualTo(totalAdjacentDegree));
         }
 
         #endregion

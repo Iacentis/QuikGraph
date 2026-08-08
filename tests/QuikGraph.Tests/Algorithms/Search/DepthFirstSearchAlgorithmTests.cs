@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
-using JetBrains.Annotations;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using QuikGraph.Algorithms.Search;
 using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
 using static QuikGraph.Tests.GraphTestHelpers;
@@ -18,7 +19,7 @@ namespace QuikGraph.Tests.Algorithms.Search
         #region Test helpers
 
         private static void RunDFSAndCheck<TVertex, TEdge>(
-            [NotNull] IVertexListGraph<TVertex, TEdge> graph,
+            IVertexListGraph<TVertex, TEdge> graph,
             int maxDepth = int.MaxValue)
             where TEdge : IEdge<TVertex>
         {
@@ -26,55 +27,52 @@ namespace QuikGraph.Tests.Algorithms.Search
             var discoverTimes = new Dictionary<TVertex, int>();
             var finishTimes = new Dictionary<TVertex, int>();
             int time = 0;
-            var dfs = new DepthFirstSearchAlgorithm<TVertex, TEdge>(graph)
-            {
-                MaxDepth = maxDepth
-            };
+            var dfs = new DepthFirstSearchAlgorithm<TVertex, TEdge>(graph) { MaxDepth = maxDepth };
 
             dfs.InitializeVertex += vertex =>
             {
-                Assert.AreEqual(GraphColor.White, dfs.VerticesColors[vertex]);
+                Assert.That(GraphColor.White, Is.EqualTo(dfs.VerticesColors[vertex]));
             };
 
             dfs.StartVertex += vertex =>
             {
-                Assert.AreEqual(GraphColor.White, dfs.VerticesColors[vertex]);
-                Assert.IsFalse(parents.ContainsKey(vertex));
+                Assert.That(GraphColor.White, Is.EqualTo(dfs.VerticesColors[vertex]));
+                Assert.That(parents.ContainsKey(vertex), Is.False);
                 parents[vertex] = vertex;
             };
 
             dfs.DiscoverVertex += vertex =>
             {
-                Assert.AreEqual(GraphColor.Gray, dfs.VerticesColors[vertex]);
-                Assert.AreEqual(GraphColor.Gray, dfs.VerticesColors[parents[vertex]]);
+                Assert.That(GraphColor.Gray, Is.EqualTo(dfs.VerticesColors[vertex]));
+                Assert.That(GraphColor.Gray, Is.EqualTo(dfs.VerticesColors[parents[vertex]]));
 
                 discoverTimes[vertex] = time++;
             };
 
             dfs.ExamineEdge += edge =>
             {
-                Assert.AreEqual(GraphColor.Gray, dfs.VerticesColors[edge.Source]);
+                Assert.That(GraphColor.Gray, Is.EqualTo(dfs.VerticesColors[edge.Source]));
             };
 
             dfs.TreeEdge += edge =>
             {
-                Assert.AreEqual(GraphColor.White, dfs.VerticesColors[edge.Target]);
+                Assert.That(GraphColor.White, Is.EqualTo(dfs.VerticesColors[edge.Target]));
                 parents[edge.Target] = edge.Source;
             };
 
             dfs.BackEdge += edge =>
             {
-                Assert.AreEqual(GraphColor.Gray, dfs.VerticesColors[edge.Target]);
+                Assert.That(GraphColor.Gray, Is.EqualTo(dfs.VerticesColors[edge.Target]));
             };
 
             dfs.ForwardOrCrossEdge += edge =>
             {
-                Assert.AreEqual(GraphColor.Black, dfs.VerticesColors[edge.Target]);
+                Assert.That(GraphColor.Black, Is.EqualTo(dfs.VerticesColors[edge.Target]));
             };
 
             dfs.FinishVertex += vertex =>
             {
-                Assert.AreEqual(GraphColor.Black, dfs.VerticesColors[vertex]);
+                Assert.That(GraphColor.Black, Is.EqualTo(dfs.VerticesColors[vertex]));
                 finishTimes[vertex] = time++;
             };
 
@@ -84,8 +82,8 @@ namespace QuikGraph.Tests.Algorithms.Search
             // All vertices should be black
             foreach (TVertex vertex in graph.Vertices)
             {
-                Assert.IsTrue(dfs.VerticesColors.ContainsKey(vertex));
-                Assert.AreEqual(dfs.VerticesColors[vertex], GraphColor.Black);
+                Assert.That(dfs.VerticesColors.ContainsKey(vertex), Is.True);
+                Assert.That(dfs.VerticesColors[vertex], Is.EqualTo(GraphColor.Black));
             }
 
             foreach (TVertex u in graph.Vertices)
@@ -94,11 +92,13 @@ namespace QuikGraph.Tests.Algorithms.Search
                 {
                     if (!u.Equals(v))
                     {
-                        Assert.IsTrue(
+                        Assert.That(
                             finishTimes[u] < discoverTimes[v]
                             || finishTimes[v] < discoverTimes[u]
-                            || (discoverTimes[v] < discoverTimes[u] && finishTimes[u] < finishTimes[v] && IsDescendant(parents, u, v))
-                            || (discoverTimes[u] < discoverTimes[v] && finishTimes[v] < finishTimes[u] && IsDescendant(parents, v, u)));
+                            || (discoverTimes[v] < discoverTimes[u] && finishTimes[u] < finishTimes[v] &&
+                                IsDescendant(parents, u, v))
+                            || (discoverTimes[u] < discoverTimes[v] && finishTimes[v] < finishTimes[u] &&
+                                IsDescendant(parents, v, u)), Is.True);
                     }
                 }
             }
@@ -123,7 +123,8 @@ namespace QuikGraph.Tests.Algorithms.Search
             algorithm = new DepthFirstSearchAlgorithm<int, Edge<int>>(null, graph, verticesColors);
             AssertAlgorithmProperties(algorithm, graph, verticesColors);
 
-            algorithm = new DepthFirstSearchAlgorithm<int, Edge<int>>(null, graph, verticesColors, edges => edges.Where(e => e != null));
+            algorithm = new DepthFirstSearchAlgorithm<int, Edge<int>>(null, graph, verticesColors,
+                edges => edges.Where(e => e != null));
             AssertAlgorithmProperties(algorithm, graph, verticesColors);
 
             algorithm.MaxDepth = 12;
@@ -146,10 +147,10 @@ namespace QuikGraph.Tests.Algorithms.Search
                 if (vColors is null)
                     CollectionAssert.IsEmpty(algo.VerticesColors);
                 else
-                    Assert.AreSame(vColors, algo.VerticesColors);
-                Assert.AreEqual(maxDepth, algo.MaxDepth);
-                Assert.AreEqual(processAllComponents, algo.ProcessAllComponents);
-                Assert.IsNotNull(algo.OutEdgesFilter);
+                    Assert.That(vColors, Is.SameAs(algo.VerticesColors));
+                Assert.That(maxDepth, Is.EqualTo(algo.MaxDepth));
+                Assert.That(processAllComponents, Is.EqualTo(algo.ProcessAllComponents));
+                Assert.That(algo.OutEdgesFilter, Is.Not.Null);
             }
 
             #endregion
@@ -164,44 +165,42 @@ namespace QuikGraph.Tests.Algorithms.Search
             var verticesColors = new Dictionary<int, GraphColor>();
             IEnumerable<Edge<int>> Filter(IEnumerable<Edge<int>> edges) => edges.Where(e => e != null);
 
-            Assert.Throws<ArgumentNullException>(
-                () => new DepthFirstSearchAlgorithm<int, Edge<int>>(null));
+            Assert.Throws<ArgumentNullException>(() => new DepthFirstSearchAlgorithm<int, Edge<int>>(null));
 
-            Assert.Throws<ArgumentNullException>(
-                () => new DepthFirstSearchAlgorithm<int, Edge<int>>(graph, null));
-            Assert.Throws<ArgumentNullException>(
-                () => new DepthFirstSearchAlgorithm<int, Edge<int>>(null, verticesColors));
-            Assert.Throws<ArgumentNullException>(
-                () => new DepthFirstSearchAlgorithm<int, Edge<int>>((IVertexListGraph<int, Edge<int>>)null, null));
+            Assert.Throws<ArgumentNullException>(() => new DepthFirstSearchAlgorithm<int, Edge<int>>(graph, null));
+            Assert.Throws<ArgumentNullException>(() =>
+                new DepthFirstSearchAlgorithm<int, Edge<int>>(null, verticesColors));
+            Assert.Throws<ArgumentNullException>(() =>
+                new DepthFirstSearchAlgorithm<int, Edge<int>>((IVertexListGraph<int, Edge<int>>)null, null));
 
-            Assert.Throws<ArgumentNullException>(
-                () => new DepthFirstSearchAlgorithm<int, Edge<int>>(null, (IVertexListGraph<int, Edge<int>>)null));
+            Assert.Throws<ArgumentNullException>(() =>
+                new DepthFirstSearchAlgorithm<int, Edge<int>>(null, (IVertexListGraph<int, Edge<int>>)null));
 
-            Assert.Throws<ArgumentNullException>(
-                () => new DepthFirstSearchAlgorithm<int, Edge<int>>(null, null, verticesColors));
-            Assert.Throws<ArgumentNullException>(
-                () => new DepthFirstSearchAlgorithm<int, Edge<int>>(null, graph, null));
-            Assert.Throws<ArgumentNullException>(
-                () => new DepthFirstSearchAlgorithm<int, Edge<int>>(null, null, null));
+            Assert.Throws<ArgumentNullException>(() =>
+                new DepthFirstSearchAlgorithm<int, Edge<int>>(null, null, verticesColors));
+            Assert.Throws<ArgumentNullException>(() =>
+                new DepthFirstSearchAlgorithm<int, Edge<int>>(null, graph, null));
+            Assert.Throws<ArgumentNullException>(() => new DepthFirstSearchAlgorithm<int, Edge<int>>(null, null, null));
 
-            Assert.Throws<ArgumentNullException>(
-                () => new DepthFirstSearchAlgorithm<int, Edge<int>>(null, null, verticesColors, Filter));
-            Assert.Throws<ArgumentNullException>(
-                () => new DepthFirstSearchAlgorithm<int, Edge<int>>(null, graph, null, Filter));
-            Assert.Throws<ArgumentNullException>(
-                () => new DepthFirstSearchAlgorithm<int, Edge<int>>(null, graph, verticesColors, null));
-            Assert.Throws<ArgumentNullException>(
-                () => new DepthFirstSearchAlgorithm<int, Edge<int>>(null, graph, null, null));
-            Assert.Throws<ArgumentNullException>(
-                () => new DepthFirstSearchAlgorithm<int, Edge<int>>(null, null, null, Filter));
-            Assert.Throws<ArgumentNullException>(
-                () => new DepthFirstSearchAlgorithm<int, Edge<int>>(null, null, verticesColors, null));
-            Assert.Throws<ArgumentNullException>(
-                () => new DepthFirstSearchAlgorithm<int, Edge<int>>(null, null, null, null));
+            Assert.Throws<ArgumentNullException>(() =>
+                new DepthFirstSearchAlgorithm<int, Edge<int>>(null, null, verticesColors, Filter));
+            Assert.Throws<ArgumentNullException>(() =>
+                new DepthFirstSearchAlgorithm<int, Edge<int>>(null, graph, null, Filter));
+            Assert.Throws<ArgumentNullException>(() =>
+                new DepthFirstSearchAlgorithm<int, Edge<int>>(null, graph, verticesColors, null));
+            Assert.Throws<ArgumentNullException>(() =>
+                new DepthFirstSearchAlgorithm<int, Edge<int>>(null, graph, null, null));
+            Assert.Throws<ArgumentNullException>(() =>
+                new DepthFirstSearchAlgorithm<int, Edge<int>>(null, null, null, Filter));
+            Assert.Throws<ArgumentNullException>(() =>
+                new DepthFirstSearchAlgorithm<int, Edge<int>>(null, null, verticesColors, null));
+            Assert.Throws<ArgumentNullException>(() =>
+                new DepthFirstSearchAlgorithm<int, Edge<int>>(null, null, null, null));
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
 
-            Assert.Throws<ArgumentOutOfRangeException>(() => new DepthFirstSearchAlgorithm<int, Edge<int>>(graph).MaxDepth = -1);
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+                new DepthFirstSearchAlgorithm<int, Edge<int>>(graph).MaxDepth = -1);
         }
 
         #region Rooted algorithm
@@ -260,8 +259,7 @@ namespace QuikGraph.Tests.Algorithms.Search
         public void ComputeWithRoot_Throws()
         {
             var graph = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
-            ComputeWithRoot_Throws_Test(
-                () => new DepthFirstSearchAlgorithm<TestVertex, Edge<TestVertex>>(graph));
+            ComputeWithRoot_Throws_Test(() => new DepthFirstSearchAlgorithm<TestVertex, Edge<TestVertex>>(graph));
         }
 
         #endregion
@@ -279,8 +277,8 @@ namespace QuikGraph.Tests.Algorithms.Search
 
             algorithm.Compute();
 
-            Assert.AreEqual(GraphColor.Black, algorithm.GetVertexColor(1));
-            Assert.AreEqual(GraphColor.Black, algorithm.GetVertexColor(2));
+            Assert.That(GraphColor.Black, Is.EqualTo(algorithm.GetVertexColor(1)));
+            Assert.That(GraphColor.Black, Is.EqualTo(algorithm.GetVertexColor(2)));
         }
 
         [Test]
@@ -298,8 +296,7 @@ namespace QuikGraph.Tests.Algorithms.Search
         public void ProcessAllComponents(bool processAll)
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[]
-            {
+            graph.AddVerticesAndEdgeRange([
                 new Edge<int>(1, 2),
                 new Edge<int>(1, 3),
                 new Edge<int>(2, 1),
@@ -309,12 +306,9 @@ namespace QuikGraph.Tests.Algorithms.Search
                 new Edge<int>(6, 7),
                 new Edge<int>(6, 8),
                 new Edge<int>(8, 6)
-            });
+            ]);
 
-            var algorithm = new DepthFirstSearchAlgorithm<int, Edge<int>>(graph)
-            {
-                ProcessAllComponents = processAll
-            };
+            var algorithm = new DepthFirstSearchAlgorithm<int, Edge<int>>(graph) { ProcessAllComponents = processAll };
             algorithm.Compute(1);
 
             if (processAll)
@@ -324,18 +318,17 @@ namespace QuikGraph.Tests.Algorithms.Search
             else
             {
                 QuikGraphAssert.TrueForAll(
-                    new[] { 1, 2, 3, 4, 5 },
+                    [1, 2, 3, 4, 5],
                     vertex => algorithm.VerticesColors[vertex] == GraphColor.Black);
                 QuikGraphAssert.TrueForAll(
-                    new[] { 6, 7, 8 },
+                    [6, 7, 8],
                     vertex => algorithm.VerticesColors[vertex] == GraphColor.White);
             }
         }
 
         [Pure]
-        [NotNull]
         public static DepthFirstSearchAlgorithm<T, Edge<T>> CreateAlgorithmAndMaybeDoComputation<T>(
-            [NotNull] ContractScenario<T> scenario)
+            ContractScenario<T> scenario)
         {
             var graph = new AdjacencyGraph<T, Edge<T>>();
             graph.AddVerticesAndEdgeRange(scenario.EdgesInGraph.Select(e => new Edge<T>(e.Source, e.Target)));

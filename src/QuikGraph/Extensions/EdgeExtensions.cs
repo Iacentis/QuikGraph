@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Linq;
-#if !SUPPORTS_TYPE_FULL_FEATURES
 using System.Reflection;
-#endif
-using JetBrains.Annotations;
+
 
 namespace QuikGraph
 {
@@ -22,10 +21,9 @@ namespace QuikGraph
         /// <returns>True if edge is a self one, false otherwise.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edge"/> is <see langword="null"/>.</exception>
         [Pure]
-        public static bool IsSelfEdge<TVertex>([NotNull] this IEdge<TVertex> edge)
+        public static bool IsSelfEdge<TVertex>(this IEdge<TVertex> edge)
         {
-            if (edge is null)
-                throw new ArgumentNullException(nameof(edge));
+            ArgumentNullException.ThrowIfNull(edge);
 
             return EqualityComparer<TVertex>.Default.Equals(edge.Source, edge.Target);
         }
@@ -40,11 +38,9 @@ namespace QuikGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edge"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull]
-        public static TVertex GetOtherVertex<TVertex>([NotNull] this IEdge<TVertex> edge, [NotNull] TVertex vertex)
+        public static TVertex GetOtherVertex<TVertex>(this IEdge<TVertex> edge, TVertex vertex)
         {
-            if (edge is null)
-                throw new ArgumentNullException(nameof(edge));
+            ArgumentNullException.ThrowIfNull(edge);
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
@@ -62,15 +58,14 @@ namespace QuikGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edge"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         [Pure]
-        public static bool IsAdjacent<TVertex>([NotNull] this IEdge<TVertex> edge, [NotNull] TVertex vertex)
+        public static bool IsAdjacent<TVertex>(this IEdge<TVertex> edge, TVertex vertex)
         {
-            if (edge is null)
-                throw new ArgumentNullException(nameof(edge));
+            ArgumentNullException.ThrowIfNull(edge);
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
             return EqualityComparer<TVertex>.Default.Equals(edge.Source, vertex)
-                || EqualityComparer<TVertex>.Default.Equals(edge.Target, vertex);
+                   || EqualityComparer<TVertex>.Default.Equals(edge.Target, vertex);
         }
 
         /// <summary>
@@ -82,11 +77,10 @@ namespace QuikGraph
         /// <returns>True if the set makes a complete path, false otherwise.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="path"/> is <see langword="null"/>.</exception>
         [Pure]
-        public static bool IsPath<TVertex, TEdge>([NotNull, ItemNotNull] this IEnumerable<TEdge> path)
+        public static bool IsPath<TVertex, TEdge>(this IEnumerable<TEdge> path)
             where TEdge : IEdge<TVertex>
         {
-            if (path is null)
-                throw new ArgumentNullException(nameof(path));
+            ArgumentNullException.ThrowIfNull(path);
 
             bool first = true;
             var lastTarget = default(TVertex);
@@ -118,11 +112,10 @@ namespace QuikGraph
         /// <returns>True if the set makes a cycle, false otherwise.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="path"/> is <see langword="null"/>.</exception>
         [Pure]
-        public static bool HasCycles<TVertex, TEdge>([NotNull, ItemNotNull] this IEnumerable<TEdge> path)
+        public static bool HasCycles<TVertex, TEdge>(this IEnumerable<TEdge> path)
             where TEdge : IEdge<TVertex>
         {
-            if (path is null)
-                throw new ArgumentNullException(nameof(path));
+            ArgumentNullException.ThrowIfNull(path);
 
             var vertices = new Dictionary<TVertex, int>();
             bool first = true;
@@ -156,11 +149,10 @@ namespace QuikGraph
         /// <returns>True if the path makes a cycle, false otherwise.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="path"/> is <see langword="null"/>.</exception>
         [Pure]
-        public static bool IsPathWithoutCycles<TVertex, TEdge>([NotNull, ItemNotNull] this IEnumerable<TEdge> path)
+        public static bool IsPathWithoutCycles<TVertex, TEdge>(this IEnumerable<TEdge> path)
             where TEdge : IEdge<TVertex>
         {
-            if (path is null)
-                throw new ArgumentNullException(nameof(path));
+            ArgumentNullException.ThrowIfNull(path);
 
             var vertices = new Dictionary<TVertex, int>();
             bool first = true;
@@ -199,10 +191,9 @@ namespace QuikGraph
         /// <returns>A <see cref="SEquatableEdge{TVertex}"/>.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edge"/> is <see langword="null"/>.</exception>
         [Pure]
-        public static SEquatableEdge<TVertex> ToVertexPair<TVertex>([NotNull] this IEdge<TVertex> edge)
+        public static SEquatableEdge<TVertex> ToVertexPair<TVertex>(this IEdge<TVertex> edge)
         {
-            if (edge is null)
-                throw new ArgumentNullException(nameof(edge));
+            ArgumentNullException.ThrowIfNull(edge);
             return new SEquatableEdge<TVertex>(edge.Source, edge.Target);
         }
 
@@ -220,13 +211,12 @@ namespace QuikGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         [Pure]
         public static bool IsPredecessor<TVertex, TEdge>(
-            [NotNull] this IDictionary<TVertex, TEdge> predecessors,
-            [NotNull] TVertex root,
-            [NotNull] TVertex vertex)
+            this IDictionary<TVertex, TEdge> predecessors,
+            TVertex root,
+            TVertex vertex)
             where TEdge : IEdge<TVertex>
         {
-            if (predecessors is null)
-                throw new ArgumentNullException(nameof(predecessors));
+            ArgumentNullException.ThrowIfNull(predecessors);
             if (root == null)
                 throw new ArgumentNullException(nameof(root));
             if (vertex == null)
@@ -238,7 +228,7 @@ namespace QuikGraph
 
             while (predecessors.TryGetValue(currentVertex, out TEdge predecessor))
             {
-                TVertex source = GetOtherVertex(predecessor, currentVertex);
+                TVertex source = predecessor.GetOtherVertex(currentVertex);
                 if (EqualityComparer<TVertex>.Default.Equals(currentVertex, source))
                     return false;
                 if (EqualityComparer<TVertex>.Default.Equals(source, root))
@@ -261,15 +251,13 @@ namespace QuikGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="predecessors"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         [Pure]
-        [ContractAnnotation("=> true, path:notnull;=> false, path:null")]
         public static bool TryGetPath<TVertex, TEdge>(
-            [NotNull] this IDictionary<TVertex, TEdge> predecessors,
-            [NotNull] TVertex vertex,
-            [ItemNotNull] out IEnumerable<TEdge> path)
+            this IDictionary<TVertex, TEdge> predecessors,
+            TVertex vertex,
+            out IEnumerable<TEdge> path)
             where TEdge : IEdge<TVertex>
         {
-            if (predecessors is null)
-                throw new ArgumentNullException(nameof(predecessors));
+            ArgumentNullException.ThrowIfNull(predecessors);
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
 
@@ -282,7 +270,7 @@ namespace QuikGraph
                     break;
 
                 computedPath.Add(edge);
-                currentVertex = GetOtherVertex(edge, currentVertex);
+                currentVertex = edge.GetOtherVertex(currentVertex);
             }
 
             if (computedPath.Count > 0)
@@ -306,14 +294,9 @@ namespace QuikGraph
         /// <typeparam name="TEdge">Edge type.</typeparam>
         /// <returns>The best edge equality comparer.</returns>
         [Pure]
-        [NotNull]
         public static EdgeEqualityComparer<TVertex> GetUndirectedVertexEquality<TVertex, TEdge>()
         {
-#if SUPPORTS_TYPE_FULL_FEATURES
             if (typeof(IUndirectedEdge<TVertex>).IsAssignableFrom(typeof(TEdge)))
-#else
-            if (typeof(IUndirectedEdge<TVertex>).GetTypeInfo().IsAssignableFrom(typeof(TEdge).GetTypeInfo()))
-#endif
                 return SortedVertexEquality;
             return UndirectedVertexEquality;
         }
@@ -334,34 +317,33 @@ namespace QuikGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
         [Pure]
         public static bool UndirectedVertexEquality<TVertex>(
-            [NotNull] this IEdge<TVertex> edge,
-            [NotNull] TVertex source,
-            [NotNull] TVertex target)
+            this IEdge<TVertex> edge,
+            TVertex source,
+            TVertex target)
         {
-            if (edge is null)
-                throw new ArgumentNullException(nameof(edge));
+            ArgumentNullException.ThrowIfNull(edge);
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
             if (target == null)
                 throw new ArgumentNullException(nameof(target));
 
-            return UndirectedVertexEqualityInternal(edge, source, target);
+            return edge.UndirectedVertexEqualityInternal(source, target);
         }
 
         [Pure]
         internal static bool UndirectedVertexEqualityInternal<TVertex>(
-            [NotNull] this IEdge<TVertex> edge,
-            [NotNull] TVertex source,
-            [NotNull] TVertex target)
+            this IEdge<TVertex> edge,
+            TVertex source,
+            TVertex target)
         {
             Debug.Assert(edge != null);
             Debug.Assert(source != null);
             Debug.Assert(target != null);
 
             return (EqualityComparer<TVertex>.Default.Equals(edge.Source, source)
-                        && EqualityComparer<TVertex>.Default.Equals(edge.Target, target))
+                    && EqualityComparer<TVertex>.Default.Equals(edge.Target, target))
                    || (EqualityComparer<TVertex>.Default.Equals(edge.Target, source)
-                        && EqualityComparer<TVertex>.Default.Equals(edge.Source, target));
+                       && EqualityComparer<TVertex>.Default.Equals(edge.Source, target));
         }
 
         /// <summary>
@@ -379,32 +361,31 @@ namespace QuikGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
         [Pure]
         public static bool SortedVertexEquality<TVertex>(
-            [NotNull] this IEdge<TVertex> edge,
-            [NotNull] TVertex source,
-            [NotNull] TVertex target)
+            this IEdge<TVertex> edge,
+            TVertex source,
+            TVertex target)
         {
-            if (edge is null)
-                throw new ArgumentNullException(nameof(edge));
+            ArgumentNullException.ThrowIfNull(edge);
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
             if (target == null)
                 throw new ArgumentNullException(nameof(target));
 
-            return SortedVertexEqualityInternal(edge, source, target);
+            return edge.SortedVertexEqualityInternal(source, target);
         }
 
         [Pure]
         internal static bool SortedVertexEqualityInternal<TVertex>(
-            [NotNull] this IEdge<TVertex> edge,
-            [NotNull] TVertex source,
-            [NotNull] TVertex target)
+            this IEdge<TVertex> edge,
+            TVertex source,
+            TVertex target)
         {
             Debug.Assert(edge != null);
             Debug.Assert(source != null);
             Debug.Assert(target != null);
 
             return EqualityComparer<TVertex>.Default.Equals(edge.Source, source)
-                && EqualityComparer<TVertex>.Default.Equals(edge.Target, target);
+                   && EqualityComparer<TVertex>.Default.Equals(edge.Target, target);
         }
 
         /// <summary>
@@ -416,13 +397,11 @@ namespace QuikGraph
         /// <returns>Reversed edges.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edges"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull]
         public static IEnumerable<SReversedEdge<TVertex, TEdge>> ReverseEdges<TVertex, TEdge>(
-            [NotNull, ItemNotNull] IEnumerable<TEdge> edges)
+            IEnumerable<TEdge> edges)
             where TEdge : IEdge<TVertex>
         {
-            if (edges is null)
-                throw new ArgumentNullException(nameof(edges));
+            ArgumentNullException.ThrowIfNull(edges);
 
             return edges.Select(edge => new SReversedEdge<TVertex, TEdge>(edge));
         }

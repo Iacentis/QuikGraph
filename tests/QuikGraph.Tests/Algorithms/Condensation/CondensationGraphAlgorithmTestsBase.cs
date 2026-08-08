@@ -1,4 +1,3 @@
-using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Algorithms;
 using QuikGraph.Algorithms.Condensation;
@@ -13,19 +12,20 @@ namespace QuikGraph.Tests.Algorithms.Condensation
         #region Test helpers
 
         protected static void CheckVertexCount<TVertex, TEdge>(
-            [NotNull] IVertexSet<TVertex> graph,
-            [NotNull] IVertexSet<AdjacencyGraph<TVertex, TEdge>> condensedGraph)
+            IVertexSet<TVertex> graph,
+            IVertexSet<AdjacencyGraph<TVertex, TEdge>> condensedGraph)
             where TEdge : IEdge<TVertex>
         {
             int count = 0;
             foreach (AdjacencyGraph<TVertex, TEdge> vertices in condensedGraph.Vertices)
                 count += vertices.VertexCount;
-            Assert.AreEqual(graph.VertexCount, count, $"{nameof(graph.VertexCount)} does not match.");
+            Assert.That(graph.VertexCount, Is.EqualTo(count), $"{nameof(graph.VertexCount)} does not match.");
         }
 
         protected static void CheckEdgeCount<TVertex, TEdge>(
-            [NotNull] IEdgeSet<TVertex, TEdge> graph,
-            [NotNull] IEdgeListGraph<AdjacencyGraph<TVertex, TEdge>, CondensedEdge<TVertex, TEdge, AdjacencyGraph<TVertex, TEdge>>> condensedGraph)
+            IEdgeSet<TVertex, TEdge> graph,
+            IEdgeListGraph<AdjacencyGraph<TVertex, TEdge>,
+                CondensedEdge<TVertex, TEdge, AdjacencyGraph<TVertex, TEdge>>> condensedGraph)
             where TEdge : IEdge<TVertex>
         {
             // Check edge count
@@ -34,14 +34,15 @@ namespace QuikGraph.Tests.Algorithms.Condensation
                 count += edges.Edges.Count;
             foreach (AdjacencyGraph<TVertex, TEdge> vertices in condensedGraph.Vertices)
                 count += vertices.EdgeCount;
-            Assert.AreEqual(graph.EdgeCount, count, $"{nameof(graph.EdgeCount)} does not match.");
+            Assert.That(graph.EdgeCount, Is.EqualTo(count), $"{nameof(graph.EdgeCount)} does not match.");
         }
 
         protected static void CheckDAG<TVertex, TEdge>(
-            [NotNull] IVertexAndEdgeListGraph<AdjacencyGraph<TVertex, TEdge>, CondensedEdge<TVertex, TEdge, AdjacencyGraph<TVertex, TEdge>>> condensedGraph)
+            IVertexAndEdgeListGraph<AdjacencyGraph<TVertex, TEdge>,
+                CondensedEdge<TVertex, TEdge, AdjacencyGraph<TVertex, TEdge>>> condensedGraph)
             where TEdge : IEdge<TVertex>
         {
-            Assert.IsTrue(condensedGraph.IsDirectedAcyclicGraph());
+            Assert.That(condensedGraph.IsDirectedAcyclicGraph(), Is.True);
         }
 
         #endregion

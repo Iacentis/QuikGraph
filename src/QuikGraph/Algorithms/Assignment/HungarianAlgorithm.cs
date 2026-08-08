@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
+using System.Diagnostics.Contracts;
+
 
 namespace QuikGraph.Algorithms.Assignment
 {
@@ -48,7 +49,7 @@ namespace QuikGraph.Algorithms.Assignment
             End
         }
 
-        [NotNull]
+
         private readonly int[,] _costs;
 
         private int _width;
@@ -73,7 +74,7 @@ namespace QuikGraph.Algorithms.Assignment
         /// </summary>
         /// <param name="costs">Costs matrix.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="costs"/> is <see langword="null"/>.</exception>
-        public HungarianAlgorithm([NotNull] int[,] costs)
+        public HungarianAlgorithm( int[,] costs)
         {
             _costs = costs ?? throw new ArgumentNullException(nameof(costs));
             _step = Steps.Init;
@@ -83,7 +84,7 @@ namespace QuikGraph.Algorithms.Assignment
         /// Returns assignments (without visualization).
         /// </summary>
         /// <returns>Array of assignments.</returns>
-        [NotNull]
+
         public int[] Compute()
         {
             while (DoStep() != Steps.End)
@@ -99,7 +100,7 @@ namespace QuikGraph.Algorithms.Assignment
         /// </summary>
         /// <returns>An enumerable of algorithm iterations.</returns>
         [Pure]
-        [NotNull]
+
         public IEnumerable<HungarianIteration> GetIterations()
         {
             Steps step = Steps.Init;
@@ -229,8 +230,8 @@ namespace QuikGraph.Algorithms.Assignment
         }
 
         private static Steps RunStep1(
-            [NotNull] byte[,] masks,
-            [NotNull] bool[] colsCovered,
+             byte[,] masks,
+             bool[] colsCovered,
             int width,
             int height)
         {
@@ -258,10 +259,10 @@ namespace QuikGraph.Algorithms.Assignment
         }
 
         private static Steps RunStep2(
-            [NotNull] int[,] costs,
-            [NotNull] byte[,] masks,
-            [NotNull] bool[] rowsCovered,
-            [NotNull] bool[] colsCovered,
+             int[,] costs,
+             byte[,] masks,
+             bool[] rowsCovered,
+             bool[] colsCovered,
             int width,
             int height,
             ref Location pathStart)
@@ -290,12 +291,12 @@ namespace QuikGraph.Algorithms.Assignment
         }
 
         private static Steps RunStep3(
-            [NotNull] byte[,] masks,
-            [NotNull] bool[] rowsCovered,
-            [NotNull] bool[] colsCovered,
+             byte[,] masks,
+             bool[] rowsCovered,
+             bool[] colsCovered,
             int width,
             int height,
-            [NotNull] Location[] path,
+             Location[] path,
             Location pathStart)
         {
             int pathIndex = 0;
@@ -320,9 +321,9 @@ namespace QuikGraph.Algorithms.Assignment
         }
 
         private static Steps RunStep4(
-            [NotNull] int[,] costs,
-            [NotNull] bool[] rowsCovered,
-            [NotNull] bool[] colsCovered,
+             int[,] costs,
+             bool[] rowsCovered,
+             bool[] colsCovered,
             int width,
             int height)
         {
@@ -347,8 +348,8 @@ namespace QuikGraph.Algorithms.Assignment
         }
 
         private static void ConvertPath(
-            [NotNull] byte[,] masks,
-            [NotNull] Location[] path,
+             byte[,] masks,
+             Location[] path,
             int pathLength)
         {
             for (int i = 0; i < pathLength; ++i)
@@ -366,9 +367,9 @@ namespace QuikGraph.Algorithms.Assignment
         }
 
         private static Location FindZero(
-            [NotNull] int[,] costs,
-            [NotNull] bool[] rowsCovered,
-            [NotNull] bool[] colsCovered,
+             int[,] costs,
+             bool[] rowsCovered,
+             bool[] colsCovered,
             int width,
             int height)
         {
@@ -385,9 +386,9 @@ namespace QuikGraph.Algorithms.Assignment
         }
 
         private static int FindMinimum(
-            [NotNull] int[,] costs,
-            [NotNull] bool[] rowsCovered,
-            [NotNull] bool[] colsCovered,
+             int[,] costs,
+             bool[] rowsCovered,
+             bool[] colsCovered,
             int width,
             int height)
         {
@@ -407,7 +408,7 @@ namespace QuikGraph.Algorithms.Assignment
         }
 
         private static int FindStarInRow(
-            [NotNull] byte[,] masks,
+             byte[,] masks,
             int width,
             int row)
         {
@@ -421,7 +422,7 @@ namespace QuikGraph.Algorithms.Assignment
         }
 
         private static int FindStarInColumn(
-            [NotNull] byte[,] masks,
+             byte[,] masks,
             int height,
             int column)
         {
@@ -435,7 +436,7 @@ namespace QuikGraph.Algorithms.Assignment
         }
 
         private static int FindPrimeInRow(
-            [NotNull] byte[,] masks,
+             byte[,] masks,
             int width,
             int row)
         {
@@ -449,8 +450,8 @@ namespace QuikGraph.Algorithms.Assignment
         }
 
         private static void ClearCovers(
-            [NotNull] bool[] rowsCovered,
-            [NotNull] bool[] colsCovered,
+             bool[] rowsCovered,
+             bool[] colsCovered,
             int width,
             int height)
         {
@@ -466,7 +467,7 @@ namespace QuikGraph.Algorithms.Assignment
         }
 
         private static void ClearPrimes(
-            [NotNull] byte[,] masks,
+             byte[,] masks,
             int width,
             int height)
         {

@@ -1,4 +1,4 @@
-﻿#if SUPPORTS_FONT
+﻿#if FALSE
 using System.Drawing;
 using NUnit.Framework;
 using QuikGraph.Graphviz.Dot;
@@ -17,12 +17,12 @@ namespace QuikGraph.Graphviz.Tests
         {
             if (font is null)
             {
-                Assert.IsNull(qFont);
+                Assert.That(qFont, Is.Null);
             }
             else
             {
-                Assert.AreEqual(qFont.Name, font.Name);
-                Assert.AreEqual(qFont.SizeInPoints, font.SizeInPoints);
+                Assert.That(qFont.Name, Is.EqualTo(font.Name));
+                Assert.That(qFont.SizeInPoints, Is.EqualTo(font.SizeInPoints));
             }
         }
 

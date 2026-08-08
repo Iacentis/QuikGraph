@@ -14,10 +14,10 @@ namespace QuikGraph.Graphviz.Tests
         public void Constructor()
         {
             var layer = new GraphvizLayer("TestLayer");
-            Assert.AreEqual("TestLayer", layer.Name);
-            
+            Assert.That("TestLayer",Is.EqualTo(layer.Name));
+
             layer = new GraphvizLayer("OtherLayer");
-            Assert.AreEqual("OtherLayer", layer.Name);
+            Assert.That("OtherLayer",Is.EqualTo(layer.Name));
         }
 
         [Test]
@@ -38,7 +38,7 @@ namespace QuikGraph.Graphviz.Tests
                 throw new InvalidOperationException("Layer has wong name.");
 
             layer.Name = "LayerUpdated";
-            Assert.AreEqual("LayerUpdated", layer.Name);
+            Assert.That("LayerUpdated",Is.EqualTo(layer.Name));
         }
 
         [Test]

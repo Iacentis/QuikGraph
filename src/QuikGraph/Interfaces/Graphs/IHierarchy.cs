@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
-using JetBrains.Annotations;
+using System.Diagnostics.Contracts;
+
 
 namespace QuikGraph
 {
@@ -14,7 +15,7 @@ namespace QuikGraph
         /// <summary>
         /// Gets the root of the hierarchy.
         /// </summary>
-        [CanBeNull]
+
         TVertex Root { get; }
 
         /// <summary>
@@ -25,8 +26,8 @@ namespace QuikGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException">The given <paramref name="vertex"/> is the root of the graph.</exception>
         [Pure]
-        [CanBeNull]
-        TVertex GetParent([NotNull] TVertex vertex);
+
+        TVertex GetParent( TVertex vertex);
 
         /// <summary>
         /// Gets the parent edge of the <paramref name="vertex"/>.
@@ -36,8 +37,8 @@ namespace QuikGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException">The given <paramref name="vertex"/> is the root of the graph.</exception>
         [Pure]
-        [CanBeNull]
-        TEdge GetParentEdge([NotNull] TVertex vertex);
+
+        TEdge GetParentEdge( TVertex vertex);
 
         /// <summary>
         /// Gets a value indicating if <paramref name="edge"/> is  a cross edge.
@@ -46,17 +47,17 @@ namespace QuikGraph
         /// <returns>True if the edge is a cross edge, false otherwise.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edge"/> is <see langword="null"/>.</exception>
         [Pure]
-        bool IsCrossEdge([NotNull] TEdge edge);
+        bool IsCrossEdge( TEdge edge);
 
         /// <summary>
-        /// Gets a value indicating whether the <paramref name="edge"/> 
+        /// Gets a value indicating whether the <paramref name="edge"/>
         /// exists really or is just an induced edge.
         /// </summary>
         /// <param name="edge">The edge.</param>
         /// <returns>True if it's a real edge, false otherwise.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edge"/> is <see langword="null"/>.</exception>
         [Pure]
-        bool IsRealEdge([NotNull] TEdge edge);
+        bool IsRealEdge( TEdge edge);
 
         /// <summary>
         /// Gets a value indicating if <paramref name="source"/>
@@ -68,10 +69,10 @@ namespace QuikGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
         [Pure]
-        bool IsPredecessorOf([NotNull] TVertex source, [NotNull] TVertex target);
+        bool IsPredecessorOf( TVertex source,  TVertex target);
 
         /// <summary>
-        /// Gets the number of edges between the <paramref name="source"/> and <paramref name="target"/> vertex. 
+        /// Gets the number of edges between the <paramref name="source"/> and <paramref name="target"/> vertex.
         /// </summary>
         /// <param name="source">Source vertex.</param>
         /// <param name="target">Target vertex.</param>
@@ -83,7 +84,7 @@ namespace QuikGraph
         /// <paramref name="target"/> or the other-way round.
         /// </exception>
         [Pure]
-        int InducedEdgeCount([NotNull] TVertex source, [NotNull] TVertex target);
+        int InducedEdgeCount( TVertex source,  TVertex target);
 
         /// <summary>
         /// Gets a value indicating if the <paramref name="vertex"/> is an inner node or a leaf.
@@ -92,7 +93,7 @@ namespace QuikGraph
         /// <returns>True if the <paramref name="vertex"/> is not a leaf, false otherwise.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         [Pure]
-        bool IsInnerNode([NotNull] TVertex vertex);
+        bool IsInnerNode( TVertex vertex);
 
         /// <summary>
         /// Gets the collection of children edges from the <paramref name="vertex"/>.
@@ -101,8 +102,8 @@ namespace QuikGraph
         /// <returns>Children edges.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull, ItemNotNull]
-        IEnumerable<TEdge> ChildrenEdges([NotNull] TVertex vertex);
+
+        IEnumerable<TEdge> ChildrenEdges( TVertex vertex);
 
         /// <summary>
         /// Gets the collection of children vertices from the <paramref name="vertex"/>.
@@ -111,7 +112,7 @@ namespace QuikGraph
         /// <returns>Children vertices.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull, ItemNotNull]
-        IEnumerable<TVertex> ChildrenVertices([NotNull] TVertex vertex);
+
+        IEnumerable<TVertex> ChildrenVertices( TVertex vertex);
     }
 }

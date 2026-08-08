@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
+using System.Diagnostics.Contracts;
+
 
 namespace QuikGraph.Algorithms.Condensation
 {
@@ -9,9 +10,9 @@ namespace QuikGraph.Algorithms.Condensation
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
-#if SUPPORTS_SERIALIZATION
+
     [Serializable]
-#endif
+
     public sealed class MergedEdge<TVertex, TEdge> : Edge<TVertex>
         where TEdge : IEdge<TVertex>
     {
@@ -22,18 +23,18 @@ namespace QuikGraph.Algorithms.Condensation
         /// <param name="target">The target vertex.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
-        public MergedEdge([NotNull] TVertex source, [NotNull] TVertex target)
+        public MergedEdge( TVertex source,  TVertex target)
             : base(source, target)
         {
         }
 
-        [NotNull, ItemNotNull]
+
         private List<TEdge> _edges = new List<TEdge>();
 
         /// <summary>
         /// Merged edges.
         /// </summary>
-        [NotNull, ItemNotNull]
+
         public IList<TEdge> Edges => _edges;
 
         /// <summary>
@@ -45,15 +46,13 @@ namespace QuikGraph.Algorithms.Condensation
         /// <exception cref="T:System.ArgumentNullException"><paramref name="inEdge"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="outEdge"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull]
+
         public static MergedEdge<TVertex, TEdge> Merge(
-            [NotNull] MergedEdge<TVertex, TEdge> inEdge,
-            [NotNull] MergedEdge<TVertex, TEdge> outEdge)
+             MergedEdge<TVertex, TEdge> inEdge,
+             MergedEdge<TVertex, TEdge> outEdge)
         {
-            if (inEdge is null)
-                throw new ArgumentNullException(nameof(inEdge));
-            if (outEdge is null)
-                throw new ArgumentNullException(nameof(outEdge));
+            ArgumentNullException.ThrowIfNull(inEdge);
+            ArgumentNullException.ThrowIfNull(outEdge);
 
             var newEdge = new MergedEdge<TVertex, TEdge>(inEdge.Source, outEdge.Target)
             {
@@ -73,10 +72,10 @@ namespace QuikGraph.Algorithms.Condensation
     {
         /// <inheritdoc cref="MergedEdge{TVertex,TEdge}.Merge"/>
         [Pure]
-        [NotNull]
+
         public static MergedEdge<TVertex, TEdge> Merge<TVertex, TEdge>(
-            [NotNull] MergedEdge<TVertex, TEdge> inEdge,
-            [NotNull] MergedEdge<TVertex, TEdge> outEdge)
+             MergedEdge<TVertex, TEdge> inEdge,
+             MergedEdge<TVertex, TEdge> outEdge)
             where TEdge : IEdge<TVertex>
         {
             return MergedEdge<TVertex, TEdge>.Merge(inEdge, outEdge);

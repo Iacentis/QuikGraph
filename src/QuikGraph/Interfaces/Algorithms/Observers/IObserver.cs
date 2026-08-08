@@ -1,5 +1,5 @@
 ﻿using System;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph.Algorithms.Observers
 {
@@ -17,7 +17,7 @@ namespace QuikGraph.Algorithms.Observers
         /// <param name="algorithm">Algorithm to observe.</param>
         /// <returns><see cref="T:System.IDisposable"/> allowing to detach from registered events.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="algorithm"/> is <see langword="null"/>.</exception>
-        [NotNull]
-        IDisposable Attach([NotNull] TAlgorithm algorithm);
+
+        IDisposable Attach( TAlgorithm algorithm);
     }
 }

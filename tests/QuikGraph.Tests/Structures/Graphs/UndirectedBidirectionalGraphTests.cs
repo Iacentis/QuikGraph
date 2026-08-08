@@ -26,9 +26,9 @@ namespace QuikGraph.Tests.Structures
             void AssertGraphProperties<TVertex, TEdge>(UndirectedBidirectionalGraph<TVertex, TEdge> g, bool parallelEdges = true)
                 where TEdge : IEdge<TVertex>
             {
-                Assert.IsFalse(g.IsDirected);
-                Assert.AreEqual(parallelEdges, g.AllowParallelEdges);
-                Assert.IsNotNull(g.OriginalGraph);
+                Assert.That(g.IsDirected,Is.False);
+                Assert.That(parallelEdges,Is.EqualTo(g.AllowParallelEdges));
+                Assert.That(g.OriginalGraph,Is.Not.Null);
                 AssertEmptyGraph(g);
             }
 

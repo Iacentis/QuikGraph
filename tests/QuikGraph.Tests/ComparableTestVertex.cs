@@ -1,5 +1,5 @@
 using System;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph.Tests
 {
@@ -13,12 +13,12 @@ namespace QuikGraph.Tests
         {
         }
 
-        public ComparableTestVertex([NotNull] string name)
+        public ComparableTestVertex( string name)
         {
             Name = name;
         }
 
-        [NotNull]
+
         public string Name { get; }
 
         public int CompareTo(object obj)

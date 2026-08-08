@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using QuikGraph.Graphviz.Dot;
 
 namespace QuikGraph.Graphviz.Tests
@@ -28,7 +28,7 @@ namespace QuikGraph.Graphviz.Tests
 
             var recordCollection = new GraphvizRecordCellCollection();
             record.Cells = recordCollection;
-            Assert.AreSame(recordCollection, record.Cells);
+            Assert.That(recordCollection,Is.SameAs(record.Cells));
         }
 
         [Test]
@@ -39,7 +39,7 @@ namespace QuikGraph.Graphviz.Tests
             Assert.Throws<ArgumentNullException>(() => record.Cells = null);
         }
 
-        [NotNull, ItemNotNull]
+
         private static IEnumerable<TestCaseData> ToDotTestCases
         {
             get
@@ -163,10 +163,10 @@ namespace QuikGraph.Graphviz.Tests
         }
 
         [TestCaseSource(nameof(ToDotTestCases))]
-        public void ToDot([NotNull] GraphvizRecord record, [NotNull] string expectedDot)
+        public void ToDot( GraphvizRecord record,  string expectedDot)
         {
-            Assert.AreEqual(expectedDot, record.ToDot());
-            Assert.AreEqual(expectedDot, record.ToString());
+            Assert.That(expectedDot,Is.EqualTo(record.ToDot()));
+            Assert.That(expectedDot,Is.EqualTo(record.ToString()));
         }
     }
 }

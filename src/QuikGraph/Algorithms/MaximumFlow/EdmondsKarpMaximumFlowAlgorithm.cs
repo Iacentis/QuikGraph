@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using JetBrains.Annotations;
 using QuikGraph.Algorithms.Observers;
 using QuikGraph.Algorithms.Search;
 using QuikGraph.Algorithms.Services;
@@ -17,7 +16,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
     public sealed class EdmondsKarpMaximumFlowAlgorithm<TVertex, TEdge> : MaximumFlowAlgorithm<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
-        [NotNull]
+
         private readonly ReversedEdgeAugmentorAlgorithm<TVertex, TEdge> _reverserAlgorithm;
 
         /// <summary>
@@ -33,10 +32,10 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <exception cref="T:System.ArgumentNullException"><paramref name="reverseEdgesAugmentorAlgorithm"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="reverseEdgesAugmentorAlgorithm"/> targets a graph different from <paramref name="visitedGraph"/>.</exception>
         public EdmondsKarpMaximumFlowAlgorithm(
-            [NotNull] IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] Func<TEdge, double> capacities,
-            [NotNull] EdgeFactory<TVertex, TEdge> edgeFactory,
-            [NotNull] ReversedEdgeAugmentorAlgorithm<TVertex, TEdge> reverseEdgesAugmentorAlgorithm)
+             IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
+             Func<TEdge, double> capacities,
+             EdgeFactory<TVertex, TEdge> edgeFactory,
+             ReversedEdgeAugmentorAlgorithm<TVertex, TEdge> reverseEdgesAugmentorAlgorithm)
             : this(null, visitedGraph, capacities, edgeFactory, reverseEdgesAugmentorAlgorithm)
         {
         }
@@ -55,15 +54,14 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <exception cref="T:System.ArgumentNullException"><paramref name="reverseEdgesAugmentorAlgorithm"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="reverseEdgesAugmentorAlgorithm"/> targets a graph different from <paramref name="visitedGraph"/>.</exception>
         public EdmondsKarpMaximumFlowAlgorithm(
-            [CanBeNull] IAlgorithmComponent host,
-            [NotNull] IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] Func<TEdge, double> capacities,
-            [NotNull] EdgeFactory<TVertex, TEdge> edgeFactory,
-            [NotNull] ReversedEdgeAugmentorAlgorithm<TVertex, TEdge> reverseEdgesAugmentorAlgorithm)
+             IAlgorithmComponent host,
+             IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
+             Func<TEdge, double> capacities,
+             EdgeFactory<TVertex, TEdge> edgeFactory,
+             ReversedEdgeAugmentorAlgorithm<TVertex, TEdge> reverseEdgesAugmentorAlgorithm)
             : base(host, visitedGraph, capacities, edgeFactory)
         {
-            if (reverseEdgesAugmentorAlgorithm is null)
-                throw new ArgumentNullException(nameof(reverseEdgesAugmentorAlgorithm));
+            ArgumentNullException.ThrowIfNull(reverseEdgesAugmentorAlgorithm);
             if (!ReferenceEquals(visitedGraph, reverseEdgesAugmentorAlgorithm.VisitedGraph))
                 throw new ArgumentException("Must target the same graph.", nameof(reverseEdgesAugmentorAlgorithm));
 
@@ -71,14 +69,14 @@ namespace QuikGraph.Algorithms.MaximumFlow
             ReversedEdges = reverseEdgesAugmentorAlgorithm.ReversedEdges;
         }
 
-        [NotNull]
+
         private IVertexListGraph<TVertex, TEdge> ResidualGraph =>
             new FilteredVertexListGraph<TVertex, TEdge, IVertexListGraph<TVertex, TEdge>>(
                 VisitedGraph,
                 vertex => true,
                 new ResidualEdgePredicate<TVertex, TEdge>(ResidualCapacities).Test);
 
-        private void Augment([NotNull] TVertex source, [NotNull] TVertex sink)
+        private void Augment( TVertex source,  TVertex sink)
         {
             Debug.Assert(source != null);
             Debug.Assert(sink != null);

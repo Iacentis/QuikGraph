@@ -1,8 +1,9 @@
-#if SUPPORTS_CLONEABLE
+
 using System;
-#endif
+
 using System.Collections.Generic;
-using JetBrains.Annotations;
+using System.Diagnostics.Contracts;
+
 
 namespace QuikGraph.Collections
 {
@@ -12,9 +13,9 @@ namespace QuikGraph.Collections
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public interface IEdgeList<TVertex, TEdge> : IList<TEdge>
-#if SUPPORTS_CLONEABLE
+
         , ICloneable
-#endif
+
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -27,10 +28,10 @@ namespace QuikGraph.Collections
         /// </summary>
         /// <returns>Cloned list.</returns>
         [Pure]
-        [NotNull]
-#if SUPPORTS_CLONEABLE
+
+
         new
-#endif
+
         IEdgeList<TVertex, TEdge> Clone();
     }
 }

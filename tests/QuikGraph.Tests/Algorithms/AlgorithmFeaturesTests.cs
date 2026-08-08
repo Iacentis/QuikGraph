@@ -1,10 +1,7 @@
 ﻿using System;
-#if SUPPORTS_TASKS
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
-#endif
 using NUnit.Framework;
 using QuikGraph.Algorithms;
 
@@ -47,30 +44,28 @@ namespace QuikGraph.Tests.Algorithms
             }
         }
 
-#if SUPPORTS_TASKS
         private static readonly TimeSpan TimeoutDelay = TimeSpan.FromSeconds(5);
 
         private class ManageableTestAlgorithm : AlgorithmBase<AdjacencyGraph<int, Edge<int>>>
         {
-            [NotNull]
             public ManualResetEvent InitializeEvent { get; }
-            [NotNull]
+
             public ManualResetEvent InitializedEvent { get; } = new ManualResetEvent(false);
 
-            [NotNull]
+
             public ManualResetEvent ComputeEvent { get; }
-            [NotNull]
+
             public ManualResetEvent ComputedEvent { get; } = new ManualResetEvent(false);
 
-            [NotNull]
+
             public ManualResetEvent CleanEvent { get; }
-            [NotNull]
+
             public ManualResetEvent CleanedEvent { get; } = new ManualResetEvent(false);
 
             public ManageableTestAlgorithm(
-                [NotNull] ManualResetEvent initialize,
-                [NotNull] ManualResetEvent compute,
-                [NotNull] ManualResetEvent clean)
+                ManualResetEvent initialize,
+                ManualResetEvent compute,
+                ManualResetEvent clean)
                 : base(new AdjacencyGraph<int, Edge<int>>())
             {
                 InitializeEvent = initialize;
@@ -98,7 +93,7 @@ namespace QuikGraph.Tests.Algorithms
                 CleanedEvent.WaitOne(TimeoutDelay);
             }
         }
-#endif
+
 
         private class TestService
         {
@@ -114,7 +109,6 @@ namespace QuikGraph.Tests.Algorithms
 
         #endregion
 
-#if SUPPORTS_TASKS
         [Test]
         public void AlgorithmNormalStates()
         {
@@ -146,7 +140,7 @@ namespace QuikGraph.Tests.Algorithms
             };
             algorithm.StateChanged += (_, _) =>
             {
-                Assert.AreEqual(expectedStates.Peek(), algorithm.State);
+                Assert.That(expectedStates.Peek(), Is.EqualTo(algorithm.State));
                 expectedStates.Dequeue();
             };
             algorithm.Aborted += (_, _) =>
@@ -154,7 +148,7 @@ namespace QuikGraph.Tests.Algorithms
                 Assert.Fail($"{nameof(AlgorithmBase<object>.Aborted)} event called.");
             };
 
-            Assert.AreEqual(ComputationState.NotRunning, algorithm.State);
+            Assert.That(ComputationState.NotRunning, Is.EqualTo(algorithm.State));
 
             // Run the algorithm
             Task.Run(() =>
@@ -163,25 +157,25 @@ namespace QuikGraph.Tests.Algorithms
             });
 
             initialize.WaitOne(TimeoutDelay);
-            Assert.AreEqual(ComputationState.Running, algorithm.State);
-            Assert.IsTrue(hasStarted);
+            Assert.That(ComputationState.Running, Is.EqualTo(algorithm.State));
+            Assert.That(hasStarted, Is.True);
 
             algorithm.InitializedEvent.Set();
 
             compute.WaitOne(TimeoutDelay);
-            Assert.AreEqual(ComputationState.Running, algorithm.State);
+            Assert.That(ComputationState.Running, Is.EqualTo(algorithm.State));
 
             algorithm.ComputedEvent.Set();
 
             clean.WaitOne(TimeoutDelay);
-            Assert.AreEqual(ComputationState.Running, algorithm.State);
+            Assert.That(ComputationState.Running, Is.EqualTo(algorithm.State));
 
             algorithm.CleanedEvent.Set();
 
             finished.WaitOne(TimeoutDelay);
-            Assert.AreEqual(ComputationState.Finished, algorithm.State);
-            Assert.IsTrue(hasFinished);
-            Assert.IsTrue(expectedStates.Count == 0);
+            Assert.That(ComputationState.Finished, Is.EqualTo(algorithm.State));
+            Assert.That(hasFinished, Is.True);
+            Assert.That(expectedStates.Count == 0, Is.True);
         }
 
         [Test]
@@ -211,7 +205,7 @@ namespace QuikGraph.Tests.Algorithms
                 Assert.Fail($"{nameof(AlgorithmBase<object>.Aborted)} event called.");
             };
 
-            Assert.AreEqual(ComputationState.NotRunning, algorithm.State);
+            Assert.That(ComputationState.NotRunning, Is.EqualTo(algorithm.State));
 
             // Abort the algorithm
             Task.Run(() =>
@@ -219,7 +213,7 @@ namespace QuikGraph.Tests.Algorithms
                 Assert.DoesNotThrow(() =>
                 {
                     algorithm.Abort();
-                    Assert.AreEqual(ComputationState.NotRunning, algorithm.State);
+                    Assert.That(ComputationState.NotRunning, Is.EqualTo(algorithm.State));
                     end.Set();
                 });
             });
@@ -256,7 +250,7 @@ namespace QuikGraph.Tests.Algorithms
             };
             algorithm.StateChanged += (_, _) =>
             {
-                Assert.AreEqual(expectedStates.Peek(), algorithm.State);
+                Assert.That(expectedStates.Peek(), Is.EqualTo(algorithm.State));
                 expectedStates.Dequeue();
             };
             algorithm.Aborted += (_, _) =>
@@ -267,7 +261,7 @@ namespace QuikGraph.Tests.Algorithms
                 aborted.Set();
             };
 
-            Assert.AreEqual(ComputationState.NotRunning, algorithm.State);
+            Assert.That(ComputationState.NotRunning, Is.EqualTo(algorithm.State));
 
             // Run the algorithm
             Task.Run(() =>
@@ -276,25 +270,25 @@ namespace QuikGraph.Tests.Algorithms
             });
 
             initialize.WaitOne(TimeoutDelay);
-            Assert.AreEqual(ComputationState.Running, algorithm.State);
-            Assert.IsTrue(hasStarted);
+            Assert.That(ComputationState.Running, Is.EqualTo(algorithm.State));
+            Assert.That(hasStarted, Is.True);
 
             algorithm.InitializedEvent.Set();
 
             compute.WaitOne(TimeoutDelay);
-            Assert.AreEqual(ComputationState.Running, algorithm.State);
+            Assert.That(ComputationState.Running, Is.EqualTo(algorithm.State));
 
             algorithm.Abort();
             algorithm.ComputedEvent.Set();
 
-            Assert.AreEqual(ComputationState.PendingAbortion, algorithm.State);
+            Assert.That(ComputationState.PendingAbortion, Is.EqualTo(algorithm.State));
 
             algorithm.CleanedEvent.Set();
 
             aborted.WaitOne(TimeoutDelay);
-            Assert.AreEqual(ComputationState.Aborted, algorithm.State);
-            Assert.IsTrue(hasAborted);
-            Assert.IsTrue(expectedStates.Count == 0);
+            Assert.That(ComputationState.Aborted, Is.EqualTo(algorithm.State));
+            Assert.That(hasAborted, Is.True);
+            Assert.That(expectedStates.Count == 0, Is.True);
         }
 
         [Test]
@@ -328,7 +322,7 @@ namespace QuikGraph.Tests.Algorithms
             };
             algorithm.StateChanged += (_, _) =>
             {
-                Assert.AreEqual(expectedStates.Peek(), algorithm.State);
+                Assert.That(expectedStates.Peek(), Is.EqualTo(algorithm.State));
                 expectedStates.Dequeue();
             };
             algorithm.Aborted += (_, _) =>
@@ -336,7 +330,7 @@ namespace QuikGraph.Tests.Algorithms
                 Assert.Fail($"{nameof(AlgorithmBase<object>.Aborted)} event called.");
             };
 
-            Assert.AreEqual(ComputationState.NotRunning, algorithm.State);
+            Assert.That(ComputationState.NotRunning, Is.EqualTo(algorithm.State));
 
             // Run the algorithm
             Task.Run(() =>
@@ -345,36 +339,36 @@ namespace QuikGraph.Tests.Algorithms
             });
 
             initialize.WaitOne(TimeoutDelay);
-            Assert.AreEqual(ComputationState.Running, algorithm.State);
-            Assert.IsTrue(hasStarted);
+            Assert.That(ComputationState.Running, Is.EqualTo(algorithm.State));
+            Assert.That(hasStarted, Is.True);
 
             algorithm.InitializedEvent.Set();
 
             compute.WaitOne(TimeoutDelay);
-            Assert.AreEqual(ComputationState.Running, algorithm.State);
+            Assert.That(ComputationState.Running, Is.EqualTo(algorithm.State));
 
             algorithm.Services.CancelManager.Cancel();
             algorithm.Services.CancelManager.ResetCancel(); // These calls don't change algorithm state
             algorithm.Services.CancelManager.Cancel();
             algorithm.ComputedEvent.Set();
 
-            Assert.AreEqual(ComputationState.Running, algorithm.State);
+            Assert.That(ComputationState.Running, Is.EqualTo(algorithm.State));
 
             algorithm.CleanedEvent.Set();
 
             finished.WaitOne(TimeoutDelay);
-            Assert.AreEqual(ComputationState.Finished, algorithm.State);
-            Assert.IsTrue(hasFinished);
-            Assert.IsTrue(expectedStates.Count == 0);
+            Assert.That(ComputationState.Finished, Is.EqualTo(algorithm.State));
+            Assert.That(hasFinished, Is.True);
+            Assert.That(expectedStates.Count == 0, Is.True);
         }
-#endif
+
 
         [Test]
         public void GetService()
         {
             var algorithm = new TestAlgorithm();
             var service = algorithm.GetService<TestService>();
-            Assert.IsInstanceOf<TestService>(service);
+            Assert.That(service, Is.InstanceOf<TestService>());
         }
 
         [Test]
@@ -391,10 +385,10 @@ namespace QuikGraph.Tests.Algorithms
         public void TryGetService()
         {
             var algorithm = new TestAlgorithm();
-            Assert.IsTrue(algorithm.TryGetService(out TestService service));
-            Assert.IsInstanceOf<TestService>(service);
+            Assert.That(algorithm.TryGetService(out TestService service), Is.True);
+            Assert.That(service, Is.InstanceOf<TestService>());
 
-            Assert.IsFalse(algorithm.TryGetService<TestNotInService>(out _));
+            Assert.That(algorithm.TryGetService<TestNotInService>(out _), Is.False);
         }
     }
 }

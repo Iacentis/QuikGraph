@@ -1,5 +1,6 @@
 ﻿using System;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using QuikGraph.Algorithms.Condensation;
 using QuikGraph.Tests.Structures;
 
@@ -47,14 +48,14 @@ namespace QuikGraph.Tests.Algorithms.Condensation
 
             var subEdge1 = new Edge<int>(1, 2);
             edge.Edges.Add(subEdge1);
-            CollectionAssert.AreEqual(new[] { subEdge1 }, edge.Edges);
+            CollectionAssert.AreEqual(new[] { subEdge1 },edge.Edges);
 
             var subEdge2 = new MergedEdge<int, Edge<int>>(1, 2);
             edge.Edges.Add(subEdge2);
-            CollectionAssert.AreEqual(new[] { subEdge1, subEdge2 }, edge.Edges);
+            CollectionAssert.AreEqual(new[] { subEdge1, subEdge2 },edge.Edges);
 
             edge.Edges.RemoveAt(1);
-            CollectionAssert.AreEqual(new[] { subEdge1 }, edge.Edges);
+            CollectionAssert.AreEqual(new[] { subEdge1 },edge.Edges);
 
             edge.Edges.Remove(subEdge1);
             CollectionAssert.IsEmpty(edge.Edges);
@@ -75,20 +76,20 @@ namespace QuikGraph.Tests.Algorithms.Condensation
             edge2.Edges.Add(subEdge3);
 
             MergedEdge<int, Edge<int>> mergedEdge = MergedEdge.Merge(emptyEdge1, emptyEdge2);
-            Assert.IsNotNull(mergedEdge);
+            Assert.That(mergedEdge,Is.Not.Null);
             CollectionAssert.IsEmpty(mergedEdge.Edges);
 
             mergedEdge = MergedEdge.Merge(emptyEdge1, edge1);
-            Assert.IsNotNull(mergedEdge);
-            CollectionAssert.AreEqual(new[] { subEdge1 }, mergedEdge.Edges);
+            Assert.That(mergedEdge,Is.Not.Null);
+            CollectionAssert.AreEqual(new[] { subEdge1 },mergedEdge.Edges);
 
             mergedEdge = MergedEdge.Merge(edge1, emptyEdge1);
-            Assert.IsNotNull(mergedEdge);
-            CollectionAssert.AreEqual(new[] { subEdge1 }, mergedEdge.Edges);
+            Assert.That(mergedEdge,Is.Not.Null);
+            CollectionAssert.AreEqual(new[] { subEdge1 },mergedEdge.Edges);
 
             mergedEdge = MergedEdge.Merge(edge1, edge2);
-            Assert.IsNotNull(mergedEdge);
-            CollectionAssert.AreEqual(new[] { subEdge1, subEdge2, subEdge3 }, mergedEdge.Edges);
+            Assert.That(mergedEdge,Is.Not.Null);
+            CollectionAssert.AreEqual(new[] { subEdge1, subEdge2, subEdge3 },mergedEdge.Edges);
         }
 
         [Test]
@@ -114,12 +115,12 @@ namespace QuikGraph.Tests.Algorithms.Condensation
             var edge4 = new MergedEdge<int, Edge<int>>(1, 2);
             edge4.Edges.Add(edge1);
 
-            Assert.AreEqual(edge1, edge1);
-            Assert.AreNotEqual(edge1, edge2);
-            Assert.AreNotEqual(edge1, edge3);
-            Assert.AreNotEqual(edge1, edge4);
+            Assert.That(edge1,Is.EqualTo(edge1));
+            Assert.That(edge1,Is.Not.EqualTo(edge2));
+            Assert.That(edge1,Is.Not.EqualTo(edge3));
+            Assert.That(edge1,Is.Not.EqualTo(edge4));
 
-            Assert.AreNotEqual(null, edge1);
+            Assert.That(edge1,Is.Not.Null);
         }
 
         [Test]
@@ -128,8 +129,8 @@ namespace QuikGraph.Tests.Algorithms.Condensation
             var edge1 = new MergedEdge<int, Edge<int>>(1, 2);
             var edge2 = new MergedEdge<int, Edge<int>>(2, 1);
 
-            Assert.AreEqual("1 -> 2", edge1.ToString());
-            Assert.AreEqual("2 -> 1", edge2.ToString());
+            Assert.That("1 -> 2",Is.EqualTo(edge1.ToString()));
+            Assert.That("2 -> 1",Is.EqualTo(edge2.ToString()));
         }
     }
 }

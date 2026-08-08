@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Linq;
-#if SUPPORTS_AGGRESSIVE_INLINING
+
 using System.Runtime.CompilerServices;
-#endif
-using JetBrains.Annotations;
+
+
 using QuikGraph.Collections;
 
 namespace QuikGraph
@@ -20,16 +21,16 @@ namespace QuikGraph
     /// </remarks>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type</typeparam>
-#if SUPPORTS_SERIALIZATION
+
     [Serializable]
-#endif
+
     [DebuggerDisplay("VertexCount = {" + nameof(VertexCount) + "}, EdgeCount = {" + nameof(EdgeCount) + "}")]
     public class BidirectionalGraph<TVertex, TEdge>
         : IEdgeListAndIncidenceGraph<TVertex, TEdge>
         , IMutableBidirectionalGraph<TVertex, TEdge>
-#if SUPPORTS_CLONEABLE
+
         , ICloneable
-#endif
+
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -89,7 +90,7 @@ namespace QuikGraph
         /// <summary>
         /// Gets the type of vertices.
         /// </summary>
-        [NotNull]
+
         public Type VertexType => typeof(TVertex);
 
         /// <summary>
@@ -182,7 +183,7 @@ namespace QuikGraph
             throw new VertexNotFoundException();
         }
 
-        [NotNull]
+
         private IVertexEdgeDictionary<TVertex, TEdge> _vertexOutEdges;
 
         /// <inheritdoc />
@@ -285,7 +286,7 @@ namespace QuikGraph
             throw new VertexNotFoundException();
         }
 
-        [NotNull]
+
         private IVertexEdgeDictionary<TVertex, TEdge> _vertexInEdges;
 
         /// <inheritdoc />
@@ -377,8 +378,7 @@ namespace QuikGraph
         /// <inheritdoc />
         public virtual int AddVertexRange(IEnumerable<TVertex> vertices)
         {
-            if (vertices is null)
-                throw new ArgumentNullException(nameof(vertices));
+            ArgumentNullException.ThrowIfNull(vertices);
             TVertex[] verticesArray = vertices.ToArray();
             if (verticesArray.Any(v => v == null))
                 throw new ArgumentNullException(nameof(vertices), "At least one vertex is null.");
@@ -393,17 +393,17 @@ namespace QuikGraph
         /// Called on each added vertex.
         /// </summary>
         /// <param name="vertex">Added vertex.</param>
-        protected virtual void OnVertexAdded([NotNull] TVertex vertex)
+        protected virtual void OnVertexAdded( TVertex vertex)
         {
             Debug.Assert(vertex != null);
 
             VertexAdded?.Invoke(vertex);
         }
 
-#if SUPPORTS_AGGRESSIVE_INLINING
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
-        private void NotifyVerticesRemoved([NotNull, ItemNotNull] ICollection<TVertex> vertices)
+
+        private void NotifyVerticesRemoved( ICollection<TVertex> vertices)
         {
             if (VertexRemoved != null) // Lazily notify
             {
@@ -414,11 +414,11 @@ namespace QuikGraph
             }
         }
 
-        [NotNull, ItemNotNull]
-#if SUPPORTS_AGGRESSIVE_INLINING
+
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
-        private IEnumerable<TEdge> RemoveInOutEdges([NotNull] TVertex vertex)
+
+        private IEnumerable<TEdge> RemoveInOutEdges( TVertex vertex)
         {
             IEdgeList<TVertex, TEdge> outEdges = _vertexOutEdges[vertex];
             _vertexOutEdges.Remove(vertex);
@@ -461,7 +461,7 @@ namespace QuikGraph
         /// Called for each removed vertex.
         /// </summary>
         /// <param name="vertex">Removed vertex.</param>
-        protected virtual void OnVertexRemoved([NotNull] TVertex vertex)
+        protected virtual void OnVertexRemoved( TVertex vertex)
         {
             Debug.Assert(vertex != null);
 
@@ -471,8 +471,7 @@ namespace QuikGraph
         /// <inheritdoc />
         public int RemoveVertexIf(VertexPredicate<TVertex> predicate)
         {
-            if (predicate is null)
-                throw new ArgumentNullException(nameof(predicate));
+            ArgumentNullException.ThrowIfNull(predicate);
 
             var verticesToRemove = new VertexList<TVertex>();
             verticesToRemove.AddRange(Vertices.Where(vertex => predicate(vertex)));
@@ -491,10 +490,10 @@ namespace QuikGraph
 
         #region IMutableEdgeListGraph<TVertex,TEdge>
 
-#if SUPPORTS_AGGRESSIVE_INLINING
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
-        private bool AddEdgeInternal([NotNull] TEdge edge)
+
+        private bool AddEdgeInternal( TEdge edge)
         {
             Debug.Assert(edge != null);
 
@@ -524,8 +523,7 @@ namespace QuikGraph
         /// <inheritdoc />
         public int AddEdgeRange(IEnumerable<TEdge> edges)
         {
-            if (edges is null)
-                throw new ArgumentNullException(nameof(edges));
+            ArgumentNullException.ThrowIfNull(edges);
             TEdge[] edgesArray = edges.ToArray();
             if (edgesArray.Any(e => e == null))
                 throw new ArgumentNullException(nameof(edges), "At least one edge is null.");
@@ -540,17 +538,17 @@ namespace QuikGraph
         /// Called on each added edge.
         /// </summary>
         /// <param name="edge">Added edge.</param>
-        protected virtual void OnEdgeAdded([NotNull] TEdge edge)
+        protected virtual void OnEdgeAdded( TEdge edge)
         {
             Debug.Assert(edge != null);
 
             EdgeAdded?.Invoke(edge);
         }
 
-#if SUPPORTS_AGGRESSIVE_INLINING
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
-        private void NotifyEdgesRemoved([NotNull, ItemNotNull] IEnumerable<TEdge> edges)
+
+        private void NotifyEdgesRemoved( IEnumerable<TEdge> edges)
         {
             Debug.Assert(edges != null);
 
@@ -591,17 +589,17 @@ namespace QuikGraph
         /// Called on each removed edge.
         /// </summary>
         /// <param name="edge">Removed edge.</param>
-        protected virtual void OnEdgeRemoved([NotNull] TEdge edge)
+        protected virtual void OnEdgeRemoved( TEdge edge)
         {
             Debug.Assert(edge != null);
 
             EdgeRemoved?.Invoke(edge);
         }
 
-#if SUPPORTS_AGGRESSIVE_INLINING
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
-        private int RemoveEdgesInternal([NotNull] ICollection<TEdge> edgesToRemove)
+
+        private int RemoveEdgesInternal( ICollection<TEdge> edgesToRemove)
         {
             foreach (TEdge edge in edgesToRemove)
             {
@@ -619,8 +617,7 @@ namespace QuikGraph
         /// <inheritdoc />
         public int RemoveEdgeIf(EdgePredicate<TVertex, TEdge> predicate)
         {
-            if (predicate is null)
-                throw new ArgumentNullException(nameof(predicate));
+            ArgumentNullException.ThrowIfNull(predicate);
 
             var edgesToRemove = new EdgeList<TVertex, TEdge>();
             edgesToRemove.AddRange(Edges.Where(edge => predicate(edge)));
@@ -646,8 +643,7 @@ namespace QuikGraph
         /// <inheritdoc />
         public int AddVerticesAndEdgeRange(IEnumerable<TEdge> edges)
         {
-            if (edges is null)
-                throw new ArgumentNullException(nameof(edges));
+            ArgumentNullException.ThrowIfNull(edges);
             TEdge[] edgesArray = edges.ToArray();
             if (edgesArray.Any(e => e == null))
                 throw new ArgumentNullException(nameof(edges), "At least one edge is null.");
@@ -657,13 +653,12 @@ namespace QuikGraph
 
         #endregion
 
-        #region IMutableIncidenceGraph<TVertex,TEdge> 
+        #region IMutableIncidenceGraph<TVertex,TEdge>
 
         /// <inheritdoc />
         public int RemoveOutEdgeIf(TVertex vertex, EdgePredicate<TVertex, TEdge> predicate)
         {
-            if (predicate is null)
-                throw new ArgumentNullException(nameof(predicate));
+            ArgumentNullException.ThrowIfNull(predicate);
 
             if (_vertexOutEdges.TryGetValue(vertex, out IEdgeList<TVertex, TEdge> outEdges))
             {
@@ -717,8 +712,7 @@ namespace QuikGraph
         /// <inheritdoc />
         public int RemoveInEdgeIf(TVertex vertex, EdgePredicate<TVertex, TEdge> predicate)
         {
-            if (predicate is null)
-                throw new ArgumentNullException(nameof(predicate));
+            ArgumentNullException.ThrowIfNull(predicate);
 
             if (_vertexInEdges.TryGetValue(vertex, out IEdgeList<TVertex, TEdge> inEdges))
             {
@@ -769,13 +763,12 @@ namespace QuikGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/>.</exception>
         /// <exception cref="VertexNotFoundException"><paramref name="vertex"/> is not part of the graph.</exception>
         public void MergeVertex(
-            [NotNull] TVertex vertex,
-            [NotNull, InstantHandle] EdgeFactory<TVertex, TEdge> edgeFactory)
+             TVertex vertex,
+             EdgeFactory<TVertex, TEdge> edgeFactory)
         {
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
-            if (edgeFactory is null)
-                throw new ArgumentNullException(nameof(edgeFactory));
+            ArgumentNullException.ThrowIfNull(edgeFactory);
 
             // Storing edges (not a copy)
             // Remove vertex will delete some of these edges
@@ -810,13 +803,11 @@ namespace QuikGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexPredicate"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/>.</exception>
         public void MergeVerticesIf(
-            [NotNull, InstantHandle] VertexPredicate<TVertex> vertexPredicate,
-            [NotNull, InstantHandle] EdgeFactory<TVertex, TEdge> edgeFactory)
+             VertexPredicate<TVertex> vertexPredicate,
+             EdgeFactory<TVertex, TEdge> edgeFactory)
         {
-            if (vertexPredicate is null)
-                throw new ArgumentNullException(nameof(vertexPredicate));
-            if (edgeFactory is null)
-                throw new ArgumentNullException(nameof(edgeFactory));
+            ArgumentNullException.ThrowIfNull(vertexPredicate);
+            ArgumentNullException.ThrowIfNull(edgeFactory);
 
             // Storing vertices to merge
             var mergeVertices = new VertexList<TVertex>(VertexCount / 4);
@@ -835,10 +826,9 @@ namespace QuikGraph
         /// Copy constructor that creates sufficiently deep copy of the graph.
         /// </summary>
         /// <param name="other">Graph to copy.</param>
-        public BidirectionalGraph([NotNull] BidirectionalGraph<TVertex, TEdge> other)
+        public BidirectionalGraph( BidirectionalGraph<TVertex, TEdge> other)
         {
-            if (other is null)
-                throw new ArgumentNullException(nameof(other));
+            ArgumentNullException.ThrowIfNull(other);
 
             _vertexInEdges = other._vertexInEdges.Clone();
             _vertexOutEdges = other._vertexOutEdges.Clone();
@@ -852,19 +842,19 @@ namespace QuikGraph
         /// </summary>
         /// <returns>Cloned graph.</returns>
         [Pure]
-        [NotNull]
+
         public BidirectionalGraph<TVertex, TEdge> Clone()
         {
             return new BidirectionalGraph<TVertex, TEdge>(this);
         }
 
-#if SUPPORTS_CLONEABLE
+
         /// <inheritdoc />
         object ICloneable.Clone()
         {
             return Clone();
         }
-#endif
+
 
         #endregion
     }

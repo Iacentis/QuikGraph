@@ -14,12 +14,12 @@ namespace QuikGraph.Graphviz.Tests
         public void Constructor()
         {
             var font = new GraphvizFont("TestFont", 12.5f);
-            Assert.AreEqual("TestFont", font.Name);
-            Assert.AreEqual(12.5f, font.SizeInPoints);
+            Assert.That("TestFont",Is.EqualTo(font.Name));
+            Assert.That(12.5f,Is.EqualTo(font.SizeInPoints));
 
             font = new GraphvizFont("OtherFont", 22.0f);
-            Assert.AreEqual("OtherFont", font.Name);
-            Assert.AreEqual(22.0f, font.SizeInPoints);
+            Assert.That("OtherFont",Is.EqualTo(font.Name));
+            Assert.That(22.0f,Is.EqualTo(font.SizeInPoints));
         }
 
         [Test]

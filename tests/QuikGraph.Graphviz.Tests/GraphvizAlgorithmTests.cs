@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using JetBrains.Annotations;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using QuikGraph.Graphviz.Dot;
-using NotNullAttribute = JetBrains.Annotations.NotNullAttribute;
 
 namespace QuikGraph.Graphviz.Tests
 {
@@ -44,12 +43,12 @@ namespace QuikGraph.Graphviz.Tests
                 GraphvizImageType imageType = GraphvizImageType.Png)
                 where TEdge : IEdge<TVertex>
             {
-                Assert.AreSame(treatedGraph, algo.VisitedGraph);
-                Assert.IsNotNull(algo.GraphFormat);
-                Assert.IsNotNull(algo.CommonVertexFormat);
-                Assert.IsNotNull(algo.CommonEdgeFormat);
-                Assert.AreEqual(imageType, algo.ImageType);
-                Assert.IsNull(algo.Output);
+                Assert.That(treatedGraph, Is.SameAs(algo.VisitedGraph));
+                Assert.That(algo.GraphFormat, Is.Not.Null);
+                Assert.That(algo.CommonVertexFormat, Is.Not.Null);
+                Assert.That(algo.CommonEdgeFormat, Is.Not.Null);
+                Assert.That(imageType, Is.EqualTo(algo.ImageType));
+                Assert.That(algo.Output, Is.Null);
             }
 
             #endregion
@@ -61,7 +60,8 @@ namespace QuikGraph.Graphviz.Tests
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(() => new GraphvizAlgorithm<int, Edge<int>>(null));
-            Assert.Throws<ArgumentNullException>(() => new GraphvizAlgorithm<int, Edge<int>>(null, GraphvizImageType.Gif));
+            Assert.Throws<ArgumentNullException>(() =>
+                new GraphvizAlgorithm<int, Edge<int>>(null, GraphvizImageType.Gif));
 
             var graph = new AdjacencyGraph<int, Edge<int>>();
             var algorithm = new GraphvizAlgorithm<int, Edge<int>>(graph);
@@ -84,7 +84,7 @@ namespace QuikGraph.Graphviz.Tests
             algorithm.Generate();
 
             // Only vertices
-            graph.AddVertexRange(new[] { 1, 2 });
+            graph.AddVertexRange([1, 2]);
             algorithm = new GraphvizAlgorithm<int, Edge<int>>(graph);
             List<int> notFormattedVertices = RegisterOnFormatVertex(algorithm, graph.Vertices);
             algorithm.FormatEdge += NoEdgeOnFormatEdge;
@@ -95,12 +95,7 @@ namespace QuikGraph.Graphviz.Tests
             CollectionAssert.IsEmpty(notFormattedVertices);
 
             // With edges
-            graph.AddVerticesAndEdgeRange(new[]
-            {
-                new Edge<int>(1, 2),
-                new Edge<int>(2, 3),
-                new Edge<int>(3, 1)
-            });
+            graph.AddVerticesAndEdgeRange([new Edge<int>(1, 2), new Edge<int>(2, 3), new Edge<int>(3, 1)]);
             algorithm = new GraphvizAlgorithm<int, Edge<int>>(graph);
             notFormattedVertices = RegisterOnFormatVertex(algorithm, graph.Vertices);
             List<Edge<int>> notFormattedEdges = RegisterOnFormatEdge(algorithm, graph.Edges);
@@ -125,7 +120,7 @@ namespace QuikGraph.Graphviz.Tests
 
             // With clusters
             ClusteredAdjacencyGraph<int, Edge<int>> subGraph1 = clusteredGraph.AddCluster();
-            subGraph1.AddVertexRange(new[] { 4, 5 });
+            subGraph1.AddVertexRange([4, 5]);
             ClusteredAdjacencyGraph<int, Edge<int>> subGraph2 = clusteredGraph.AddCluster();
             subGraph2.AddVerticesAndEdge(new Edge<int>(1, 6));
             algorithm = new GraphvizAlgorithm<int, Edge<int>>(clusteredGraph);
@@ -133,7 +128,7 @@ namespace QuikGraph.Graphviz.Tests
             notFormattedEdges = RegisterOnFormatEdge(algorithm, clusteredGraph.Edges);
             List<IVertexAndEdgeListGraph<int, Edge<int>>> notFormattedClusters = RegisterOnFormatCluster(
                 algorithm,
-                new[] { subGraph1, subGraph2 });
+                [subGraph1, subGraph2]);
 
             algorithm.Generate();
 
@@ -145,48 +140,54 @@ namespace QuikGraph.Graphviz.Tests
 
             void NoVertexOnFormatVertex(object sender, FormatVertexEventArgs<int> args)
             {
-                Assert.Fail($"{nameof(GraphvizAlgorithm<object, Edge<object>>.FormatVertex)} called while no vertex in graph.");
+                Assert.Fail(
+                    $"{nameof(GraphvizAlgorithm<object, Edge<object>>.FormatVertex)} called while no vertex in graph.");
             }
 
-            List<TVertex> RegisterOnFormatVertex<TVertex, TEdge>(GraphvizAlgorithm<TVertex, TEdge> algo, IEnumerable<TVertex> vertices)
+            List<TVertex> RegisterOnFormatVertex<TVertex, TEdge>(GraphvizAlgorithm<TVertex, TEdge> algo,
+                IEnumerable<TVertex> vertices)
                 where TEdge : IEdge<TVertex>
             {
                 var verticesList = new List<TVertex>(vertices);
                 algo.FormatVertex += (_, args) =>
                 {
-                    Assert.IsTrue(verticesList.Remove(args.Vertex));
+                    Assert.That(verticesList.Remove(args.Vertex), Is.True);
                 };
                 return verticesList;
             }
 
             void NoEdgeOnFormatEdge(object sender, FormatEdgeEventArgs<int, Edge<int>> args)
             {
-                Assert.Fail($"{nameof(GraphvizAlgorithm<object, Edge<object>>.FormatEdge)} called while no edge in graph.");
+                Assert.Fail(
+                    $"{nameof(GraphvizAlgorithm<object, Edge<object>>.FormatEdge)} called while no edge in graph.");
             }
 
-            List<TEdge> RegisterOnFormatEdge<TVertex, TEdge>(GraphvizAlgorithm<TVertex, TEdge> algo, IEnumerable<TEdge> edges)
+            List<TEdge> RegisterOnFormatEdge<TVertex, TEdge>(GraphvizAlgorithm<TVertex, TEdge> algo,
+                IEnumerable<TEdge> edges)
                 where TEdge : IEdge<TVertex>
             {
                 var edgeList = new List<TEdge>(edges);
                 algo.FormatEdge += (_, args) =>
                 {
-                    Assert.IsTrue(edgeList.Remove(args.Edge));
+                    Assert.That(edgeList.Remove(args.Edge), Is.True);
                 };
                 return edgeList;
             }
 
             void NoClusterOnFormatCluster(object sender, FormatClusterEventArgs<int, Edge<int>> args)
             {
-                Assert.Fail($"{nameof(GraphvizAlgorithm<object, Edge<object>>.FormatCluster)} called while no cluster in graph.");
+                Assert.Fail(
+                    $"{nameof(GraphvizAlgorithm<object, Edge<object>>.FormatCluster)} called while no cluster in graph.");
             }
 
-            List<IVertexAndEdgeListGraph<TVertex, TEdge>> RegisterOnFormatCluster<TVertex, TEdge>(GraphvizAlgorithm<TVertex, TEdge> algo, IEnumerable<IVertexAndEdgeListGraph<TVertex, TEdge>> clusters)
+            List<IVertexAndEdgeListGraph<TVertex, TEdge>> RegisterOnFormatCluster<TVertex, TEdge>(
+                GraphvizAlgorithm<TVertex, TEdge> algo, IEnumerable<IVertexAndEdgeListGraph<TVertex, TEdge>> clusters)
                 where TEdge : IEdge<TVertex>
             {
                 var clusterList = new List<IVertexAndEdgeListGraph<TVertex, TEdge>>(clusters);
                 algo.FormatCluster += (_, args) =>
                 {
-                    Assert.IsTrue(clusterList.Remove(args.Cluster));
+                    Assert.That(clusterList.Remove(args.Cluster), Is.True);
                 };
                 return clusterList;
             }
@@ -203,16 +204,11 @@ namespace QuikGraph.Graphviz.Tests
             TestGenerate(graph);
 
             // Only vertices
-            graph.AddVertexRange(new[] { 1, 2 });
+            graph.AddVertexRange([1, 2]);
             TestGenerate(graph);
 
             // With edges
-            graph.AddVerticesAndEdgeRange(new[]
-            {
-                new Edge<int>(1, 2),
-                new Edge<int>(2, 3),
-                new Edge<int>(3, 1)
-            });
+            graph.AddVerticesAndEdgeRange([new Edge<int>(1, 2), new Edge<int>(2, 3), new Edge<int>(3, 1)]);
             TestGenerate(graph);
 
             // With no cluster
@@ -221,7 +217,7 @@ namespace QuikGraph.Graphviz.Tests
 
             // With clusters
             ClusteredAdjacencyGraph<int, Edge<int>> subGraph1 = clusteredGraph.AddCluster();
-            subGraph1.AddVertexRange(new[] { 4, 5 });
+            subGraph1.AddVertexRange([4, 5]);
             ClusteredAdjacencyGraph<int, Edge<int>> subGraph2 = clusteredGraph.AddCluster();
             subGraph2.AddVerticesAndEdge(new Edge<int>(1, 6));
             TestGenerate(clusteredGraph);
@@ -233,7 +229,7 @@ namespace QuikGraph.Graphviz.Tests
             {
                 var algorithm = new GraphvizAlgorithm<TVertex, TEdge>(g);
                 string generatedDot = algorithm.Generate();
-                Assert.IsNotEmpty(generatedDot);
+                Assert.That(generatedDot, Is.Not.Empty);
 
                 var dotEngine = new TestDotEngine { ExpectedDot = generatedDot };
                 // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
@@ -243,10 +239,9 @@ namespace QuikGraph.Graphviz.Tests
             #endregion
         }
 
-        [NotNull, ItemNotNull]
+
         private static IEnumerable<TestCaseData> GenerateTestCases
         {
-            [UsedImplicitly]
             get
             {
                 // Empty graphs
@@ -255,7 +250,7 @@ namespace QuikGraph.Graphviz.Tests
                 {
                     ExpectedResult =
                         "digraph G {" + Environment.NewLine
-                        + "}"
+                                      + "}"
                 };
 
                 var undirectedGraph = new UndirectedGraph<int, Edge<int>>();
@@ -263,117 +258,105 @@ namespace QuikGraph.Graphviz.Tests
                 {
                     ExpectedResult =
                         "graph G {" + Environment.NewLine
-                        + "}"
+                                    + "}"
                 };
 
                 // Only vertices
                 graph = new AdjacencyGraph<int, Edge<int>>();
-                graph.AddVertexRange(new[] { 1, 2, 3 });
+                graph.AddVertexRange([1, 2, 3]);
                 yield return new TestCaseData(graph)
                 {
                     ExpectedResult =
                         "digraph G {" + Environment.NewLine
-                        + "0;" + Environment.NewLine
-                        + "1;" + Environment.NewLine
-                        + "2;" + Environment.NewLine
-                        + "}"
+                                      + "0;" + Environment.NewLine
+                                      + "1;" + Environment.NewLine
+                                      + "2;" + Environment.NewLine
+                                      + "}"
                 };
 
                 undirectedGraph = new UndirectedGraph<int, Edge<int>>();
-                undirectedGraph.AddVertexRange(new[] { 1, 2, 3 });
+                undirectedGraph.AddVertexRange([1, 2, 3]);
                 yield return new TestCaseData(undirectedGraph)
                 {
                     ExpectedResult =
                         "graph G {" + Environment.NewLine
-                        + "0;" + Environment.NewLine
-                        + "1;" + Environment.NewLine
-                        + "2;" + Environment.NewLine
-                        + "}"
+                                    + "0;" + Environment.NewLine
+                                    + "1;" + Environment.NewLine
+                                    + "2;" + Environment.NewLine
+                                    + "}"
                 };
 
                 // With edges
                 graph = new AdjacencyGraph<int, Edge<int>>();
-                graph.AddVerticesAndEdgeRange(new[]
-                {
-                    new Edge<int>(1, 2),
-                    new Edge<int>(2, 3),
-                    new Edge<int>(3, 1)
-                });
+                graph.AddVerticesAndEdgeRange([new Edge<int>(1, 2), new Edge<int>(2, 3), new Edge<int>(3, 1)]);
                 yield return new TestCaseData(graph)
                 {
                     ExpectedResult =
                         "digraph G {" + Environment.NewLine
-                        + "0;" + Environment.NewLine
-                        + "1;" + Environment.NewLine
-                        + "2;" + Environment.NewLine
-                        + "0 -> 1;" + Environment.NewLine
-                        + "1 -> 2;" + Environment.NewLine
-                        + "2 -> 0;" + Environment.NewLine
-                        + "}"
+                                      + "0;" + Environment.NewLine
+                                      + "1;" + Environment.NewLine
+                                      + "2;" + Environment.NewLine
+                                      + "0 -> 1;" + Environment.NewLine
+                                      + "1 -> 2;" + Environment.NewLine
+                                      + "2 -> 0;" + Environment.NewLine
+                                      + "}"
                 };
 
                 undirectedGraph = new UndirectedGraph<int, Edge<int>>();
-                undirectedGraph.AddVerticesAndEdgeRange(new[]
-                {
-                    new Edge<int>(1, 2),
-                    new Edge<int>(2, 3),
-                    new Edge<int>(3, 1)
-                });
+                undirectedGraph.AddVerticesAndEdgeRange([
+                    new Edge<int>(1, 2), new Edge<int>(2, 3), new Edge<int>(3, 1)
+                ]);
                 yield return new TestCaseData(undirectedGraph)
                 {
                     ExpectedResult =
                         "graph G {" + Environment.NewLine
-                        + "0;" + Environment.NewLine
-                        + "1;" + Environment.NewLine
-                        + "2;" + Environment.NewLine
-                        + "0 -- 1;" + Environment.NewLine
-                        + "1 -- 2;" + Environment.NewLine
-                        + "2 -- 0;" + Environment.NewLine
-                        + "}"
+                                    + "0;" + Environment.NewLine
+                                    + "1;" + Environment.NewLine
+                                    + "2;" + Environment.NewLine
+                                    + "0 -- 1;" + Environment.NewLine
+                                    + "1 -- 2;" + Environment.NewLine
+                                    + "2 -- 0;" + Environment.NewLine
+                                    + "}"
                 };
 
                 // With no cluster
                 var wrappedGraph = new AdjacencyGraph<int, Edge<int>>();
-                wrappedGraph.AddVertexRange(new[] { 1, 2 });
+                wrappedGraph.AddVertexRange([1, 2]);
                 var clusteredGraph = new ClusteredAdjacencyGraph<int, Edge<int>>(wrappedGraph);
                 yield return new TestCaseData(clusteredGraph)
                 {
                     ExpectedResult =
                         "digraph G {" + Environment.NewLine
-                        + "0;" + Environment.NewLine
-                        + "1;" + Environment.NewLine
-                        + "}"
+                                      + "0;" + Environment.NewLine
+                                      + "1;" + Environment.NewLine
+                                      + "}"
                 };
 
                 // With clusters
                 wrappedGraph = new AdjacencyGraph<int, Edge<int>>();
-                wrappedGraph.AddVertexRange(new[] { 1, 2 });
+                wrappedGraph.AddVertexRange([1, 2]);
                 clusteredGraph = new ClusteredAdjacencyGraph<int, Edge<int>>(wrappedGraph);
                 ClusteredAdjacencyGraph<int, Edge<int>> subGraph1 = clusteredGraph.AddCluster();
-                subGraph1.AddVerticesAndEdgeRange(new[]
-                {
-                    new Edge<int>(3, 4),
-                    new Edge<int>(4, 1)
-                });
+                subGraph1.AddVerticesAndEdgeRange([new Edge<int>(3, 4), new Edge<int>(4, 1)]);
                 ClusteredAdjacencyGraph<int, Edge<int>> subGraph2 = clusteredGraph.AddCluster();
                 subGraph2.AddVerticesAndEdge(new Edge<int>(1, 5));
                 yield return new TestCaseData(clusteredGraph)
                 {
                     ExpectedResult =
                         "digraph G {" + Environment.NewLine
-                        + "subgraph cluster1 {" + Environment.NewLine
-                        + "2;" + Environment.NewLine
-                        + "3;" + Environment.NewLine
-                        + "0;" + Environment.NewLine
-                        + "2 -> 3;" + Environment.NewLine
-                        + "3 -> 0;" + Environment.NewLine
-                        + "}" + Environment.NewLine
-                        + "subgraph cluster2 {" + Environment.NewLine
-                        + "4;" + Environment.NewLine
-                        + "0 -> 4;" + Environment.NewLine
-                        + "}" + Environment.NewLine
-                        + "1;" + Environment.NewLine
-                        + "}"
+                                      + "subgraph cluster1 {" + Environment.NewLine
+                                      + "2;" + Environment.NewLine
+                                      + "3;" + Environment.NewLine
+                                      + "0;" + Environment.NewLine
+                                      + "2 -> 3;" + Environment.NewLine
+                                      + "3 -> 0;" + Environment.NewLine
+                                      + "}" + Environment.NewLine
+                                      + "subgraph cluster2 {" + Environment.NewLine
+                                      + "4;" + Environment.NewLine
+                                      + "0 -> 4;" + Environment.NewLine
+                                      + "}" + Environment.NewLine
+                                      + "1;" + Environment.NewLine
+                                      + "}"
                 };
 
                 // With clusters (not collapsed and collapsed)
@@ -401,11 +384,7 @@ namespace QuikGraph.Graphviz.Tests
                 // ReSharper restore InconsistentNaming
 
                 // Fill graphs
-                wrappedGraph.AddVerticesAndEdgeRange(new[]
-                {
-                    new Edge<int>(1, 2),
-                    new Edge<int>(2, 2)
-                });
+                wrappedGraph.AddVerticesAndEdgeRange([new Edge<int>(1, 2), new Edge<int>(2, 2)]);
                 wrappedGraph.AddVertex(3);
 
                 subClusteredGraph1.AddVerticesAndEdge(new Edge<int>(4, 5));
@@ -436,60 +415,60 @@ namespace QuikGraph.Graphviz.Tests
                 {
                     ExpectedResult =
                         "digraph G {" + Environment.NewLine
-                        + "subgraph cluster1 {" + Environment.NewLine
-                        + "3;" + Environment.NewLine
-                        + "4;" + Environment.NewLine
-                        + "5;" + Environment.NewLine
-                        + "3 -> 4;" + Environment.NewLine
-                        + "}" + Environment.NewLine
-                        + "subgraph cluster2 {" + Environment.NewLine
-                        + "subgraph cluster3 {" + Environment.NewLine
-                        + "9;" + Environment.NewLine
-                        + "10;" + Environment.NewLine
-                        + "11;" + Environment.NewLine
-                        + "9 -> 10;" + Environment.NewLine
-                        + "}" + Environment.NewLine
-                        + "subgraph cluster4 {" + Environment.NewLine
-                        + "12;" + Environment.NewLine
-                        + "13;" + Environment.NewLine
-                        + "14;" + Environment.NewLine
-                        + "12 -> 13;" + Environment.NewLine
-                        + "}" + Environment.NewLine
-                        + "6;" + Environment.NewLine
-                        + "7;" + Environment.NewLine
-                        + "8;" + Environment.NewLine
-                        + "6 -> 7;" + Environment.NewLine
-                        + "}" + Environment.NewLine
-                        + "subgraph cluster5 {" + Environment.NewLine
-                        + "15;" + Environment.NewLine
-                        + "16;" + Environment.NewLine
-                        + "17;" + Environment.NewLine
-                        + "15 -> 16;" + Environment.NewLine
-                        + "}" + Environment.NewLine
-                        + "subgraph cluster6 {" + Environment.NewLine
-                        + "subgraph cluster7 {" + Environment.NewLine
-                        + "21;" + Environment.NewLine
-                        + "22;" + Environment.NewLine
-                        + "23;" + Environment.NewLine
-                        + "21 -> 22;" + Environment.NewLine
-                        + "}" + Environment.NewLine
-                        + "subgraph cluster8 {" + Environment.NewLine
-                        + "24;" + Environment.NewLine
-                        + "25;" + Environment.NewLine
-                        + "26;" + Environment.NewLine
-                        + "24 -> 25;" + Environment.NewLine
-                        + "}" + Environment.NewLine
-                        + "18;" + Environment.NewLine
-                        + "19;" + Environment.NewLine
-                        + "20;" + Environment.NewLine
-                        + "18 -> 19;" + Environment.NewLine
-                        + "}" + Environment.NewLine
-                        + "0;" + Environment.NewLine
-                        + "1;" + Environment.NewLine
-                        + "2;" + Environment.NewLine
-                        + "0 -> 1;" + Environment.NewLine
-                        + "1 -> 1;" + Environment.NewLine
-                        + "}"
+                                      + "subgraph cluster1 {" + Environment.NewLine
+                                      + "3;" + Environment.NewLine
+                                      + "4;" + Environment.NewLine
+                                      + "5;" + Environment.NewLine
+                                      + "3 -> 4;" + Environment.NewLine
+                                      + "}" + Environment.NewLine
+                                      + "subgraph cluster2 {" + Environment.NewLine
+                                      + "subgraph cluster3 {" + Environment.NewLine
+                                      + "9;" + Environment.NewLine
+                                      + "10;" + Environment.NewLine
+                                      + "11;" + Environment.NewLine
+                                      + "9 -> 10;" + Environment.NewLine
+                                      + "}" + Environment.NewLine
+                                      + "subgraph cluster4 {" + Environment.NewLine
+                                      + "12;" + Environment.NewLine
+                                      + "13;" + Environment.NewLine
+                                      + "14;" + Environment.NewLine
+                                      + "12 -> 13;" + Environment.NewLine
+                                      + "}" + Environment.NewLine
+                                      + "6;" + Environment.NewLine
+                                      + "7;" + Environment.NewLine
+                                      + "8;" + Environment.NewLine
+                                      + "6 -> 7;" + Environment.NewLine
+                                      + "}" + Environment.NewLine
+                                      + "subgraph cluster5 {" + Environment.NewLine
+                                      + "15;" + Environment.NewLine
+                                      + "16;" + Environment.NewLine
+                                      + "17;" + Environment.NewLine
+                                      + "15 -> 16;" + Environment.NewLine
+                                      + "}" + Environment.NewLine
+                                      + "subgraph cluster6 {" + Environment.NewLine
+                                      + "subgraph cluster7 {" + Environment.NewLine
+                                      + "21;" + Environment.NewLine
+                                      + "22;" + Environment.NewLine
+                                      + "23;" + Environment.NewLine
+                                      + "21 -> 22;" + Environment.NewLine
+                                      + "}" + Environment.NewLine
+                                      + "subgraph cluster8 {" + Environment.NewLine
+                                      + "24;" + Environment.NewLine
+                                      + "25;" + Environment.NewLine
+                                      + "26;" + Environment.NewLine
+                                      + "24 -> 25;" + Environment.NewLine
+                                      + "}" + Environment.NewLine
+                                      + "18;" + Environment.NewLine
+                                      + "19;" + Environment.NewLine
+                                      + "20;" + Environment.NewLine
+                                      + "18 -> 19;" + Environment.NewLine
+                                      + "}" + Environment.NewLine
+                                      + "0;" + Environment.NewLine
+                                      + "1;" + Environment.NewLine
+                                      + "2;" + Environment.NewLine
+                                      + "0 -> 1;" + Environment.NewLine
+                                      + "1 -> 1;" + Environment.NewLine
+                                      + "}"
                 };
 
                 // Cluster hierarchy
@@ -515,11 +494,7 @@ namespace QuikGraph.Graphviz.Tests
                 // ReSharper restore InconsistentNaming
 
                 // Fill graphs
-                wrappedGraph.AddVerticesAndEdgeRange(new[]
-                {
-                    new Edge<int>(1, 2),
-                    new Edge<int>(2, 2)
-                });
+                wrappedGraph.AddVerticesAndEdgeRange([new Edge<int>(1, 2), new Edge<int>(2, 2)]);
                 wrappedGraph.AddVertex(3);
 
                 subClusteredGraph1.AddVerticesAndEdge(new Edge<int>(4, 5));
@@ -553,58 +528,58 @@ namespace QuikGraph.Graphviz.Tests
                 {
                     ExpectedResult =
                         "digraph G {" + Environment.NewLine
-                        + "subgraph cluster1 {" + Environment.NewLine
-                        + "3;" + Environment.NewLine
-                        + "4;" + Environment.NewLine
-                        + "5;" + Environment.NewLine
-                        + "3 -> 4;" + Environment.NewLine
-                        + "}" + Environment.NewLine
-                        + "subgraph cluster2 {" + Environment.NewLine
-                        + "subgraph cluster3 {" + Environment.NewLine
-                        + "9;" + Environment.NewLine
-                        + "10;" + Environment.NewLine
-                        + "11;" + Environment.NewLine
-                        + "9 -> 10;" + Environment.NewLine
-                        + "}" + Environment.NewLine
-                        + "subgraph cluster4 {" + Environment.NewLine
-                        + "12;" + Environment.NewLine
-                        + "13;" + Environment.NewLine
-                        + "14;" + Environment.NewLine
-                        + "12 -> 13;" + Environment.NewLine
-                        + "}" + Environment.NewLine
-                        + "6;" + Environment.NewLine
-                        + "7;" + Environment.NewLine
-                        + "8;" + Environment.NewLine
-                        + "6 -> 7;" + Environment.NewLine
-                        + "}" + Environment.NewLine
-                        + "subgraph cluster5 {" + Environment.NewLine
-                        + "15;" + Environment.NewLine
-                        + "16;" + Environment.NewLine
-                        + "17;" + Environment.NewLine
-                        + "15 -> 16;" + Environment.NewLine
-                        + "}" + Environment.NewLine
-                        + "subgraph cluster6 {" + Environment.NewLine
-                        + "subgraph cluster7 {" + Environment.NewLine
-                        + "}" + Environment.NewLine
-                        + "subgraph cluster8 {" + Environment.NewLine
-                        + "}" + Environment.NewLine
-                        + "18;" + Environment.NewLine
-                        + "19;" + Environment.NewLine
-                        + "20;" + Environment.NewLine
-                        + "18 -> 19;" + Environment.NewLine
-                        + "}" + Environment.NewLine
-                        + "0;" + Environment.NewLine
-                        + "1;" + Environment.NewLine
-                        + "2;" + Environment.NewLine
-                        + "0 -> 1;" + Environment.NewLine
-                        + "1 -> 1;" + Environment.NewLine
-                        + "}"
+                                      + "subgraph cluster1 {" + Environment.NewLine
+                                      + "3;" + Environment.NewLine
+                                      + "4;" + Environment.NewLine
+                                      + "5;" + Environment.NewLine
+                                      + "3 -> 4;" + Environment.NewLine
+                                      + "}" + Environment.NewLine
+                                      + "subgraph cluster2 {" + Environment.NewLine
+                                      + "subgraph cluster3 {" + Environment.NewLine
+                                      + "9;" + Environment.NewLine
+                                      + "10;" + Environment.NewLine
+                                      + "11;" + Environment.NewLine
+                                      + "9 -> 10;" + Environment.NewLine
+                                      + "}" + Environment.NewLine
+                                      + "subgraph cluster4 {" + Environment.NewLine
+                                      + "12;" + Environment.NewLine
+                                      + "13;" + Environment.NewLine
+                                      + "14;" + Environment.NewLine
+                                      + "12 -> 13;" + Environment.NewLine
+                                      + "}" + Environment.NewLine
+                                      + "6;" + Environment.NewLine
+                                      + "7;" + Environment.NewLine
+                                      + "8;" + Environment.NewLine
+                                      + "6 -> 7;" + Environment.NewLine
+                                      + "}" + Environment.NewLine
+                                      + "subgraph cluster5 {" + Environment.NewLine
+                                      + "15;" + Environment.NewLine
+                                      + "16;" + Environment.NewLine
+                                      + "17;" + Environment.NewLine
+                                      + "15 -> 16;" + Environment.NewLine
+                                      + "}" + Environment.NewLine
+                                      + "subgraph cluster6 {" + Environment.NewLine
+                                      + "subgraph cluster7 {" + Environment.NewLine
+                                      + "}" + Environment.NewLine
+                                      + "subgraph cluster8 {" + Environment.NewLine
+                                      + "}" + Environment.NewLine
+                                      + "18;" + Environment.NewLine
+                                      + "19;" + Environment.NewLine
+                                      + "20;" + Environment.NewLine
+                                      + "18 -> 19;" + Environment.NewLine
+                                      + "}" + Environment.NewLine
+                                      + "0;" + Environment.NewLine
+                                      + "1;" + Environment.NewLine
+                                      + "2;" + Environment.NewLine
+                                      + "0 -> 1;" + Environment.NewLine
+                                      + "1 -> 1;" + Environment.NewLine
+                                      + "}"
                 };
             }
         }
 
         [TestCaseSource(nameof(GenerateTestCases))]
-        public string Generate([NotNull] IEdgeListGraph<int, Edge<int>> graph)
+        public string Generate(IEdgeListGraph<int, Edge<int>> graph)
         {
             var algorithm = new GraphvizAlgorithm<int, Edge<int>>(graph);
             return algorithm.Generate();
@@ -614,27 +589,18 @@ namespace QuikGraph.Graphviz.Tests
         public void GenerateWithFormats()
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[]
-            {
-                new Edge<int>(1, 2),
-                new Edge<int>(1, 3),
-                new Edge<int>(3, 2),
-                new Edge<int>(3, 4),
-                new Edge<int>(4, 6),
-                new Edge<int>(5, 2),
-                new Edge<int>(5, 5)
-            });
+            graph.AddVerticesAndEdgeRange([
+                new Edge<int>(1, 2), new Edge<int>(1, 3), new Edge<int>(3, 2), new Edge<int>(3, 4),
+                new Edge<int>(4, 6), new Edge<int>(5, 2), new Edge<int>(5, 5)
+            ]);
             graph.AddVertex(7);
             var clusteredGraph = new ClusteredAdjacencyGraph<int, Edge<int>>(graph);
             ClusteredAdjacencyGraph<int, Edge<int>> subGraph1 = clusteredGraph.AddCluster();
-            subGraph1.AddVertexRange(new[] { 8, 9, 10 });
+            subGraph1.AddVertexRange([8, 9, 10]);
             ClusteredAdjacencyGraph<int, Edge<int>> subGraph2 = clusteredGraph.AddCluster();
-            subGraph2.AddVerticesAndEdgeRange(new[]
-            {
-                new Edge<int>(11, 12),
-                new Edge<int>(11, 13),
-                new Edge<int>(12, 13)
-            });
+            subGraph2.AddVerticesAndEdgeRange([
+                new Edge<int>(11, 12), new Edge<int>(11, 13), new Edge<int>(12, 13)
+            ]);
 
             var algorithm = new GraphvizAlgorithm<int, Edge<int>>(clusteredGraph);
             algorithm.GraphFormat.Name = "MyGraph";
@@ -663,7 +629,7 @@ namespace QuikGraph.Graphviz.Tests
 
             algorithm.FormatEdge += (_, args) =>
             {
-                if (args.Edge.Source ==  args.Edge.Target)
+                if (args.Edge.Source == args.Edge.Target)
                 {
                     args.EdgeFormat.StrokeColor = GraphvizColor.Gold;
                 }
@@ -671,40 +637,41 @@ namespace QuikGraph.Graphviz.Tests
 
             string dot = algorithm.Generate();
             string expectedDot = "digraph MyGraph {" + Environment.NewLine
-            + "fontcolor=\"#FF0000FF\"; nodesep=2;" + Environment.NewLine
-            + "node [URL=\"https://myurl.com\", style=filled, fillcolor=\"#FFFFE0FF\"];" + Environment.NewLine
-            + "edge [dir=back, tooltip=\"Edge\"];" + Environment.NewLine
-            + "subgraph cluster1 {" + Environment.NewLine
-            + "label=\"Only Vertices cluster\"" + Environment.NewLine
-            + "7;" + Environment.NewLine
-            + "8;" + Environment.NewLine
-            + "9;" + Environment.NewLine
-            + "}" + Environment.NewLine
-            + "subgraph cluster2 {" + Environment.NewLine
-            + "label=\"Triangle cluster\"" + Environment.NewLine
-            + "10 [label=\"Special Node\"];" + Environment.NewLine
-            + "11;" + Environment.NewLine
-            + "12;" + Environment.NewLine
-            + "10 -> 11;" + Environment.NewLine
-            + "10 -> 12;" + Environment.NewLine
-            + "11 -> 12;" + Environment.NewLine
-            + "}" + Environment.NewLine
-            + "0;" + Environment.NewLine
-            + "1 [label=\"Special Node\"];" + Environment.NewLine
-            + "2;" + Environment.NewLine
-            + "3;" + Environment.NewLine
-            + "4;" + Environment.NewLine
-            + "5;" + Environment.NewLine
-            + "6;" + Environment.NewLine
-            + "0 -> 1;" + Environment.NewLine
-            + "0 -> 2;" + Environment.NewLine
-            + "2 -> 1;" + Environment.NewLine
-            + "2 -> 3;" + Environment.NewLine
-            + "3 -> 4;" + Environment.NewLine
-            + "5 -> 1;" + Environment.NewLine
-            + "5 -> 5 [color=\"#FFD700FF\"];" + Environment.NewLine
-            + "}";
-            Assert.AreEqual(expectedDot, dot);
+                                                     + "fontcolor=\"#FF0000FF\"; nodesep=2;" + Environment.NewLine
+                                                     + "node [URL=\"https://myurl.com\", style=filled, fillcolor=\"#FFFFE0FF\"];" +
+                                                     Environment.NewLine
+                                                     + "edge [dir=back, tooltip=\"Edge\"];" + Environment.NewLine
+                                                     + "subgraph cluster1 {" + Environment.NewLine
+                                                     + "label=\"Only Vertices cluster\"" + Environment.NewLine
+                                                     + "7;" + Environment.NewLine
+                                                     + "8;" + Environment.NewLine
+                                                     + "9;" + Environment.NewLine
+                                                     + "}" + Environment.NewLine
+                                                     + "subgraph cluster2 {" + Environment.NewLine
+                                                     + "label=\"Triangle cluster\"" + Environment.NewLine
+                                                     + "10 [label=\"Special Node\"];" + Environment.NewLine
+                                                     + "11;" + Environment.NewLine
+                                                     + "12;" + Environment.NewLine
+                                                     + "10 -> 11;" + Environment.NewLine
+                                                     + "10 -> 12;" + Environment.NewLine
+                                                     + "11 -> 12;" + Environment.NewLine
+                                                     + "}" + Environment.NewLine
+                                                     + "0;" + Environment.NewLine
+                                                     + "1 [label=\"Special Node\"];" + Environment.NewLine
+                                                     + "2;" + Environment.NewLine
+                                                     + "3;" + Environment.NewLine
+                                                     + "4;" + Environment.NewLine
+                                                     + "5;" + Environment.NewLine
+                                                     + "6;" + Environment.NewLine
+                                                     + "0 -> 1;" + Environment.NewLine
+                                                     + "0 -> 2;" + Environment.NewLine
+                                                     + "2 -> 1;" + Environment.NewLine
+                                                     + "2 -> 3;" + Environment.NewLine
+                                                     + "3 -> 4;" + Environment.NewLine
+                                                     + "5 -> 1;" + Environment.NewLine
+                                                     + "5 -> 5 [color=\"#FFD700FF\"];" + Environment.NewLine
+                                                     + "}";
+            Assert.That(expectedDot, Is.EqualTo(dot));
         }
 
         [Test]

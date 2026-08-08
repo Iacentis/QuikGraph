@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using JetBrains.Annotations;
 using QuikGraph.Graphviz.Helpers;
 using static QuikGraph.Graphviz.DotEscapers;
 
@@ -9,9 +8,9 @@ namespace QuikGraph.Graphviz.Dot
     /// <summary>
     /// Graphviz edge extremity.
     /// </summary>
-#if SUPPORTS_SERIALIZATION
+
     [Serializable]
-#endif
+
     public class GraphvizEdgeExtremity
     {
         /// <summary>
@@ -82,10 +81,9 @@ namespace QuikGraph.Graphviz.Dot
         /// </summary>
         /// <param name="parameters">Parameter map to fill.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="parameters"/> is <see langword="null"/>.</exception>
-        public void AddParameters([NotNull] IDictionary parameters)
+        public void AddParameters( IDictionary parameters)
         {
-            if (parameters is null)
-                throw new ArgumentNullException(nameof(parameters));
+            ArgumentNullException.ThrowIfNull(parameters);
 
             string extremity = IsHead ? "head" : "tail";
             if (Url != null)

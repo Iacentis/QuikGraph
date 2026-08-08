@@ -1,6 +1,5 @@
 ﻿using System.Data;
 using BenchmarkDotNet.Attributes;
-using QuikGraph.Data;
 
 namespace QuikGraph.Data.Benchmarks
 {
@@ -9,8 +8,7 @@ namespace QuikGraph.Data.Benchmarks
     {
         private DataSet _dataSet;
 
-        [Params(10, 50)]
-        public int TableCount;
+        [Params(10, 50)] public int TableCount;
 
         [GlobalSetup]
         public void Setup()
@@ -27,8 +25,8 @@ namespace QuikGraph.Data.Benchmarks
             {
                 var relation = new DataRelation(
                     $"Relation{i}",
-                    _dataSet.Tables[i].Columns["Id"],
-                    _dataSet.Tables[i + 1].Columns["Id"]);
+                    _dataSet.Tables[i].Columns["Id"]!,
+                    _dataSet.Tables[i + 1].Columns["Id"]!);
                 _dataSet.Relations.Add(relation);
             }
         }

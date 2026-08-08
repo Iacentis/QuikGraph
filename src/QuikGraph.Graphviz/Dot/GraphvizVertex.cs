@@ -1,12 +1,8 @@
-﻿#if SUPPORTS_SERIALIZATION
-using System;
-#endif
+﻿using System;
 using System.Collections.Generic;
-#if SUPPORTS_AGGRESSIVE_INLINING
+using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
-#endif
 using System.Text;
-using JetBrains.Annotations;
 using QuikGraph.Graphviz.Helpers;
 using static QuikGraph.Graphviz.DotEscapers;
 using static QuikGraph.Utils.MathUtils;
@@ -16,9 +12,7 @@ namespace QuikGraph.Graphviz.Dot
     /// <summary>
     /// Graphviz vertex.
     /// </summary>
-#if SUPPORTS_SERIALIZATION
     [Serializable]
-#endif
     public class GraphvizVertex
     {
         /// <summary>
@@ -181,8 +175,7 @@ namespace QuikGraph.Graphviz.Dot
         public double Z { get; set; } = -1;
 
         [Pure]
-        [NotNull]
-        internal string GenerateDot([NotNull] Dictionary<string, object> properties)
+        internal string GenerateDot(Dictionary<string, object> properties)
         {
             var builder = new StringBuilder();
 
@@ -221,16 +214,16 @@ namespace QuikGraph.Graphviz.Dot
                         continue;
 
                     case GraphvizColor color:
-                        {
-                            builder.AppendFormat(
-                                "{0}=\"#{1}{2}{3}{4}\"",
-                                pair.Key,
-                                color.R.ToString("x2").ToUpper(),
-                                color.G.ToString("x2").ToUpper(),
-                                color.B.ToString("x2").ToUpper(),
-                                color.A.ToString("x2").ToUpper());
-                            continue;
-                        }
+                    {
+                        builder.AppendFormat(
+                            "{0}=\"#{1}{2}{3}{4}\"",
+                            pair.Key,
+                            color.R.ToString("x2").ToUpper(),
+                            color.G.ToString("x2").ToUpper(),
+                            color.B.ToString("x2").ToUpper(),
+                            color.A.ToString("x2").ToUpper());
+                        continue;
+                    }
 
                     case HtmlString html:
                         builder.Append($"{pair.Key}=<{html.String}>");
@@ -241,7 +234,7 @@ namespace QuikGraph.Graphviz.Dot
                         continue;
 
                     default:
-                        builder.Append($"{pair.Key}={pair.Value.ToString().ToLower()}");
+                        builder.Append($"{pair.Key}={pair.Value.ToString()?.ToLower()}");
                         break;
                 }
             }
@@ -249,10 +242,9 @@ namespace QuikGraph.Graphviz.Dot
             return builder.ToString();
         }
 
-#if SUPPORTS_AGGRESSIVE_INLINING
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
-        private void TextRelatedPropertiesToDot([NotNull] IDictionary<string, object> properties)
+        private void TextRelatedPropertiesToDot(IDictionary<string, object> properties)
         {
             if (Font != null)
             {
@@ -286,11 +278,10 @@ namespace QuikGraph.Graphviz.Dot
             }
         }
 
-#if SUPPORTS_AGGRESSIVE_INLINING
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         private void LabelOrRecordToDot(
-            [NotNull] IDictionary<string, object> properties,
+            IDictionary<string, object> properties,
             GraphvizVertexShape shape)
         {
             if (shape == GraphvizVertexShape.Record)
@@ -313,12 +304,11 @@ namespace QuikGraph.Graphviz.Dot
             }
         }
 
-#if SUPPORTS_AGGRESSIVE_INLINING
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         private void ShapeRelatedPropertiesToDot(
-            [CanBeNull] GraphvizVertex commonFormat,
-            [NotNull] IDictionary<string, object> properties)
+            GraphvizVertex commonFormat,
+            IDictionary<string, object> properties)
         {
             if (Shape != GraphvizVertexShape.Unspecified)
             {
@@ -350,10 +340,9 @@ namespace QuikGraph.Graphviz.Dot
             }
         }
 
-#if SUPPORTS_AGGRESSIVE_INLINING
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
-        private void LayoutRelatedPropertiesToDot([NotNull] IDictionary<string, object> properties)
+        private void LayoutRelatedPropertiesToDot(IDictionary<string, object> properties)
         {
             if (FixedSize)
             {
@@ -390,10 +379,9 @@ namespace QuikGraph.Graphviz.Dot
             }
         }
 
-#if SUPPORTS_AGGRESSIVE_INLINING
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
-        private void PositionRelatedProperties([NotNull] IDictionary<string, object> properties)
+        private void PositionRelatedProperties(IDictionary<string, object> properties)
         {
             if (Z > 0)
             {
@@ -412,8 +400,7 @@ namespace QuikGraph.Graphviz.Dot
         /// <param name="commonFormat">Common vertex format to apply.</param>
         /// <returns>Vertex as DOT.</returns>
         [Pure]
-        [NotNull]
-        internal string InternalToDot([CanBeNull] GraphvizVertex commonFormat = null)
+        internal string InternalToDot(GraphvizVertex commonFormat = null)
         {
             var properties = new Dictionary<string, object>();
             TextRelatedPropertiesToDot(properties);
@@ -423,18 +410,22 @@ namespace QuikGraph.Graphviz.Dot
             {
                 properties["regular"] = Regular;
             }
+
             if (Group != null)
             {
                 properties["group"] = Group;
             }
+
             if (Layer != null)
             {
                 properties["layer"] = Layer.Name;
             }
+
             if (Peripheries >= 0)
             {
                 properties["peripheries"] = Peripheries;
             }
+
             PositionRelatedProperties(properties);
 
             return GenerateDot(properties);
@@ -445,7 +436,6 @@ namespace QuikGraph.Graphviz.Dot
         /// </summary>
         /// <returns>Vertex as DOT.</returns>
         [Pure]
-        [NotNull]
         public string ToDot()
         {
             return InternalToDot();

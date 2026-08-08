@@ -1,11 +1,7 @@
-﻿#if SUPPORTS_GRAPHS_SERIALIZATION
-using System;
-#if SUPPORTS_XML_DTD_PROCESSING
+﻿using System;
 using System.Xml.Schema;
-#endif
 using System.IO;
 using System.Xml;
-using JetBrains.Annotations;
 using QuikGraph.Algorithms;
 
 namespace QuikGraph.Serialization
@@ -17,7 +13,6 @@ namespace QuikGraph.Serialization
     {
         #region Serialization
 
-        [NotNull]
         private const string SerializationIndent = "    ";
 
         /// <summary>
@@ -33,8 +28,8 @@ namespace QuikGraph.Serialization
         /// <exception cref="T:System.InvalidOperationException">Failure while writing elements to GraphML.</exception>
         /// <exception cref="T:System.NotSupportedException">Serializing value on property without getter, or with unsupported property type.</exception>
         public static void SerializeToGraphML<TVertex, TEdge, TGraph>(
-            [NotNull] this TGraph graph,
-            [NotNull] string filePath)
+            this TGraph graph,
+            string filePath)
             where TEdge : IEdge<TVertex>
             where TGraph : IEdgeListGraph<TVertex, TEdge>
         {
@@ -66,10 +61,10 @@ namespace QuikGraph.Serialization
         /// <exception cref="T:System.InvalidOperationException">Failure while writing elements to GraphML.</exception>
         /// <exception cref="T:System.NotSupportedException">Serializing value on property without getter, or with unsupported property type.</exception>
         public static void SerializeToGraphML<TVertex, TEdge, TGraph>(
-            [NotNull] this TGraph graph,
-            [NotNull] string filePath,
-            [NotNull] VertexIdentity<TVertex> vertexIdentity,
-            [NotNull] EdgeIdentity<TVertex, TEdge> edgeIdentity)
+            this TGraph graph,
+            string filePath,
+            VertexIdentity<TVertex> vertexIdentity,
+            EdgeIdentity<TVertex, TEdge> edgeIdentity)
             where TEdge : IEdge<TVertex>
             where TGraph : IEdgeListGraph<TVertex, TEdge>
         {
@@ -97,8 +92,8 @@ namespace QuikGraph.Serialization
         /// <exception cref="T:System.InvalidOperationException">Failure while writing elements to GraphML.</exception>
         /// <exception cref="T:System.NotSupportedException">Serializing value on property without getter, or with unsupported property type.</exception>
         public static void SerializeToGraphML<TVertex, TEdge, TGraph>(
-            [NotNull] this TGraph graph,
-            [NotNull] XmlWriter writer)
+            this TGraph graph,
+            XmlWriter writer)
             where TEdge : IEdge<TVertex>
             where TGraph : IEdgeListGraph<TVertex, TEdge>
         {
@@ -128,10 +123,10 @@ namespace QuikGraph.Serialization
         /// <exception cref="T:System.InvalidOperationException">Failure while writing elements to GraphML.</exception>
         /// <exception cref="T:System.NotSupportedException">Serializing value on property without getter, or with unsupported property type.</exception>
         public static void SerializeToGraphML<TVertex, TEdge, TGraph>(
-            [NotNull] this TGraph graph,
-            [NotNull] XmlWriter writer,
-            [NotNull] VertexIdentity<TVertex> vertexIdentity,
-            [NotNull] EdgeIdentity<TVertex, TEdge> edgeIdentity)
+            this TGraph graph,
+            XmlWriter writer,
+            VertexIdentity<TVertex> vertexIdentity,
+            EdgeIdentity<TVertex, TEdge> edgeIdentity)
             where TEdge : IEdge<TVertex>
             where TGraph : IEdgeListGraph<TVertex, TEdge>
         {
@@ -162,10 +157,10 @@ namespace QuikGraph.Serialization
         /// <exception cref="T:System.InvalidOperationException">Failure while reading elements from GraphML.</exception>
         /// <exception cref="T:System.NotSupportedException">Deserializing graph with unsupported property type.</exception>
         public static void DeserializeFromGraphML<TVertex, TEdge, TGraph>(
-            [NotNull] this TGraph graph,
-            [NotNull] XmlReader reader,
-            [NotNull] IdentifiableVertexFactory<TVertex> vertexFactory,
-            [NotNull] IdentifiableEdgeFactory<TVertex, TEdge> edgeFactory)
+            this TGraph graph,
+            XmlReader reader,
+            IdentifiableVertexFactory<TVertex> vertexFactory,
+            IdentifiableEdgeFactory<TVertex, TEdge> edgeFactory)
             where TEdge : IEdge<TVertex>
             where TGraph : IMutableVertexAndEdgeSet<TVertex, TEdge>
         {
@@ -192,17 +187,16 @@ namespace QuikGraph.Serialization
         /// <exception cref="T:System.InvalidOperationException">Failure while reading elements from GraphML.</exception>
         /// <exception cref="T:System.NotSupportedException">Deserializing graph with unsupported property type.</exception>
         public static void DeserializeFromGraphML<TVertex, TEdge, TGraph>(
-            [NotNull] this TGraph graph,
-            [NotNull] TextReader reader,
-            [NotNull] IdentifiableVertexFactory<TVertex> vertexFactory,
-            [NotNull] IdentifiableEdgeFactory<TVertex, TEdge> edgeFactory)
+            this TGraph graph,
+            TextReader reader,
+            IdentifiableVertexFactory<TVertex> vertexFactory,
+            IdentifiableEdgeFactory<TVertex, TEdge> edgeFactory)
             where TEdge : IEdge<TVertex>
             where TGraph : IMutableVertexAndEdgeSet<TVertex, TEdge>
         {
-            if (reader is null)
-                throw new ArgumentNullException(nameof(reader));
+            ArgumentNullException.ThrowIfNull(reader);
 
-#if SUPPORTS_XML_DTD_PROCESSING
+
             var settings = new XmlReaderSettings
             {
                 ValidationFlags = XmlSchemaValidationFlags.None,
@@ -210,16 +204,8 @@ namespace QuikGraph.Serialization
                 DtdProcessing = DtdProcessing.Ignore
             };
 
-            using (XmlReader xmlReader = XmlReader.Create(reader, settings))
-                DeserializeFromGraphML(graph, xmlReader, vertexFactory, edgeFactory);
-#else
-            var xmlReader = new XmlTextReader(reader)
-            {
-                XmlResolver = null
-            };
-
-            DeserializeFromGraphML(graph, xmlReader, vertexFactory, edgeFactory);
-#endif
+            using (var xmlReader = XmlReader.Create(reader, settings))
+                graph.DeserializeFromGraphML(xmlReader, vertexFactory, edgeFactory);
         }
 
         /// <summary>
@@ -241,10 +227,10 @@ namespace QuikGraph.Serialization
         /// <exception cref="T:System.InvalidOperationException">Failure while reading elements from GraphML.</exception>
         /// <exception cref="T:System.NotSupportedException">Deserializing graph with unsupported property type.</exception>
         public static void DeserializeFromGraphML<TVertex, TEdge, TGraph>(
-            [NotNull] this TGraph graph,
-            [NotNull] string filePath,
-            [NotNull] IdentifiableVertexFactory<TVertex> vertexFactory,
-            [NotNull] IdentifiableEdgeFactory<TVertex, TEdge> edgeFactory)
+            this TGraph graph,
+            string filePath,
+            IdentifiableVertexFactory<TVertex> vertexFactory,
+            IdentifiableEdgeFactory<TVertex, TEdge> edgeFactory)
             where TEdge : IEdge<TVertex>
             where TGraph : IMutableVertexAndEdgeSet<TVertex, TEdge>
         {
@@ -257,7 +243,7 @@ namespace QuikGraph.Serialization
             }
         }
 
-#if SUPPORTS_XML_DTD_PROCESSING
+
         /// <summary>
         /// Deserializes from the given <paramref name="reader"/> (GraphML graph) into the given <paramref name="graph"/>
         /// and checks if content is valid.
@@ -278,10 +264,10 @@ namespace QuikGraph.Serialization
         /// <exception cref="T:System.InvalidOperationException">Failure while reading elements from GraphML.</exception>
         /// <exception cref="T:System.NotSupportedException">Deserializing graph with unsupported property type.</exception>
         public static void DeserializeAndValidateFromGraphML<TVertex, TEdge, TGraph>(
-            [NotNull] this TGraph graph,
-            [NotNull] TextReader reader,
-            [NotNull] IdentifiableVertexFactory<TVertex> vertexFactory,
-            [NotNull] IdentifiableEdgeFactory<TVertex, TEdge> edgeFactory)
+            this TGraph graph,
+            TextReader reader,
+            IdentifiableVertexFactory<TVertex> vertexFactory,
+            IdentifiableEdgeFactory<TVertex, TEdge> edgeFactory)
             where TEdge : IEdge<TVertex>
             where TGraph : IMutableVertexAndEdgeSet<TVertex, TEdge>
         {
@@ -293,9 +279,7 @@ namespace QuikGraph.Serialization
             var resolver = new GraphMLXmlResolver();
             var settings = new XmlReaderSettings
             {
-                ValidationType = ValidationType.Schema,
-                XmlResolver = resolver,
-                DtdProcessing = DtdProcessing.Ignore
+                ValidationType = ValidationType.Schema, XmlResolver = resolver, DtdProcessing = DtdProcessing.Ignore
             };
 
             settings.ValidationFlags |= XmlSchemaValidationFlags.ProcessInlineSchema;
@@ -321,7 +305,7 @@ namespace QuikGraph.Serialization
             }
         }
 
-        private static void AddGraphMLSchema([NotNull] XmlReaderSettings settings, [NotNull] XmlResolver resolver)
+        private static void AddGraphMLSchema(XmlReaderSettings settings, XmlResolver resolver)
         {
             using (Stream xsdStream = GraphMLResourceResolver.GetResource("graphml.xsd"))
             {
@@ -339,9 +323,7 @@ namespace QuikGraph.Serialization
             if (args.Severity == XmlSeverityType.Error)
                 throw new InvalidOperationException(args.Message);
         }
-#endif
 
         #endregion
     }
 }
-#endif

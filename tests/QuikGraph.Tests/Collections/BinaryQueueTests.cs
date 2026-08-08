@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using QuikGraph.Collections;
 using static QuikGraph.Collections.HeapConstants;
 using static QuikGraph.Tests.AssertHelpers;
@@ -29,7 +30,7 @@ namespace QuikGraph.Tests.Collections
             void AssertQueueProperties<TVertex, TDistance>(
                 BinaryQueue<TVertex, TDistance> queue)
             {
-                Assert.AreEqual(0, queue.Count);
+                Assert.That(0, Is.EqualTo(queue.Count));
             }
 
             #endregion
@@ -40,15 +41,12 @@ namespace QuikGraph.Tests.Collections
         {
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(
-                () => new BinaryQueue<int, double>(null));
+            Assert.Throws<ArgumentNullException>(() => new BinaryQueue<int, double>(null));
 
-            Assert.Throws<ArgumentNullException>(
-                () => new BinaryQueue<int, double>(_ => 1.0, null));
-            Assert.Throws<ArgumentNullException>(
-                () => new BinaryQueue<int, double>(null, (dist1, dist2) => dist1.CompareTo(dist2)));
-            Assert.Throws<ArgumentNullException>(
-                () => new BinaryQueue<int, double>(null, null));
+            Assert.Throws<ArgumentNullException>(() => new BinaryQueue<int, double>(_ => 1.0, null));
+            Assert.Throws<ArgumentNullException>(() =>
+                new BinaryQueue<int, double>(null, (dist1, dist2) => dist1.CompareTo(dist2)));
+            Assert.Throws<ArgumentNullException>(() => new BinaryQueue<int, double>(null, null));
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }
@@ -173,8 +171,8 @@ namespace QuikGraph.Tests.Collections
                     vertex1,
                     vertex2);
 
-                queue.Update(vertex3);  // Added with distance 0.5
-                Assert.AreEqual(3, queue.Count);
+                queue!.Update(vertex3); // Added with distance 0.5
+                Assert.That(3, Is.EqualTo(queue.Count));
 
                 AssertEqual(vertex3, queue.Peek());
             }
@@ -228,7 +226,7 @@ namespace QuikGraph.Tests.Collections
                 TVertex vertex3,
                 TVertex vertex4)
             {
-                var distances = new Stack<double>(new[] { 123.0, 3.0, 2.0, 4.0, 5.0, 1.0 });
+                var distances = new Stack<double>([123.0, 3.0, 2.0, 4.0, 5.0, 1.0]);
                 var queue = new BinaryQueue<TVertex, double>(_ => distances.Pop());
 
                 // Empty heap

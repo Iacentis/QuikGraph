@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
-using JetBrains.Annotations;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using QuikGraph.Algorithms.Search;
 using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
 
@@ -17,31 +18,28 @@ namespace QuikGraph.Tests.Algorithms.Search
         #region Test helpers
 
         private static void RunDFSAndCheck<TVertex, TEdge>(
-            [NotNull] IBidirectionalGraph<TVertex, TEdge> graph,
+            IBidirectionalGraph<TVertex, TEdge> graph,
             int maxDepth = int.MaxValue)
             where TEdge : IEdge<TVertex>
         {
             var discoverTimes = new Dictionary<TVertex, int>();
             var finishTimes = new Dictionary<TVertex, int>();
             int time = 0;
-            var dfs = new BidirectionalDepthFirstSearchAlgorithm<TVertex, TEdge>(graph)
-            {
-                MaxDepth = maxDepth
-            };
+            var dfs = new BidirectionalDepthFirstSearchAlgorithm<TVertex, TEdge>(graph) { MaxDepth = maxDepth };
 
             dfs.InitializeVertex += vertex =>
             {
-                Assert.AreEqual(GraphColor.White, dfs.VerticesColors[vertex]);
+                Assert.That(GraphColor.White, Is.EqualTo(dfs.VerticesColors[vertex]));
             };
 
             dfs.StartVertex += vertex =>
             {
-                Assert.AreEqual(GraphColor.White, dfs.VerticesColors[vertex]);
+                Assert.That(GraphColor.White, Is.EqualTo(dfs.VerticesColors[vertex]));
             };
 
             dfs.DiscoverVertex += vertex =>
             {
-                Assert.AreEqual(GraphColor.Gray, dfs.VerticesColors[vertex]);
+                Assert.That(GraphColor.Gray, Is.EqualTo(dfs.VerticesColors[vertex]));
                 discoverTimes[vertex] = time++;
             };
 
@@ -50,10 +48,10 @@ namespace QuikGraph.Tests.Algorithms.Search
             {
                 // Depending if the edge was taken from in or out edges
                 // Here we cannot determine in which case we are
-                Assert.IsTrue(
+                Assert.That(
                     dfs.VerticesColors[edge.Source] == GraphColor.Gray
                     ||
-                    dfs.VerticesColors[edge.Target] == GraphColor.Gray);
+                    dfs.VerticesColors[edge.Target] == GraphColor.Gray, Is.True);
             };
 
             // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
@@ -61,10 +59,10 @@ namespace QuikGraph.Tests.Algorithms.Search
             {
                 // Depending if the edge was taken from in or out edges
                 // Here we cannot determine in which case we are
-                Assert.IsTrue(
+                Assert.That(
                     dfs.VerticesColors[edge.Source] == GraphColor.White
                     ||
-                    dfs.VerticesColors[edge.Target] == GraphColor.White);
+                    dfs.VerticesColors[edge.Target] == GraphColor.White, Is.True);
             };
 
             // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
@@ -72,10 +70,10 @@ namespace QuikGraph.Tests.Algorithms.Search
             {
                 // Depending if the edge was taken from in or out edges
                 // Here we cannot determine in which case we are
-                Assert.IsTrue(
+                Assert.That(
                     dfs.VerticesColors[edge.Source] == GraphColor.Gray
                     ||
-                    dfs.VerticesColors[edge.Target] == GraphColor.Gray);
+                    dfs.VerticesColors[edge.Target] == GraphColor.Gray, Is.True);
             };
 
             // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
@@ -83,15 +81,15 @@ namespace QuikGraph.Tests.Algorithms.Search
             {
                 // Depending if the edge was taken from in or out edges
                 // Here we cannot determine in which case we are
-                Assert.IsTrue(
+                Assert.That(
                     dfs.VerticesColors[edge.Source] == GraphColor.Black
                     ||
-                    dfs.VerticesColors[edge.Target] == GraphColor.Black);
+                    dfs.VerticesColors[edge.Target] == GraphColor.Black, Is.True);
             };
 
             dfs.FinishVertex += vertex =>
             {
-                Assert.AreEqual(GraphColor.Black, dfs.VerticesColors[vertex]);
+                Assert.That(GraphColor.Black, Is.EqualTo(dfs.VerticesColors[vertex]));
                 finishTimes[vertex] = time++;
             };
 
@@ -101,8 +99,8 @@ namespace QuikGraph.Tests.Algorithms.Search
             // All vertices should be black
             foreach (TVertex vertex in graph.Vertices)
             {
-                Assert.IsTrue(dfs.VerticesColors.ContainsKey(vertex));
-                Assert.AreEqual(dfs.VerticesColors[vertex], GraphColor.Black);
+                Assert.That(dfs.VerticesColors.ContainsKey(vertex), Is.True);
+                Assert.That(dfs.VerticesColors[vertex], Is.EqualTo(GraphColor.Black));
             }
 
             foreach (TVertex u in graph.Vertices)
@@ -111,11 +109,11 @@ namespace QuikGraph.Tests.Algorithms.Search
                 {
                     if (!u.Equals(v))
                     {
-                        Assert.IsTrue(
+                        Assert.That(
                             finishTimes[u] < discoverTimes[v]
                             || finishTimes[v] < discoverTimes[u]
                             || (discoverTimes[v] < discoverTimes[u] && finishTimes[u] < finishTimes[v])
-                            || (discoverTimes[u] < discoverTimes[v] && finishTimes[v] < finishTimes[u]));
+                            || (discoverTimes[u] < discoverTimes[v] && finishTimes[v] < finishTimes[u]), Is.True);
                     }
                 }
             }
@@ -157,9 +155,9 @@ namespace QuikGraph.Tests.Algorithms.Search
                 if (vColors is null)
                     CollectionAssert.IsEmpty(algo.VerticesColors);
                 else
-                    Assert.AreSame(vColors, algo.VerticesColors);
-                Assert.AreEqual(maxDepth, algo.MaxDepth);
-                Assert.AreEqual(processAllComponents, algo.ProcessAllComponents);
+                    Assert.That(vColors, Is.SameAs(algo.VerticesColors));
+                Assert.That(maxDepth, Is.EqualTo(algo.MaxDepth));
+                Assert.That(processAllComponents, Is.EqualTo(algo.ProcessAllComponents));
             }
 
             #endregion
@@ -173,26 +171,27 @@ namespace QuikGraph.Tests.Algorithms.Search
             var graph = new BidirectionalGraph<int, Edge<int>>();
             var verticesColors = new Dictionary<int, GraphColor>();
 
-            Assert.Throws<ArgumentNullException>(
-                () => new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(null));
+            Assert.Throws<ArgumentNullException>(() =>
+                new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(null));
 
-            Assert.Throws<ArgumentNullException>(
-                () => new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(graph, null));
-            Assert.Throws<ArgumentNullException>(
-                () => new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(null, verticesColors));
-            Assert.Throws<ArgumentNullException>(
-                () => new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(null, null));
+            Assert.Throws<ArgumentNullException>(() =>
+                new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(graph, null));
+            Assert.Throws<ArgumentNullException>(() =>
+                new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(null, verticesColors));
+            Assert.Throws<ArgumentNullException>(() =>
+                new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(null, null));
 
-            Assert.Throws<ArgumentNullException>(
-                () => new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(null, null, verticesColors));
-            Assert.Throws<ArgumentNullException>(
-                () => new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(null, graph, null));
-            Assert.Throws<ArgumentNullException>(
-                () => new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(null, null, null));
+            Assert.Throws<ArgumentNullException>(() =>
+                new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(null, null, verticesColors));
+            Assert.Throws<ArgumentNullException>(() =>
+                new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(null, graph, null));
+            Assert.Throws<ArgumentNullException>(() =>
+                new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(null, null, null));
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
 
-            Assert.Throws<ArgumentOutOfRangeException>(() => new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(graph).MaxDepth = -1);
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+                new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(graph).MaxDepth = -1);
         }
 
         #region Rooted algorithm
@@ -251,8 +250,8 @@ namespace QuikGraph.Tests.Algorithms.Search
         public void ComputeWithRoot_Throws()
         {
             var graph = new BidirectionalGraph<TestVertex, Edge<TestVertex>>();
-            ComputeWithRoot_Throws_Test(
-                () => new BidirectionalDepthFirstSearchAlgorithm<TestVertex, Edge<TestVertex>>(graph));
+            ComputeWithRoot_Throws_Test(() =>
+                new BidirectionalDepthFirstSearchAlgorithm<TestVertex, Edge<TestVertex>>(graph));
         }
 
         #endregion
@@ -270,15 +269,16 @@ namespace QuikGraph.Tests.Algorithms.Search
 
             algorithm.Compute();
 
-            Assert.AreEqual(GraphColor.Black, algorithm.GetVertexColor(1));
-            Assert.AreEqual(GraphColor.Black, algorithm.GetVertexColor(2));
+            Assert.That(GraphColor.Black, Is.EqualTo(algorithm.GetVertexColor(1)));
+            Assert.That(GraphColor.Black, Is.EqualTo(algorithm.GetVertexColor(2)));
         }
 
         [Test]
         [Category(TestCategories.LongRunning)]
         public void DepthFirstSearch()
         {
-            foreach (BidirectionalGraph<string, Edge<string>> graph in TestGraphFactory.GetBidirectionalGraphs_SlowTests())
+            foreach (BidirectionalGraph<string, Edge<string>> graph in
+                     TestGraphFactory.GetBidirectionalGraphs_SlowTests())
             {
                 RunDFSAndCheck(graph);
                 RunDFSAndCheck(graph, 12);
@@ -290,8 +290,7 @@ namespace QuikGraph.Tests.Algorithms.Search
         public void ProcessAllComponents(bool processAll)
         {
             var graph = new BidirectionalGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[]
-            {
+            graph.AddVerticesAndEdgeRange([
                 new Edge<int>(1, 2),
                 new Edge<int>(1, 3),
                 new Edge<int>(2, 1),
@@ -301,7 +300,7 @@ namespace QuikGraph.Tests.Algorithms.Search
                 new Edge<int>(6, 7),
                 new Edge<int>(6, 8),
                 new Edge<int>(8, 6)
-            });
+            ]);
 
             var algorithm = new BidirectionalDepthFirstSearchAlgorithm<int, Edge<int>>(graph)
             {
@@ -316,18 +315,17 @@ namespace QuikGraph.Tests.Algorithms.Search
             else
             {
                 QuikGraphAssert.TrueForAll(
-                    new[] { 1, 2, 3, 4, 5 },
+                    [1, 2, 3, 4, 5],
                     vertex => algorithm.VerticesColors[vertex] == GraphColor.Black);
                 QuikGraphAssert.TrueForAll(
-                    new[] { 6, 7, 8 },
+                    [6, 7, 8],
                     vertex => algorithm.VerticesColors[vertex] == GraphColor.White);
             }
         }
 
         [Pure]
-        [NotNull]
         public static BidirectionalDepthFirstSearchAlgorithm<T, Edge<T>> CreateAlgorithmAndMaybeDoComputation<T>(
-            [NotNull] ContractScenario<T> scenario)
+            ContractScenario<T> scenario)
         {
             var graph = new BidirectionalGraph<T, Edge<T>>();
             graph.AddVerticesAndEdgeRange(scenario.EdgesInGraph.Select(e => new Edge<T>(e.Source, e.Target)));

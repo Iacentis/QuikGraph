@@ -1,4 +1,4 @@
-using JetBrains.Annotations;
+
 
 namespace QuikGraph.Petri
 {
@@ -12,7 +12,7 @@ namespace QuikGraph.Petri
         /// <summary>
         /// A boolean expression associated with the transition.
         /// </summary>
-        [NotNull]
+
         IConditionExpression<TToken> Condition { get; set; }
     }
 }

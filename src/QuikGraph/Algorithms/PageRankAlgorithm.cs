@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
-using JetBrains.Annotations;
+
 using QuikGraph.Predicates;
 
 namespace QuikGraph.Algorithms.Ranking
@@ -19,7 +20,7 @@ namespace QuikGraph.Algorithms.Ranking
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
-        public PageRankAlgorithm([NotNull] IBidirectionalGraph<TVertex, TEdge> visitedGraph)
+        public PageRankAlgorithm( IBidirectionalGraph<TVertex, TEdge> visitedGraph)
             : base(visitedGraph)
         {
         }
@@ -27,7 +28,7 @@ namespace QuikGraph.Algorithms.Ranking
         /// <summary>
         /// Ranks per vertices.
         /// </summary>
-        [NotNull]
+
         public IDictionary<TVertex, double> Ranks { get; private set; } = new Dictionary<TVertex, double>();
 
         private double _damping = 0.85;

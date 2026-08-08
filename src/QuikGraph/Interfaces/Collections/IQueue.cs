@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations;
+﻿using System.Diagnostics.Contracts;
 
 namespace QuikGraph.Collections
 {
@@ -47,7 +47,7 @@ namespace QuikGraph.Collections
         /// </summary>
         /// <returns>Array composed of elements.</returns>
         [Pure]
-        [NotNull]
+
         T[] ToArray();
     }
 }

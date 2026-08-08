@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Linq;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph.Algorithms.MaximumFlow
 {
@@ -15,7 +16,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
     public sealed class GraphBalancerAlgorithm<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
-        [NotNull]
+
         private readonly Dictionary<TEdge, int> _preFlow = new Dictionary<TEdge, int>();
 
         /// <summary>
@@ -34,11 +35,11 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <exception cref="T:System.ArgumentException"><paramref name="visitedGraph"/> does not contain <paramref name="source"/> vertex.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="visitedGraph"/> does not contain <paramref name="sink"/> vertex.</exception>
         public GraphBalancerAlgorithm(
-            [NotNull] IMutableBidirectionalGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] TVertex source,
-            [NotNull] TVertex sink,
-            [NotNull] VertexFactory<TVertex> vertexFactory,
-            [NotNull] EdgeFactory<TVertex, TEdge> edgeFactory)
+             IMutableBidirectionalGraph<TVertex, TEdge> visitedGraph,
+             TVertex source,
+             TVertex sink,
+             VertexFactory<TVertex> vertexFactory,
+             EdgeFactory<TVertex, TEdge> edgeFactory)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
@@ -84,12 +85,12 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <exception cref="T:System.ArgumentException"><paramref name="visitedGraph"/> does not contain <paramref name="source"/> vertex.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="visitedGraph"/> does not contain <paramref name="sink"/> vertex.</exception>
         public GraphBalancerAlgorithm(
-            [NotNull] IMutableBidirectionalGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] TVertex source,
-            [NotNull] TVertex sink,
-            [NotNull] VertexFactory<TVertex> vertexFactory,
-            [NotNull] EdgeFactory<TVertex, TEdge> edgeFactory,
-            [NotNull] IDictionary<TEdge, double> capacities)
+             IMutableBidirectionalGraph<TVertex, TEdge> visitedGraph,
+             TVertex source,
+             TVertex sink,
+             VertexFactory<TVertex> vertexFactory,
+             EdgeFactory<TVertex, TEdge> edgeFactory,
+             IDictionary<TEdge, double> capacities)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
@@ -118,19 +119,19 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <summary>
         /// Gets the graph to visit with this algorithm.
         /// </summary>
-        [NotNull]
+
         public IMutableBidirectionalGraph<TVertex, TEdge> VisitedGraph { get; }
 
         /// <summary>
         /// Vertex factory method.
         /// </summary>
-        [NotNull]
+
         public VertexFactory<TVertex> VertexFactory { get; }
 
         /// <summary>
         /// Edge factory method.
         /// </summary>
-        [NotNull]
+
         public EdgeFactory<TVertex, TEdge> EdgeFactory { get; }
 
         /// <summary>
@@ -141,13 +142,13 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <summary>
         /// Flow source vertex.
         /// </summary>
-        [NotNull]
+
         public TVertex Source { get; }
 
         /// <summary>
         /// Flow sink vertex.
         /// </summary>
-        [NotNull]
+
         public TVertex Sink { get; }
 
         /// <summary>
@@ -174,46 +175,46 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <remarks>Not <see langword="null"/> if the algorithm has been run (and not reverted).</remarks>
         public TEdge BalancingSinkEdge { get; private set; }
 
-        [NotNull, ItemNotNull]
+
         private readonly List<TVertex> _surplusVertices = new List<TVertex>();
 
         /// <summary>
         /// Enumerable of vertices that add surplus to the graph balance.
         /// </summary>
-        [NotNull, ItemNotNull]
+
         public IEnumerable<TVertex> SurplusVertices => _surplusVertices.AsEnumerable();
 
-        [NotNull, ItemNotNull]
+
         private readonly List<TEdge> _surplusEdges = new List<TEdge>();
 
         /// <summary>
         /// Enumerable of edges linked to vertices that add surplus to the graph balance.
         /// </summary>
-        [NotNull, ItemNotNull]
+
         public IEnumerable<TEdge> SurplusEdges => _surplusEdges.AsEnumerable();
 
-        [NotNull, ItemNotNull]
+
         private readonly List<TVertex> _deficientVertices = new List<TVertex>();
 
         /// <summary>
         /// Enumerable of vertices that add deficit to the graph balance.
         /// </summary>
-        [NotNull, ItemNotNull]
+
         public IEnumerable<TVertex> DeficientVertices => _deficientVertices.AsEnumerable();
 
-        [NotNull, ItemNotNull]
+
         private readonly List<TEdge> _deficientEdges = new List<TEdge>();
 
         /// <summary>
         /// Enumerable of edges linked to vertices that add deficit to the graph balance.
         /// </summary>
-        [NotNull, ItemNotNull]
+
         public IEnumerable<TEdge> DeficientEdges => _deficientEdges.AsEnumerable();
 
         /// <summary>
         /// Edges capacities.
         /// </summary>
-        [NotNull]
+
         public IDictionary<TEdge, double> Capacities { get; } = new Dictionary<TEdge, double>();
 
         /// <summary>
@@ -241,7 +242,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// </summary>
         public event EdgeAction<TVertex, TEdge> EdgeAdded;
 
-        private void OnEdgeAdded([NotNull] TEdge edge)
+        private void OnEdgeAdded( TEdge edge)
         {
             Debug.Assert(edge != null);
 
@@ -253,7 +254,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// </summary>
         public event VertexAction<TVertex> SurplusVertexAdded;
 
-        private void OnSurplusVertexAdded([NotNull] TVertex vertex)
+        private void OnSurplusVertexAdded( TVertex vertex)
         {
             Debug.Assert(vertex != null);
 
@@ -265,7 +266,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// </summary>
         public event VertexAction<TVertex> DeficientVertexAdded;
 
-        private void OnDeficientVertexAdded([NotNull] TVertex vertex)
+        private void OnDeficientVertexAdded( TVertex vertex)
         {
             Debug.Assert(vertex != null);
 
@@ -278,7 +279,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <param name="vertex">Vertex to get balancing index.</param>
         /// <returns>Balancing index.</returns>
         [Pure]
-        public int GetBalancingIndex([NotNull] TVertex vertex)
+        public int GetBalancingIndex( TVertex vertex)
         {
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));

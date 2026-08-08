@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using JetBrains.Annotations;
 using QuikGraph.Algorithms;
 using QuikGraph.Serialization.DirectedGraphML;
 
@@ -17,10 +16,10 @@ namespace QuikGraph.Serialization
     public sealed class DirectedGraphMLAlgorithm<TVertex, TEdge> : AlgorithmBase<IVertexAndEdgeListGraph<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
     {
-        [NotNull]
+
         private readonly VertexIdentity<TVertex> _vertexIdentity;
 
-        [NotNull]
+
         private readonly EdgeIdentity<TVertex, TEdge> _edgeIdentity;
 
         /// <summary>
@@ -33,9 +32,9 @@ namespace QuikGraph.Serialization
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexIdentity"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeIdentity"/> is <see langword="null"/>.</exception>
         public DirectedGraphMLAlgorithm(
-            [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] VertexIdentity<TVertex> vertexIdentity,
-            [NotNull] EdgeIdentity<TVertex, TEdge> edgeIdentity)
+             IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
+             VertexIdentity<TVertex> vertexIdentity,
+             EdgeIdentity<TVertex, TEdge> edgeIdentity)
             : base(visitedGraph)
         {
             _vertexIdentity = vertexIdentity ?? throw new ArgumentNullException(nameof(vertexIdentity));
@@ -93,7 +92,7 @@ namespace QuikGraph.Serialization
         /// </summary>
         public event Action<TVertex, DirectedGraphNode> FormatNode;
 
-        private void OnFormatNode([NotNull] TVertex vertex, [NotNull] DirectedGraphNode node)
+        private void OnFormatNode( TVertex vertex,  DirectedGraphNode node)
         {
             Debug.Assert(vertex != null);
             Debug.Assert(node != null);
@@ -106,7 +105,7 @@ namespace QuikGraph.Serialization
         /// </summary>
         public event Action<TEdge, DirectedGraphLink> FormatEdge;
 
-        private void OnFormatEdge([NotNull] TEdge edge, [NotNull] DirectedGraphLink link)
+        private void OnFormatEdge( TEdge edge,  DirectedGraphLink link)
         {
             Debug.Assert(edge != null);
             Debug.Assert(link != null);

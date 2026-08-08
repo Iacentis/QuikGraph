@@ -1,5 +1,5 @@
 using System;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph.Algorithms
 {
@@ -11,7 +11,7 @@ namespace QuikGraph.Algorithms
         /// <summary>
         /// Synchronizer object.
         /// </summary>
-        [NotNull]
+
         object SyncRoot { get; }
 
         /// <summary>

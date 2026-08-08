@@ -1,5 +1,6 @@
 using System;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using QuikGraph.Collections;
 using static QuikGraph.Tests.SerializationTestHelpers;
 
@@ -21,18 +22,19 @@ namespace QuikGraph.Tests.Collections
         }
 
         [Test]
+        [Obsolete("Obsolete")]
         public void Serialization()
         {
             var dictionary = new EdgeEdgeDictionary<int, EquatableEdge<int>>();
 
             EdgeEdgeDictionary<int, EquatableEdge<int>> deserializedDictionary = SerializeAndDeserialize(dictionary);
-            Assert.AreNotSame(dictionary, deserializedDictionary);
+            Assert.That(dictionary, Is.Not.SameAs(deserializedDictionary));
             CollectionAssert.IsEmpty(deserializedDictionary);
 
             dictionary.Add(new EquatableEdge<int>(1, 2), new EquatableEdge<int>(2, 3));
             dictionary.Add(new EquatableEdge<int>(2, 3), new EquatableEdge<int>(3, 4));
             deserializedDictionary = SerializeAndDeserialize(dictionary);
-            Assert.AreNotSame(dictionary, deserializedDictionary);
+            Assert.That(dictionary, Is.Not.SameAs(deserializedDictionary));
             CollectionAssert.AreEqual(dictionary, deserializedDictionary);
         }
 

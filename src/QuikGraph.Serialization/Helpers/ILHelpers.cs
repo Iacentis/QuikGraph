@@ -1,18 +1,24 @@
-﻿#if SUPPORTS_GRAPHS_SERIALIZATION
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Reflection;
 using System.Reflection.Emit;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph.Serialization
 {
     /// <summary>
     /// Helpers to manipulate <see cref="ILGenerator"/> and dynamic stuff.
     /// </summary>
-    internal static class ILHelpers
+    public static class ILHelpers
     {
-        public static void EmitValue([NotNull] ILGenerator generator, [NotNull] PropertyInfo property, [NotNull] object value)
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="generator"></param>
+        /// <param name="property"></param>
+        /// <param name="value"></param>
+        /// <exception cref="NotSupportedException"></exception>
+        public static void EmitValue(ILGenerator generator, PropertyInfo property, object value)
         {
             Debug.Assert(generator != null);
             Debug.Assert(property != null);
@@ -42,7 +48,12 @@ namespace QuikGraph.Serialization
             }
         }
 
-        public static void EmitCall([NotNull] ILGenerator generator, [NotNull] MethodInfo method)
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="generator"></param>
+        /// <param name="method"></param>
+        public static void EmitCall(ILGenerator generator, MethodInfo method)
         {
             // Call the method passing the object on the stack (only virtual if needed)
             generator.Emit(
@@ -53,4 +64,3 @@ namespace QuikGraph.Serialization
         }
     }
 }
-#endif

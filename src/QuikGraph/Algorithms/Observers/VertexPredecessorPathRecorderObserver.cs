@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Linq;
-using JetBrains.Annotations;
+
 using static QuikGraph.Utils.DisposableHelpers;
 
 namespace QuikGraph.Algorithms.Observers
@@ -12,9 +13,9 @@ namespace QuikGraph.Algorithms.Observers
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
-#if SUPPORTS_SERIALIZATION
+
     [Serializable]
-#endif
+
     public sealed class VertexPredecessorPathRecorderObserver<TVertex, TEdge> :
         IObserver<IVertexPredecessorRecorderAlgorithm<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
@@ -33,7 +34,7 @@ namespace QuikGraph.Algorithms.Observers
         /// <param name="verticesPredecessors">Vertices predecessors.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="verticesPredecessors"/> is <see langword="null"/>.</exception>
         public VertexPredecessorPathRecorderObserver(
-            [NotNull] IDictionary<TVertex, TEdge> verticesPredecessors)
+             IDictionary<TVertex, TEdge> verticesPredecessors)
         {
             VerticesPredecessors = verticesPredecessors ?? throw new ArgumentNullException(nameof(verticesPredecessors));
         }
@@ -41,13 +42,13 @@ namespace QuikGraph.Algorithms.Observers
         /// <summary>
         /// Vertices predecessors.
         /// </summary>
-        [NotNull]
+
         public IDictionary<TVertex, TEdge> VerticesPredecessors { get; }
 
         /// <summary>
         /// Path ending vertices.
         /// </summary>
-        [NotNull, ItemNotNull]
+
         public ICollection<TVertex> EndPathVertices { get; } = new List<TVertex>();
 
         /// <summary>
@@ -55,7 +56,7 @@ namespace QuikGraph.Algorithms.Observers
         /// </summary>
         /// <returns>Enumerable of paths.</returns>
         [Pure]
-        [NotNull, ItemNotNull]
+
         public IEnumerable<IEnumerable<TEdge>> AllPaths()
         {
             return EndPathVertices
@@ -68,8 +69,7 @@ namespace QuikGraph.Algorithms.Observers
         /// <inheritdoc />
         public IDisposable Attach(IVertexPredecessorRecorderAlgorithm<TVertex, TEdge> algorithm)
         {
-            if (algorithm is null)
-                throw new ArgumentNullException(nameof(algorithm));
+            ArgumentNullException.ThrowIfNull(algorithm);
 
             algorithm.TreeEdge += OnEdgeDiscovered;
             algorithm.FinishVertex += OnVertexFinished;
@@ -82,14 +82,14 @@ namespace QuikGraph.Algorithms.Observers
 
         #endregion
 
-        private void OnEdgeDiscovered([NotNull] TEdge edge)
+        private void OnEdgeDiscovered( TEdge edge)
         {
             Debug.Assert(edge != null);
 
             VerticesPredecessors[edge.Target] = edge;
         }
 
-        private void OnVertexFinished([NotNull] TVertex vertex)
+        private void OnVertexFinished( TVertex vertex)
         {
             Debug.Assert(vertex != null);
 

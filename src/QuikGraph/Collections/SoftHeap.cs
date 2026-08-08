@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph.Collections
 {
@@ -13,24 +13,24 @@ namespace QuikGraph.Collections
     /// </summary>
     /// <typeparam name="TKey">Key type.</typeparam>
     /// <typeparam name="TValue">Value type.</typeparam>
-#if SUPPORTS_SERIALIZATION
+
     [Serializable]
-#endif
+
     [DebuggerDisplay("Count = {" + nameof(Count) + "}")]
     public sealed class SoftHeap<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>
     {
         private sealed class Cell
         {
-            [NotNull]
+
             public TKey Key { get; }
 
-            [CanBeNull]
+
             public TValue Value { get; }
 
-            [CanBeNull]
+
             public Cell Next { get; internal set; }
 
-            public Cell([NotNull] TKey key, [CanBeNull] TValue value)
+            public Cell( TKey key,  TValue value)
             {
                 Debug.Assert(key != null);
 
@@ -41,26 +41,26 @@ namespace QuikGraph.Collections
 
         private sealed class Node
         {
-            [NotNull]
+
             public TKey CKey { get; internal set; }
 
             public int Rank { get; }
 
-            [CanBeNull]
+
             public Node Next { get; internal set; }
 
-            [CanBeNull]
+
             public Node Child { get; internal set; }
 
             // ReSharper disable once InconsistentNaming
-            [CanBeNull]
+
             public Cell IL { get; internal set; }
-            
+
             // ReSharper disable once InconsistentNaming
-            [CanBeNull]
+
             public Cell ILTail { get; internal set; }
 
-            public Node([NotNull] Cell cell)
+            public Node( Cell cell)
             {
                 Rank = 0;
                 CKey = cell.Key;
@@ -69,12 +69,12 @@ namespace QuikGraph.Collections
             }
 
             public Node(
-                [NotNull] TKey cKey, 
-                int rank, 
-                [NotNull] Node next,
-                [NotNull] Node child,
-                [CanBeNull] Cell il,
-                [CanBeNull] Cell ilTail)
+                 TKey cKey,
+                int rank,
+                 Node next,
+                 Node child,
+                 Cell il,
+                 Cell ilTail)
             {
                 CKey = cKey;
                 Rank = rank;
@@ -94,10 +94,10 @@ namespace QuikGraph.Collections
             public int Rank { get; internal set; }
         }
 
-        [NotNull]
+
         private readonly Head _header;
 
-        [NotNull]
+
         private readonly Head _tail;
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace QuikGraph.Collections
         /// <param name="keyMaxValue">Gives the maximum key value.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="keyMaxValue"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="maximumErrorRate"/> is not in range ]0, 0.5].</exception>
-        public SoftHeap(double maximumErrorRate, [NotNull] TKey keyMaxValue)
+        public SoftHeap(double maximumErrorRate,  TKey keyMaxValue)
             : this(maximumErrorRate, keyMaxValue, Comparer<TKey>.Default.Compare)
         {
         }
@@ -121,7 +121,7 @@ namespace QuikGraph.Collections
         /// <exception cref="T:System.ArgumentNullException"><paramref name="keyMaxValue"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="comparison"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="maximumErrorRate"/> is not in range ]0, 0.5].</exception>
-        public SoftHeap(double maximumErrorRate, [NotNull] TKey keyMaxValue, [NotNull] Comparison<TKey> comparison)
+        public SoftHeap(double maximumErrorRate,  TKey keyMaxValue,  Comparison<TKey> comparison)
         {
             if (keyMaxValue == null)
                 throw new ArgumentNullException(nameof(keyMaxValue));
@@ -147,13 +147,13 @@ namespace QuikGraph.Collections
         /// <summary>
         /// Key comparer.
         /// </summary>
-        [NotNull]
+
         public Comparison<TKey> KeyComparison { get; }
 
         /// <summary>
         /// Maximal authorized key.
         /// </summary>
-        [NotNull]
+
         public TKey KeyMaxValue { get; }
 
         /// <summary>
@@ -173,7 +173,7 @@ namespace QuikGraph.Collections
         /// <param name="value">Value to add.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="key"/> is superior to <see cref="KeyMaxValue"/>.</exception>
-        public void Add([NotNull] TKey key, [CanBeNull] TValue value)
+        public void Add( TKey key,  TValue value)
         {
             if (key == null)
                 throw new ArgumentNullException(nameof(key));
@@ -187,7 +187,7 @@ namespace QuikGraph.Collections
             ++Count;
         }
 
-        private void Meld([NotNull] Node node)
+        private void Meld( Node node)
         {
             Debug.Assert(node != null);
 
@@ -218,8 +218,8 @@ namespace QuikGraph.Collections
                 toHead = toHead.Next;
             }
 
-            Head head = prevHead == toHead.Prev 
-                ? new Head() 
+            Head head = prevHead == toHead.Prev
+                ? new Head()
                 : prevHead.Next;
 
             head.Queue = node;
@@ -232,12 +232,12 @@ namespace QuikGraph.Collections
             FixMinList(head);
         }
 
-        private void FixMinList([NotNull] Head head)
+        private void FixMinList( Head head)
         {
             Debug.Assert(head != null);
 
-            Head tmpMin = head.Next == _tail 
-                ? head 
+            Head tmpMin = head.Next == _tail
+                ? head
                 : head.Next.SuffixMin;
 
             while (head != _header)
@@ -252,8 +252,8 @@ namespace QuikGraph.Collections
             }
         }
 
-        [NotNull]
-        private Node Shift([NotNull] Node v)
+
+        private Node Shift( Node v)
         {
             Debug.Assert(v != null);
 
@@ -286,7 +286,7 @@ namespace QuikGraph.Collections
             return v;
         }
 
-        private void SoftenHeap([NotNull] Node node)
+        private void SoftenHeap( Node node)
         {
             if (node.Rank > MinRank
                 && (node.Rank % 2 == 1 || node.Child.Rank < node.Rank - 1))
@@ -315,7 +315,7 @@ namespace QuikGraph.Collections
             } // End second shift
         }
 
-        private void UpdateChildAndNext([NotNull] Node node)
+        private void UpdateChildAndNext( Node node)
         {
             Debug.Assert(node.Child != null);
             if (KeyComparison(node.Child.CKey, KeyMaxValue) == 0)

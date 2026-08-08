@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Graphviz.Dot;
 using static QuikGraph.Graphviz.Tests.CultureHelpers;
@@ -17,36 +16,36 @@ namespace QuikGraph.Graphviz.Tests
         public void Constructor()
         {
             var vertex = new GraphvizVertex();
-            Assert.IsNull(vertex.Position);
-            Assert.IsNull(vertex.Comment);
-            Assert.IsFalse(vertex.IsHtmlLabel);
-            Assert.IsNull(vertex.Label);
-            Assert.IsNull(vertex.ToolTip);
-            Assert.IsNull(vertex.Url);
-            Assert.Zero(vertex.Distortion);
-            Assert.AreEqual(GraphvizColor.White, vertex.FillColor);
-            Assert.IsNull(vertex.Font);
-            Assert.AreEqual(GraphvizColor.Black, vertex.FontColor);
-            Assert.AreEqual(1.0, vertex.PenWidth);
-            Assert.IsNull(vertex.Group);
-            Assert.IsNull(vertex.Layer);
-            Assert.Zero(vertex.Orientation);
-            Assert.AreEqual(-1, vertex.Peripheries);
-            Assert.IsFalse(vertex.Regular);
-            Assert.IsNotNull(vertex.Record);
-            Assert.AreEqual(GraphvizVertexShape.Unspecified, vertex.Shape);
-            Assert.AreEqual(4, vertex.Sides);
-            Assert.IsNotNull(vertex.Size);
-            Assert.Zero(vertex.Size.Width);
-            Assert.Zero(vertex.Size.Height);
-            Assert.IsFalse(vertex.FixedSize);
-            Assert.Zero(vertex.Skew);
-            Assert.AreEqual(GraphvizColor.Black, vertex.StrokeColor);
-            Assert.AreEqual(GraphvizVertexStyle.Unspecified, vertex.Style);
-            Assert.AreEqual(-1, vertex.Z);
+            Assert.That(vertex.Position, Is.Null);
+            Assert.That(vertex.Comment, Is.Null);
+            Assert.That(vertex.IsHtmlLabel, Is.False);
+            Assert.That(vertex.Label, Is.Null);
+            Assert.That(vertex.ToolTip, Is.Null);
+            Assert.That(vertex.Url, Is.Null);
+            Assert.That(vertex.Distortion, Is.Zero);
+            Assert.That(GraphvizColor.White, Is.EqualTo(vertex.FillColor));
+            Assert.That(vertex.Font, Is.Null);
+            Assert.That(GraphvizColor.Black, Is.EqualTo(vertex.FontColor));
+            Assert.That(1.0, Is.EqualTo(vertex.PenWidth));
+            Assert.That(vertex.Group, Is.Null);
+            Assert.That(vertex.Layer, Is.Null);
+            Assert.That(vertex.Orientation, Is.Zero);
+            Assert.That(-1, Is.EqualTo(vertex.Peripheries));
+            Assert.That(vertex.Regular, Is.False);
+            Assert.That(vertex.Record, Is.Not.Null);
+            Assert.That(GraphvizVertexShape.Unspecified, Is.EqualTo(vertex.Shape));
+            Assert.That(4, Is.EqualTo(vertex.Sides));
+            Assert.That(vertex.Size, Is.Not.Null);
+            Assert.That(vertex.Size.Width, Is.Zero);
+            Assert.That(vertex.Size.Height, Is.Zero);
+            Assert.That(vertex.FixedSize, Is.False);
+            Assert.That(vertex.Skew, Is.Zero);
+            Assert.That(GraphvizColor.Black, Is.EqualTo(vertex.StrokeColor));
+            Assert.That(GraphvizVertexStyle.Unspecified, Is.EqualTo(vertex.Style));
+            Assert.That(-1, Is.EqualTo(vertex.Z));
         }
 
-        [NotNull, ItemNotNull]
+
         private static IEnumerable<TestCaseData> ToDotTestCases
         {
             get
@@ -54,10 +53,7 @@ namespace QuikGraph.Graphviz.Tests
                 var vertex = new GraphvizVertex();
                 yield return new TestCaseData(vertex, string.Empty);
 
-                vertex = new GraphvizVertex
-                {
-                    Label = "Test Vertex"
-                };
+                vertex = new GraphvizVertex { Label = "Test Vertex" };
                 yield return new TestCaseData(vertex, @"label=""Test Vertex""");
 
                 vertex = new GraphvizVertex
@@ -68,17 +64,10 @@ namespace QuikGraph.Graphviz.Tests
                 };
                 yield return new TestCaseData(vertex, @"shape=doublecircle, style=filled, fillcolor=""#0000FFFF""");
 
-                vertex = new GraphvizVertex
-                {
-                    Label = "<b>Bold</b> text"
-                };
+                vertex = new GraphvizVertex { Label = "<b>Bold</b> text" };
                 yield return new TestCaseData(vertex, @"label=""<b>Bold</b> text""");
 
-                vertex = new GraphvizVertex
-                {
-                    IsHtmlLabel = true,
-                    Label = "<b>Bold</b> text"
-                };
+                vertex = new GraphvizVertex { IsHtmlLabel = true, Label = "<b>Bold</b> text" };
                 yield return new TestCaseData(vertex, @"label=<<b>Bold</b> text>");
 
                 vertex = new GraphvizVertex
@@ -111,85 +100,45 @@ namespace QuikGraph.Graphviz.Tests
                     + @"z=100, pos=""10,-20!""");
 
                 // Not fixed size
-                vertex = new GraphvizVertex
-                {
-                    FixedSize = false,
-                    Size = new GraphvizSizeF(10.0f, 15.0f)
-                };
+                vertex = new GraphvizVertex { FixedSize = false, Size = new GraphvizSizeF(10.0f, 15.0f) };
                 yield return new TestCaseData(vertex, string.Empty);
 
                 // Fixed size
-                vertex = new GraphvizVertex
-                {
-                    FixedSize = true,
-                    Size = new GraphvizSizeF(10.0f, 15.0f)
-                };
+                vertex = new GraphvizVertex { FixedSize = true, Size = new GraphvizSizeF(10.0f, 15.0f) };
                 yield return new TestCaseData(vertex, "fixedsize=true, height=15, width=10");
 
-                vertex = new GraphvizVertex
-                {
-                    FixedSize = true,
-                    Size = new GraphvizSizeF(0.0f, 15.0f)
-                };
+                vertex = new GraphvizVertex { FixedSize = true, Size = new GraphvizSizeF(0.0f, 15.0f) };
                 yield return new TestCaseData(vertex, "fixedsize=true, height=15");
 
-                vertex = new GraphvizVertex
-                {
-                    FixedSize = true,
-                    Size = new GraphvizSizeF(10.0f, 0.0f)
-                };
+                vertex = new GraphvizVertex { FixedSize = true, Size = new GraphvizSizeF(10.0f, 0.0f) };
                 yield return new TestCaseData(vertex, "fixedsize=true, width=10");
 
                 // Polygon specific properties
                 vertex = new GraphvizVertex
                 {
-                    Shape = GraphvizVertexShape.Box,
-                    Sides = 8,
-                    Skew = 2.0,
-                    Distortion = 2.0
+                    Shape = GraphvizVertexShape.Box, Sides = 8, Skew = 2.0, Distortion = 2.0
                 };
                 yield return new TestCaseData(vertex, "shape=box");
 
                 vertex = new GraphvizVertex
                 {
-                    Shape = GraphvizVertexShape.Polygon,
-                    Sides = 8,
-                    Skew = 2.0,
-                    Distortion = 2.0
+                    Shape = GraphvizVertexShape.Polygon, Sides = 8, Skew = 2.0, Distortion = 2.0
                 };
                 yield return new TestCaseData(vertex, @"shape=polygon, sides=8, skew=2, distortion=2");
 
-                vertex = new GraphvizVertex
-                {
-                    Shape = GraphvizVertexShape.Polygon,
-                    Skew = 2.0,
-                    Distortion = 2.0
-                };
+                vertex = new GraphvizVertex { Shape = GraphvizVertexShape.Polygon, Skew = 2.0, Distortion = 2.0 };
                 yield return new TestCaseData(vertex, @"shape=polygon, sides=4, skew=2, distortion=2");
 
                 vertex = new GraphvizVertex
                 {
-                    Shape = GraphvizVertexShape.Polygon,
-                    Sides = 0,
-                    Skew = 2.0,
-                    Distortion = 2.0
+                    Shape = GraphvizVertexShape.Polygon, Sides = 0, Skew = 2.0, Distortion = 2.0
                 };
                 yield return new TestCaseData(vertex, @"shape=polygon, skew=2, distortion=2");
 
-                vertex = new GraphvizVertex
-                {
-                    Shape = GraphvizVertexShape.Polygon,
-                    Sides = 8,
-                    Distortion = 2.0
-                };
+                vertex = new GraphvizVertex { Shape = GraphvizVertexShape.Polygon, Sides = 8, Distortion = 2.0 };
                 yield return new TestCaseData(vertex, @"shape=polygon, sides=8, distortion=2");
 
-                vertex = new GraphvizVertex
-                {
-                    Shape = GraphvizVertexShape.Polygon,
-                    Sides = 8,
-                    Skew = 2.0
-                };
+                vertex = new GraphvizVertex { Shape = GraphvizVertexShape.Polygon, Sides = 8, Skew = 2.0 };
                 yield return new TestCaseData(vertex, @"shape=polygon, sides=8, skew=2");
 
                 // With record
@@ -201,10 +150,7 @@ namespace QuikGraph.Graphviz.Tests
                     {
                         Cells = new GraphvizRecordCellCollection(new[]
                         {
-                            new GraphvizRecordCell
-                            {
-                                Text = "Test Cell"
-                            }
+                            new GraphvizRecordCell { Text = "Test Cell" }
                         })
                     }
                 };
@@ -213,15 +159,12 @@ namespace QuikGraph.Graphviz.Tests
                 vertex = new GraphvizVertex
                 {
                     Shape = GraphvizVertexShape.Record,
-                    Label = "Test label",   // => priority to label
+                    Label = "Test label", // => priority to label
                     Record = new GraphvizRecord
                     {
                         Cells = new GraphvizRecordCellCollection(new[]
                         {
-                            new GraphvizRecordCell
-                            {
-                                Text = "Test Cell"
-                            }
+                            new GraphvizRecordCell { Text = "Test Cell" }
                         })
                     }
                 };
@@ -230,15 +173,12 @@ namespace QuikGraph.Graphviz.Tests
                 vertex = new GraphvizVertex
                 {
                     Shape = GraphvizVertexShape.Record,
-                    Label = "Start\\ Cell | { <Port_A> a | b | c }",    // => priority to label
+                    Label = "Start\\ Cell | { <Port_A> a | b | c }", // => priority to label
                     Record = new GraphvizRecord
                     {
                         Cells = new GraphvizRecordCellCollection(new[]
                         {
-                            new GraphvizRecordCell
-                            {
-                                Text = "Test Cell"
-                            }
+                            new GraphvizRecordCell { Text = "Test Cell" }
                         })
                     }
                 };
@@ -251,35 +191,27 @@ namespace QuikGraph.Graphviz.Tests
                     {
                         Cells = new GraphvizRecordCellCollection(new[]
                         {
-                            new GraphvizRecordCell
-                            {
-                                Text = "Test Cell1"
-                            },
-                            new GraphvizRecordCell
-                            {
-                                Port = "Test Port2",
-                                Text = "Test Cell2"
-                            },
+                            new GraphvizRecordCell { Text = "Test Cell1" },
+                            new GraphvizRecordCell { Port = "Test Port2", Text = "Test Cell2" },
                             new GraphvizRecordCell
                             {
                                 Cells = new GraphvizRecordCellCollection(new[]
                                 {
                                     new GraphvizRecordCell
                                     {
-                                        Port = "Sub Test Port1",
-                                        Text = "Sub Test Cell1"
+                                        Port = "Sub Test Port1", Text = "Sub Test Cell1"
                                     },
                                     new GraphvizRecordCell
                                     {
-                                        Port = "Sub Test Port2",
-                                        Text = "Sub Test Cell2"
+                                        Port = "Sub Test Port2", Text = "Sub Test Cell2"
                                     }
                                 })
                             }
                         })
                     }
                 };
-                yield return new TestCaseData(vertex, @"shape=record, label=""Test\ Cell1 | <Test_Port2> Test\ Cell2 | { <Sub_Test_Port1> Sub\ Test\ Cell1 | <Sub_Test_Port2> Sub\ Test\ Cell2 }""");
+                yield return new TestCaseData(vertex,
+                    @"shape=record, label=""Test\ Cell1 | <Test_Port2> Test\ Cell2 | { <Sub_Test_Port1> Sub\ Test\ Cell1 | <Sub_Test_Port2> Sub\ Test\ Cell2 }""");
 
                 // With escape
                 vertex = new GraphvizVertex
@@ -297,22 +229,24 @@ namespace QuikGraph.Graphviz.Tests
                 vertex = new GraphvizVertex
                 {
                     IsHtmlLabel = true,
-                    Label = "<i>\"The Label\"</i>\n &amp;/&lt;&gt;@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\\[]() Content ∴∞⇐ℜΩ÷嗷娪"
+                    Label =
+                        "<i>\"The Label\"</i>\n &amp;/&lt;&gt;@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\\[]() Content ∴∞⇐ℜΩ÷嗷娪"
                 };
                 yield return new TestCaseData(
                     vertex,
-                    @"label=<<i>""The Label""</i>" + '\n' + @" &amp;/&lt;&gt;@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\[]() Content ∴∞⇐ℜΩ÷嗷娪>");
+                    @"label=<<i>""The Label""</i>" + '\n' +
+                    @" &amp;/&lt;&gt;@~| With æéèêë£¤¶ÀÁÂÃÄÅ Escaped Ση← ♠\[]() Content ∴∞⇐ℜΩ÷嗷娪>");
             }
         }
 
         [TestCaseSource(nameof(ToDotTestCases))]
-        public void ToDot([NotNull] GraphvizVertex vertex, [NotNull] string expectedDot)
+        public void ToDot(GraphvizVertex vertex, string expectedDot)
         {
-            Assert.AreEqual(expectedDot, vertex.ToDot());
-            Assert.AreEqual(expectedDot, vertex.ToString());
+            Assert.That(expectedDot, Is.EqualTo(vertex.ToDot()));
+            Assert.That(expectedDot, Is.EqualTo(vertex.ToString()));
         }
 
-        [NotNull, ItemNotNull]
+
         private static IEnumerable<TestCaseData> ToDotCultureInvariantTestCases
         {
             get
@@ -326,7 +260,7 @@ namespace QuikGraph.Graphviz.Tests
         }
 
         [TestCaseSource(nameof(ToDotCultureInvariantTestCases))]
-        public void ToDot_InvariantCulture([NotNull, InstantHandle] Func<GraphvizVertex, string> convert)
+        public void ToDot_InvariantCulture(Func<GraphvizVertex, string> convert)
         {
             var vertex = new GraphvizVertex
             {
@@ -347,12 +281,12 @@ namespace QuikGraph.Graphviz.Tests
 
             using (CultureScope(EnglishCulture))
             {
-                Assert.AreEqual(expectedDot, convert(vertex));
+                Assert.That(expectedDot, Is.EqualTo(convert(vertex)));
             }
 
             using (CultureScope(FrenchCulture))
             {
-                Assert.AreEqual(expectedDot, convert(vertex));
+                Assert.That(expectedDot, Is.EqualTo(convert(vertex)));
             }
         }
     }

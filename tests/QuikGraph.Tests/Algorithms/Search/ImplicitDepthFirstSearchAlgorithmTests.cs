@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
+
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using QuikGraph.Algorithms.Search;
 using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
 using static QuikGraph.Tests.GraphTestHelpers;
@@ -18,8 +19,8 @@ namespace QuikGraph.Tests.Algorithms.Search
         #region Test helpers
 
         private static void RunImplicitDFSAndCheck<TVertex, TEdge>(
-            [NotNull] IIncidenceGraph<TVertex, TEdge> graph,
-            [NotNull] TVertex sourceVertex,
+             IIncidenceGraph<TVertex, TEdge> graph,
+             TVertex sourceVertex,
             int maxDepth = int.MaxValue)
             where TEdge : IEdge<TVertex>
         {
@@ -34,21 +35,21 @@ namespace QuikGraph.Tests.Algorithms.Search
 
             dfs.StartVertex += vertex =>
             {
-                Assert.IsFalse(parents.ContainsKey(vertex));
+                Assert.That(parents.ContainsKey(vertex),Is.False);
                 parents[vertex] = vertex;
             };
 
             dfs.DiscoverVertex += vertex =>
             {
-                Assert.AreEqual(GraphColor.Gray, dfs.VerticesColors[vertex]);
-                Assert.AreEqual(GraphColor.Gray, dfs.VerticesColors[parents[vertex]]);
+                Assert.That(GraphColor.Gray,Is.EqualTo(dfs.VerticesColors[vertex]));
+                Assert.That(GraphColor.Gray,Is.EqualTo(dfs.VerticesColors[parents[vertex]]));
 
                 discoverTimes[vertex] = time++;
             };
 
             dfs.ExamineEdge += edge =>
             {
-                Assert.AreEqual(GraphColor.Gray, dfs.VerticesColors[edge.Source]);
+                Assert.That(GraphColor.Gray,Is.EqualTo(dfs.VerticesColors[edge.Source]));
             };
 
             dfs.TreeEdge += edge =>
@@ -58,17 +59,17 @@ namespace QuikGraph.Tests.Algorithms.Search
 
             dfs.BackEdge += edge =>
             {
-                Assert.AreEqual(GraphColor.Gray, dfs.VerticesColors[edge.Target]);
+                Assert.That(GraphColor.Gray,Is.EqualTo(dfs.VerticesColors[edge.Target]));
             };
 
             dfs.ForwardOrCrossEdge += edge =>
             {
-                Assert.AreEqual(GraphColor.Black, dfs.VerticesColors[edge.Target]);
+                Assert.That(GraphColor.Black,Is.EqualTo(dfs.VerticesColors[edge.Target]));
             };
 
             dfs.FinishVertex += vertex =>
             {
-                Assert.AreEqual(GraphColor.Black, dfs.VerticesColors[vertex]);
+                Assert.That(GraphColor.Black,Is.EqualTo(dfs.VerticesColors[vertex]));
                 finishTimes[vertex] = time++;
             };
 
@@ -76,9 +77,9 @@ namespace QuikGraph.Tests.Algorithms.Search
 
             // Check
             if (maxDepth == int.MaxValue)
-                Assert.AreEqual(discoverTimes.Count, finishTimes.Count);
+                Assert.That(discoverTimes.Count,Is.EqualTo(finishTimes.Count));
             else
-                Assert.GreaterOrEqual(discoverTimes.Count, finishTimes.Count);
+                Assert.That(discoverTimes.Count, Is.GreaterThanOrEqualTo(finishTimes.Count));
 
             TVertex[] exploredVertices = finishTimes.Keys.ToArray();
             foreach (TVertex u in exploredVertices)
@@ -87,11 +88,12 @@ namespace QuikGraph.Tests.Algorithms.Search
                 {
                     if (!u.Equals(v))
                     {
-                        Assert.IsTrue(
+                        Assert.That(
                             finishTimes[u] < discoverTimes[v]
                             || finishTimes[v] < discoverTimes[u]
                             || (discoverTimes[v] < discoverTimes[u] && finishTimes[u] < finishTimes[v] && IsDescendant(parents, u, v))
-                            || (discoverTimes[u] < discoverTimes[v] && finishTimes[v] < finishTimes[u] && IsDescendant(parents, v, u)));
+                            || (discoverTimes[u] < discoverTimes[v] && finishTimes[v] < finishTimes[u] && IsDescendant(parents, v, u)),
+                            Is.True);
                     }
                 }
             }
@@ -122,7 +124,7 @@ namespace QuikGraph.Tests.Algorithms.Search
             {
                 AssertAlgorithmState(algo, g);
                 CollectionAssert.IsEmpty(algo.VerticesColors);
-                Assert.AreEqual(maxDepth, algo.MaxDepth);
+                Assert.That(maxDepth,Is.EqualTo(algo.MaxDepth));
             }
 
             #endregion

@@ -1,18 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Linq;
-#if !SUPPORTS_TYPE_FULL_FEATURES
-using System.Reflection;
-#endif
-#if SUPPORTS_AGGRESSIVE_INLINING
 using System.Runtime.CompilerServices;
-#endif
-#if SUPPORTS_SERIALIZATION && NETSTANDARD2_0
 using System.Runtime.Serialization;
-using System.Security.Permissions;
-#endif
-using JetBrains.Annotations;
 using QuikGraph.Collections;
 
 namespace QuikGraph
@@ -22,20 +14,13 @@ namespace QuikGraph
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type</typeparam>
-#if SUPPORTS_SERIALIZATION
     [Serializable]
-#endif
     [DebuggerDisplay("VertexCount = {" + nameof(VertexCount) + "}, EdgeCount = {" + nameof(EdgeCount) + "}")]
     public class UndirectedGraph<TVertex, TEdge> : IMutableUndirectedGraph<TVertex, TEdge>
-#if SUPPORTS_CLONEABLE
         , ICloneable
-#endif
-#if SUPPORTS_SERIALIZATION && NETSTANDARD2_0
         , ISerializable
-#endif
         where TEdge : IEdge<TVertex>
     {
-        [NotNull]
         private IVertexEdgeDictionary<TVertex, TEdge> _adjacentEdges =
             new VertexEdgeDictionary<TVertex, TEdge>();
 
@@ -65,17 +50,15 @@ namespace QuikGraph
         /// <param name="allowParallelEdges">Indicates if parallel edges are allowed.</param>
         /// <param name="edgeEqualityComparer">Equality comparer to use to compare edges.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeEqualityComparer"/> is <see langword="null"/>.</exception>
-        public UndirectedGraph(bool allowParallelEdges, [NotNull] EdgeEqualityComparer<TVertex> edgeEqualityComparer)
+        public UndirectedGraph(bool allowParallelEdges, EdgeEqualityComparer<TVertex> edgeEqualityComparer)
         {
             AllowParallelEdges = allowParallelEdges;
-            EdgeEqualityComparer = edgeEqualityComparer ?? throw new ArgumentNullException(nameof(edgeEqualityComparer));
+            EdgeEqualityComparer =
+                edgeEqualityComparer ?? throw new ArgumentNullException(nameof(edgeEqualityComparer));
 
-#if SUPPORTS_TYPE_FULL_FEATURES
             _reorder = typeof(IUndirectedEdge<TVertex>).IsAssignableFrom(typeof(TEdge))
-#else
-            _reorder = typeof(IUndirectedEdge<TVertex>).GetTypeInfo().IsAssignableFrom(typeof(TEdge).GetTypeInfo())
-#endif
-                ? (ReorderVertices)((TVertex source, TVertex target, out TVertex orderedSource, out TVertex orderedTarget) =>
+                ? (source, target, out orderedSource,
+                    out orderedTarget) =>
                 {
                     if (Comparer<TVertex>.Default.Compare(source, target) > 0)
                     {
@@ -87,8 +70,8 @@ namespace QuikGraph
                         orderedSource = source;
                         orderedTarget = target;
                     }
-                })
-                : (TVertex source, TVertex target, out TVertex orderedSource, out TVertex orderedTarget) =>
+                }
+                : (source, target, out orderedSource, out orderedTarget) =>
                 {
                     orderedSource = source;
                     orderedTarget = target;
@@ -96,12 +79,12 @@ namespace QuikGraph
         }
 
         private delegate void ReorderVertices(
-            [NotNull] TVertex source,
-            [NotNull] TVertex target,
-            [NotNull] out TVertex orderedSource,
-            [NotNull] out TVertex orderedTarget);
+            TVertex source,
+            TVertex target,
+            out TVertex orderedSource,
+            out TVertex orderedTarget);
 
-        [NotNull]
+
         private readonly ReorderVertices _reorder;
 
         /// <inheritdoc />
@@ -119,8 +102,7 @@ namespace QuikGraph
         /// <returns>Set of adjacent vertices.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull, ItemNotNull]
-        public IEnumerable<TVertex> AdjacentVertices([NotNull] TVertex vertex)
+        public IEnumerable<TVertex> AdjacentVertices(TVertex vertex)
         {
             IEnumerable<TEdge> adjacentEdges = AdjacentEdges(vertex);
             var adjacentVertices = new HashSet<TVertex>();
@@ -175,7 +157,7 @@ namespace QuikGraph
         /// <inheritdoc />
         public int EdgeCount { get; private set; }
 
-        [NotNull, ItemNotNull]
+
         private IList<TEdge> _edges = new List<TEdge>();
 
         /// <inheritdoc />
@@ -198,7 +180,7 @@ namespace QuikGraph
         }
 
         [Pure]
-        private bool ContainsEdgeBetweenVertices([NotNull, ItemNotNull] IEnumerable<TEdge> edges, [NotNull] TEdge edge)
+        private bool ContainsEdgeBetweenVertices(IEnumerable<TEdge> edges, TEdge edge)
         {
             Debug.Assert(edges != null);
             Debug.Assert(edge != null);
@@ -230,7 +212,7 @@ namespace QuikGraph
                 throw new ArgumentNullException(nameof(vertex));
 
             if (_adjacentEdges.TryGetValue(vertex, out IEdgeList<TVertex, TEdge> edges))
-                return edges.Sum(edge => edge.IsSelfEdge() ? 2 : 1);    // Self edge count twice
+                return edges.Sum(edge => edge.IsSelfEdge() ? 2 : 1); // Self edge count twice
             throw new VertexNotFoundException();
         }
 
@@ -263,7 +245,8 @@ namespace QuikGraph
 
             if (_adjacentEdges.TryGetValue(source, out IEdgeList<TVertex, TEdge> adjacentEdges))
             {
-                foreach (TEdge adjacentEdge in adjacentEdges.Where(adjacentEdge => EdgeEqualityComparer(adjacentEdge, source, target)))
+                foreach (TEdge adjacentEdge in adjacentEdges.Where(adjacentEdge =>
+                             EdgeEqualityComparer(adjacentEdge, source, target)))
                 {
                     edge = adjacentEdge;
                     return true;
@@ -315,7 +298,7 @@ namespace QuikGraph
         /// Called on each added vertex.
         /// </summary>
         /// <param name="vertex">Added vertex.</param>
-        protected virtual void OnVertexAdded([NotNull] TVertex vertex)
+        protected virtual void OnVertexAdded(TVertex vertex)
         {
             Debug.Assert(vertex != null);
 
@@ -342,8 +325,7 @@ namespace QuikGraph
         /// <inheritdoc />
         public int AddVertexRange(IEnumerable<TVertex> vertices)
         {
-            if (vertices is null)
-                throw new ArgumentNullException(nameof(vertices));
+            ArgumentNullException.ThrowIfNull(vertices);
             TVertex[] verticesArray = vertices.ToArray();
             if (verticesArray.Any(v => v == null))
                 throw new ArgumentNullException(nameof(vertices), "At least one vertex is null.");
@@ -352,8 +334,7 @@ namespace QuikGraph
         }
 
         [Pure]
-        [NotNull]
-        private IEdgeList<TVertex, TEdge> AddAndReturnEdges([NotNull] TVertex vertex)
+        private IEdgeList<TVertex, TEdge> AddAndReturnEdges(TVertex vertex)
         {
             Debug.Assert(vertex != null);
 
@@ -376,17 +357,16 @@ namespace QuikGraph
         /// Called for each removed vertex.
         /// </summary>
         /// <param name="vertex">Removed vertex.</param>
-        protected virtual void OnVertexRemoved([NotNull] TVertex vertex)
+        protected virtual void OnVertexRemoved(TVertex vertex)
         {
             Debug.Assert(vertex != null);
 
             VertexRemoved?.Invoke(vertex);
         }
 
-#if SUPPORTS_AGGRESSIVE_INLINING
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
-        private void NotifyVerticesRemoved([NotNull, ItemNotNull] IEnumerable<TVertex> vertices)
+        private void NotifyVerticesRemoved(IEnumerable<TVertex> vertices)
         {
             if (VertexRemoved != null) // Lazily notify
             {
@@ -414,8 +394,7 @@ namespace QuikGraph
         /// <inheritdoc />
         public int RemoveVertexIf(VertexPredicate<TVertex> predicate)
         {
-            if (predicate is null)
-                throw new ArgumentNullException(nameof(predicate));
+            ArgumentNullException.ThrowIfNull(predicate);
 
             var verticesToRemove = new VertexList<TVertex>();
             verticesToRemove.AddRange(Vertices.Where(vertex => predicate(vertex)));
@@ -438,8 +417,7 @@ namespace QuikGraph
         /// <inheritdoc />
         public int RemoveAdjacentEdgeIf(TVertex vertex, EdgePredicate<TVertex, TEdge> predicate)
         {
-            if (predicate is null)
-                throw new ArgumentNullException(nameof(predicate));
+            ArgumentNullException.ThrowIfNull(predicate);
 
             if (_adjacentEdges.TryGetValue(vertex, out IEdgeList<TVertex, TEdge> adjacentEdges))
             {
@@ -488,7 +466,7 @@ namespace QuikGraph
         /// </summary>
         /// <param name="vertex">The vertex.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
-        public void ClearEdges([NotNull] TVertex vertex)
+        public void ClearEdges(TVertex vertex)
         {
             ClearAdjacentEdges(vertex);
         }
@@ -525,8 +503,7 @@ namespace QuikGraph
         /// <inheritdoc />
         public int AddVerticesAndEdgeRange(IEnumerable<TEdge> edges)
         {
-            if (edges is null)
-                throw new ArgumentNullException(nameof(edges));
+            ArgumentNullException.ThrowIfNull(edges);
             TEdge[] edgesArray = edges.ToArray();
             if (edgesArray.Any(e => e == null))
                 throw new ArgumentNullException(nameof(edges), "At least one edge is null.");
@@ -564,8 +541,7 @@ namespace QuikGraph
         /// <inheritdoc />
         public int AddEdgeRange(IEnumerable<TEdge> edges)
         {
-            if (edges is null)
-                throw new ArgumentNullException(nameof(edges));
+            ArgumentNullException.ThrowIfNull(edges);
             TEdge[] edgesArray = edges.ToArray();
             if (edgesArray.Any(e => e == null))
                 throw new ArgumentNullException(nameof(edges), "At least one edge is null.");
@@ -580,17 +556,16 @@ namespace QuikGraph
         /// Called on each added edge.
         /// </summary>
         /// <param name="edge">Added edge.</param>
-        protected virtual void OnEdgeAdded([NotNull] TEdge edge)
+        protected virtual void OnEdgeAdded(TEdge edge)
         {
             Debug.Assert(edge != null);
 
             EdgeAdded?.Invoke(edge);
         }
 
-#if SUPPORTS_AGGRESSIVE_INLINING
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
-        private void NotifyEdgesRemoved([NotNull, ItemNotNull] ICollection<TEdge> edges)
+        private void NotifyEdgesRemoved(ICollection<TEdge> edges)
         {
             Debug.Assert(edges != null);
 
@@ -618,6 +593,7 @@ namespace QuikGraph
                 {
                     _adjacentEdges[edge.Target].Remove(edge);
                 }
+
                 --EdgeCount;
                 Debug.Assert(EdgeCount >= 0);
 
@@ -635,7 +611,7 @@ namespace QuikGraph
         /// Called on each removed edge.
         /// </summary>
         /// <param name="edge">Removed edge.</param>
-        protected virtual void OnEdgeRemoved([NotNull] TEdge edge)
+        protected virtual void OnEdgeRemoved(TEdge edge)
         {
             Debug.Assert(edge != null);
 
@@ -645,17 +621,15 @@ namespace QuikGraph
         /// <inheritdoc />
         public int RemoveEdgeIf(EdgePredicate<TVertex, TEdge> predicate)
         {
-            if (predicate is null)
-                throw new ArgumentNullException(nameof(predicate));
+            ArgumentNullException.ThrowIfNull(predicate);
 
             return RemoveEdgesInternal(
                 Edges.Where(edge => predicate(edge)).ToArray());
         }
 
-#if SUPPORTS_AGGRESSIVE_INLINING
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
-        private int RemoveEdgesInternal([NotNull, ItemNotNull] ICollection<TEdge> edgesToRemove)
+        private int RemoveEdgesInternal(ICollection<TEdge> edgesToRemove)
         {
             foreach (TEdge edge in edgesToRemove)
             {
@@ -686,10 +660,9 @@ namespace QuikGraph
         /// <exception cref="T:System.ArgumentNullException">
         /// <paramref name="edges"/> is <see langword="null"/> or at least one of them is <see langword="null"/>.
         /// </exception>
-        public int RemoveEdges([NotNull, ItemNotNull] IEnumerable<TEdge> edges)
+        public int RemoveEdges(IEnumerable<TEdge> edges)
         {
-            if (edges is null)
-                throw new ArgumentNullException(nameof(edges));
+            ArgumentNullException.ThrowIfNull(edges);
             TEdge[] edgesArray = edges.ToArray();
             if (edgesArray.Any(e => e == null))
                 throw new ArgumentNullException(nameof(edges), "At least one edge is null.");
@@ -699,25 +672,24 @@ namespace QuikGraph
 
         #endregion
 
-#if SUPPORTS_SERIALIZATION && NETSTANDARD2_0
+
         #region ISerializable
 
         /// <summary>
         /// Constructor used during runtime serialization.
         /// </summary>
         protected UndirectedGraph(SerializationInfo info, StreamingContext context)
-            : this((bool)info.GetValue("AllowParallelEdges", typeof(bool)))
+            : this((bool)(info.GetValue("AllowParallelEdges", typeof(bool)) ?? false))
         {
-            EdgeCapacity = (int)info.GetValue("EdgeCapacity", typeof(int));
+            EdgeCapacity = (int)(info.GetValue("EdgeCapacity", typeof(int)) ?? 0);
             _adjacentEdges = (IVertexEdgeDictionary<TVertex, TEdge>)info.GetValue(
                 "AdjacentEdges",
                 typeof(IVertexEdgeDictionary<TVertex, TEdge>));
             _edges = (IList<TEdge>)info.GetValue("Edges", typeof(IList<TEdge>));
-            EdgeCount = _edges.Count;
+            EdgeCount = _edges?.Count ?? 0;
         }
 
         /// <inheritdoc />
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
         void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
         {
             GetObjectData(info, context);
@@ -726,8 +698,7 @@ namespace QuikGraph
         /// <summary>
         /// Gets the data to serialize.
         /// </summary>
-        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
-        protected virtual void GetObjectData([NotNull] SerializationInfo info, StreamingContext context)
+        protected virtual void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("AllowParallelEdges", AllowParallelEdges);
             info.AddValue("EdgeCapacity", EdgeCapacity);
@@ -736,14 +707,14 @@ namespace QuikGraph
         }
 
         #endregion
-#endif
+
 
         #region ICloneable
 
         private UndirectedGraph(
-            [NotNull, ItemNotNull] IList<TEdge> edges,
-            [NotNull] IVertexEdgeDictionary<TVertex, TEdge> adjacentEdges,
-            [NotNull] EdgeEqualityComparer<TVertex> edgeEqualityComparer,
+            IList<TEdge> edges,
+            IVertexEdgeDictionary<TVertex, TEdge> adjacentEdges,
+            EdgeEqualityComparer<TVertex> edgeEqualityComparer,
             int edgeCapacity,
             bool allowParallelEdges)
             : this(allowParallelEdges, edgeEqualityComparer)
@@ -762,7 +733,6 @@ namespace QuikGraph
         /// </summary>
         /// <returns>Cloned graph.</returns>
         [Pure]
-        [NotNull]
         public UndirectedGraph<TVertex, TEdge> Clone()
         {
             return new UndirectedGraph<TVertex, TEdge>(
@@ -773,13 +743,12 @@ namespace QuikGraph
                 AllowParallelEdges);
         }
 
-#if SUPPORTS_CLONEABLE
+
         /// <inheritdoc />
         object ICloneable.Clone()
         {
             return Clone();
         }
-#endif
 
         #endregion
     }

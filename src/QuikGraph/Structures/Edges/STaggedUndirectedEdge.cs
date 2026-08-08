@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
-using JetBrains.Annotations;
 using QuikGraph.Constants;
 
 namespace QuikGraph
@@ -12,9 +11,9 @@ namespace QuikGraph
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TTag">Tag type.</typeparam>
-#if SUPPORTS_SERIALIZATION
+
     [Serializable]
-#endif
+
     [StructLayout(LayoutKind.Auto)]
     [DebuggerDisplay("{" + nameof(Source) + "}->{" + nameof(Target) + "}:{" + nameof(Tag) + "}")]
     public struct STaggedUndirectedEdge<TVertex, TTag> : IUndirectedEdge<TVertex>, ITagged<TTag>
@@ -30,7 +29,7 @@ namespace QuikGraph
         /// <exception cref="T:System.ArgumentException">
         /// <paramref name="target"/> is not lower than <paramref name="source"/> when using <see cref="M:System.Collections.Generic.Comparer{T}.Default"/>.
         /// </exception>
-        public STaggedUndirectedEdge([NotNull] TVertex source, [NotNull] TVertex target, [CanBeNull] TTag tag)
+        public STaggedUndirectedEdge( TVertex source,  TVertex target,  TTag tag)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
@@ -59,7 +58,7 @@ namespace QuikGraph
         /// Event invoker for <see cref="TagChanged"/> event.
         /// </summary>
         /// <param name="args">Event arguments.</param>
-        private void OnTagChanged([NotNull] EventArgs args)
+        private void OnTagChanged( EventArgs args)
         {
             Debug.Assert(args != null);
 

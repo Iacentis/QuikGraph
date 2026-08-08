@@ -31,10 +31,10 @@ namespace QuikGraph.Tests.Structures
             // Struct break the contract with their implicit default constructor
             // Non struct edge should be preferred
             var defaultEdge = default(STaggedUndirectedEdge<ComparableTestVertex, int>);
-            Assert.IsNull(defaultEdge.Source);
+            Assert.That(defaultEdge.Source,Is.Null);
             // ReSharper disable once HeuristicUnreachableCode
             // Justification: Since struct has implicit default constructor it allows initialization of invalid edge
-            Assert.IsNull(defaultEdge.Target);
+            Assert.That(defaultEdge.Target,Is.Null);
         }
 
         [Test]
@@ -73,40 +73,40 @@ namespace QuikGraph.Tests.Structures
             var edge7 = new STaggedUndirectedEdge<int, TestObject>(1, 2, tag1);
             var edge8 = new STaggedUndirectedEdge<int, TestObject>(1, 2, tag2);
 
-            Assert.AreEqual(edge1, edge1);
+            Assert.That(edge1,Is.EqualTo(edge1));
 
-            Assert.AreEqual(edge1, edge2);
-            Assert.AreEqual(edge2, edge1);
-            Assert.IsTrue(edge1.Equals(edge2));
-            Assert.IsTrue(edge2.Equals(edge1));
+            Assert.That(edge1,Is.EqualTo(edge2));
+            Assert.That(edge2,Is.EqualTo(edge1));
+            Assert.That(edge1.Equals(edge2),Is.True);
+            Assert.That(edge2.Equals(edge1),Is.True);
 
-            Assert.AreNotEqual(edge1, edge3);
-            Assert.AreNotEqual(edge3, edge1);
-            Assert.IsFalse(edge1.Equals(edge3));
-            Assert.IsFalse(edge3.Equals(edge1));
+            Assert.That(edge1,Is.Not.EqualTo(edge3));
+            Assert.That(edge3,Is.Not.EqualTo(edge1));
+            Assert.That(edge1.Equals(edge3),Is.False);
+            Assert.That(edge3.Equals(edge1),Is.False);
 
-            Assert.AreEqual(edge3, edge4);
-            Assert.AreEqual(edge4, edge3);
-            Assert.IsTrue(edge3.Equals(edge4));
-            Assert.IsTrue(edge4.Equals(edge3));
+            Assert.That(edge3,Is.EqualTo(edge4));
+            Assert.That(edge4,Is.EqualTo(edge3));
+            Assert.That(edge3.Equals(edge4),Is.True);
+            Assert.That(edge4.Equals(edge3),Is.True);
 
-            Assert.AreNotEqual(edge3, edge6);
-            Assert.AreNotEqual(edge6, edge3);
-            Assert.IsFalse(edge3.Equals(edge6));
-            Assert.IsFalse(edge6.Equals(edge3));
+            Assert.That(edge3,Is.Not.EqualTo(edge6));
+            Assert.That(edge6,Is.Not.EqualTo(edge3));
+            Assert.That(edge3.Equals(edge6),Is.False);
+            Assert.That(edge6.Equals(edge3),Is.False);
 
-            Assert.AreEqual(edge6, edge7);
-            Assert.AreEqual(edge7, edge6);
-            Assert.IsTrue(edge6.Equals(edge7));
-            Assert.IsTrue(edge7.Equals(edge6));
+            Assert.That(edge6,Is.EqualTo(edge7));
+            Assert.That(edge7,Is.EqualTo(edge6));
+            Assert.That(edge6.Equals(edge7),Is.True);
+            Assert.That(edge7.Equals(edge6),Is.True);
 
-            Assert.AreNotEqual(edge6, edge8);
-            Assert.AreNotEqual(edge8, edge6);
-            Assert.IsFalse(edge6.Equals(edge8));
-            Assert.IsFalse(edge8.Equals(edge6));
+            Assert.That(edge6,Is.Not.EqualTo(edge8));
+            Assert.That(edge8,Is.Not.EqualTo(edge6));
+            Assert.That(edge6.Equals(edge8),Is.False);
+            Assert.That(edge8.Equals(edge6),Is.False);
 
-            Assert.AreNotEqual(null, edge1);
-            Assert.IsFalse(edge1.Equals(null));
+            Assert.That(edge1,Is.Not.Null);
+            Assert.That(edge1.Equals(null),Is.False);
         }
 
         [Test]
@@ -115,10 +115,10 @@ namespace QuikGraph.Tests.Structures
             var edge1 = default(STaggedUndirectedEdge<int, TestObject>);
             var edge2 = new STaggedUndirectedEdge<int, TestObject>();
 
-            Assert.AreEqual(edge1, edge2);
-            Assert.AreEqual(edge2, edge1);
-            Assert.IsTrue(edge1.Equals(edge2));
-            Assert.IsTrue(edge2.Equals(edge1));
+            Assert.That(edge1,Is.EqualTo(edge2));
+            Assert.That(edge2,Is.EqualTo(edge1));
+            Assert.That(edge1.Equals(edge2),Is.True);
+            Assert.That(edge2.Equals(edge1),Is.True);
         }
 
         [Test]
@@ -130,21 +130,21 @@ namespace QuikGraph.Tests.Structures
             edge.TagChanged += (_, _) => ++changeCount;
 
             edge.Tag = null;
-            Assert.AreEqual(0, changeCount);
+            Assert.That(0,Is.EqualTo(changeCount));
 
             var tag1 = new TestObject(1);
             edge.Tag = tag1;
-            Assert.AreEqual(1, changeCount);
+            Assert.That(1,Is.EqualTo(changeCount));
 
             edge.Tag = tag1;
-            Assert.AreEqual(1, changeCount);
+            Assert.That(1,Is.EqualTo(changeCount));
 
             var tag2 = new TestObject(2);
             edge.Tag = tag2;
-            Assert.AreEqual(2, changeCount);
+            Assert.That(2,Is.EqualTo(changeCount));
 
             edge.Tag = tag1;
-            Assert.AreEqual(3, changeCount);
+            Assert.That(3,Is.EqualTo(changeCount));
         }
 
         [Test]
@@ -153,8 +153,8 @@ namespace QuikGraph.Tests.Structures
             var edge1 = new STaggedUndirectedEdge<int, TestObject>(1, 2, null);
             var edge2 = new STaggedUndirectedEdge<int, TestObject>(1, 2, new TestObject(42));
 
-            Assert.AreEqual("1 <-> 2 (no tag)", edge1.ToString());
-            Assert.AreEqual("1 <-> 2 (42)", edge2.ToString());
+            Assert.That("1 <-> 2 (no tag)",Is.EqualTo(edge1.ToString()));
+            Assert.That("1 <-> 2 (42)",Is.EqualTo(edge2.ToString()));
         }
     }
 }

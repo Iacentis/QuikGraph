@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Linq;
-using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
 using QuikGraph.Utils;
 
@@ -15,8 +15,8 @@ namespace QuikGraph.Algorithms.RandomWalks
     /// <typeparam name="TEdge">Edge type.</typeparam>
     public sealed class CyclePoppingRandomTreeAlgorithm<TVertex, TEdge>
         : RootedAlgorithmBase<TVertex, IVertexListGraph<TVertex, TEdge>>
-        , IVertexColorizerAlgorithm<TVertex>
-        , ITreeBuilderAlgorithm<TVertex, TEdge>
+            , IVertexColorizerAlgorithm<TVertex>
+            , ITreeBuilderAlgorithm<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
         /// <summary>
@@ -24,7 +24,7 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
-        public CyclePoppingRandomTreeAlgorithm([NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph)
+        public CyclePoppingRandomTreeAlgorithm(IVertexListGraph<TVertex, TEdge> visitedGraph)
             : this(visitedGraph, new NormalizedMarkovEdgeChain<TVertex, TEdge>())
         {
         }
@@ -37,8 +37,8 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeChain"/> is <see langword="null"/>.</exception>
         public CyclePoppingRandomTreeAlgorithm(
-            [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] IMarkovEdgeChain<TVertex, TEdge> edgeChain)
+            IVertexListGraph<TVertex, TEdge> visitedGraph,
+            IMarkovEdgeChain<TVertex, TEdge> edgeChain)
             : this(null, visitedGraph, edgeChain)
         {
         }
@@ -52,9 +52,9 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeChain"/> is <see langword="null"/>.</exception>
         public CyclePoppingRandomTreeAlgorithm(
-            [CanBeNull] IAlgorithmComponent host,
-            [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] IMarkovEdgeChain<TVertex, TEdge> edgeChain)
+            IAlgorithmComponent host,
+            IVertexListGraph<TVertex, TEdge> visitedGraph,
+            IMarkovEdgeChain<TVertex, TEdge> edgeChain)
             : base(host, visitedGraph)
         {
             EdgeChain = edgeChain ?? throw new ArgumentNullException(nameof(edgeChain));
@@ -63,7 +63,7 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// <summary>
         /// Stores vertices associated to their colors (treatment state).
         /// </summary>
-        [NotNull]
+
         public IDictionary<TVertex, GraphColor> VerticesColors { get; } = new Dictionary<TVertex, GraphColor>();
 
         #region IVertexColorizerAlgorithm<TVertex>
@@ -81,17 +81,17 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// <summary>
         /// Edge chain strategy for the random walk.
         /// </summary>
-        [NotNull]
+
         public IMarkovEdgeChain<TVertex, TEdge> EdgeChain { get; }
 
-        [NotNull]
+
         private Random _rand = new CryptoRandom((int)DateTime.Now.Ticks);
 
         /// <summary>
         /// Gets or sets the random number generator used in <see cref="RandomTree"/>.
         /// </summary>
         /// <exception cref="T:System.ArgumentNullException">Set value is <see langword="null"/>.</exception>
-        [NotNull]
+
         public Random Rand
         {
             get => _rand;
@@ -101,7 +101,7 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// <summary>
         /// Map vertices associated to their edge successors.
         /// </summary>
-        [NotNull]
+
         public IDictionary<TVertex, TEdge> Successors { get; } = new Dictionary<TVertex, TEdge>();
 
         #region Events
@@ -111,7 +111,7 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// </summary>
         public event VertexAction<TVertex> InitializeVertex;
 
-        private void OnInitializeVertex([NotNull] TVertex vertex)
+        private void OnInitializeVertex(TVertex vertex)
         {
             Debug.Assert(vertex != null);
 
@@ -123,7 +123,7 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// </summary>
         public event VertexAction<TVertex> FinishVertex;
 
-        private void OnFinishVertex([NotNull] TVertex vertex)
+        private void OnFinishVertex(TVertex vertex)
         {
             Debug.Assert(vertex != null);
 
@@ -133,7 +133,7 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// <inheritdoc />
         public event EdgeAction<TVertex, TEdge> TreeEdge;
 
-        private void OnTreeEdge([NotNull] TEdge edge)
+        private void OnTreeEdge(TEdge edge)
         {
             Debug.Assert(edge != null);
 
@@ -145,7 +145,7 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// </summary>
         public event VertexAction<TVertex> ClearTreeVertex;
 
-        private void OnClearTreeVertex([NotNull] TVertex vertex)
+        private void OnClearTreeVertex(TVertex vertex)
         {
             Debug.Assert(vertex != null);
 
@@ -191,7 +191,7 @@ namespace QuikGraph.Algorithms.RandomWalks
             }
         }
 
-        private void Explore([NotNull] TVertex vertex)
+        private void Explore(TVertex vertex)
         {
             Debug.Assert(vertex != null);
 
@@ -207,7 +207,7 @@ namespace QuikGraph.Algorithms.RandomWalks
         }
 
         [Pure]
-        private bool Explore(double eps, [NotNull] TVertex vertex, ref int numRoots)
+        private bool Explore(double eps, TVertex vertex, ref int numRoots)
         {
             Debug.Assert(vertex != null);
 
@@ -238,7 +238,7 @@ namespace QuikGraph.Algorithms.RandomWalks
             return true;
         }
 
-        private void Colorize([NotNull] TVertex vertex)
+        private void Colorize(TVertex vertex)
         {
             Debug.Assert(vertex != null);
 
@@ -254,26 +254,26 @@ namespace QuikGraph.Algorithms.RandomWalks
         #endregion
 
         [Pure]
-        private bool NotInTree([NotNull] TVertex vertex)
+        private bool NotInTree(TVertex vertex)
         {
             return VerticesColors[vertex] == GraphColor.White;
         }
 
-        private void SetInTree([NotNull] TVertex vertex)
+        private void SetInTree(TVertex vertex)
         {
             VerticesColors[vertex] = GraphColor.Black;
             OnFinishVertex(vertex);
         }
 
         [Pure]
-        private bool TryGetSuccessor([NotNull] IDictionary<TEdge, int> visited, [NotNull] TVertex vertex, out TEdge successor)
+        private bool TryGetSuccessor(IDictionary<TEdge, int> visited, TVertex vertex, out TEdge successor)
         {
             IEnumerable<TEdge> outEdges = VisitedGraph.OutEdges(vertex);
             IEnumerable<TEdge> edges = outEdges.Where(edge => !visited.ContainsKey(edge));
             return EdgeChain.TryGetSuccessor(edges, vertex, out successor);
         }
 
-        private void Tree([NotNull] TVertex vertex, [NotNull] TEdge next)
+        private void Tree(TVertex vertex, TEdge next)
         {
             Debug.Assert(vertex != null);
             Debug.Assert(next != null);
@@ -283,7 +283,7 @@ namespace QuikGraph.Algorithms.RandomWalks
         }
 
         [Pure]
-        private bool TryGetNextInTree([NotNull] TVertex vertex, out TVertex next)
+        private bool TryGetNextInTree(TVertex vertex, out TVertex next)
         {
             if (Successors.TryGetValue(vertex, out TEdge nextEdge))
             {
@@ -301,7 +301,7 @@ namespace QuikGraph.Algorithms.RandomWalks
             return Rand.NextDouble() <= eps;
         }
 
-        private void ClearTree([NotNull] TVertex vertex)
+        private void ClearTree(TVertex vertex)
         {
             Successors[vertex] = default(TEdge);
             OnClearTreeVertex(vertex);
@@ -334,7 +334,7 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// <param name="root">Tree starting vertex.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="root"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="root"/> is part of <see cref="AlgorithmBase{TGraph}.VisitedGraph"/>.</exception>
-        public void RandomTreeWithRoot([NotNull] TVertex root)
+        public void RandomTreeWithRoot(TVertex root)
         {
             if (!VisitedGraph.ContainsVertex(root))
                 throw new ArgumentException("The vertex must be in the graph.", nameof(root));

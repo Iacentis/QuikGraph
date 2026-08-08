@@ -1,5 +1,6 @@
 ﻿using System;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using QuikGraph.Graphviz.Dot;
 
 namespace QuikGraph.Graphviz.Tests
@@ -15,21 +16,21 @@ namespace QuikGraph.Graphviz.Tests
         {
             var layerCollection = new GraphvizLayerCollection();
             CollectionAssert.IsEmpty(layerCollection);
-            Assert.AreEqual(":", layerCollection.Separators);
+            Assert.That(":", Is.EqualTo(layerCollection.Separators));
 
             var layer1 = new GraphvizLayer("L1");
             layerCollection.Add(layer1);
             CollectionAssert.AreEqual(new[] { layer1 }, layerCollection);
-            
+
             var layer2 = new GraphvizLayer("L2");
             var layerArray = new[] { layer1, layer2 };
             layerCollection = new GraphvizLayerCollection(layerArray);
             CollectionAssert.AreEqual(layerArray, layerCollection);
-            Assert.AreEqual(":", layerCollection.Separators);
+            Assert.That(":", Is.EqualTo(layerCollection.Separators));
 
             var otherLayerCollection = new GraphvizLayerCollection(layerCollection);
             CollectionAssert.AreEqual(layerCollection, otherLayerCollection);
-            Assert.AreEqual(":", otherLayerCollection.Separators);
+            Assert.That(":", Is.EqualTo(otherLayerCollection.Separators));
         }
 
         [Test]
@@ -51,7 +52,7 @@ namespace QuikGraph.Graphviz.Tests
                 throw new InvalidOperationException("Collection has wong separators.");
 
             layerCollection.Separators = ":,-";
-            Assert.AreEqual(":,-", layerCollection.Separators);
+            Assert.That(":,-", Is.EqualTo(layerCollection.Separators));
         }
 
         [Test]
@@ -69,35 +70,30 @@ namespace QuikGraph.Graphviz.Tests
         public void ToDot()
         {
             var layerCollection = new GraphvizLayerCollection();
-            Assert.AreEqual(string.Empty, layerCollection.ToDot());
+            Assert.That(string.Empty, Is.EqualTo(layerCollection.ToDot()));
 
-            layerCollection = new GraphvizLayerCollection(new[]
-            {
-                new GraphvizLayer("L0")
-            });
-            Assert.AreEqual(
+            layerCollection = new GraphvizLayerCollection(new[] { new GraphvizLayer("L0") });
+            Assert.That(
                 "layers=\"L0\"; layersep=\":\"",
-                layerCollection.ToDot());
+                Is.EqualTo(layerCollection.ToDot()));
 
             layerCollection = new GraphvizLayerCollection(new[]
             {
-                new GraphvizLayer("L1"), 
-                new GraphvizLayer("L2"), 
-                new GraphvizLayer("L3") 
+                new GraphvizLayer("L1"), new GraphvizLayer("L2"), new GraphvizLayer("L3")
             });
-            Assert.AreEqual(
+            Assert.That(
                 "layers=\"L1:L2:L3\"; layersep=\":\"",
-                layerCollection.ToDot());
+                Is.EqualTo(layerCollection.ToDot()));
 
             layerCollection.Separators = " ";
-            Assert.AreEqual(
+            Assert.That(
                 "layers=\"L1 L2 L3\"; layersep=\" \"",
-                layerCollection.ToDot());
+                Is.EqualTo(layerCollection.ToDot()));
 
             layerCollection.Separators = " -/";
-            Assert.AreEqual(
+            Assert.That(
                 "layers=\"L1 -/L2 -/L3\"; layersep=\" -/\"",
-                layerCollection.ToDot());
+                Is.EqualTo(layerCollection.ToDot()));
         }
     }
 }

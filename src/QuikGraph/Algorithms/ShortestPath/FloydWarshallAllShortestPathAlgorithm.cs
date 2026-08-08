@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
-using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
 using QuikGraph.Collections;
 
@@ -14,16 +14,16 @@ namespace QuikGraph.Algorithms.ShortestPath
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
-    public class FloydWarshallAllShortestPathAlgorithm<TVertex, TEdge> : AlgorithmBase<IVertexAndEdgeListGraph<TVertex, TEdge>>
+    public class
+        FloydWarshallAllShortestPathAlgorithm<TVertex, TEdge> : AlgorithmBase<IVertexAndEdgeListGraph<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
     {
-        [NotNull]
         private readonly Func<TEdge, double> _weights;
 
-        [NotNull]
+
         private readonly IDistanceRelaxer _distanceRelaxer;
 
-        [NotNull]
+
         private readonly Dictionary<SEquatableEdge<TVertex>, VertexData> _data;
 
         private struct VertexData
@@ -36,7 +36,7 @@ namespace QuikGraph.Algorithms.ShortestPath
             private readonly bool _edgeStored;
 
             // Null edge for self edge data
-            public VertexData(double distance, [CanBeNull] TEdge edge)
+            public VertexData(double distance, TEdge edge)
             {
                 Distance = distance;
                 _predecessor = default(TVertex);
@@ -44,7 +44,7 @@ namespace QuikGraph.Algorithms.ShortestPath
                 _edgeStored = true;
             }
 
-            public VertexData(double distance, [NotNull] TVertex predecessor)
+            public VertexData(double distance, TVertex predecessor)
             {
                 Debug.Assert(predecessor != null);
 
@@ -84,8 +84,8 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
         public FloydWarshallAllShortestPathAlgorithm(
-            [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] Func<TEdge, double> edgeWeights)
+            IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
+            Func<TEdge, double> edgeWeights)
             : this(visitedGraph, edgeWeights, DistanceRelaxers.ShortestDistance)
         {
         }
@@ -100,9 +100,9 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceRelaxer"/> is <see langword="null"/>.</exception>
         public FloydWarshallAllShortestPathAlgorithm(
-            [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] Func<TEdge, double> edgeWeights,
-            [NotNull] IDistanceRelaxer distanceRelaxer)
+            IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
+            Func<TEdge, double> edgeWeights,
+            IDistanceRelaxer distanceRelaxer)
             : this(null, visitedGraph, edgeWeights, distanceRelaxer)
         {
         }
@@ -118,10 +118,10 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceRelaxer"/> is <see langword="null"/>.</exception>
         public FloydWarshallAllShortestPathAlgorithm(
-            [CanBeNull] IAlgorithmComponent host,
-            [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] Func<TEdge, double> edgeWeights,
-            [NotNull] IDistanceRelaxer distanceRelaxer)
+            IAlgorithmComponent host,
+            IVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
+            Func<TEdge, double> edgeWeights,
+            IDistanceRelaxer distanceRelaxer)
             : base(host, visitedGraph)
         {
             _weights = edgeWeights ?? throw new ArgumentNullException(nameof(edgeWeights));
@@ -139,7 +139,7 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <returns>True if the distance was found, false otherwise.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
-        public bool TryGetDistance([NotNull] TVertex source, [NotNull] TVertex target, out double distance)
+        public bool TryGetDistance(TVertex source, TVertex target, out double distance)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
@@ -167,10 +167,9 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.InvalidOperationException">Failed to find a predecessor vertex while getting path.</exception>
-        [ContractAnnotation("=> true, path:notnull;=> false, path:null")]
         public bool TryGetPath(
-            [NotNull] TVertex source,
-            [NotNull] TVertex target,
+            TVertex source,
+            TVertex target,
             out IEnumerable<TEdge> path)
         {
             if (source == null)
@@ -187,15 +186,14 @@ namespace QuikGraph.Algorithms.ShortestPath
             return TryGetPathInternal(source, target, out path);
         }
 
-        [ContractAnnotation("=> true, path:notnull;=> false, path:null")]
+
         private bool TryGetPathInternal(
-            [NotNull] TVertex source,
-            [NotNull] TVertex target,
+            TVertex source,
+            TVertex target,
             out IEnumerable<TEdge> path)
         {
-#if DEBUG && !NET20
             var set = new HashSet<TVertex> { source, target };
-#endif
+
 
             var edges = new EdgeList<TVertex, TEdge>();
             var todo = new Stack<SEquatableEdge<TVertex>>();
@@ -216,9 +214,8 @@ namespace QuikGraph.Algorithms.ShortestPath
                     {
                         if (data.TryGetPredecessor(out TVertex intermediate))
                         {
-#if DEBUG && !NET20
                             Debug.Assert(set.Add(intermediate));
-#endif
+
 
                             todo.Push(new SEquatableEdge<TVertex>(intermediate, current.Target));
                             todo.Push(new SEquatableEdge<TVertex>(current.Source, intermediate));
@@ -298,7 +295,7 @@ namespace QuikGraph.Algorithms.ShortestPath
             CheckNegativeCycles(vertices);
         }
 
-        private void FillIData([NotNull, ItemNotNull] TVertex[] vertices, [NotNull] TVertex vk)
+        private void FillIData(TVertex[] vertices, TVertex vk)
         {
             foreach (TVertex vi in vertices)
             {
@@ -311,9 +308,9 @@ namespace QuikGraph.Algorithms.ShortestPath
         }
 
         private void FillJData(
-            [NotNull, ItemNotNull] IEnumerable<TVertex> vertices,
-            [NotNull] TVertex vi,
-            [NotNull] TVertex vk,
+            IEnumerable<TVertex> vertices,
+            TVertex vi,
+            TVertex vk,
             VertexData pathIk)
         {
             foreach (TVertex vj in vertices)
@@ -339,7 +336,7 @@ namespace QuikGraph.Algorithms.ShortestPath
             }
         }
 
-        private void CheckNegativeCycles([NotNull, ItemNotNull] IEnumerable<TVertex> vertices)
+        private void CheckNegativeCycles(IEnumerable<TVertex> vertices)
         {
             foreach (TVertex vi in vertices)
             {
@@ -355,7 +352,7 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// Dumps current data state to stream <paramref name="writer"/>.
         /// </summary>
         [Conditional("DEBUG")]
-        public void Dump([NotNull] TextWriter writer)
+        public void Dump(TextWriter writer)
         {
             writer.WriteLine("data:");
             foreach (KeyValuePair<SEquatableEdge<TVertex>, VertexData> kv in _data)

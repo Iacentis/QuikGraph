@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph
 {
@@ -19,7 +19,7 @@ namespace QuikGraph
         /// <param name="edge">The edge to add.</param>
         /// <returns>True if the edge was added, false otherwise.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edge"/> is <see langword="null"/>.</exception>
-        bool AddVerticesAndEdge([NotNull] TEdge edge);
+        bool AddVerticesAndEdge( TEdge edge);
 
         /// <summary>
         /// Adds a set of edges (and it's vertices if necessary).
@@ -29,6 +29,6 @@ namespace QuikGraph
         /// <exception cref="T:System.ArgumentNullException">
         /// <paramref name="edges"/> is <see langword="null"/> or at least one of them is <see langword="null"/>.
         /// </exception>
-        int AddVerticesAndEdgeRange([NotNull, ItemNotNull] IEnumerable<TEdge> edges);
+        int AddVerticesAndEdgeRange( IEnumerable<TEdge> edges);
     }
 }

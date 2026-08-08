@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Diagnostics.Contracts;
 using System.Text;
-using JetBrains.Annotations;
+
 using static QuikGraph.Graphviz.DotEscapers;
 
 namespace QuikGraph.Graphviz.Dot
@@ -8,19 +9,19 @@ namespace QuikGraph.Graphviz.Dot
     /// <summary>
     /// Graphviz record cell.
     /// </summary>
-#if SUPPORTS_SERIALIZATION
+
     [Serializable]
-#endif
+
     public class GraphvizRecordCell
     {
-        [NotNull, ItemNotNull]
+
         private GraphvizRecordCellCollection _cells = new GraphvizRecordCellCollection();
 
         /// <summary>
         /// Record cells.
         /// </summary>
         /// <exception cref="T:System.ArgumentNullException">Set value is <see langword="null"/>.</exception>
-        [NotNull, ItemNotNull]
+
         public GraphvizRecordCellCollection Cells
         {
             get => _cells;
@@ -52,7 +53,7 @@ namespace QuikGraph.Graphviz.Dot
         /// </summary>
         /// <returns>Record cell as DOT.</returns>
         [Pure]
-        [NotNull]
+
         public string ToDot()
         {
             var builder = new StringBuilder();

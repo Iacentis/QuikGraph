@@ -1,8 +1,8 @@
-﻿#if SUPPORTS_SERIALIZATION || SUPPORTS_CLONEABLE
+﻿
 using System;
-#endif
+
 using System.Collections.Generic;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph.Collections
 {
@@ -11,9 +11,9 @@ namespace QuikGraph.Collections
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
-#if SUPPORTS_SERIALIZATION
+
     [Serializable]
-#endif
+
     public sealed class EdgeList<TVertex, TEdge> : List<TEdge>, IEdgeList<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
@@ -36,7 +36,7 @@ namespace QuikGraph.Collections
 
         /// <inheritdoc />
         /// <exception cref="T:System.ArgumentNullException"><paramref name="other"/> is <see langword="null"/>.</exception>
-        public EdgeList([NotNull] EdgeList<TVertex, TEdge> other)
+        public EdgeList( EdgeList<TVertex, TEdge> other)
             : base(other)
         {
         }
@@ -45,7 +45,7 @@ namespace QuikGraph.Collections
         /// Clones this edge list.
         /// </summary>
         /// <returns>Cloned list.</returns>
-        [NotNull]
+
         public EdgeList<TVertex, TEdge> Clone()
         {
             return new EdgeList<TVertex, TEdge>(this);
@@ -57,12 +57,12 @@ namespace QuikGraph.Collections
             return Clone();
         }
 
-#if SUPPORTS_CLONEABLE
+
         /// <inheritdoc />
         object ICloneable.Clone()
         {
             return Clone();
         }
-#endif
+
     }
 }

@@ -1,5 +1,6 @@
-﻿using System.Text.RegularExpressions;
-using JetBrains.Annotations;
+﻿using System.Diagnostics.Contracts;
+using System.Text.RegularExpressions;
+
 
 namespace QuikGraph.Graphviz
 {
@@ -8,27 +9,27 @@ namespace QuikGraph.Graphviz
     /// </summary>
     public static class DotEscapers
     {
-        [NotNull]
+
         private const string EolGroupName = "Eol";
 
-        [NotNull]
+
         private const string CommonGroupName = "Common";
 
-        [NotNull]
+
         private const string EolPattern = "\\r\\n|\\n|\\r";
 
-        [NotNull]
+
         private const string DoubleQuotePattern = "\"";
 
-        [NotNull]
+
         private const string BackslashPattern = "\\\\";
 
-        [NotNull]
+
         private static readonly Regex RecordEscapeRegex = new Regex(
             $"(?<{EolGroupName}>{EolPattern})|(?<{CommonGroupName}>\\||<|>|{DoubleQuotePattern}| |{BackslashPattern})",
             RegexOptions.ExplicitCapture | RegexOptions.Multiline | RegexOptions.Compiled);
 
-        [NotNull]
+
         private static readonly Regex GeneralEscapeRegex = new Regex(
             $"(?<{EolGroupName}>{EolPattern})|(?<{CommonGroupName}>{DoubleQuotePattern}|{BackslashPattern})",
             RegexOptions.Multiline | RegexOptions.Compiled);
@@ -40,8 +41,8 @@ namespace QuikGraph.Graphviz
         /// <returns>Escaped string.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="value"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull]
-        public static string EscapePort([NotNull] string value)
+
+        public static string EscapePort( string value)
         {
             return RecordEscapeRegex.Replace(
                 value,
@@ -55,8 +56,8 @@ namespace QuikGraph.Graphviz
         /// <returns>Escaped string.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="value"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull]
-        public static string EscapeRecord([NotNull] string value)
+
+        public static string EscapeRecord( string value)
         {
             return RecordEscapeRegex.Replace(
                 value,
@@ -72,8 +73,8 @@ namespace QuikGraph.Graphviz
         /// <returns>Escaped string.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="value"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull]
-        public static string Escape([NotNull] string value)
+
+        public static string Escape( string value)
         {
             return GeneralEscapeRegex.Replace(
                 value,

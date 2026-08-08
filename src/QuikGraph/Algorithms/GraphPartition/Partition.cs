@@ -1,9 +1,6 @@
-﻿#if SUPPORTS_SORTEDSET
-using System.Collections.Generic;
-#else
-using QuikGraph.Collections;
-#endif
-using JetBrains.Annotations;
+﻿using System.Collections.Generic;
+using System.Diagnostics.Contracts;
+
 
 namespace QuikGraph.Algorithms.GraphPartition
 {
@@ -16,13 +13,13 @@ namespace QuikGraph.Algorithms.GraphPartition
         /// <summary>
         /// First sub set of vertices.
         /// </summary>
-        [NotNull, ItemNotNull]
+
         public SortedSet<TVertex> VertexSetA { get; }
 
         /// <summary>
         /// Second sub set of vertices.
         /// </summary>
-        [NotNull, ItemNotNull]
+
         public SortedSet<TVertex> VertexSetB { get; }
 
         /// <summary>
@@ -39,8 +36,8 @@ namespace QuikGraph.Algorithms.GraphPartition
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexSetA"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexSetB"/> is <see langword="null"/>.</exception>
         public Partition(
-            [NotNull, ItemNotNull] SortedSet<TVertex> vertexSetA,
-            [NotNull, ItemNotNull] SortedSet<TVertex> vertexSetB, 
+             SortedSet<TVertex> vertexSetA,
+             SortedSet<TVertex> vertexSetB,
             double cutCost = 0)
         {
             VertexSetA = vertexSetA;
@@ -57,10 +54,10 @@ namespace QuikGraph.Algorithms.GraphPartition
         [Pure]
         public static bool AreEquivalent(Partition<TVertex> partition1, Partition<TVertex> partition2)
         {
-            return partition1.VertexSetA.SetEquals(partition2.VertexSetA) 
+            return partition1.VertexSetA.SetEquals(partition2.VertexSetA)
                    && partition1.VertexSetB.SetEquals(partition2.VertexSetB)
-                   || 
-                   partition1.VertexSetA.SetEquals(partition2.VertexSetB) 
+                   ||
+                   partition1.VertexSetA.SetEquals(partition2.VertexSetB)
                    && partition1.VertexSetB.SetEquals(partition2.VertexSetA);
         }
     }

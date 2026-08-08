@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using QuikGraph.Algorithms.Assignment;
 
 namespace QuikGraph.Tests.Algorithms.Assignment
@@ -16,7 +17,7 @@ namespace QuikGraph.Tests.Algorithms.Assignment
         {
             int[,] costs = new int[0,0];
             var algorithm = new HungarianAlgorithm(costs);
-            Assert.IsNull(algorithm.AgentsTasks);
+            Assert.That(algorithm.AgentsTasks,Is.Null);
 
             costs = new[,]
             {
@@ -24,7 +25,7 @@ namespace QuikGraph.Tests.Algorithms.Assignment
                 { 1, 2, 3 },
             };
             algorithm = new HungarianAlgorithm(costs);
-            Assert.IsNull(algorithm.AgentsTasks);
+            Assert.That(algorithm.AgentsTasks,Is.Null);
         }
 
         [Test]
@@ -47,9 +48,9 @@ namespace QuikGraph.Tests.Algorithms.Assignment
             var algorithm = new HungarianAlgorithm(matrix);
             int[] tasks = algorithm.Compute();
 
-            Assert.AreEqual(0, tasks[0]);
-            Assert.AreEqual(1, tasks[1]);
-            Assert.AreEqual(2, tasks[2]);
+            Assert.That(0,Is.EqualTo(tasks[0]));
+            Assert.That(1,Is.EqualTo(tasks[1]));
+            Assert.That(2,Is.EqualTo(tasks[2]));
         }
 
         [Test]
@@ -72,12 +73,12 @@ namespace QuikGraph.Tests.Algorithms.Assignment
             var algorithm = new HungarianAlgorithm(matrix);
             algorithm.Compute();
 
-            Assert.IsNotNull(algorithm.AgentsTasks);
+            Assert.That(algorithm.AgentsTasks,Is.Not.Null);
             int[] tasks = algorithm.AgentsTasks;
-            Assert.AreEqual(2, tasks[0]); // J1 to be done by W3
-            Assert.AreEqual(1, tasks[1]); // J2 to be done by W2
-            Assert.AreEqual(0, tasks[2]); // J3 to be done by W1
-            Assert.AreEqual(3, tasks[3]); // J4 to be done by W4
+            Assert.That(2,Is.EqualTo(tasks[0])); // J1 to be done by W3
+            Assert.That(1,Is.EqualTo(tasks[1])); // J2 to be done by W2
+            Assert.That(0,Is.EqualTo(tasks[2])); // J3 to be done by W1
+            Assert.That(3,Is.EqualTo(tasks[3])); // J4 to be done by W4
         }
 
         [Test]
@@ -93,51 +94,51 @@ namespace QuikGraph.Tests.Algorithms.Assignment
             HungarianIteration[] iterations = algorithm.GetIterations().ToArray();
 
             int[] tasks = algorithm.AgentsTasks;
-            Assert.AreEqual(0, tasks[0]);
-            Assert.AreEqual(1, tasks[1]);
-            Assert.AreEqual(2, tasks[2]);
+            Assert.That(0,Is.EqualTo(tasks[0]));
+            Assert.That(1,Is.EqualTo(tasks[1]));
+            Assert.That(2,Is.EqualTo(tasks[2]));
 
-            Assert.AreEqual(3, iterations.Length);
-            CollectionAssert.AreEqual(
-                new[]
+            Assert.That(3,Is.EqualTo(iterations.Length));
+            Assert.That(
+                iterations.Select(iteration => iteration.Matrix),
+                Is.EqualTo(new[]
                 {
                     new[,] { { 0, 1, 2 }, { 0, 0, 0 }, { 1, 1, 0 } },
                     new[,] { { 0, 1, 2 }, { 0, 0, 0 }, { 1, 1, 0 } },
                     new[,] { { 0, 1, 2 }, { 0, 0, 0 }, { 1, 1, 0 } }
-                },
-                iterations.Select(iteration => iteration.Matrix));
-            CollectionAssert.AreEqual(
-                new[]
+                }));
+            Assert.That(
+                iterations.Select(iteration => iteration.Mask),
+                Is.EqualTo(new[]
                 {
                     new[,] { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 } },
                     new[,] { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 } },
                     new[,] { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 } }
-                },
-                iterations.Select(iteration => iteration.Mask));
-            CollectionAssert.AreEqual(
-                new[]
+                }));
+            Assert.That(
+                iterations.Select(iteration => iteration.RowsCovered),
+                Is.EqualTo(new[]
                 {
                     new[] { false, false, false },
                     new[] { false, false, false },
                     new[] { false, false, false }
-                },
-                iterations.Select(iteration => iteration.RowsCovered));
-            CollectionAssert.AreEqual(
-                new[]
+                }));
+            Assert.That(
+                iterations.Select(iteration => iteration.ColumnsCovered),
+                Is.EqualTo(new[]
                 {
                     new[] { false, false, false },
                     new[] { true,  true,  true },
                     new[] { true,  true,  true }
-                },
-                iterations.Select(iteration => iteration.ColumnsCovered));
-            CollectionAssert.AreEqual(
-                new[]
+                }));
+            Assert.That(
+                iterations.Select(iteration => iteration.Step),
+                Is.EqualTo(new[]
                 {
                     HungarianAlgorithm.Steps.Init,
                     HungarianAlgorithm.Steps.Step1,
                     HungarianAlgorithm.Steps.End
-                },
-                iterations.Select(iteration => iteration.Step));
+                }));
         }
 
         [Test]
@@ -160,16 +161,17 @@ namespace QuikGraph.Tests.Algorithms.Assignment
             var algorithm = new HungarianAlgorithm(matrix);
             HungarianIteration[] iterations = algorithm.GetIterations().ToArray();
 
-            Assert.IsNotNull(algorithm.AgentsTasks);
+            Assert.That(algorithm.AgentsTasks,Is.Not.Null);
             int[] tasks = algorithm.AgentsTasks;
-            Assert.AreEqual(2, tasks[0]); // J1 to be done by W3
-            Assert.AreEqual(1, tasks[1]); // J2 to be done by W2
-            Assert.AreEqual(0, tasks[2]); // J3 to be done by W1
-            Assert.AreEqual(3, tasks[3]); // J4 to be done by W4
+            Assert.That(2,Is.EqualTo(tasks[0])); // J1 to be done by W3
+            Assert.That(1,Is.EqualTo(tasks[1])); // J2 to be done by W2
+            Assert.That(0,Is.EqualTo(tasks[2])); // J3 to be done by W1
+            Assert.That(3,Is.EqualTo(tasks[3])); // J4 to be done by W4
 
-            Assert.AreEqual(11, iterations.Length);
-            CollectionAssert.AreEqual(
-                new[]
+            Assert.That(11,Is.EqualTo(iterations.Length));
+            Assert.That(
+                iterations.Select(iteration => iteration.Matrix),
+                Is.EqualTo(new[]
                 {
                     new[,] { { 13, 14, 0, 23 }, { 40, 0, 12, 55 }, { 6, 64, 0, 81 }, { 0, 1, 90, 15 } },
                     new[,] { { 13, 14, 0, 23 }, { 40, 0, 12, 55 }, { 6, 64, 0, 81 }, { 0, 1, 90, 15 } },
@@ -182,10 +184,10 @@ namespace QuikGraph.Tests.Algorithms.Assignment
                     new[,] { { 7, 14, 0, 2 }, { 34, 0, 12, 34 }, { 0, 64, 0, 60 }, { 0, 7, 96, 0 } },
                     new[,] { { 7, 14, 0, 2 }, { 34, 0, 12, 34 }, { 0, 64, 0, 60 }, { 0, 7, 96, 0 } },
                     new[,] { { 7, 14, 0, 2 }, { 34, 0, 12, 34 }, { 0, 64, 0, 60 }, { 0, 7, 96, 0 } }
-                },
-                iterations.Select(iteration => iteration.Matrix));
-            CollectionAssert.AreEqual(
-                new[]
+                }));
+            Assert.That(
+                iterations.Select(iteration => iteration.Mask),
+                Is.EqualTo(new[]
                 {
                     new[,] { { 0, 0, 1, 0 }, { 0, 1, 0, 0 }, { 0, 0, 0, 0 }, { 1, 0, 0, 0 } },
                     new[,] { { 0, 0, 1, 0 }, { 0, 1, 0, 0 }, { 0, 0, 0, 0 }, { 1, 0, 0, 0 } },
@@ -198,10 +200,10 @@ namespace QuikGraph.Tests.Algorithms.Assignment
                     new[,] { { 0, 0, 1, 0 }, { 0, 1, 0, 0 }, { 1, 0, 0, 0 }, { 0, 0, 0, 1 } },
                     new[,] { { 0, 0, 1, 0 }, { 0, 1, 0, 0 }, { 1, 0, 0, 0 }, { 0, 0, 0, 1 } },
                     new[,] { { 0, 0, 1, 0 }, { 0, 1, 0, 0 }, { 1, 0, 0, 0 }, { 0, 0, 0, 1 } }
-                },
-                iterations.Select(iteration => iteration.Mask));
-            CollectionAssert.AreEqual(
-                new[]
+                }));
+            Assert.That(
+                iterations.Select(iteration => iteration.RowsCovered),
+                Is.EqualTo(new[]
                 {
                     new[] { false, false, false, false },
                     new[] { false, false, false, false },
@@ -214,10 +216,10 @@ namespace QuikGraph.Tests.Algorithms.Assignment
                     new[] { false, false, false, false },
                     new[] { false, false, false, false },
                     new[] { false, false, false, false }
-                },
-                iterations.Select(iteration => iteration.RowsCovered));
-            CollectionAssert.AreEqual(
-                new[]
+                }));
+            Assert.That(
+                iterations.Select(iteration => iteration.ColumnsCovered),
+                Is.EqualTo(new[]
                 {
                     new[] { false, false, false, false },
                     new[] { true,  true,  true,  false },
@@ -230,10 +232,10 @@ namespace QuikGraph.Tests.Algorithms.Assignment
                     new[] { false, false, false, false },
                     new[] { true,  true,  true,  true },
                     new[] { true,  true,  true,  true }
-                },
-                iterations.Select(iteration => iteration.ColumnsCovered));
-            CollectionAssert.AreEqual(
-                new[]
+                }));
+            Assert.That(
+                iterations.Select(iteration => iteration.Step),
+                Is.EqualTo(new[]
                 {
                     HungarianAlgorithm.Steps.Init,
                     HungarianAlgorithm.Steps.Step1,
@@ -246,8 +248,7 @@ namespace QuikGraph.Tests.Algorithms.Assignment
                     HungarianAlgorithm.Steps.Step3,
                     HungarianAlgorithm.Steps.Step1,
                     HungarianAlgorithm.Steps.End
-                },
-                iterations.Select(iteration => iteration.Step));
+                }));
         }
     }
 }

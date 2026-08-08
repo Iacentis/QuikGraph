@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations;
+﻿using System.Diagnostics.Contracts;
 
 namespace QuikGraph.Collections
 {
@@ -23,7 +23,7 @@ namespace QuikGraph.Collections
         /// </summary>
         /// <param name="value">The value.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="value"/> is <see langword="null"/>.</exception>
-        void MakeSet([NotNull] T value);
+        void MakeSet( T value);
 
         /// <summary>
         /// Finds the set containing the <paramref name="value"/>.
@@ -32,8 +32,8 @@ namespace QuikGraph.Collections
         /// <returns>Root value of the set.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="value"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull]
-        T FindSet([NotNull] T value);
+
+        T FindSet( T value);
 
         /// <summary>
         /// Gets a value indicating if left and right are contained in the same set.
@@ -44,7 +44,7 @@ namespace QuikGraph.Collections
         /// <exception cref="T:System.ArgumentNullException"><paramref name="left"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="right"/> is <see langword="null"/>.</exception>
         [Pure]
-        bool AreInSameSet([NotNull] T left, [NotNull] T right);
+        bool AreInSameSet( T left,  T right);
 
         /// <summary>
         /// Merges the sets from the two values.
@@ -55,7 +55,7 @@ namespace QuikGraph.Collections
         /// false if they already belong to the same set.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="left"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="right"/> is <see langword="null"/>.</exception>
-        bool Union([NotNull] T left, [NotNull] T right);
+        bool Union( T left,  T right);
 
         /// <summary>
         /// Gets a value indicating whether the value is in the data structure.
@@ -64,6 +64,6 @@ namespace QuikGraph.Collections
         /// <returns>True if the value is already in the set, false otherwise.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="value"/> is <see langword="null"/>.</exception>
         [Pure]
-        bool Contains([NotNull] T value);
+        bool Contains( T value);
     }
 }

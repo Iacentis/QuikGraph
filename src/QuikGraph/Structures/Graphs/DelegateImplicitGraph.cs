@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph
 {
@@ -24,7 +25,7 @@ namespace QuikGraph
         /// </param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="tryGetOutEdges"/> is <see langword="null"/>.</exception>
         public DelegateImplicitGraph(
-            [NotNull] TryFunc<TVertex, IEnumerable<TEdge>> tryGetOutEdges,
+             TryFunc<TVertex, IEnumerable<TEdge>> tryGetOutEdges,
             bool allowParallelEdges = true)
         {
             _tryGetOutEdgesFunc = tryGetOutEdges ?? throw new ArgumentNullException(nameof(tryGetOutEdges));
@@ -34,7 +35,7 @@ namespace QuikGraph
         /// <summary>
         /// Getter of out-edges.
         /// </summary>
-        [NotNull]
+
         private readonly TryFunc<TVertex, IEnumerable<TEdge>> _tryGetOutEdgesFunc;
 
         #region IGraph<TVertex,TEdge>
@@ -62,8 +63,8 @@ namespace QuikGraph
         }
 
         [Pure]
-        [NotNull, ItemNotNull]
-        internal virtual IEnumerable<TEdge> OutEdgesInternal([NotNull] TVertex vertex)
+
+        internal virtual IEnumerable<TEdge> OutEdgesInternal( TVertex vertex)
         {
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
@@ -80,7 +81,7 @@ namespace QuikGraph
         }
 
         [Pure]
-        internal virtual bool TryGetOutEdgesInternal([NotNull] TVertex vertex, out IEnumerable<TEdge> edges)
+        internal virtual bool TryGetOutEdgesInternal( TVertex vertex, out IEnumerable<TEdge> edges)
         {
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
@@ -101,7 +102,7 @@ namespace QuikGraph
         }
 
         [Pure]
-        internal virtual bool ContainsVertexInternal([NotNull] TVertex vertex)
+        internal virtual bool ContainsVertexInternal( TVertex vertex)
         {
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));

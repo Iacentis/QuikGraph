@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Data;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph.Data
 {
@@ -19,7 +19,7 @@ namespace QuikGraph.Data
         /// </summary>
         /// <param name="dataSet">Set of data.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="dataSet"/> is <see langword="null"/>.</exception>
-        internal DataSetGraph([NotNull] DataSet dataSet)
+        internal DataSetGraph( DataSet dataSet)
         {
             DataSet = dataSet ?? throw new ArgumentNullException(nameof(dataSet));
         }

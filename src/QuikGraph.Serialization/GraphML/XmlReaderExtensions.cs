@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Diagnostics.Contracts;
 using System.Xml;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph.Serialization
 {
@@ -20,11 +21,11 @@ namespace QuikGraph.Serialization
         /// <exception cref="T:System.ArgumentNullException"><paramref name="namespaceURI"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="localName"/> is empty.</exception>
         [Pure]
-        [CanBeNull]
+
         public static string ReadElementAsNullableString(
-            [NotNull] XmlReader xmlReader,
-            [NotNull] string localName,
-            [NotNull] string namespaceURI)
+             XmlReader xmlReader,
+             string localName,
+             string namespaceURI)
         {
             bool isNull = xmlReader.IsEmptyElement;
             string str = xmlReader.ReadElementContentAsString(localName, namespaceURI);
@@ -46,11 +47,11 @@ namespace QuikGraph.Serialization
         /// <exception cref="T:System.ArgumentNullException"><paramref name="namespaceURI"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="localName"/> is empty.</exception>
         [Pure]
-        [CanBeNull]
+
         public static bool[] ReadElementContentAsBooleanArray(
-            [NotNull] XmlReader xmlReader,
-            [NotNull] string localName,
-            [NotNull] string namespaceURI)
+             XmlReader xmlReader,
+             string localName,
+             string namespaceURI)
         {
             return ReadElementContentAsArray(xmlReader, localName, namespaceURI, Convert.ToBoolean);
         }
@@ -66,11 +67,11 @@ namespace QuikGraph.Serialization
         /// <exception cref="T:System.ArgumentNullException"><paramref name="namespaceURI"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="localName"/> is empty.</exception>
         [Pure]
-        [CanBeNull]
+
         public static int[] ReadElementContentAsInt32Array(
-            [NotNull] XmlReader xmlReader,
-            [NotNull] string localName,
-            [NotNull] string namespaceURI)
+             XmlReader xmlReader,
+             string localName,
+             string namespaceURI)
         {
             return ReadElementContentAsArray(xmlReader, localName, namespaceURI, Convert.ToInt32);
         }
@@ -86,11 +87,11 @@ namespace QuikGraph.Serialization
         /// <exception cref="T:System.ArgumentNullException"><paramref name="namespaceURI"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="localName"/> is empty.</exception>
         [Pure]
-        [CanBeNull]
+
         public static long[] ReadElementContentAsInt64Array(
-            [NotNull] XmlReader xmlReader,
-            [NotNull] string localName,
-            [NotNull] string namespaceURI)
+             XmlReader xmlReader,
+             string localName,
+             string namespaceURI)
         {
             return ReadElementContentAsArray(xmlReader, localName, namespaceURI, Convert.ToInt64);
         }
@@ -106,11 +107,11 @@ namespace QuikGraph.Serialization
         /// <exception cref="T:System.ArgumentNullException"><paramref name="namespaceURI"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="localName"/> is empty.</exception>
         [Pure]
-        [CanBeNull]
+
         public static float[] ReadElementContentAsSingleArray(
-            [NotNull] XmlReader xmlReader,
-            [NotNull] string localName,
-            [NotNull] string namespaceURI)
+             XmlReader xmlReader,
+             string localName,
+             string namespaceURI)
         {
             return ReadElementContentAsArray(xmlReader, localName, namespaceURI, Convert.ToSingle);
         }
@@ -126,11 +127,11 @@ namespace QuikGraph.Serialization
         /// <exception cref="T:System.ArgumentNullException"><paramref name="namespaceURI"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="localName"/> is empty.</exception>
         [Pure]
-        [CanBeNull]
+
         public static double[] ReadElementContentAsDoubleArray(
-            [NotNull] XmlReader xmlReader,
-            [NotNull] string localName,
-            [NotNull] string namespaceURI)
+             XmlReader xmlReader,
+             string localName,
+             string namespaceURI)
         {
             return ReadElementContentAsArray(xmlReader, localName, namespaceURI, Convert.ToDouble);
         }
@@ -146,11 +147,11 @@ namespace QuikGraph.Serialization
         /// <exception cref="T:System.ArgumentNullException"><paramref name="namespaceURI"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="localName"/> is empty.</exception>
         [Pure]
-        [CanBeNull]
+
         public static string[] ReadElementContentAsStringArray(
-            [NotNull] XmlReader xmlReader,
-            [NotNull] string localName,
-            [NotNull] string namespaceURI)
+             XmlReader xmlReader,
+             string localName,
+             string namespaceURI)
         {
             return ReadElementContentAsArray(xmlReader, localName, namespaceURI, str => str);
         }
@@ -168,12 +169,12 @@ namespace QuikGraph.Serialization
         /// <exception cref="T:System.ArgumentNullException"><paramref name="namespaceURI"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="localName"/> is empty.</exception>
         [Pure]
-        [CanBeNull]
+
         public static T[] ReadElementContentAsArray<T>(
-            [NotNull] XmlReader xmlReader,
-            [NotNull] string localName,
-            [NotNull] string namespaceURI,
-            [NotNull, InstantHandle] Func<string, T> stringToT)
+             XmlReader xmlReader,
+             string localName,
+             string namespaceURI,
+             Func<string, T> stringToT)
         {
             string str = xmlReader.ReadElementContentAsString(localName, namespaceURI);
             if (str == "null")

@@ -1,5 +1,6 @@
 ﻿using System;
-using JetBrains.Annotations;
+using System.Diagnostics.Contracts;
+
 
 namespace QuikGraph.Predicates
 {
@@ -24,9 +25,9 @@ namespace QuikGraph.Predicates
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexPredicate"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgePredicate"/> is <see langword="null"/>.</exception>
         public FilteredGraph(
-            [NotNull] TGraph baseGraph,
-            [NotNull] VertexPredicate<TVertex> vertexPredicate,
-            [NotNull] EdgePredicate<TVertex, TEdge> edgePredicate)
+             TGraph baseGraph,
+             VertexPredicate<TVertex> vertexPredicate,
+             EdgePredicate<TVertex, TEdge> edgePredicate)
         {
             if (baseGraph == null)
                 throw new ArgumentNullException(nameof(baseGraph));
@@ -39,19 +40,19 @@ namespace QuikGraph.Predicates
         /// <summary>
         /// Underlying graph (graph that is filtered).
         /// </summary>
-        [NotNull]
+
         public TGraph BaseGraph { get; }
 
         /// <summary>
         /// Vertex predicate used to filter the vertices.
         /// </summary>
-        [NotNull]
+
         public VertexPredicate<TVertex> VertexPredicate { get; }
 
         /// <summary>
         /// Edge predicate used to filter the edges.
         /// </summary>
-        [NotNull]
+
         public EdgePredicate<TVertex, TEdge> EdgePredicate { get; }
 
         #region IGraph<TVertex,TEdge>
@@ -73,7 +74,7 @@ namespace QuikGraph.Predicates
         /// <returns>True if the <paramref name="edge"/> matches all predicates, false otherwise.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edge"/> is <see langword="null"/>.</exception>
         [Pure]
-        protected bool FilterEdge([NotNull] TEdge edge)
+        protected bool FilterEdge( TEdge edge)
         {
             if (edge == null)
                 throw new ArgumentNullException(nameof(edge));

@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations;
+﻿
 
 namespace QuikGraph.Graphviz
 {
@@ -9,6 +9,6 @@ namespace QuikGraph.Graphviz
     /// <param name="sender">Event sender.</param>
     /// <param name="args">Event arguments.</param>
     public delegate void FormatVertexEventHandler<TVertex>(
-        [NotNull] object sender,
-        [NotNull] FormatVertexEventArgs<TVertex> args);
+         object sender,
+         FormatVertexEventArgs<TVertex> args);
 }

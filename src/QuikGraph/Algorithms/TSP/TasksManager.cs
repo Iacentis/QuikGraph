@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics;
-using JetBrains.Annotations;
+using System.Diagnostics.Contracts;
 using QuikGraph.Collections;
 
 namespace QuikGraph.Algorithms.TSP
@@ -7,7 +7,7 @@ namespace QuikGraph.Algorithms.TSP
     internal sealed class TasksManager<TVertex, TEdge>
         where TEdge : EquatableEdge<TVertex>
     {
-        [NotNull]
+
         private readonly BinaryHeap<TaskPriority, Task<TVertex, TEdge>> _tasksQueue;
 
         public TasksManager()
@@ -19,7 +19,7 @@ namespace QuikGraph.Algorithms.TSP
         /// Adds the given <paramref name="task"/> into the <see cref="TasksManager{TVertex,TEdge}"/>.
         /// </summary>
         /// <param name="task">Task to add.</param>
-        public void AddTask([NotNull] Task<TVertex, TEdge> task)
+        public void AddTask( Task<TVertex, TEdge> task)
         {
             Debug.Assert(task != null);
 
@@ -34,7 +34,7 @@ namespace QuikGraph.Algorithms.TSP
         /// </summary>
         /// <returns>The <see cref="Task{TVertex,TEdge}"/>.</returns>
         [Pure]
-        [NotNull]
+
         public Task<TVertex, TEdge> GetTask()
         {
             return _tasksQueue.RemoveMinimum().Value;

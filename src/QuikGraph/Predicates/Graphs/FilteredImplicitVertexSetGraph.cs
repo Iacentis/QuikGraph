@@ -1,5 +1,5 @@
 ﻿using System;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph.Predicates
 {
@@ -26,9 +26,9 @@ namespace QuikGraph.Predicates
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexPredicate"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgePredicate"/> is <see langword="null"/>.</exception>
         public FilteredImplicitVertexSet(
-            [NotNull] TGraph baseGraph,
-            [NotNull] VertexPredicate<TVertex> vertexPredicate,
-            [NotNull] EdgePredicate<TVertex, TEdge> edgePredicate)
+             TGraph baseGraph,
+             VertexPredicate<TVertex> vertexPredicate,
+             EdgePredicate<TVertex, TEdge> edgePredicate)
             : base(baseGraph, vertexPredicate, edgePredicate)
         {
         }

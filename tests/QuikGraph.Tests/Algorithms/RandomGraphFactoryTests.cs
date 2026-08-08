@@ -17,22 +17,22 @@ namespace QuikGraph.Tests.Algorithms
         public void GetVertex()
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVertexRange(new[] { 1, 2, 3, 4, 5 });
+            graph.AddVertexRange([1, 2, 3, 4, 5]);
 
             int vertex = RandomGraphFactory.GetVertex(graph, new Random(123456));
-            Assert.AreEqual(2, vertex);
+            Assert.That(2,Is.EqualTo(vertex));
 
             vertex = RandomGraphFactory.GetVertex(graph, new Random(456789));
-            Assert.AreEqual(5, vertex);
+            Assert.That(5,Is.EqualTo(vertex));
 
             vertex = RandomGraphFactory.GetVertex(graph.Vertices, graph.VertexCount, new Random(123456));
-            Assert.AreEqual(2, vertex);
+            Assert.That(2,Is.EqualTo(vertex));
 
             vertex = RandomGraphFactory.GetVertex(graph.Vertices, graph.VertexCount, new Random(456789));
-            Assert.AreEqual(5, vertex);
+            Assert.That(5,Is.EqualTo(vertex));
 
             vertex = RandomGraphFactory.GetVertex(graph.Vertices, 3, new Random(123));
-            Assert.AreEqual(3, vertex);
+            Assert.That(3,Is.EqualTo(vertex));
         }
 
         [Test]
@@ -57,7 +57,7 @@ namespace QuikGraph.Tests.Algorithms
             Assert.Throws<ArgumentOutOfRangeException>(() => RandomGraphFactory.GetVertex(Enumerable.Empty<int>(), -1, random));
             Assert.Throws<ArgumentOutOfRangeException>(() => RandomGraphFactory.GetVertex(Enumerable.Empty<int>(), 0, random));
             Assert.Throws<InvalidOperationException>(() => RandomGraphFactory.GetVertex(Enumerable.Empty<int>(), 1, random));
-            Assert.Throws<InvalidOperationException>(() => RandomGraphFactory.GetVertex(new[] { 1, 2 }, 10, new Random(123456)));
+            Assert.Throws<InvalidOperationException>(() => RandomGraphFactory.GetVertex([1, 2], 10, new Random(123456)));
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
@@ -70,25 +70,24 @@ namespace QuikGraph.Tests.Algorithms
             var edge23 = new Edge<int>(2, 3);
             var edge24 = new Edge<int>(2, 4);
             var edge35 = new Edge<int>(3, 5);
-            graph.AddVerticesAndEdgeRange(new[]
-            {
+            graph.AddVerticesAndEdgeRange([
                 edge12, edge13, edge23, edge24, edge35
-            });
+            ]);
 
             Edge<int> edge = RandomGraphFactory.GetEdge(graph, new Random(123456));
-            Assert.AreSame(edge13, edge);
+            Assert.That(edge13,Is.SameAs(edge));
 
             edge = RandomGraphFactory.GetEdge(graph, new Random(456789));
-            Assert.AreSame(edge35, edge);
+            Assert.That(edge35,Is.SameAs(edge));
 
             edge = RandomGraphFactory.GetEdge<int, Edge<int>>(graph.Edges, graph.VertexCount, new Random(123456));
-            Assert.AreSame(edge13, edge);
+            Assert.That(edge13,Is.SameAs(edge));
 
             edge = RandomGraphFactory.GetEdge<int, Edge<int>>(graph.Edges, graph.VertexCount, new Random(456789));
-            Assert.AreSame(edge35, edge);
+            Assert.That(edge35,Is.SameAs(edge));
 
             edge = RandomGraphFactory.GetEdge<int, Edge<int>>(graph.Edges, 3, new Random(123));
-            Assert.AreSame(edge23, edge);
+            Assert.That(edge23,Is.SameAs(edge));
         }
 
         [Test]
@@ -105,17 +104,17 @@ namespace QuikGraph.Tests.Algorithms
             Assert.Throws<ArgumentNullException>(() => RandomGraphFactory.GetEdge<int, Edge<int>>(null, null));
 
             Assert.Throws<ArgumentNullException>(() => RandomGraphFactory.GetEdge<int, Edge<int>>(null, 1, random));
-            Assert.Throws<ArgumentNullException>(() => RandomGraphFactory.GetEdge<int, Edge<int>>(Enumerable.Empty<Edge<int>>(), 1, null));
+            Assert.Throws<ArgumentNullException>(() => RandomGraphFactory.GetEdge<int, Edge<int>>([], 1, null));
             Assert.Throws<ArgumentNullException>(() => RandomGraphFactory.GetEdge<int, Edge<int>>(null, 1, null));
             // ReSharper restore AssignNullToNotNullAttribute
             Assert.Throws<ArgumentOutOfRangeException>(() => RandomGraphFactory.GetVertex(graph, random));
 
-            Assert.Throws<ArgumentOutOfRangeException>(() => RandomGraphFactory.GetEdge<int, Edge<int>>(Enumerable.Empty<Edge<int>>(), -1, random));
-            Assert.Throws<ArgumentOutOfRangeException>(() => RandomGraphFactory.GetEdge<int, Edge<int>>(Enumerable.Empty<Edge<int>>(), 0, random));
-            Assert.Throws<InvalidOperationException>(() => RandomGraphFactory.GetEdge<int, Edge<int>>(Enumerable.Empty<Edge<int>>(), 1, random));
+            Assert.Throws<ArgumentOutOfRangeException>(() => RandomGraphFactory.GetEdge<int, Edge<int>>([], -1, random));
+            Assert.Throws<ArgumentOutOfRangeException>(() => RandomGraphFactory.GetEdge<int, Edge<int>>([], 0, random));
+            Assert.Throws<InvalidOperationException>(() => RandomGraphFactory.GetEdge<int, Edge<int>>([], 1, random));
             Assert.Throws<InvalidOperationException>(
                 () => RandomGraphFactory.GetEdge<int, Edge<int>>(
-                    new[] { new Edge<int>(1, 2), new Edge<int>(1, 3) },
+                    [new Edge<int>(1, 2), new Edge<int>(1, 3)],
                     10,
                     new Random(123456)));
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
@@ -136,7 +135,7 @@ namespace QuikGraph.Tests.Algorithms
                 2,
                 0,
                 true);
-            AssertHasVertices(graph, new[] { 1, 2 });
+            AssertHasVertices(graph, [1, 2]);
             AssertNoEdge(graph);
 
             // With self edge
@@ -149,11 +148,10 @@ namespace QuikGraph.Tests.Algorithms
                 5,
                 10,
                 true);
-            AssertHasVertices(graph, new[] { 1, 2, 3, 4, 5 });
+            AssertHasVertices(graph, [1, 2, 3, 4, 5]);
             AssertHasEdges(
                 graph,
-                new[]
-                {
+                [
                     new EquatableEdge<int>(1, 2),
                     new EquatableEdge<int>(1, 2),
                     new EquatableEdge<int>(1, 2),
@@ -164,7 +162,7 @@ namespace QuikGraph.Tests.Algorithms
                     new EquatableEdge<int>(4, 4),
                     new EquatableEdge<int>(4, 1),
                     new EquatableEdge<int>(5, 3)
-                });
+                ]);
 
             // Without self edge
             graph.Clear();
@@ -177,11 +175,10 @@ namespace QuikGraph.Tests.Algorithms
                 5,
                 10,
                 false);
-            AssertHasVertices(graph, new[] { 1, 2, 3, 4, 5 });
+            AssertHasVertices(graph, [1, 2, 3, 4, 5]);
             AssertHasEdges(
                 graph,
-                new[]
-                {
+                [
                     new EquatableEdge<int>(1, 2),
                     new EquatableEdge<int>(1, 2),
                     new EquatableEdge<int>(1, 2),
@@ -192,7 +189,7 @@ namespace QuikGraph.Tests.Algorithms
                     new EquatableEdge<int>(4, 5),
                     new EquatableEdge<int>(4, 1),
                     new EquatableEdge<int>(5, 3)
-                });
+                ]);
 
             // Different seed change generated graph
             graph.Clear();
@@ -205,11 +202,10 @@ namespace QuikGraph.Tests.Algorithms
                 5,
                 10,
                 true);
-            AssertHasVertices(graph, new[] { 1, 2, 3, 4, 5 });
+            AssertHasVertices(graph, [1, 2, 3, 4, 5]);
             AssertHasEdges(
                 graph,
-                new[]
-                {
+                [
                     new EquatableEdge<int>(1, 2),
                     new EquatableEdge<int>(2, 2),
                     new EquatableEdge<int>(2, 5),
@@ -220,7 +216,7 @@ namespace QuikGraph.Tests.Algorithms
                     new EquatableEdge<int>(4, 2),
                     new EquatableEdge<int>(5, 2),
                     new EquatableEdge<int>(5, 3)
-                });
+                ]);
 
             // On non empty graph, keep existing stuff
             graph.Clear();
@@ -234,11 +230,10 @@ namespace QuikGraph.Tests.Algorithms
                 5,
                 10,
                 true);
-            AssertHasVertices(graph, new[] { 1, 2, 3, 4, 5, 6, 7 });
+            AssertHasVertices(graph, [1, 2, 3, 4, 5, 6, 7]);
             AssertHasEdges(
                 graph,
-                new[]
-                {
+                [
                     new EquatableEdge<int>(6, 7),
                     new EquatableEdge<int>(1, 2),
                     new EquatableEdge<int>(1, 2),
@@ -250,7 +245,7 @@ namespace QuikGraph.Tests.Algorithms
                     new EquatableEdge<int>(4, 4),
                     new EquatableEdge<int>(4, 1),
                     new EquatableEdge<int>(5, 3)
-                });
+                ]);
         }
 
         [Test]
@@ -418,7 +413,7 @@ namespace QuikGraph.Tests.Algorithms
                 2,
                 0,
                 true);
-            AssertHasVertices(graph, new[] { 1, 2 });
+            AssertHasVertices(graph, [1, 2]);
             AssertNoEdge(graph);
 
             // With self edge
@@ -431,11 +426,10 @@ namespace QuikGraph.Tests.Algorithms
                 5,
                 10,
                 true);
-            AssertHasVertices(graph, new[] { 1, 2, 3, 4, 5 });
+            AssertHasVertices(graph, [1, 2, 3, 4, 5]);
             AssertHasEdges(
                 graph,
-                new[]
-                {
+                [
                     new EquatableEdge<int>(1, 2),
                     new EquatableEdge<int>(1, 2),
                     new EquatableEdge<int>(1, 2),
@@ -446,7 +440,7 @@ namespace QuikGraph.Tests.Algorithms
                     new EquatableEdge<int>(4, 4),
                     new EquatableEdge<int>(4, 1),
                     new EquatableEdge<int>(5, 3)
-                });
+                ]);
 
             // Without self edge
             graph.Clear();
@@ -459,11 +453,10 @@ namespace QuikGraph.Tests.Algorithms
                 5,
                 10,
                 false);
-            AssertHasVertices(graph, new[] { 1, 2, 3, 4, 5 });
+            AssertHasVertices(graph, [1, 2, 3, 4, 5]);
             AssertHasEdges(
                 graph,
-                new[]
-                {
+                [
                     new EquatableEdge<int>(1, 2),
                     new EquatableEdge<int>(1, 2),
                     new EquatableEdge<int>(1, 2),
@@ -474,7 +467,7 @@ namespace QuikGraph.Tests.Algorithms
                     new EquatableEdge<int>(4, 5),
                     new EquatableEdge<int>(4, 1),
                     new EquatableEdge<int>(5, 3)
-                });
+                ]);
 
             // Different seed change generated graph
             graph.Clear();
@@ -487,11 +480,10 @@ namespace QuikGraph.Tests.Algorithms
                 5,
                 10,
                 true);
-            AssertHasVertices(graph, new[] { 1, 2, 3, 4, 5 });
+            AssertHasVertices(graph, [1, 2, 3, 4, 5]);
             AssertHasEdges(
                 graph,
-                new[]
-                {
+                [
                     new EquatableEdge<int>(1, 2),
                     new EquatableEdge<int>(2, 2),
                     new EquatableEdge<int>(2, 5),
@@ -502,7 +494,7 @@ namespace QuikGraph.Tests.Algorithms
                     new EquatableEdge<int>(4, 2),
                     new EquatableEdge<int>(5, 2),
                     new EquatableEdge<int>(5, 3)
-                });
+                ]);
 
             // On non empty graph, keep existing stuff
             graph.Clear();
@@ -516,11 +508,10 @@ namespace QuikGraph.Tests.Algorithms
                 5,
                 10,
                 true);
-            AssertHasVertices(graph, new[] { 1, 2, 3, 4, 5, 6, 7 });
+            AssertHasVertices(graph, [1, 2, 3, 4, 5, 6, 7]);
             AssertHasEdges(
                 graph,
-                new[]
-                {
+                [
                     new EquatableEdge<int>(6, 7),
                     new EquatableEdge<int>(1, 2),
                     new EquatableEdge<int>(1, 2),
@@ -532,7 +523,7 @@ namespace QuikGraph.Tests.Algorithms
                     new EquatableEdge<int>(4, 4),
                     new EquatableEdge<int>(4, 1),
                     new EquatableEdge<int>(5, 3)
-                });
+                ]);
         }
 
         [Test]

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Msagl.Drawing;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using static QuikGraph.MSAGL.Tests.MsaglGraphTestHelpers;
 
 namespace QuikGraph.MSAGL.Tests
@@ -38,16 +39,16 @@ namespace QuikGraph.MSAGL.Tests
             void CreatePopulators_Test(IEdgeListGraph<int, Edge<int>> g)
             {
                 var populator = g.CreateMsaglPopulator();
-                Assert.IsNotNull(populator);
+                Assert.That(populator, Is.Not.Null);
 
                 populator = g.CreateMsaglPopulator("TestFormat {0}");
-                Assert.IsNotNull(populator);
+                Assert.That(populator, Is.Not.Null);
 
                 populator = g.CreateMsaglPopulator("TestFormat {0}", new VertexTestFormatProvider());
-                Assert.IsNotNull(populator);
+                Assert.That(populator, Is.Not.Null);
 
                 populator = g.CreateMsaglPopulator(v => v.ToString());
-                Assert.IsNotNull(populator);
+                Assert.That(populator, Is.Not.Null);
             }
 
             #endregion
@@ -60,11 +61,14 @@ namespace QuikGraph.MSAGL.Tests
             // ReSharper disable AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(() => MsaglGraphExtensions.CreateMsaglPopulator<int, Edge<int>>(null));
 
-            Assert.Throws<ArgumentNullException>(() => MsaglGraphExtensions.CreateMsaglPopulator<int, Edge<int>>(null, vertex => vertex.ToString()));
-            Assert.Throws<ArgumentNullException>(() => MsaglGraphExtensions.CreateMsaglPopulator(graph, null));
-            Assert.Throws<ArgumentNullException>(() => MsaglGraphExtensions.CreateMsaglPopulator<int, Edge<int>>(null, null));
+            Assert.Throws<ArgumentNullException>(() =>
+                MsaglGraphExtensions.CreateMsaglPopulator<int, Edge<int>>(null, vertex => vertex.ToString()));
+            Assert.Throws<ArgumentNullException>(() => graph.CreateMsaglPopulator(null));
+            Assert.Throws<ArgumentNullException>(() =>
+                MsaglGraphExtensions.CreateMsaglPopulator<int, Edge<int>>(null, null));
 
-            Assert.Throws<ArgumentNullException>(() => MsaglGraphExtensions.CreateMsaglPopulator<int, Edge<int>>(null, "Format {0}"));
+            Assert.Throws<ArgumentNullException>(() =>
+                MsaglGraphExtensions.CreateMsaglPopulator<int, Edge<int>>(null, "Format {0}"));
             // ReSharper restore AssignNullToNotNullAttribute
         }
 
@@ -76,30 +80,28 @@ namespace QuikGraph.MSAGL.Tests
             ToMsaglGraph_Test(graph);
 
             graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVertexRange(new[] { 1, 2, 4 });
+            graph.AddVertexRange([1, 2, 4]);
             ToMsaglGraph_Test(graph);
 
             graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[]
-            {
+            graph.AddVerticesAndEdgeRange([
                 new Edge<int>(1, 2),
                 new Edge<int>(2, 3),
                 new Edge<int>(2, 5),
                 new Edge<int>(3, 4),
                 new Edge<int>(4, 3)
-            });
+            ]);
             graph.AddVertex(6);
             ToMsaglGraph_Test(graph);
 
             var undirectedGraph = new UndirectedGraph<int, Edge<int>>();
-            undirectedGraph.AddVerticesAndEdgeRange(new[]
-            {
+            undirectedGraph.AddVerticesAndEdgeRange([
                 new Edge<int>(1, 2),
                 new Edge<int>(2, 3),
                 new Edge<int>(2, 5),
                 new Edge<int>(3, 4),
                 new Edge<int>(4, 3)
-            });
+            ]);
             undirectedGraph.AddVertex(6);
             ToMsaglGraph_Test(undirectedGraph);
 
@@ -159,6 +161,7 @@ namespace QuikGraph.MSAGL.Tests
                 {
                     msaglGraph = g.ToMsaglGraph(NodeAdded, EdgeAdded);
                 }
+
                 AssertAreEquivalent(g, msaglGraph);
                 CollectionAssert.IsEmpty(expectedVerticesAdded);
                 CollectionAssert.IsEmpty(expectedEdgesAdded);
@@ -181,6 +184,7 @@ namespace QuikGraph.MSAGL.Tests
                 {
                     msaglGraph = g.ToMsaglGraph(VertexIdentity, NodeAdded, EdgeAdded);
                 }
+
                 AssertAreEquivalent(g, msaglGraph);
                 CollectionAssert.IsEmpty(expectedVerticesAdded);
                 CollectionAssert.IsEmpty(expectedEdgesAdded);
@@ -199,7 +203,7 @@ namespace QuikGraph.MSAGL.Tests
 
                 void NodeAdded(object sender, MsaglVertexEventArgs<int> args)
                 {
-                    Assert.IsTrue(expectedVerticesAdded.Remove(args.Vertex));
+                    Assert.That(expectedVerticesAdded.Remove(args.Vertex), Is.True);
                 }
 
                 void NoEdgeAdded(object sender, MsaglEdgeEventArgs<int, Edge<int>> args)
@@ -209,7 +213,7 @@ namespace QuikGraph.MSAGL.Tests
 
                 void EdgeAdded(object sender, MsaglEdgeEventArgs<int, Edge<int>> args)
                 {
-                    Assert.IsTrue(expectedEdgesAdded.Remove(args.Edge));
+                    Assert.That(expectedEdgesAdded.Remove(args.Edge), Is.True);
                 }
 
                 #endregion

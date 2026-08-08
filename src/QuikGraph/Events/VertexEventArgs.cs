@@ -1,5 +1,5 @@
 ﻿using System;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph
 {
@@ -7,9 +7,9 @@ namespace QuikGraph
     /// Base class for arguments of an event related to a vertex.
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
-#if SUPPORTS_SERIALIZATION
+
     [Serializable]
-#endif
+
     public class VertexEventArgs<TVertex> : EventArgs
     {
         /// <summary>
@@ -17,7 +17,7 @@ namespace QuikGraph
         /// </summary>
         /// <param name="vertex">Concerned vertex.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
-        public VertexEventArgs([NotNull] TVertex vertex)
+        public VertexEventArgs( TVertex vertex)
         {
             if (vertex == null)
                 throw new ArgumentNullException(nameof(vertex));
@@ -28,7 +28,7 @@ namespace QuikGraph
         /// <summary>
         /// Vertex concerned by the event.
         /// </summary>
-        [NotNull]
+
         public TVertex Vertex { get; }
     }
 }

@@ -14,7 +14,7 @@ namespace QuikGraph.Tests.Events
             var vertex = new TestVertex("1");
             var args = new VertexEventArgs<TestVertex>(vertex);
 
-            Assert.AreSame(vertex, args.Vertex);
+            Assert.That(vertex,Is.SameAs(args.Vertex));
         }
 
         [Test]

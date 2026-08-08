@@ -52,16 +52,16 @@ namespace QuikGraph.Tests.Structures
             var edge1 = new EquatableUndirectedEdge<int>(1, 2);
             var edge2 = new EquatableUndirectedEdge<int>(1, 2);
 
-            Assert.AreEqual(edge1, edge1);
+            Assert.That(edge1,Is.EqualTo(edge1));
 
-            Assert.AreEqual(edge1, edge2);
-            Assert.AreEqual(edge2, edge1);
-            Assert.IsTrue(edge1.Equals((object)edge2));
-            Assert.IsTrue(edge1.Equals(edge2));
-            Assert.IsTrue(edge2.Equals(edge1));
+            Assert.That(edge1,Is.EqualTo(edge2));
+            Assert.That(edge2,Is.EqualTo(edge1));
+            Assert.That(edge1.Equals((object)edge2),Is.True);
+            Assert.That(edge1.Equals(edge2),Is.True);
+            Assert.That(edge2.Equals(edge1),Is.True);
 
-            Assert.AreNotEqual(null, edge1);
-            Assert.IsFalse(edge1.Equals(null));
+            Assert.That(edge1,Is.Not.Null);
+            Assert.That(edge1.Equals(null),Is.False);
         }
 
         [Test]
@@ -70,7 +70,7 @@ namespace QuikGraph.Tests.Structures
             var edge1 = new EquatableUndirectedEdge<int>(1, 2);
             var edge2 = new EquatableUndirectedEdge<int>(1, 2);
 
-            Assert.AreEqual(edge1.GetHashCode(), edge2.GetHashCode());
+            Assert.That(edge1.GetHashCode(),Is.EqualTo(edge2.GetHashCode()));
         }
 
         [Test]
@@ -78,7 +78,7 @@ namespace QuikGraph.Tests.Structures
         {
             var edge = new EquatableUndirectedEdge<int>(1, 2);
 
-            Assert.AreEqual("1 <-> 2", edge.ToString());
+            Assert.That("1 <-> 2",Is.EqualTo(edge.ToString()));
         }
     }
 }

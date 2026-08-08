@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Graphviz.Dot;
 using static QuikGraph.Graphviz.Tests.CultureHelpers;
@@ -17,29 +16,29 @@ namespace QuikGraph.Graphviz.Tests
         public void Constructor()
         {
             var edge = new GraphvizEdge();
-            Assert.IsNull(edge.Comment);
-            Assert.IsFalse(edge.Label.IsHtmlLabel);
-            Assert.IsNotNull(edge.Label);
-            Assert.IsNull(edge.ToolTip);
-            Assert.IsNull(edge.Url);
-            Assert.AreEqual(GraphvizEdgeDirection.Forward, edge.Direction);
-            Assert.IsNull(edge.Font);
-            Assert.AreEqual(GraphvizColor.Black, edge.FontColor);
-            Assert.AreEqual(1.0, edge.PenWidth);
-            Assert.IsNotNull(edge.Head);
-            Assert.IsNull(edge.HeadArrow);
-            Assert.IsNull(edge.HeadPort);
-            Assert.IsNotNull(edge.Tail);
-            Assert.IsNull(edge.TailArrow);
-            Assert.IsNull(edge.TailPort);
-            Assert.IsTrue(edge.IsConstrained);
-            Assert.IsFalse(edge.IsDecorated);
-            Assert.IsNull(edge.Layer);
-            Assert.AreEqual(GraphvizColor.Black, edge.StrokeColor);
-            Assert.AreEqual(GraphvizEdgeStyle.Unspecified, edge.Style);
-            Assert.AreEqual(1, edge.Weight);
-            Assert.AreEqual(1, edge.Length);
-            Assert.AreEqual(1, edge.MinLength);
+            Assert.That(edge.Comment,Is.Null);
+            Assert.That(edge.Label.IsHtmlLabel,Is.False);
+            Assert.That(edge.Label,Is.Not.Null);
+            Assert.That(edge.ToolTip,Is.Null);
+            Assert.That(edge.Url,Is.Null);
+            Assert.That(GraphvizEdgeDirection.Forward,Is.EqualTo(edge.Direction));
+            Assert.That(edge.Font,Is.Null);
+            Assert.That(GraphvizColor.Black,Is.EqualTo(edge.FontColor));
+            Assert.That(1.0,Is.EqualTo(edge.PenWidth));
+            Assert.That(edge.Head,Is.Not.Null);
+            Assert.That(edge.HeadArrow,Is.Null);
+            Assert.That(edge.HeadPort,Is.Null);
+            Assert.That(edge.Tail,Is.Not.Null);
+            Assert.That(edge.TailArrow,Is.Null);
+            Assert.That(edge.TailPort,Is.Null);
+            Assert.That(edge.IsConstrained,Is.True);
+            Assert.That(edge.IsDecorated,Is.False);
+            Assert.That(edge.Layer,Is.Null);
+            Assert.That(GraphvizColor.Black,Is.EqualTo(edge.StrokeColor));
+            Assert.That(GraphvizEdgeStyle.Unspecified,Is.EqualTo(edge.Style));
+            Assert.That(1,Is.EqualTo(edge.Weight));
+            Assert.That(1,Is.EqualTo(edge.Length));
+            Assert.That(1,Is.EqualTo(edge.MinLength));
         }
 
         [Test]
@@ -51,7 +50,7 @@ namespace QuikGraph.Graphviz.Tests
 
             var label = new GraphvizEdgeLabel();
             edge.Label = label;
-            Assert.AreSame(label, edge.Label);
+            Assert.That(label,Is.SameAs(edge.Label));
         }
 
         [Test]
@@ -71,7 +70,7 @@ namespace QuikGraph.Graphviz.Tests
 
             var headExtremity = new GraphvizEdgeExtremity(true);
             edge.Head = headExtremity;
-            Assert.AreSame(headExtremity, edge.Head);
+            Assert.That(headExtremity,Is.SameAs(edge.Head));
         }
 
         [Test]
@@ -92,7 +91,7 @@ namespace QuikGraph.Graphviz.Tests
 
             var tailExtremity = new GraphvizEdgeExtremity(false);
             edge.Tail = tailExtremity;
-            Assert.AreSame(tailExtremity, edge.Tail);
+            Assert.That(tailExtremity,Is.SameAs(edge.Tail));
         }
 
         [Test]
@@ -104,7 +103,7 @@ namespace QuikGraph.Graphviz.Tests
             Assert.Throws<ArgumentException>(() => edge.Tail = new GraphvizEdgeExtremity(true));
         }
 
-        [NotNull, ItemNotNull]
+
         private static IEnumerable<TestCaseData> ToDotTestCases
         {
             get
@@ -274,13 +273,13 @@ namespace QuikGraph.Graphviz.Tests
         }
 
         [TestCaseSource(nameof(ToDotTestCases))]
-        public void ToDot([NotNull] GraphvizEdge edge, [NotNull] string expectedDot)
+        public void ToDot( GraphvizEdge edge,  string expectedDot)
         {
-            Assert.AreEqual(expectedDot, edge.ToDot());
-            Assert.AreEqual(expectedDot, edge.ToString());
+            Assert.That(expectedDot,Is.EqualTo(edge.ToDot()));
+            Assert.That(expectedDot,Is.EqualTo(edge.ToString()));
         }
 
-        [NotNull, ItemNotNull]
+
         private static IEnumerable<TestCaseData> ToDotCultureInvariantTestCases
         {
             get
@@ -294,7 +293,7 @@ namespace QuikGraph.Graphviz.Tests
         }
 
         [TestCaseSource(nameof(ToDotCultureInvariantTestCases))]
-        public void ToDot_InvariantCulture([NotNull, InstantHandle] Func<GraphvizEdge, string> convert)
+        public void ToDot_InvariantCulture( Func<GraphvizEdge, string> convert)
         {
             var edge = new GraphvizEdge
             {
@@ -316,12 +315,12 @@ namespace QuikGraph.Graphviz.Tests
 
             using (CultureScope(EnglishCulture))
             {
-                Assert.AreEqual(expectedDot, convert(edge));
+                Assert.That(expectedDot,Is.EqualTo(convert(edge)));
             }
 
             using (CultureScope(FrenchCulture))
             {
-                Assert.AreEqual(expectedDot, convert(edge));
+                Assert.That(expectedDot,Is.EqualTo(convert(edge)));
             }
         }
     }

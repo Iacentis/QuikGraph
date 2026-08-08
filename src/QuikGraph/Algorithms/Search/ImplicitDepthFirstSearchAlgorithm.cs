@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
 
 namespace QuikGraph.Algorithms.Search
@@ -23,7 +22,7 @@ namespace QuikGraph.Algorithms.Search
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public ImplicitDepthFirstSearchAlgorithm(
-            [NotNull] IIncidenceGraph<TVertex, TEdge> visitedGraph)
+             IIncidenceGraph<TVertex, TEdge> visitedGraph)
             : this(null, visitedGraph)
         {
         }
@@ -35,8 +34,8 @@ namespace QuikGraph.Algorithms.Search
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public ImplicitDepthFirstSearchAlgorithm(
-            [CanBeNull] IAlgorithmComponent host,
-            [NotNull] IIncidenceGraph<TVertex, TEdge> visitedGraph)
+             IAlgorithmComponent host,
+             IIncidenceGraph<TVertex, TEdge> visitedGraph)
             : base(host, visitedGraph)
         {
         }
@@ -44,7 +43,7 @@ namespace QuikGraph.Algorithms.Search
         /// <summary>
         /// Stores vertices associated to their colors (treatment state).
         /// </summary>
-        [NotNull]
+
         public IDictionary<TVertex, GraphColor> VerticesColors { get; } = new Dictionary<TVertex, GraphColor>();
 
         private int _maxDepth = int.MaxValue;
@@ -77,7 +76,7 @@ namespace QuikGraph.Algorithms.Search
         /// </summary>
         public event VertexAction<TVertex> StartVertex;
 
-        private void OnStartVertex([NotNull] TVertex vertex)
+        private void OnStartVertex( TVertex vertex)
         {
             Debug.Assert(vertex != null);
 
@@ -85,11 +84,11 @@ namespace QuikGraph.Algorithms.Search
         }
 
         /// <summary>
-        /// Invoked when a vertex is encountered for the first time. 
+        /// Invoked when a vertex is encountered for the first time.
         /// </summary>
         public event VertexAction<TVertex> DiscoverVertex;
 
-        private void OnDiscoverVertex([NotNull] TVertex vertex)
+        private void OnDiscoverVertex( TVertex vertex)
         {
             Debug.Assert(vertex != null);
 
@@ -97,11 +96,11 @@ namespace QuikGraph.Algorithms.Search
         }
 
         /// <summary>
-        /// Invoked on every out-edge of each vertex after it is discovered. 
+        /// Invoked on every out-edge of each vertex after it is discovered.
         /// </summary>
         public event EdgeAction<TVertex, TEdge> ExamineEdge;
 
-        private void OnExamineEdge([NotNull] TEdge edge)
+        private void OnExamineEdge( TEdge edge)
         {
             Debug.Assert(edge != null);
 
@@ -115,7 +114,7 @@ namespace QuikGraph.Algorithms.Search
         /// </summary>
         public event EdgeAction<TVertex, TEdge> TreeEdge;
 
-        private void OnTreeEdge([NotNull] TEdge edge)
+        private void OnTreeEdge( TEdge edge)
         {
             Debug.Assert(edge != null);
 
@@ -127,7 +126,7 @@ namespace QuikGraph.Algorithms.Search
         /// </summary>
         public event EdgeAction<TVertex, TEdge> BackEdge;
 
-        private void OnBackEdge([NotNull] TEdge edge)
+        private void OnBackEdge( TEdge edge)
         {
             Debug.Assert(edge != null);
 
@@ -140,7 +139,7 @@ namespace QuikGraph.Algorithms.Search
         /// </summary>
         public event EdgeAction<TVertex, TEdge> ForwardOrCrossEdge;
 
-        private void OnForwardOrCrossEdge([NotNull] TEdge edge)
+        private void OnForwardOrCrossEdge( TEdge edge)
         {
             Debug.Assert(edge != null);
 
@@ -154,7 +153,7 @@ namespace QuikGraph.Algorithms.Search
         /// </summary>
         public event VertexAction<TVertex> FinishVertex;
 
-        private void OnVertexFinished([NotNull] TVertex vertex)
+        private void OnVertexFinished( TVertex vertex)
         {
             Debug.Assert(vertex != null);
 
@@ -183,7 +182,7 @@ namespace QuikGraph.Algorithms.Search
 
         #endregion
 
-        private void Visit([NotNull] TVertex u, int depth)
+        private void Visit( TVertex u, int depth)
         {
             Debug.Assert(u != null);
 

@@ -2,8 +2,9 @@
 using System.IO;
 using System.Linq;
 using HtmlAgilityPack;
-using JetBrains.Annotations;
+
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using QuikGraph.Graphviz.Dot;
 using static QuikGraph.Tests.QuikGraphUnitTestsHelpers;
 
@@ -17,14 +18,14 @@ namespace QuikGraph.Graphviz.Tests
     {
         #region Test helpers
 
-        [NotNull]
-        private static string CheckValidHtmlFile([NotNull] string htmlFilePath)
+
+        private static string CheckValidHtmlFile( string htmlFilePath)
         {
-            Assert.IsTrue(File.Exists(htmlFilePath));
+            Assert.That(File.Exists(htmlFilePath),Is.True);
             var htmlDocument = new HtmlDocument();
             string htmlContent = File.ReadAllText(htmlFilePath);
             htmlDocument.LoadHtml(htmlContent);
-            Assert.IsFalse(htmlDocument.ParseErrors.Any());
+            Assert.That(htmlDocument.ParseErrors.Any(),Is.False);
             return htmlContent;
         }
 
@@ -50,7 +51,7 @@ namespace QuikGraph.Graphviz.Tests
             Assert.Throws<ArgumentNullException>(() => SvgHtmlWrapper.DumpHtml(new GraphvizSize(150, 150), null));
         }
 
-        [NotNull]
+
         private static readonly string SampleSvg =
             "<?xml version=\"1.0\" encoding=\"utf-8\"?>" + Environment.NewLine +
             "<svg xmlns = \"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"300\" height=\"200\">" + Environment.NewLine +
@@ -66,7 +67,7 @@ namespace QuikGraph.Graphviz.Tests
             "  <text x=\"180\" y=\"60\">A text</text>" + Environment.NewLine +
             "</svg>";
 
-        [NotNull]
+
         private static readonly string MissingSizeSampleSvg =
             "<?xml version=\"1.0\" encoding=\"utf-8\"?>" + Environment.NewLine +
             "<svg xmlns = \"http://www.w3.org/2000/svg\" version=\"1.1\">" + Environment.NewLine +
@@ -101,11 +102,11 @@ namespace QuikGraph.Graphviz.Tests
         public void ParseSize()
         {
             GraphvizSize size = SvgHtmlWrapper.ParseSize(SampleSvg);
-            Assert.AreEqual(new GraphvizSize(300, 200), size);
+            Assert.That(new GraphvizSize(300, 200),Is.EqualTo(size));
 
             // Size not found => fallback
             size = SvgHtmlWrapper.ParseSize(MissingSizeSampleSvg);
-            Assert.AreEqual(new GraphvizSize(400, 400), size);
+            Assert.That(new GraphvizSize(400, 400),Is.EqualTo(size));
         }
 
         [Test]

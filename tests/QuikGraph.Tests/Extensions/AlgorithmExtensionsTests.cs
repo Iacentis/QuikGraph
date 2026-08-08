@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
-using JetBrains.Annotations;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using QuikGraph.Algorithms;
 using QuikGraph.Algorithms.MaximumFlow;
 using QuikGraph.Algorithms.RandomWalks;
@@ -27,7 +28,7 @@ namespace QuikGraph.Tests.Extensions
             Assert.Throws<KeyNotFoundException>(() => indexer1(12));
 
             dictionary1[12] = 42.0;
-            Assert.AreEqual(42.0, indexer1(12));
+            Assert.That(42.0, Is.EqualTo(indexer1(12)));
 
             var dictionary2 = new Dictionary<TestVertex, TestVertex>();
             Func<TestVertex, TestVertex> indexer2 = AlgorithmExtensions.GetIndexer(dictionary2);
@@ -38,7 +39,7 @@ namespace QuikGraph.Tests.Extensions
 
             var value = new TestVertex("2");
             dictionary2[key] = value;
-            Assert.AreSame(value, indexer2(key));
+            Assert.That(value, Is.SameAs(indexer2(key)));
 
             Assert.Throws<KeyNotFoundException>(() => indexer2(keyBis));
         }
@@ -55,24 +56,24 @@ namespace QuikGraph.Tests.Extensions
         public void GetVertexIdentity()
         {
             var graph1 = new AdjacencyGraph<int, Edge<int>>();
-            VertexIdentity<int> vertexIdentity1 = AlgorithmExtensions.GetVertexIdentity(graph1);
+            VertexIdentity<int> vertexIdentity1 = graph1.GetVertexIdentity();
 
-            Assert.AreEqual("12", vertexIdentity1(12));
-            Assert.AreEqual("42", vertexIdentity1(42));
+            Assert.That("12", Is.EqualTo(vertexIdentity1(12)));
+            Assert.That("42", Is.EqualTo(vertexIdentity1(42)));
             // Check identity didn't change
-            Assert.AreEqual("12", vertexIdentity1(12));
-            Assert.AreEqual("42", vertexIdentity1(42));
+            Assert.That("12", Is.EqualTo(vertexIdentity1(12)));
+            Assert.That("42", Is.EqualTo(vertexIdentity1(42)));
 
             var graph2 = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
-            VertexIdentity<TestVertex> vertexIdentity2 = AlgorithmExtensions.GetVertexIdentity(graph2);
+            VertexIdentity<TestVertex> vertexIdentity2 = graph2.GetVertexIdentity();
 
             var vertex1 = new TestVertex("12");
             var vertex2 = new TestVertex("42");
-            Assert.AreEqual("0", vertexIdentity2(vertex1));
-            Assert.AreEqual("1", vertexIdentity2(vertex2));
+            Assert.That("0", Is.EqualTo(vertexIdentity2(vertex1)));
+            Assert.That("1", Is.EqualTo(vertexIdentity2(vertex2)));
             // Check identity didn't change
-            Assert.AreEqual("0", vertexIdentity2(vertex1));
-            Assert.AreEqual("1", vertexIdentity2(vertex2));
+            Assert.That("0", Is.EqualTo(vertexIdentity2(vertex1)));
+            Assert.That("1", Is.EqualTo(vertexIdentity2(vertex2)));
         }
 
         [Test]
@@ -87,21 +88,21 @@ namespace QuikGraph.Tests.Extensions
         public void GetEdgeIdentity()
         {
             var graph1 = new AdjacencyGraph<int, Edge<int>>();
-            EdgeIdentity<int, Edge<int>> edgeIdentity1 = AlgorithmExtensions.GetEdgeIdentity(graph1);
+            EdgeIdentity<int, Edge<int>> edgeIdentity1 = graph1.GetEdgeIdentity();
 
             var edge1 = new Edge<int>(1, 2);
             var edge2 = new Edge<int>(2, 3);
             var edge3 = new Edge<int>(1, 2);
-            Assert.AreEqual("0", edgeIdentity1(edge1));
-            Assert.AreEqual("1", edgeIdentity1(edge2));
-            Assert.AreEqual("2", edgeIdentity1(edge3));
+            Assert.That("0", Is.EqualTo(edgeIdentity1(edge1)));
+            Assert.That("1", Is.EqualTo(edgeIdentity1(edge2)));
+            Assert.That("2", Is.EqualTo(edgeIdentity1(edge3)));
             // Check identity didn't change
-            Assert.AreEqual("0", edgeIdentity1(edge1));
-            Assert.AreEqual("1", edgeIdentity1(edge2));
-            Assert.AreEqual("2", edgeIdentity1(edge3));
+            Assert.That("0", Is.EqualTo(edgeIdentity1(edge1)));
+            Assert.That("1", Is.EqualTo(edgeIdentity1(edge2)));
+            Assert.That("2", Is.EqualTo(edgeIdentity1(edge3)));
 
             var graph2 = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
-            EdgeIdentity<TestVertex, Edge<TestVertex>> edgeIdentity2 = AlgorithmExtensions.GetEdgeIdentity(graph2);
+            EdgeIdentity<TestVertex, Edge<TestVertex>> edgeIdentity2 = graph2.GetEdgeIdentity();
 
             var vertex1 = new TestVertex("1");
             var vertex2 = new TestVertex("2");
@@ -109,13 +110,13 @@ namespace QuikGraph.Tests.Extensions
             var edge4 = new Edge<TestVertex>(vertex1, vertex2);
             var edge5 = new Edge<TestVertex>(vertex2, vertex3);
             var edge6 = new Edge<TestVertex>(vertex1, vertex2);
-            Assert.AreEqual("0", edgeIdentity2(edge4));
-            Assert.AreEqual("1", edgeIdentity2(edge5));
-            Assert.AreEqual("2", edgeIdentity2(edge6));
+            Assert.That("0", Is.EqualTo(edgeIdentity2(edge4)));
+            Assert.That("1", Is.EqualTo(edgeIdentity2(edge5)));
+            Assert.That("2", Is.EqualTo(edgeIdentity2(edge6)));
             // Check identity didn't change
-            Assert.AreEqual("0", edgeIdentity2(edge4));
-            Assert.AreEqual("1", edgeIdentity2(edge5));
-            Assert.AreEqual("2", edgeIdentity2(edge6));
+            Assert.That("0", Is.EqualTo(edgeIdentity2(edge4)));
+            Assert.That("1", Is.EqualTo(edgeIdentity2(edge5)));
+            Assert.That("2", Is.EqualTo(edgeIdentity2(edge6)));
         }
 
         [Test]
@@ -124,7 +125,8 @@ namespace QuikGraph.Tests.Extensions
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(() => AlgorithmExtensions.GetEdgeIdentity<int, Edge<int>>(null));
-            Assert.Throws<ArgumentNullException>(() => AlgorithmExtensions.GetEdgeIdentity<TestVertex, Edge<TestVertex>>(null));
+            Assert.Throws<ArgumentNullException>(() =>
+                AlgorithmExtensions.GetEdgeIdentity<TestVertex, Edge<TestVertex>>(null));
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
@@ -140,17 +142,16 @@ namespace QuikGraph.Tests.Extensions
             var edge36 = new Edge<int>(3, 6);
 
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[]
-            {
+            graph.AddVerticesAndEdgeRange([
                 edge12, edge13, edge23, edge24, edge35, edge36
-            });
+            ]);
             graph.AddVertex(7);
 
             TryFunc<int, IEnumerable<Edge<int>>> pathAccessor = graph.TreeBreadthFirstSearch(1);
 
-            Assert.IsFalse(pathAccessor(7, out _));
+            Assert.That(pathAccessor(7, out _), Is.False);
 
-            Assert.IsTrue(pathAccessor(5, out IEnumerable<Edge<int>> path));
+            Assert.That(pathAccessor(5, out IEnumerable<Edge<int>> path), Is.True);
             CollectionAssert.AreEqual(new[] { edge13, edge35 }, path);
         }
 
@@ -162,11 +163,11 @@ namespace QuikGraph.Tests.Extensions
             var vertex = new TestVertex("1");
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).TreeBreadthFirstSearch(vertex));
+            Assert.Throws<ArgumentNullException>(() =>
+                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).TreeBreadthFirstSearch(vertex));
             Assert.Throws<ArgumentNullException>(() => graph.TreeBreadthFirstSearch(null));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).TreeBreadthFirstSearch(null));
+            Assert.Throws<ArgumentNullException>(() =>
+                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).TreeBreadthFirstSearch(null));
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
@@ -182,17 +183,16 @@ namespace QuikGraph.Tests.Extensions
             var edge36 = new Edge<int>(3, 6);
 
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[]
-            {
+            graph.AddVerticesAndEdgeRange([
                 edge12, edge13, edge23, edge24, edge35, edge36
-            });
+            ]);
             graph.AddVertex(7);
 
             TryFunc<int, IEnumerable<Edge<int>>> pathAccessor = graph.TreeDepthFirstSearch(1);
 
-            Assert.IsFalse(pathAccessor(7, out _));
+            Assert.That(pathAccessor(7, out _), Is.False);
 
-            Assert.IsTrue(pathAccessor(5, out IEnumerable<Edge<int>> path));
+            Assert.That(pathAccessor(5, out IEnumerable<Edge<int>> path), Is.True);
             CollectionAssert.AreEqual(new[] { edge12, edge23, edge35 }, path);
         }
 
@@ -204,11 +204,11 @@ namespace QuikGraph.Tests.Extensions
             var vertex = new TestVertex("1");
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).TreeDepthFirstSearch(vertex));
+            Assert.Throws<ArgumentNullException>(() =>
+                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).TreeDepthFirstSearch(vertex));
             Assert.Throws<ArgumentNullException>(() => graph.TreeDepthFirstSearch(null));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).TreeDepthFirstSearch(null));
+            Assert.Throws<ArgumentNullException>(() =>
+                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).TreeDepthFirstSearch(null));
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
@@ -233,17 +233,16 @@ namespace QuikGraph.Tests.Extensions
             var edge15 = new Edge<int>(6, 3);
 
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[]
-            {
+            graph.AddVerticesAndEdgeRange([
                 edge1, edge2, edge3, edge4, edge5, edge6,
                 edge7, edge8, edge9, edge10, edge11,
                 edge12, edge13, edge14, edge15
-            });
+            ]);
             graph.AddVertex(7);
 
             TryFunc<int, IEnumerable<Edge<int>>> pathAccessor = graph.TreeCyclePoppingRandom(2);
 
-            Assert.IsFalse(pathAccessor(7, out _));
+            Assert.That(pathAccessor(7, out _), Is.False);
 
             // Would require more tests...
         }
@@ -257,23 +256,23 @@ namespace QuikGraph.Tests.Extensions
             var chain = new NormalizedMarkovEdgeChain<TestVertex, Edge<TestVertex>>();
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).TreeCyclePoppingRandom(vertex));
+            Assert.Throws<ArgumentNullException>(() =>
+                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).TreeCyclePoppingRandom(vertex));
             Assert.Throws<ArgumentNullException>(() => graph.TreeCyclePoppingRandom(null));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).TreeCyclePoppingRandom(null));
+            Assert.Throws<ArgumentNullException>(() =>
+                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).TreeCyclePoppingRandom(null));
 
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).TreeCyclePoppingRandom(vertex, chain));
+            Assert.Throws<ArgumentNullException>(() =>
+                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).TreeCyclePoppingRandom(vertex, chain));
             Assert.Throws<ArgumentNullException>(() => graph.TreeCyclePoppingRandom(null, chain));
             Assert.Throws<ArgumentNullException>(() => graph.TreeCyclePoppingRandom(vertex, null));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).TreeCyclePoppingRandom(null, chain));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).TreeCyclePoppingRandom(vertex, null));
+            Assert.Throws<ArgumentNullException>(() =>
+                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).TreeCyclePoppingRandom(null, chain));
+            Assert.Throws<ArgumentNullException>(() =>
+                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).TreeCyclePoppingRandom(vertex, null));
             Assert.Throws<ArgumentNullException>(() => graph.TreeCyclePoppingRandom(null, null));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).TreeCyclePoppingRandom(null, null));
+            Assert.Throws<ArgumentNullException>(() =>
+                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).TreeCyclePoppingRandom(null, null));
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
@@ -299,20 +298,19 @@ namespace QuikGraph.Tests.Extensions
             var edge109 = new Edge<int>(10, 9);
 
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[]
-            {
+            graph.AddVerticesAndEdgeRange([
                 edge12, edge13, edge18, edge24, edge25,
                 edge26, edge34, edge45, edge46, edge56,
                 edge67, edge810, edge95, edge109
-            });
+            ]);
 
-            TryFunc<int, IEnumerable<Edge<int>>>[] algorithmResults = 
-            {
+            TryFunc<int, IEnumerable<Edge<int>>>[] algorithmResults =
+            [
                 graph.ShortestPathsDijkstra(_ => 1.0, 2),
                 graph.ShortestPathsAStar(_ => 1.0, _ => 1.0, 2),
                 graph.ShortestPathsBellmanFord(_ => 1.0, 2, out _),
                 graph.ShortestPathsDag(_ => 1.0, 2)
-            };
+            ];
 
             foreach (TryFunc<int, IEnumerable<Edge<int>>> result in algorithmResults)
             {
@@ -323,14 +321,14 @@ namespace QuikGraph.Tests.Extensions
 
             void CheckResult(TryFunc<int, IEnumerable<Edge<int>>> pathAccessor)
             {
-                Assert.IsNotNull(pathAccessor);
+                Assert.That(pathAccessor, Is.Not.Null);
 
-                Assert.IsFalse(pathAccessor(1, out _));
+                Assert.That(pathAccessor(1, out _), Is.False);
 
-                Assert.IsTrue(pathAccessor(7, out IEnumerable<Edge<int>> path));
+                Assert.That(pathAccessor(7, out IEnumerable<Edge<int>> path), Is.True);
                 CollectionAssert.AreEqual(new[] { edge26, edge67 }, path);
 
-                Assert.IsTrue(pathAccessor(4, out path));
+                Assert.That(pathAccessor(4, out path), Is.True);
                 CollectionAssert.AreEqual(new[] { edge24 }, path);
             }
 
@@ -343,12 +341,11 @@ namespace QuikGraph.Tests.Extensions
             var edge12 = new Edge<int>(1, 2);
             var edge24 = new Edge<int>(2, 4);
             var edge41 = new Edge<int>(4, 1);
-            
+
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[]
-            {
+            graph.AddVerticesAndEdgeRange([
                 edge12, edge24, edge41
-            });
+            ]);
 
             TryFunc<int, IEnumerable<Edge<int>>> pathAccessor = graph.ShortestPathsBellmanFord(
                 edge =>
@@ -363,8 +360,8 @@ namespace QuikGraph.Tests.Extensions
                 },
                 1,
                 out bool foundNegativeCycle);
-            Assert.IsNotNull(pathAccessor);
-            Assert.IsTrue(foundNegativeCycle);
+            Assert.That(pathAccessor, Is.Not.Null);
+            Assert.That(foundNegativeCycle, Is.True);
 
             // Path accessors is usable but will generate a stack overflow
             // if accessing path using edge in the negative cycle.
@@ -378,12 +375,12 @@ namespace QuikGraph.Tests.Extensions
             var vertex = new TestVertex("1");
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsDijkstra(_ => 1.0, vertex));
+            Assert.Throws<ArgumentNullException>(() =>
+                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsDijkstra(_ => 1.0, vertex));
             Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsDijkstra(null, vertex));
             Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsDijkstra(_ => 1.0, null));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsDijkstra(null, vertex));
+            Assert.Throws<ArgumentNullException>(() =>
+                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsDijkstra(null, vertex));
             Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsDijkstra(null, null));
             Assert.Throws<ArgumentNullException>(() =>
                 ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsDijkstra(_ => 1.0, null));
@@ -401,17 +398,21 @@ namespace QuikGraph.Tests.Extensions
             var vertex = new TestVertex("1");
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsAStar(_ => 1.0, _ => 1.0, vertex));
+            Assert.Throws<ArgumentNullException>(() =>
+                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsAStar(_ => 1.0, _ => 1.0,
+                    vertex));
             Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsAStar(null, _ => 1.0, vertex));
             Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsAStar(_ => 1.0, null, vertex));
             Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsAStar(_ => 1.0, _ => 1.0, null));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsAStar(null, _ => 1.0, vertex));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsAStar(_ => 1.0, null, vertex));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsAStar(_ => 1.0, _ => 1.0, null));
+            Assert.Throws<ArgumentNullException>(() =>
+                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null)
+                .ShortestPathsAStar(null, _ => 1.0, vertex));
+            Assert.Throws<ArgumentNullException>(() =>
+                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null)
+                .ShortestPathsAStar(_ => 1.0, null, vertex));
+            Assert.Throws<ArgumentNullException>(() =>
+                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsAStar(_ => 1.0, _ => 1.0,
+                    null));
             Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsAStar(null, null, vertex));
             Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsAStar(null, _ => 1.0, null));
             Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsAStar(_ => 1.0, null, null));
@@ -436,17 +437,21 @@ namespace QuikGraph.Tests.Extensions
             var vertex = new TestVertex("1");
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsBellmanFord(_ => 1.0, vertex, out _));
+            Assert.Throws<ArgumentNullException>(() =>
+                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsBellmanFord(_ => 1.0, vertex,
+                    out _));
             Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsBellmanFord(null, vertex, out _));
             Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsBellmanFord(_ => 1.0, null, out _));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsBellmanFord(null, vertex, out _));
+            Assert.Throws<ArgumentNullException>(() =>
+                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsBellmanFord(null, vertex,
+                    out _));
             Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsBellmanFord(null, null, out _));
             Assert.Throws<ArgumentNullException>(() =>
-                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsBellmanFord(_ => 1.0, null, out _));
+                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsBellmanFord(_ => 1.0, null,
+                    out _));
             Assert.Throws<ArgumentNullException>(() =>
-                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsBellmanFord(null, null, out _));
+                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsBellmanFord(null, null,
+                    out _));
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
@@ -459,14 +464,14 @@ namespace QuikGraph.Tests.Extensions
             var vertex = new TestVertex("1");
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsDag(_ => 1.0, vertex));
+            Assert.Throws<ArgumentNullException>(() =>
+                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsDag(_ => 1.0, vertex));
             Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsDag(null, vertex));
             Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsDag(_ => 1.0, null));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsDag(null, vertex));
+            Assert.Throws<ArgumentNullException>(() =>
+                ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsDag(null, vertex));
             Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsDag(null, null));
-            Assert.Throws<ArgumentNullException>(() => 
+            Assert.Throws<ArgumentNullException>(() =>
                 ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsDag(_ => 1.0, null));
             Assert.Throws<ArgumentNullException>(() =>
                 ((IVertexAndEdgeListGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsDag(null, null));
@@ -487,22 +492,21 @@ namespace QuikGraph.Tests.Extensions
             var edge810 = new Edge<int>(8, 10);
 
             var graph = new UndirectedGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[]
-            {
+            graph.AddVerticesAndEdgeRange([
                 edge12, edge13, edge18, edge45,
                 edge46, edge56, edge67, edge810
-            });
+            ]);
             graph.AddVertex(9);
 
             TryFunc<int, IEnumerable<Edge<int>>> pathAccessor = graph.ShortestPathsDijkstra(_ => 1.0, 2);
-            Assert.IsNotNull(pathAccessor);
+            Assert.That(pathAccessor, Is.Not.Null);
 
-            Assert.IsFalse(pathAccessor(9, out _));
+            Assert.That(pathAccessor(9, out _), Is.False);
 
-            Assert.IsTrue(pathAccessor(8, out IEnumerable<Edge<int>> path));
+            Assert.That(pathAccessor(8, out IEnumerable<Edge<int>> path), Is.True);
             CollectionAssert.AreEqual(new[] { edge12, edge18 }, path);
 
-            Assert.IsTrue(pathAccessor(1, out path));
+            Assert.That(pathAccessor(1, out path), Is.True);
             CollectionAssert.AreEqual(new[] { edge12 }, path);
         }
 
@@ -514,12 +518,12 @@ namespace QuikGraph.Tests.Extensions
             var vertex = new TestVertex("1");
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(
-                () => ((IUndirectedGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsDijkstra(_ => 1.0, vertex));
+            Assert.Throws<ArgumentNullException>(() =>
+                ((IUndirectedGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsDijkstra(_ => 1.0, vertex));
             Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsDijkstra(null, vertex));
             Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsDijkstra(_ => 1.0, null));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IUndirectedGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsDijkstra(null, vertex));
+            Assert.Throws<ArgumentNullException>(() =>
+                ((IUndirectedGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsDijkstra(null, vertex));
             Assert.Throws<ArgumentNullException>(() => graph.ShortestPathsDijkstra(null, null));
             Assert.Throws<ArgumentNullException>(() =>
                 ((IUndirectedGraph<TestVertex, Edge<TestVertex>>)null).ShortestPathsDijkstra(_ => 1.0, null));
@@ -554,33 +558,25 @@ namespace QuikGraph.Tests.Extensions
             var edge109 = new Edge<int>(10, 9);
 
             var graph = new BidirectionalGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[]
-            {
+            graph.AddVerticesAndEdgeRange([
                 edge12, edge13, edge18, edge21, edge24,
                 edge25, edge26, edge33, edge34, edge45,
                 edge46, edge56, edge67, edge810, edge95,
                 edge109
-            });
+            ]);
 
             IEnumerable<IEnumerable<Edge<int>>> paths = graph.RankedShortestPathHoffmanPavley(_ => 1.0, 1, 5, 5);
             CollectionAssert.AreEqual(
                 new[]
                 {
-                    new[] { edge12, edge25 },
-                    new[] { edge13, edge34, edge45 },
-                    new[] { edge12, edge24, edge45 },
+                    new[] { edge12, edge25 }, new[] { edge13, edge34, edge45 }, new[] { edge12, edge24, edge45 },
                     new[] { edge18, edge810, edge109, edge95 }
                 },
                 paths);
 
             paths = graph.RankedShortestPathHoffmanPavley(_ => 1.0, 1, 5);
             CollectionAssert.AreEqual(
-                new[]
-                {
-                    new[] { edge12, edge25 },
-                    new[] { edge13, edge34, edge45 },
-                    new[] { edge12, edge24, edge45 }
-                },
+                new[] { new[] { edge12, edge25 }, new[] { edge13, edge34, edge45 }, new[] { edge12, edge24, edge45 } },
                 paths);
         }
 
@@ -592,49 +588,55 @@ namespace QuikGraph.Tests.Extensions
             var vertex = new TestVertex("1");
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(
-                () => ((IBidirectionalGraph<TestVertex, Edge<TestVertex>>)null).RankedShortestPathHoffmanPavley(_ => 1.0, vertex, vertex, int.MaxValue));
-            Assert.Throws<ArgumentNullException>(
-                () => graph.RankedShortestPathHoffmanPavley(null, vertex, vertex, int.MaxValue));
-            Assert.Throws<ArgumentNullException>(
-                () => graph.RankedShortestPathHoffmanPavley(_ => 1.0, null, vertex, int.MaxValue));
-            Assert.Throws<ArgumentNullException>(
-                () => graph.RankedShortestPathHoffmanPavley(_ => 1.0, vertex, null, int.MaxValue));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IBidirectionalGraph<TestVertex, Edge<TestVertex>>)null).RankedShortestPathHoffmanPavley(null, vertex, vertex, int.MaxValue));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IBidirectionalGraph<TestVertex, Edge<TestVertex>>)null).RankedShortestPathHoffmanPavley(_ => 1.0, null, vertex, int.MaxValue));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IBidirectionalGraph<TestVertex, Edge<TestVertex>>)null).RankedShortestPathHoffmanPavley(_ => 1.0, vertex, null, int.MaxValue));
-            Assert.Throws<ArgumentNullException>(
-                () => graph.RankedShortestPathHoffmanPavley(null, null, vertex, int.MaxValue));
-            Assert.Throws<ArgumentNullException>(
-                () => graph.RankedShortestPathHoffmanPavley(null, vertex, null, int.MaxValue));
-            Assert.Throws<ArgumentNullException>(
-                () => graph.RankedShortestPathHoffmanPavley(_ => 1.0, null, null, int.MaxValue));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IBidirectionalGraph<TestVertex, Edge<TestVertex>>)null).RankedShortestPathHoffmanPavley(null, null, vertex, int.MaxValue));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IBidirectionalGraph<TestVertex, Edge<TestVertex>>)null).RankedShortestPathHoffmanPavley(null, vertex, null, int.MaxValue));
-            Assert.Throws<ArgumentNullException>(
-                () => graph.RankedShortestPathHoffmanPavley(null, null, null, int.MaxValue));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IBidirectionalGraph<TestVertex, Edge<TestVertex>>)null).RankedShortestPathHoffmanPavley(null, null, null, int.MaxValue));
+            Assert.Throws<ArgumentNullException>(() =>
+                ((IBidirectionalGraph<TestVertex, Edge<TestVertex>>)null).RankedShortestPathHoffmanPavley(_ => 1.0,
+                    vertex, vertex, int.MaxValue));
+            Assert.Throws<ArgumentNullException>(() =>
+                graph.RankedShortestPathHoffmanPavley(null, vertex, vertex, int.MaxValue));
+            Assert.Throws<ArgumentNullException>(() =>
+                graph.RankedShortestPathHoffmanPavley(_ => 1.0, null, vertex, int.MaxValue));
+            Assert.Throws<ArgumentNullException>(() =>
+                graph.RankedShortestPathHoffmanPavley(_ => 1.0, vertex, null, int.MaxValue));
+            Assert.Throws<ArgumentNullException>(() =>
+                ((IBidirectionalGraph<TestVertex, Edge<TestVertex>>)null).RankedShortestPathHoffmanPavley(null, vertex,
+                    vertex, int.MaxValue));
+            Assert.Throws<ArgumentNullException>(() =>
+                ((IBidirectionalGraph<TestVertex, Edge<TestVertex>>)null).RankedShortestPathHoffmanPavley(_ => 1.0,
+                    null, vertex, int.MaxValue));
+            Assert.Throws<ArgumentNullException>(() =>
+                ((IBidirectionalGraph<TestVertex, Edge<TestVertex>>)null).RankedShortestPathHoffmanPavley(_ => 1.0,
+                    vertex, null, int.MaxValue));
+            Assert.Throws<ArgumentNullException>(() =>
+                graph.RankedShortestPathHoffmanPavley(null, null, vertex, int.MaxValue));
+            Assert.Throws<ArgumentNullException>(() =>
+                graph.RankedShortestPathHoffmanPavley(null, vertex, null, int.MaxValue));
+            Assert.Throws<ArgumentNullException>(() =>
+                graph.RankedShortestPathHoffmanPavley(_ => 1.0, null, null, int.MaxValue));
+            Assert.Throws<ArgumentNullException>(() =>
+                ((IBidirectionalGraph<TestVertex, Edge<TestVertex>>)null).RankedShortestPathHoffmanPavley(null, null,
+                    vertex, int.MaxValue));
+            Assert.Throws<ArgumentNullException>(() =>
+                ((IBidirectionalGraph<TestVertex, Edge<TestVertex>>)null).RankedShortestPathHoffmanPavley(null, vertex,
+                    null, int.MaxValue));
+            Assert.Throws<ArgumentNullException>(() =>
+                graph.RankedShortestPathHoffmanPavley(null, null, null, int.MaxValue));
+            Assert.Throws<ArgumentNullException>(() =>
+                ((IBidirectionalGraph<TestVertex, Edge<TestVertex>>)null).RankedShortestPathHoffmanPavley(null, null,
+                    null, int.MaxValue));
             // ReSharper restore AssignNullToNotNullAttribute
 
-            Assert.Throws<ArgumentOutOfRangeException>(
-                () => graph.RankedShortestPathHoffmanPavley(_ => 1.0, vertex, vertex, 0));
-            Assert.Throws<ArgumentOutOfRangeException>(
-                () => graph.RankedShortestPathHoffmanPavley(_ => 1.0, vertex, vertex, -1));
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+                graph.RankedShortestPathHoffmanPavley(_ => 1.0, vertex, vertex, 0));
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+                graph.RankedShortestPathHoffmanPavley(_ => 1.0, vertex, vertex, -1));
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
         #endregion
 
         [Pure]
-        [NotNull, ItemNotNull]
         private static IEnumerable<TestCaseData> CreateSinksTestCases(
-            [NotNull, InstantHandle] Func<IMutableVertexAndEdgeSet<int, Edge<int>>> createGraph)
+            Func<IMutableVertexAndEdgeSet<int, Edge<int>>> createGraph)
         {
             yield return new TestCaseData(
                 createGraph(),
@@ -652,55 +654,49 @@ namespace QuikGraph.Tests.Extensions
             var edge46 = new Edge<int>(4, 6);
 
             IMutableVertexAndEdgeSet<int, Edge<int>> cycleGraph = createGraph();
-            cycleGraph.AddVerticesAndEdgeRange(new[]
-            {
+            cycleGraph.AddVerticesAndEdgeRange([
                 edge12, edge24, edge41
-            });
+            ]);
             yield return new TestCaseData(
                 cycleGraph,
                 Enumerable.Empty<int>());
 
             IMutableVertexAndEdgeSet<int, Edge<int>> cycleGraph2 = createGraph();
-            cycleGraph2.AddVerticesAndEdgeRange(new[]
-            {
+            cycleGraph2.AddVerticesAndEdgeRange([
                 edge12, edge24, edge25, edge35, edge41, edge22
-            });
+            ]);
             yield return new TestCaseData(
                 cycleGraph2,
                 new[] { 5 });
 
             IMutableVertexAndEdgeSet<int, Edge<int>> graph1 = createGraph();
-            graph1.AddVerticesAndEdgeRange(new[]
-            {
+            graph1.AddVerticesAndEdgeRange([
                 edge22
-            });
+            ]);
             yield return new TestCaseData(
                 graph1,
                 Enumerable.Empty<int>());
 
             IMutableVertexAndEdgeSet<int, Edge<int>> graph2 = createGraph();
-            graph2.AddVerticesAndEdgeRange(new[]
-            {
+            graph2.AddVerticesAndEdgeRange([
                 edge12, edge14, edge23, edge24, edge35, edge45
-            });
+            ]);
             yield return new TestCaseData(
                 graph2,
                 new[] { 5 });
 
             IMutableVertexAndEdgeSet<int, Edge<int>> graph3 = createGraph();
-            graph3.AddVerticesAndEdgeRange(new[]
-            {
+            graph3.AddVerticesAndEdgeRange([
                 edge12, edge14, edge24, edge35, edge45, edge46
-            });
+            ]);
             yield return new TestCaseData(
                 graph3,
                 new[] { 5, 6 });
         }
 
-        [NotNull, ItemNotNull]
+
         private static IEnumerable<TestCaseData> SinksTestCases
         {
-            [UsedImplicitly]
             get
             {
                 IEnumerable<TestCaseData> testCases = CreateSinksTestCases(() => new AdjacencyGraph<int, Edge<int>>())
@@ -714,8 +710,8 @@ namespace QuikGraph.Tests.Extensions
 
         [TestCaseSource(nameof(SinksTestCases))]
         public void Sinks(
-            [NotNull] IVertexListGraph<int, Edge<int>> graph,
-            [NotNull] IEnumerable<int> expectedSinks)
+            IVertexListGraph<int, Edge<int>> graph,
+            IEnumerable<int> expectedSinks)
         {
             CollectionAssert.AreEquivalent(expectedSinks, graph.Sinks());
         }
@@ -725,14 +721,12 @@ namespace QuikGraph.Tests.Extensions
         {
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexListGraph<int, Edge<int>>)null).Sinks().ToArray());
+            Assert.Throws<ArgumentNullException>(() => ((IVertexListGraph<int, Edge<int>>)null).Sinks().ToArray());
         }
 
         [Pure]
-        [NotNull, ItemNotNull]
         private static IEnumerable<TestCaseData> CreateRootsTestCases(
-            [NotNull, InstantHandle] Func<IMutableVertexAndEdgeSet<int, Edge<int>>> createGraph)
+            Func<IMutableVertexAndEdgeSet<int, Edge<int>>> createGraph)
         {
             yield return new TestCaseData(
                 createGraph(),
@@ -750,55 +744,49 @@ namespace QuikGraph.Tests.Extensions
             var edge46 = new Edge<int>(4, 6);
 
             IMutableVertexAndEdgeSet<int, Edge<int>> cycleGraph = createGraph();
-            cycleGraph.AddVerticesAndEdgeRange(new[]
-            {
+            cycleGraph.AddVerticesAndEdgeRange([
                 edge12, edge24, edge41
-            });
+            ]);
             yield return new TestCaseData(
                 cycleGraph,
                 Enumerable.Empty<int>());
 
             IMutableVertexAndEdgeSet<int, Edge<int>> cycleGraph2 = createGraph();
-            cycleGraph2.AddVerticesAndEdgeRange(new[]
-            {
+            cycleGraph2.AddVerticesAndEdgeRange([
                 edge12, edge24, edge25, edge35, edge41, edge22
-            });
+            ]);
             yield return new TestCaseData(
                 cycleGraph2,
                 new[] { 3 });
 
             IMutableVertexAndEdgeSet<int, Edge<int>> graph1 = createGraph();
-            graph1.AddVerticesAndEdgeRange(new[]
-            {
+            graph1.AddVerticesAndEdgeRange([
                 edge22
-            });
+            ]);
             yield return new TestCaseData(
                 graph1,
                 Enumerable.Empty<int>());
 
             IMutableVertexAndEdgeSet<int, Edge<int>> graph2 = createGraph();
-            graph2.AddVerticesAndEdgeRange(new[]
-            {
+            graph2.AddVerticesAndEdgeRange([
                 edge12, edge14, edge23, edge24, edge35, edge45
-            });
+            ]);
             yield return new TestCaseData(
                 graph2,
                 new[] { 1 });
 
             IMutableVertexAndEdgeSet<int, Edge<int>> graph3 = createGraph();
-            graph3.AddVerticesAndEdgeRange(new[]
-            {
+            graph3.AddVerticesAndEdgeRange([
                 edge12, edge14, edge24, edge35, edge45, edge46
-            });
+            ]);
             yield return new TestCaseData(
                 graph3,
                 new[] { 1, 3 });
         }
 
-        [NotNull, ItemNotNull]
+
         private static IEnumerable<TestCaseData> RootsTestCases
         {
-            [UsedImplicitly]
             get
             {
                 return CreateRootsTestCases(() => new AdjacencyGraph<int, Edge<int>>());
@@ -807,8 +795,8 @@ namespace QuikGraph.Tests.Extensions
 
         [TestCaseSource(nameof(RootsTestCases))]
         public void Roots_NotBidirectional(
-            [NotNull] IVertexListGraph<int, Edge<int>> graph,
-            [NotNull] IEnumerable<int> expectedRoots)
+            IVertexListGraph<int, Edge<int>> graph,
+            IEnumerable<int> expectedRoots)
         {
             CollectionAssert.AreEquivalent(expectedRoots, graph.Roots());
         }
@@ -825,16 +813,15 @@ namespace QuikGraph.Tests.Extensions
             {
                 var roots = new HashSet<T>(graph.Roots());
                 foreach (Edge<T> edge in graph.Edges)
-                    Assert.IsFalse(roots.Contains(edge.Target));
+                    Assert.That(roots.Contains(edge.Target), Is.False);
             }
 
             #endregion
         }
 
-        [NotNull, ItemNotNull]
+
         private static IEnumerable<TestCaseData> BidirectionalRootsTestCases
         {
-            [UsedImplicitly]
             get
             {
                 return CreateRootsTestCases(() => new BidirectionalGraph<int, Edge<int>>());
@@ -843,8 +830,8 @@ namespace QuikGraph.Tests.Extensions
 
         [TestCaseSource(nameof(BidirectionalRootsTestCases))]
         public void Roots_Bidirectional(
-            [NotNull] IBidirectionalGraph<int, Edge<int>> graph,
-            [NotNull] IEnumerable<int> expectedRoots)
+            IBidirectionalGraph<int, Edge<int>> graph,
+            IEnumerable<int> expectedRoots)
         {
             CollectionAssert.AreEquivalent(expectedRoots, graph.Roots());
         }
@@ -854,18 +841,15 @@ namespace QuikGraph.Tests.Extensions
         {
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexListGraph<int, Edge<int>>)null).Roots().ToArray());
-            Assert.Throws<ArgumentNullException>(
-                () => ((IBidirectionalGraph<int, Edge<int>>)null).Roots().ToArray());
+            Assert.Throws<ArgumentNullException>(() => ((IVertexListGraph<int, Edge<int>>)null).Roots().ToArray());
+            Assert.Throws<ArgumentNullException>(() => ((IBidirectionalGraph<int, Edge<int>>)null).Roots().ToArray());
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
-        [NotNull, ItemNotNull]
+
         private static IEnumerable<TestCaseData> IsolatedVerticesTestCases
         {
-            [UsedImplicitly]
             get
             {
                 yield return new TestCaseData(
@@ -885,57 +869,51 @@ namespace QuikGraph.Tests.Extensions
                 var edge46 = new Edge<int>(4, 6);
 
                 var cycleGraph = new BidirectionalGraph<int, Edge<int>>();
-                cycleGraph.AddVerticesAndEdgeRange(new[]
-                {
+                cycleGraph.AddVerticesAndEdgeRange([
                     edge12, edge24, edge41
-                });
+                ]);
                 yield return new TestCaseData(
                     cycleGraph,
                     Enumerable.Empty<int>());
 
                 var cycleGraph2 = new BidirectionalGraph<int, Edge<int>>();
-                cycleGraph2.AddVerticesAndEdgeRange(new[]
-                {
+                cycleGraph2.AddVerticesAndEdgeRange([
                     edge12, edge24, edge41, edge22
-                });
+                ]);
                 yield return new TestCaseData(
                     cycleGraph2,
                     Enumerable.Empty<int>());
 
                 var cycleGraph3 = new BidirectionalGraph<int, Edge<int>>();
-                cycleGraph3.AddVerticesAndEdgeRange(new[]
-                {
+                cycleGraph3.AddVerticesAndEdgeRange([
                     edge22
-                });
+                ]);
                 yield return new TestCaseData(
                     cycleGraph3,
                     Enumerable.Empty<int>());
 
                 var cycleGraph4 = new BidirectionalGraph<int, Edge<int>>();
-                cycleGraph4.AddVerticesAndEdgeRange(new[]
-                {
+                cycleGraph4.AddVerticesAndEdgeRange([
                     edge12, edge22, edge24, edge41
-                });
+                ]);
                 cycleGraph4.AddVertex(5);
                 yield return new TestCaseData(
                     cycleGraph4,
                     new[] { 5 });
 
                 var graph1 = new BidirectionalGraph<int, Edge<int>>();
-                graph1.AddVertexRange(new[] { 4, 5 });
-                graph1.AddVerticesAndEdgeRange(new[]
-                {
+                graph1.AddVertexRange([4, 5]);
+                graph1.AddVerticesAndEdgeRange([
                     edge12, edge23, edge26, edge36
-                });
+                ]);
                 yield return new TestCaseData(
                     graph1,
                     new[] { 4, 5 });
 
                 var graph2 = new BidirectionalGraph<int, Edge<int>>();
-                graph2.AddVerticesAndEdgeRange(new[]
-                {
+                graph2.AddVerticesAndEdgeRange([
                     edge12, edge14, edge23, edge24, edge26, edge35, edge45, edge46
-                });
+                ]);
                 yield return new TestCaseData(
                     graph2,
                     Enumerable.Empty<int>());
@@ -944,8 +922,8 @@ namespace QuikGraph.Tests.Extensions
 
         [TestCaseSource(nameof(IsolatedVerticesTestCases))]
         public void IsolatedVertices(
-            [NotNull] IBidirectionalGraph<int, Edge<int>> graph,
-            [NotNull] IEnumerable<int> expectedIsolatedVertices)
+            IBidirectionalGraph<int, Edge<int>> graph,
+            IEnumerable<int> expectedIsolatedVertices)
         {
             CollectionAssert.AreEquivalent(expectedIsolatedVertices, graph.IsolatedVertices());
         }
@@ -955,8 +933,7 @@ namespace QuikGraph.Tests.Extensions
         {
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(
-                () => ((BidirectionalGraph<int, Edge<int>>)null).IsolatedVertices());
+            Assert.Throws<ArgumentNullException>(() => ((BidirectionalGraph<int, Edge<int>>)null).IsolatedVertices());
         }
 
         #region Topological sort
@@ -965,8 +942,7 @@ namespace QuikGraph.Tests.Extensions
         public void TopologicalSort()
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[]
-            {
+            graph.AddVerticesAndEdgeRange([
                 new Edge<int>(1, 2),
                 new Edge<int>(2, 4),
                 new Edge<int>(3, 1),
@@ -974,7 +950,7 @@ namespace QuikGraph.Tests.Extensions
                 new Edge<int>(5, 7),
                 new Edge<int>(6, 3),
                 new Edge<int>(6, 7)
-            });
+            ]);
 
             CollectionAssert.AreEqual(
                 new[] { 6, 3, 5, 7, 1, 2, 4 },
@@ -985,15 +961,14 @@ namespace QuikGraph.Tests.Extensions
         public void TopologicalSort_Undirected()
         {
             var graph = new UndirectedGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[]
-            {
+            graph.AddVerticesAndEdgeRange([
                 new Edge<int>(1, 2),
                 new Edge<int>(2, 4),
                 new Edge<int>(3, 1),
                 new Edge<int>(3, 5),
                 new Edge<int>(5, 7),
                 new Edge<int>(6, 7)
-            });
+            ]);
 
             CollectionAssert.AreEqual(
                 new[] { 1, 3, 5, 7, 6, 2, 4 },
@@ -1005,11 +980,9 @@ namespace QuikGraph.Tests.Extensions
         {
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.TopologicalSort((IVertexListGraph<int, Edge<int>>) null));
+            Assert.Throws<ArgumentNullException>(() => ((IVertexListGraph<int, Edge<int>>)null).TopologicalSort());
 
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.TopologicalSort((IUndirectedGraph<int, Edge<int>>)null));
+            Assert.Throws<ArgumentNullException>(() => ((IUndirectedGraph<int, Edge<int>>)null).TopologicalSort());
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
@@ -1018,8 +991,7 @@ namespace QuikGraph.Tests.Extensions
         public void SourceFirstTopologicalSort()
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[]
-            {
+            graph.AddVerticesAndEdgeRange([
                 new Edge<int>(1, 2),
                 new Edge<int>(2, 4),
                 new Edge<int>(3, 1),
@@ -1027,7 +999,7 @@ namespace QuikGraph.Tests.Extensions
                 new Edge<int>(5, 7),
                 new Edge<int>(6, 3),
                 new Edge<int>(6, 7)
-            });
+            ]);
 
             CollectionAssert.AreEqual(
                 new[] { 6, 3, 1, 5, 2, 7, 4 },
@@ -1038,15 +1010,14 @@ namespace QuikGraph.Tests.Extensions
         public void SourceFirstTopologicalSort_Undirected()
         {
             var graph = new UndirectedGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[]
-            {
+            graph.AddVerticesAndEdgeRange([
                 new Edge<int>(1, 2),
                 new Edge<int>(2, 4),
                 new Edge<int>(3, 1),
                 new Edge<int>(3, 5),
                 new Edge<int>(5, 7),
                 new Edge<int>(6, 7)
-            });
+            ]);
 
             CollectionAssert.AreEqual(
                 new[] { 4, 6, 2, 7, 1, 5, 3 },
@@ -1058,11 +1029,11 @@ namespace QuikGraph.Tests.Extensions
         {
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.SourceFirstTopologicalSort((IVertexAndEdgeListGraph<int, Edge<int>>)null));
+            Assert.Throws<ArgumentNullException>(() =>
+                ((IVertexAndEdgeListGraph<int, Edge<int>>)null).SourceFirstTopologicalSort());
 
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.SourceFirstTopologicalSort((IUndirectedGraph<int, Edge<int>>)null));
+            Assert.Throws<ArgumentNullException>(() =>
+                ((IUndirectedGraph<int, Edge<int>>)null).SourceFirstTopologicalSort());
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
@@ -1071,8 +1042,7 @@ namespace QuikGraph.Tests.Extensions
         public void SourceFirstBidirectionalTopologicalSort()
         {
             var graph = new BidirectionalGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[]
-            {
+            graph.AddVerticesAndEdgeRange([
                 new Edge<int>(1, 2),
                 new Edge<int>(2, 4),
                 new Edge<int>(3, 1),
@@ -1080,7 +1050,7 @@ namespace QuikGraph.Tests.Extensions
                 new Edge<int>(5, 7),
                 new Edge<int>(6, 3),
                 new Edge<int>(6, 7)
-            });
+            ]);
 
             CollectionAssert.AreEqual(
                 new[] { 6, 3, 1, 5, 2, 7, 4 },
@@ -1100,13 +1070,15 @@ namespace QuikGraph.Tests.Extensions
         {
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.SourceFirstBidirectionalTopologicalSort((IBidirectionalGraph<int, Edge<int>>)null));
+            Assert.Throws<ArgumentNullException>(() =>
+                ((IBidirectionalGraph<int, Edge<int>>)null).SourceFirstBidirectionalTopologicalSort());
 
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.SourceFirstBidirectionalTopologicalSort((IBidirectionalGraph<int, Edge<int>>)null, TopologicalSortDirection.Forward));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.SourceFirstBidirectionalTopologicalSort((IBidirectionalGraph<int, Edge<int>>)null, TopologicalSortDirection.Backward));
+            Assert.Throws<ArgumentNullException>(() =>
+                ((IBidirectionalGraph<int, Edge<int>>)null).SourceFirstBidirectionalTopologicalSort(
+                    TopologicalSortDirection.Forward));
+            Assert.Throws<ArgumentNullException>(() =>
+                ((IBidirectionalGraph<int, Edge<int>>)null).SourceFirstBidirectionalTopologicalSort(
+                    TopologicalSortDirection.Backward));
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
@@ -1119,8 +1091,7 @@ namespace QuikGraph.Tests.Extensions
         public void ConnectedComponents()
         {
             var graph = new UndirectedGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[]
-            {
+            graph.AddVerticesAndEdgeRange([
                 new Edge<int>(1, 2),
                 new Edge<int>(1, 4),
                 new Edge<int>(2, 3),
@@ -1131,11 +1102,11 @@ namespace QuikGraph.Tests.Extensions
                 new Edge<int>(7, 5),
 
                 new Edge<int>(8, 9)
-            });
+            ]);
 
             var components = new Dictionary<int, int>();
 
-            Assert.AreEqual(2, graph.ConnectedComponents(components));
+            Assert.That(2, Is.EqualTo(graph.ConnectedComponents(components)));
             CollectionAssert.AreEquivalent(
                 new Dictionary<int, int>
                 {
@@ -1160,12 +1131,11 @@ namespace QuikGraph.Tests.Extensions
 
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.ConnectedComponents(graph, null));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.ConnectedComponents<int, Edge<int>>(null, components));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.ConnectedComponents<int, Edge<int>>(null, null));
+            Assert.Throws<ArgumentNullException>(() => graph.ConnectedComponents(null));
+            Assert.Throws<ArgumentNullException>(() =>
+                AlgorithmExtensions.ConnectedComponents<int, Edge<int>>(null, components));
+            Assert.Throws<ArgumentNullException>(() =>
+                AlgorithmExtensions.ConnectedComponents<int, Edge<int>>(null, null));
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
@@ -1174,28 +1144,28 @@ namespace QuikGraph.Tests.Extensions
         public void IncrementalConnectedComponent()
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVertexRange(new[] { 0, 1, 2, 3 });
+            graph.AddVertexRange([0, 1, 2, 3]);
             using (graph.IncrementalConnectedComponents(
-                out Func<KeyValuePair<int, IDictionary<int, int>>> getComponents))
+                       out Func<KeyValuePair<int, IDictionary<int, int>>> getComponents))
             {
                 KeyValuePair<int, IDictionary<int, int>> current = getComponents();
-                Assert.AreEqual(4, current.Key);
+                Assert.That(4, Is.EqualTo(current.Key));
 
                 graph.AddEdge(new Edge<int>(0, 1));
                 current = getComponents();
-                Assert.AreEqual(3, current.Key);
+                Assert.That(3, Is.EqualTo(current.Key));
 
                 graph.AddEdge(new Edge<int>(2, 3));
                 current = getComponents();
-                Assert.AreEqual(2, current.Key);
+                Assert.That(2, Is.EqualTo(current.Key));
 
                 graph.AddEdge(new Edge<int>(1, 3));
                 current = getComponents();
-                Assert.AreEqual(1, current.Key);
+                Assert.That(1, Is.EqualTo(current.Key));
 
                 graph.AddVertex(4);
                 current = getComponents();
-                Assert.AreEqual(2, current.Key);
+                Assert.That(2, Is.EqualTo(current.Key));
             }
         }
 
@@ -1203,16 +1173,15 @@ namespace QuikGraph.Tests.Extensions
         public void IncrementalConnectedComponent_Throws()
         {
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.IncrementalConnectedComponents<int, Edge<int>>(null, out _));
+            Assert.Throws<ArgumentNullException>(() =>
+                AlgorithmExtensions.IncrementalConnectedComponents<int, Edge<int>>(null, out _));
         }
 
         [Test]
         public void StronglyConnectedComponents()
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[]
-            {
+            graph.AddVerticesAndEdgeRange([
                 new Edge<int>(1, 2),
                 new Edge<int>(1, 4),
                 new Edge<int>(2, 3),
@@ -1221,11 +1190,11 @@ namespace QuikGraph.Tests.Extensions
                 new Edge<int>(5, 6),
                 new Edge<int>(6, 7),
                 new Edge<int>(7, 5)
-            });
+            ]);
 
             var components = new Dictionary<int, int>();
 
-            Assert.AreEqual(3, graph.StronglyConnectedComponents(components));
+            Assert.That(3, Is.EqualTo(graph.StronglyConnectedComponents(components)));
             CollectionAssert.AreEquivalent(
                 new Dictionary<int, int>
                 {
@@ -1248,12 +1217,11 @@ namespace QuikGraph.Tests.Extensions
 
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.StronglyConnectedComponents(graph, null));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.StronglyConnectedComponents<int, Edge<int>>(null, components));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.StronglyConnectedComponents<int, Edge<int>>(null, null));
+            Assert.Throws<ArgumentNullException>(() => graph.StronglyConnectedComponents(null));
+            Assert.Throws<ArgumentNullException>(() =>
+                AlgorithmExtensions.StronglyConnectedComponents<int, Edge<int>>(null, components));
+            Assert.Throws<ArgumentNullException>(() =>
+                AlgorithmExtensions.StronglyConnectedComponents<int, Edge<int>>(null, null));
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
@@ -1262,8 +1230,7 @@ namespace QuikGraph.Tests.Extensions
         public void WeaklyConnectedComponents()
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[]
-            {
+            graph.AddVerticesAndEdgeRange([
                 new Edge<int>(1, 2),
                 new Edge<int>(1, 4),
                 new Edge<int>(2, 3),
@@ -1272,13 +1239,13 @@ namespace QuikGraph.Tests.Extensions
                 new Edge<int>(5, 6),
                 new Edge<int>(6, 7),
                 new Edge<int>(7, 5),
-                
+
                 new Edge<int>(8, 9)
-            });
+            ]);
 
             var components = new Dictionary<int, int>();
 
-            Assert.AreEqual(2, graph.WeaklyConnectedComponents(components));
+            Assert.That(2, Is.EqualTo(graph.WeaklyConnectedComponents(components)));
             CollectionAssert.AreEquivalent(
                 new Dictionary<int, int>
                 {
@@ -1303,12 +1270,11 @@ namespace QuikGraph.Tests.Extensions
 
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.WeaklyConnectedComponents(graph, null));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.WeaklyConnectedComponents<int, Edge<int>>(null, components));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.WeaklyConnectedComponents<int, Edge<int>>(null, null));
+            Assert.Throws<ArgumentNullException>(() => graph.WeaklyConnectedComponents(null));
+            Assert.Throws<ArgumentNullException>(() =>
+                AlgorithmExtensions.WeaklyConnectedComponents<int, Edge<int>>(null, components));
+            Assert.Throws<ArgumentNullException>(() =>
+                AlgorithmExtensions.WeaklyConnectedComponents<int, Edge<int>>(null, null));
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
@@ -1318,8 +1284,8 @@ namespace QuikGraph.Tests.Extensions
         {
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.CondensateStronglyConnected<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(null));
+            Assert.Throws<ArgumentNullException>(() =>
+                AlgorithmExtensions.CondensateStronglyConnected<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(null));
         }
 
         [Test]
@@ -1327,8 +1293,8 @@ namespace QuikGraph.Tests.Extensions
         {
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.CondensateWeaklyConnected<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(null));
+            Assert.Throws<ArgumentNullException>(() =>
+                AlgorithmExtensions.CondensateWeaklyConnected<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(null));
         }
 
         [Test]
@@ -1338,22 +1304,20 @@ namespace QuikGraph.Tests.Extensions
 
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.CondensateEdges((IBidirectionalGraph<int, Edge<int>>)null, _ => true));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.CondensateEdges(graph, null));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.CondensateEdges((IBidirectionalGraph<int, Edge<int>>)null, null));
+            Assert.Throws<ArgumentNullException>(() =>
+                ((IBidirectionalGraph<int, Edge<int>>)null).CondensateEdges(_ => true));
+            Assert.Throws<ArgumentNullException>(() => graph.CondensateEdges(null));
+            Assert.Throws<ArgumentNullException>(() =>
+                ((IBidirectionalGraph<int, Edge<int>>)null).CondensateEdges(null));
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
         #endregion
 
-        [NotNull, ItemNotNull]
+
         private static IEnumerable<TestCaseData> OddVerticesTestCases
         {
-            [UsedImplicitly]
             get
             {
                 yield return new TestCaseData(
@@ -1373,55 +1337,49 @@ namespace QuikGraph.Tests.Extensions
                 var edge46 = new Edge<int>(4, 6);
 
                 var cycleGraph = new AdjacencyGraph<int, Edge<int>>();
-                cycleGraph.AddVerticesAndEdgeRange(new[]
-                {
+                cycleGraph.AddVerticesAndEdgeRange([
                     edge12, edge24, edge41
-                });
+                ]);
                 yield return new TestCaseData(
                     cycleGraph,
                     Enumerable.Empty<int>());
 
                 var cycleGraph2 = new AdjacencyGraph<int, Edge<int>>();
-                cycleGraph2.AddVerticesAndEdgeRange(new[]
-                {
+                cycleGraph2.AddVerticesAndEdgeRange([
                     edge12, edge24, edge41, edge22
-                });
+                ]);
                 yield return new TestCaseData(
                     cycleGraph2,
                     Enumerable.Empty<int>());
 
                 var cycleGraph3 = new AdjacencyGraph<int, Edge<int>>();
-                cycleGraph3.AddVerticesAndEdgeRange(new[]
-                {
+                cycleGraph3.AddVerticesAndEdgeRange([
                     edge12, edge24, edge25, edge35, edge41, edge22
-                });
+                ]);
                 yield return new TestCaseData(
                     cycleGraph3,
                     new[] { 2, 3 });
 
                 var cycleGraph4 = new AdjacencyGraph<int, Edge<int>>();
-                cycleGraph4.AddVerticesAndEdgeRange(new[]
-                {
+                cycleGraph4.AddVerticesAndEdgeRange([
                     edge12, edge22, edge24, edge25, edge35, edge41, edge45
-                });
+                ]);
                 yield return new TestCaseData(
                     cycleGraph4,
                     new[] { 2, 3, 4, 5 });
 
                 var graph1 = new AdjacencyGraph<int, Edge<int>>();
-                graph1.AddVerticesAndEdgeRange(new[]
-                {
+                graph1.AddVerticesAndEdgeRange([
                     edge12, edge14, edge23, edge24, edge35, edge45
-                });
+                ]);
                 yield return new TestCaseData(
                     graph1,
                     new[] { 2, 4 });
 
                 var graph2 = new AdjacencyGraph<int, Edge<int>>();
-                graph2.AddVerticesAndEdgeRange(new[]
-                {
+                graph2.AddVerticesAndEdgeRange([
                     edge12, edge14, edge23, edge24, edge26, edge35, edge45, edge46
-                });
+                ]);
                 yield return new TestCaseData(
                     graph2,
                     Enumerable.Empty<int>());
@@ -1430,8 +1388,8 @@ namespace QuikGraph.Tests.Extensions
 
         [TestCaseSource(nameof(OddVerticesTestCases))]
         public void OddVertices(
-            [NotNull] IVertexAndEdgeListGraph<int, Edge<int>> graph,
-            [NotNull] IEnumerable<int> expectedOddVertices)
+            IVertexAndEdgeListGraph<int, Edge<int>> graph,
+            IEnumerable<int> expectedOddVertices)
         {
             CollectionAssert.AreEquivalent(expectedOddVertices, graph.OddVertices());
         }
@@ -1441,20 +1399,15 @@ namespace QuikGraph.Tests.Extensions
         {
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(
-                () => ((AdjacencyGraph<int, Edge<int>>)null).OddVertices());
+            Assert.Throws<ArgumentNullException>(() => ((AdjacencyGraph<int, Edge<int>>)null).OddVertices());
         }
 
         [Pure]
-        [NotNull, ItemNotNull]
         private static IEnumerable<TestCaseData> CreateIsDirectedAcyclicGraphTestCases(
-            [NotNull, InstantHandle] Func<IMutableVertexAndEdgeSet<int, Edge<int>>> createGraph)
+            Func<IMutableVertexAndEdgeSet<int, Edge<int>>> createGraph)
         {
             // Empty graph
-            yield return new TestCaseData(createGraph())
-            {
-                ExpectedResult = true
-            };
+            yield return new TestCaseData(createGraph()) { ExpectedResult = true };
 
             var edge12 = new Edge<int>(1, 2);
             var edge13 = new Edge<int>(1, 3);
@@ -1474,91 +1427,61 @@ namespace QuikGraph.Tests.Extensions
 
             // Not empty acyclic
             var adjacencyGraph1 = createGraph();
-            adjacencyGraph1.AddVertexRange(new[] { 1, 2, 3 });
-            yield return new TestCaseData(adjacencyGraph1)
-            {
-                ExpectedResult = true
-            };
+            adjacencyGraph1.AddVertexRange([1, 2, 3]);
+            yield return new TestCaseData(adjacencyGraph1) { ExpectedResult = true };
 
             var adjacencyGraph2 = createGraph();
-            adjacencyGraph2.AddVerticesAndEdgeRange(new[]
-            {
+            adjacencyGraph2.AddVerticesAndEdgeRange([
                 edge12, edge14, edge23, edge24
-            });
-            yield return new TestCaseData(adjacencyGraph2)
-            {
-                ExpectedResult = true
-            };
+            ]);
+            yield return new TestCaseData(adjacencyGraph2) { ExpectedResult = true };
 
             var adjacencyGraph3 = createGraph();
             adjacencyGraph3.AddVertex(0);
-            adjacencyGraph3.AddVerticesAndEdgeRange(new[]
-            {
+            adjacencyGraph3.AddVerticesAndEdgeRange([
                 edge12, edge14, edge23, edge56
-            });
-            yield return new TestCaseData(adjacencyGraph3)
-            {
-                ExpectedResult = true
-            };
+            ]);
+            yield return new TestCaseData(adjacencyGraph3) { ExpectedResult = true };
 
             // Not acyclic
             var cyclicGraph1 = createGraph();
             cyclicGraph1.AddVerticesAndEdge(edge22);
-            yield return new TestCaseData(cyclicGraph1)
-            {
-                ExpectedResult = false
-            };
+            yield return new TestCaseData(cyclicGraph1) { ExpectedResult = false };
 
             var cyclicGraph2 = createGraph();
-            cyclicGraph2.AddVerticesAndEdgeRange(new[]
-            {
+            cyclicGraph2.AddVerticesAndEdgeRange([
                 edge12, edge14, edge22, edge23, edge24
-            });
-            yield return new TestCaseData(cyclicGraph2)
-            {
-                ExpectedResult = false
-            };
+            ]);
+            yield return new TestCaseData(cyclicGraph2) { ExpectedResult = false };
 
             var cyclicGraph3 = createGraph();
-            cyclicGraph3.AddVerticesAndEdgeRange(new[]
-            {
+            cyclicGraph3.AddVerticesAndEdgeRange([
                 edge12, edge14, edge23, edge24, edge41
-            });
-            yield return new TestCaseData(cyclicGraph3)
-            {
-                ExpectedResult = false
-            };
+            ]);
+            yield return new TestCaseData(cyclicGraph3) { ExpectedResult = false };
 
             var cyclicGraph4 = createGraph();
-            cyclicGraph4.AddVerticesAndEdgeRange(new[]
-            {
+            cyclicGraph4.AddVerticesAndEdgeRange([
                 edge12, edge13, edge23, edge31, edge34, edge44
-            });
-            yield return new TestCaseData(cyclicGraph4)
-            {
-                ExpectedResult = false
-            };
+            ]);
+            yield return new TestCaseData(cyclicGraph4) { ExpectedResult = false };
 
             var cyclicGraph5 = createGraph();
             cyclicGraph5.AddVertex(0);
-            cyclicGraph5.AddVerticesAndEdgeRange(new[]
-            {
+            cyclicGraph5.AddVerticesAndEdgeRange([
                 edge16, edge23, edge25, edge34, edge35, edge52
-            });
-            yield return new TestCaseData(cyclicGraph5)
-            {
-                ExpectedResult = false
-            };
+            ]);
+            yield return new TestCaseData(cyclicGraph5) { ExpectedResult = false };
         }
 
-        [NotNull, ItemNotNull]
+
         private static IEnumerable<TestCaseData> IsDirectedAcyclicGraphTestCases
         {
-            [UsedImplicitly]
             get
             {
-                IEnumerable<TestCaseData> testCases = CreateIsDirectedAcyclicGraphTestCases(() => new AdjacencyGraph<int, Edge<int>>())
-                    .Concat(CreateIsDirectedAcyclicGraphTestCases(() => new BidirectionalGraph<int, Edge<int>>()));
+                IEnumerable<TestCaseData> testCases =
+                    CreateIsDirectedAcyclicGraphTestCases(() => new AdjacencyGraph<int, Edge<int>>())
+                        .Concat(CreateIsDirectedAcyclicGraphTestCases(() => new BidirectionalGraph<int, Edge<int>>()));
                 foreach (TestCaseData testCase in testCases)
                 {
                     yield return testCase;
@@ -1567,13 +1490,13 @@ namespace QuikGraph.Tests.Extensions
         }
 
         [TestCaseSource(nameof(IsDirectedAcyclicGraphTestCases))]
-        public bool IsDirectedAcyclicGraph([NotNull] IVertexAndEdgeListGraph<int, Edge<int>> graph)
+        public bool IsDirectedAcyclicGraph(IVertexAndEdgeListGraph<int, Edge<int>> graph)
         {
             return graph.IsDirectedAcyclicGraph();
         }
 
         [TestCaseSource(nameof(IsDirectedAcyclicGraphTestCases))]
-        public bool IsDirectedAcyclicGraph_FromEdges([NotNull] IVertexAndEdgeListGraph<int, Edge<int>> graph)
+        public bool IsDirectedAcyclicGraph_FromEdges(IVertexAndEdgeListGraph<int, Edge<int>> graph)
         {
             return graph.Edges.IsDirectedAcyclicGraph<int, Edge<int>>();
         }
@@ -1583,29 +1506,23 @@ namespace QuikGraph.Tests.Extensions
         {
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(
-                () => ((AdjacencyGraph<int, Edge<int>>)null).IsDirectedAcyclicGraph());
+            Assert.Throws<ArgumentNullException>(() => ((AdjacencyGraph<int, Edge<int>>)null).IsDirectedAcyclicGraph());
 
-            Assert.Throws<ArgumentNullException>(
-                () => ((IEnumerable<Edge<int>>)null).IsDirectedAcyclicGraph<int, Edge<int>>());
+            Assert.Throws<ArgumentNullException>(() =>
+                ((IEnumerable<Edge<int>>)null).IsDirectedAcyclicGraph<int, Edge<int>>());
             var edges = new[] { new Edge<int>(1, 2), null, new Edge<int>(1, 3) };
-            Assert.Throws<ArgumentNullException>(
-                () => edges.IsDirectedAcyclicGraph<int, Edge<int>>());
+            Assert.Throws<ArgumentNullException>(() => edges.IsDirectedAcyclicGraph<int, Edge<int>>());
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
 
-        [NotNull, ItemNotNull]
+
         private static IEnumerable<TestCaseData> IsUndirectedAcyclicGraphTestCases
         {
-            [UsedImplicitly]
             get
             {
                 // Empty graph
-                yield return new TestCaseData(new UndirectedGraph<int, Edge<int>>())
-                {
-                    ExpectedResult = true
-                };
+                yield return new TestCaseData(new UndirectedGraph<int, Edge<int>>()) { ExpectedResult = true };
 
                 var edge12 = new Edge<int>(1, 2);
                 var edge14 = new Edge<int>(1, 4);
@@ -1619,82 +1536,56 @@ namespace QuikGraph.Tests.Extensions
 
                 // Not empty acyclic
                 var undirectedGraph1 = new UndirectedGraph<int, Edge<int>>();
-                undirectedGraph1.AddVertexRange(new[] { 1, 2, 3 });
-                yield return new TestCaseData(undirectedGraph1)
-                {
-                    ExpectedResult = true
-                };
+                undirectedGraph1.AddVertexRange([1, 2, 3]);
+                yield return new TestCaseData(undirectedGraph1) { ExpectedResult = true };
 
                 var undirectedGraph2 = new UndirectedGraph<int, Edge<int>>();
-                undirectedGraph2.AddVerticesAndEdgeRange(new[]
-                {
+                undirectedGraph2.AddVerticesAndEdgeRange([
                     edge12, edge23, edge24
-                });
-                yield return new TestCaseData(undirectedGraph2)
-                {
-                    ExpectedResult = true
-                };
+                ]);
+                yield return new TestCaseData(undirectedGraph2) { ExpectedResult = true };
 
                 var undirectedGraph3 = new UndirectedGraph<int, Edge<int>>();
                 undirectedGraph3.AddVertex(0);
-                undirectedGraph3.AddVerticesAndEdgeRange(new[]
-                {
+                undirectedGraph3.AddVerticesAndEdgeRange([
                     edge12, edge14, edge23, edge56
-                });
-                yield return new TestCaseData(undirectedGraph3)
-                {
-                    ExpectedResult = true
-                };
+                ]);
+                yield return new TestCaseData(undirectedGraph3) { ExpectedResult = true };
 
                 // Not acyclic
                 var cyclicGraph1 = new UndirectedGraph<int, Edge<int>>();
                 cyclicGraph1.AddVerticesAndEdge(edge22);
-                yield return new TestCaseData(cyclicGraph1)
-                {
-                    ExpectedResult = false
-                };
+                yield return new TestCaseData(cyclicGraph1) { ExpectedResult = false };
 
                 var cyclicGraph2 = new UndirectedGraph<int, Edge<int>>();
-                cyclicGraph2.AddVerticesAndEdgeRange(new[]
-                {
+                cyclicGraph2.AddVerticesAndEdgeRange([
                     edge12, edge14, edge22, edge23, edge24
-                });
-                yield return new TestCaseData(cyclicGraph2)
-                {
-                    ExpectedResult = false
-                };
+                ]);
+                yield return new TestCaseData(cyclicGraph2) { ExpectedResult = false };
 
                 var cyclicGraph3 = new UndirectedGraph<int, Edge<int>>();
-                cyclicGraph3.AddVerticesAndEdgeRange(new[]
-                {
+                cyclicGraph3.AddVerticesAndEdgeRange([
                     edge12, edge14, edge23, edge24
-                });
-                yield return new TestCaseData(cyclicGraph3)
-                {
-                    ExpectedResult = false
-                };
+                ]);
+                yield return new TestCaseData(cyclicGraph3) { ExpectedResult = false };
 
                 var cyclicGraph4 = new UndirectedGraph<int, Edge<int>>();
                 cyclicGraph4.AddVertex(0);
-                cyclicGraph4.AddVerticesAndEdgeRange(new[]
-                {
+                cyclicGraph4.AddVerticesAndEdgeRange([
                     edge16, edge23, edge25, edge35
-                });
-                yield return new TestCaseData(cyclicGraph4)
-                {
-                    ExpectedResult = false
-                };
+                ]);
+                yield return new TestCaseData(cyclicGraph4) { ExpectedResult = false };
             }
         }
 
         [TestCaseSource(nameof(IsUndirectedAcyclicGraphTestCases))]
-        public bool IsUndirectedAcyclicGraph([NotNull] IUndirectedGraph<int, Edge<int>> graph)
+        public bool IsUndirectedAcyclicGraph(IUndirectedGraph<int, Edge<int>> graph)
         {
             return graph.IsUndirectedAcyclicGraph();
         }
 
         [TestCaseSource(nameof(IsUndirectedAcyclicGraphTestCases))]
-        public bool IsUndirectedAcyclicGraph_FromEdges([NotNull] IUndirectedGraph<int, Edge<int>> graph)
+        public bool IsUndirectedAcyclicGraph_FromEdges(IUndirectedGraph<int, Edge<int>> graph)
         {
             return graph.Edges.IsUndirectedAcyclicGraph<int, Edge<int>>();
         }
@@ -1704,14 +1595,13 @@ namespace QuikGraph.Tests.Extensions
         {
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(
-                () => ((UndirectedGraph<int, Edge<int>>)null).IsUndirectedAcyclicGraph());
+            Assert.Throws<ArgumentNullException>(() =>
+                ((UndirectedGraph<int, Edge<int>>)null).IsUndirectedAcyclicGraph());
 
-            Assert.Throws<ArgumentNullException>(
-                () => ((IEnumerable<Edge<int>>)null).IsUndirectedAcyclicGraph<int, Edge<int>>());
+            Assert.Throws<ArgumentNullException>(() =>
+                ((IEnumerable<Edge<int>>)null).IsUndirectedAcyclicGraph<int, Edge<int>>());
             var edges = new[] { new Edge<int>(1, 2), null, new Edge<int>(1, 3) };
-            Assert.Throws<ArgumentNullException>(
-                () => edges.IsUndirectedAcyclicGraph<int, Edge<int>>());
+            Assert.Throws<ArgumentNullException>(() => edges.IsUndirectedAcyclicGraph<int, Edge<int>>());
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
@@ -1722,13 +1612,13 @@ namespace QuikGraph.Tests.Extensions
             var predecessors = new Dictionary<int, Edge<int>>();
             var edgeCosts = new Dictionary<Edge<int>, double>();
 
-            Assert.AreEqual(0, AlgorithmExtensions.ComputePredecessorCost(predecessors, edgeCosts, 1));
+            Assert.That(0, Is.EqualTo(AlgorithmExtensions.ComputePredecessorCost(predecessors, edgeCosts, 1)));
 
             var edge12 = new Edge<int>(1, 2);
             predecessors[2] = edge12;
             edgeCosts[edge12] = 12;
-            Assert.AreEqual(0, AlgorithmExtensions.ComputePredecessorCost(predecessors, edgeCosts, 1));
-            Assert.AreEqual(12, AlgorithmExtensions.ComputePredecessorCost(predecessors, edgeCosts, 2));
+            Assert.That(0, Is.EqualTo(AlgorithmExtensions.ComputePredecessorCost(predecessors, edgeCosts, 1)));
+            Assert.That(12, Is.EqualTo(AlgorithmExtensions.ComputePredecessorCost(predecessors, edgeCosts, 2)));
 
             var edge31 = new Edge<int>(3, 1);
             predecessors[1] = edge31;
@@ -1737,71 +1627,40 @@ namespace QuikGraph.Tests.Extensions
             predecessors[4] = edge34;
             edgeCosts[edge34] = 42;
 
-            Assert.AreEqual(-5, AlgorithmExtensions.ComputePredecessorCost(predecessors, edgeCosts, 1));
-            Assert.AreEqual(7, AlgorithmExtensions.ComputePredecessorCost(predecessors, edgeCosts, 2));
-            Assert.AreEqual(0, AlgorithmExtensions.ComputePredecessorCost(predecessors, edgeCosts, 3));
-            Assert.AreEqual(42, AlgorithmExtensions.ComputePredecessorCost(predecessors, edgeCosts, 4));
+            Assert.That(-5, Is.EqualTo(AlgorithmExtensions.ComputePredecessorCost(predecessors, edgeCosts, 1)));
+            Assert.That(7, Is.EqualTo(AlgorithmExtensions.ComputePredecessorCost(predecessors, edgeCosts, 2)));
+            Assert.That(0, Is.EqualTo(AlgorithmExtensions.ComputePredecessorCost(predecessors, edgeCosts, 3)));
+            Assert.That(42, Is.EqualTo(AlgorithmExtensions.ComputePredecessorCost(predecessors, edgeCosts, 4)));
         }
 
-        [Test]
-        public void ComputePredecessorCost_Throws()
-        {
-            var predecessors = new Dictionary<TestVertex, Edge<TestVertex>>();
-            var edgeCosts = new Dictionary<Edge<TestVertex>, double>();
-            var vertex1 = new TestVertex("1");
-            var vertex2 = new TestVertex("2");
-
-            // ReSharper disable ReturnValueOfPureMethodIsNotUsed
-            // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.ComputePredecessorCost(null, edgeCosts, vertex1));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.ComputePredecessorCost(predecessors, null, vertex1));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.ComputePredecessorCost(predecessors, edgeCosts, null));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.ComputePredecessorCost<TestVertex, Edge<TestVertex>>(null, null, vertex1));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.ComputePredecessorCost(predecessors, null, null));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.ComputePredecessorCost<TestVertex, Edge<TestVertex>>(null, null, null));
-
-            // Wrong usage
-            predecessors[vertex2] = new Edge<TestVertex>(vertex1, vertex2);
-            Assert.Throws<KeyNotFoundException>(
-                () => AlgorithmExtensions.ComputePredecessorCost(predecessors, edgeCosts, vertex2));
-            // ReSharper restore AssignNullToNotNullAttribute
-            // ReSharper restore ReturnValueOfPureMethodIsNotUsed
-        }
 
         [Test]
         public void ComputeDisjointSet()
         {
             var emptyGraph = new UndirectedGraph<int, Edge<int>>();
             IDisjointSet<int> disjointSet = emptyGraph.ComputeDisjointSet();
-            Assert.AreEqual(0, disjointSet.ElementCount);
-            Assert.AreEqual(0, disjointSet.SetCount);
+            Assert.That(0, Is.EqualTo(disjointSet.ElementCount));
+            Assert.That(0, Is.EqualTo(disjointSet.SetCount));
 
             var graph = new UndirectedGraph<int, Edge<int>>();
-            graph.AddVertexRange(new[] { 1, 2, 3, 4 });
+            graph.AddVertexRange([1, 2, 3, 4]);
             disjointSet = graph.ComputeDisjointSet();
-            Assert.AreEqual(4, disjointSet.ElementCount);
-            Assert.AreEqual(4, disjointSet.SetCount);
+            Assert.That(4, Is.EqualTo(disjointSet.ElementCount));
+            Assert.That(4, Is.EqualTo(disjointSet.SetCount));
 
-            graph.AddEdgeRange(new[]
-            {
+            graph.AddEdgeRange([
                 new Edge<int>(1, 2),
                 new Edge<int>(2, 3),
                 new Edge<int>(1, 4)
-            });
+            ]);
             graph.AddVertex(5);
             disjointSet = graph.ComputeDisjointSet();
-            Assert.AreEqual(5, disjointSet.ElementCount);
-            Assert.AreEqual(2, disjointSet.SetCount);
-            Assert.IsTrue(disjointSet.AreInSameSet(1, 2));
-            Assert.IsTrue(disjointSet.AreInSameSet(1, 3));
-            Assert.IsTrue(disjointSet.AreInSameSet(1, 4));
-            Assert.IsFalse(disjointSet.AreInSameSet(1, 5));
+            Assert.That(5, Is.EqualTo(disjointSet.ElementCount));
+            Assert.That(2, Is.EqualTo(disjointSet.SetCount));
+            Assert.That(disjointSet.AreInSameSet(1, 2), Is.True);
+            Assert.That(disjointSet.AreInSameSet(1, 3), Is.True);
+            Assert.That(disjointSet.AreInSameSet(1, 4), Is.True);
+            Assert.That(disjointSet.AreInSameSet(1, 5), Is.False);
         }
 
         [Test]
@@ -1809,8 +1668,7 @@ namespace QuikGraph.Tests.Extensions
         {
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(
-                () => ((UndirectedGraph<int, Edge<int>>)null).ComputeDisjointSet());
+            Assert.Throws<ArgumentNullException>(() => ((UndirectedGraph<int, Edge<int>>)null).ComputeDisjointSet());
         }
 
         [Test]
@@ -1818,12 +1676,12 @@ namespace QuikGraph.Tests.Extensions
         {
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(
-                () => new UndirectedGraph<int, Edge<int>>().MinimumSpanningTreePrim(null));
-            Assert.Throws<ArgumentNullException>(
-                () => ((UndirectedGraph<int, Edge<int>>)null).MinimumSpanningTreePrim(_ => 1.0));
-            Assert.Throws<ArgumentNullException>(
-                () => ((UndirectedGraph<int, Edge<int>>)null).MinimumSpanningTreePrim(null));
+            Assert.Throws<ArgumentNullException>(() =>
+                new UndirectedGraph<int, Edge<int>>().MinimumSpanningTreePrim(null));
+            Assert.Throws<ArgumentNullException>(() =>
+                ((UndirectedGraph<int, Edge<int>>)null).MinimumSpanningTreePrim(_ => 1.0));
+            Assert.Throws<ArgumentNullException>(() =>
+                ((UndirectedGraph<int, Edge<int>>)null).MinimumSpanningTreePrim(null));
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
@@ -1833,12 +1691,12 @@ namespace QuikGraph.Tests.Extensions
         {
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(
-                () => new UndirectedGraph<int, Edge<int>>().MinimumSpanningTreeKruskal(null));
-            Assert.Throws<ArgumentNullException>(
-                () => ((UndirectedGraph<int, Edge<int>>)null).MinimumSpanningTreeKruskal(_ => 1.0));
-            Assert.Throws<ArgumentNullException>(
-                () => ((UndirectedGraph<int, Edge<int>>)null).MinimumSpanningTreeKruskal(null));
+            Assert.Throws<ArgumentNullException>(() =>
+                new UndirectedGraph<int, Edge<int>>().MinimumSpanningTreeKruskal(null));
+            Assert.Throws<ArgumentNullException>(() =>
+                ((UndirectedGraph<int, Edge<int>>)null).MinimumSpanningTreeKruskal(_ => 1.0));
+            Assert.Throws<ArgumentNullException>(() =>
+                ((UndirectedGraph<int, Edge<int>>)null).MinimumSpanningTreeKruskal(null));
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
@@ -1849,35 +1707,30 @@ namespace QuikGraph.Tests.Extensions
             var vertex1 = new TestVertex("1");
             var vertex2 = new TestVertex("2");
             var graph1 = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
-            graph1.AddVertexRange(new[] { vertex1, vertex2 });
+            graph1.AddVertexRange([vertex1, vertex2]);
             var pairs1 = new[] { new SEquatableEdge<TestVertex>(vertex1, vertex2) };
-            
+
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexListGraph<TestVertex, Edge<TestVertex>>)null).OfflineLeastCommonAncestor(vertex1, pairs1));
-            Assert.Throws<ArgumentNullException>(
-                () => graph1.OfflineLeastCommonAncestor(null, pairs1));
-            Assert.Throws<ArgumentNullException>(
-                () => graph1.OfflineLeastCommonAncestor(vertex1, null));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexListGraph<TestVertex, Edge<TestVertex>>)null).OfflineLeastCommonAncestor(null, pairs1));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexListGraph<TestVertex, Edge<TestVertex>>)null).OfflineLeastCommonAncestor(vertex1, null));
-            Assert.Throws<ArgumentNullException>(
-                () => graph1.OfflineLeastCommonAncestor(null, null));
-            Assert.Throws<ArgumentNullException>(
-                () => ((IVertexListGraph<TestVertex, Edge<TestVertex>>)null).OfflineLeastCommonAncestor(null, null));
+            Assert.Throws<ArgumentNullException>(() =>
+                ((IVertexListGraph<TestVertex, Edge<TestVertex>>)null).OfflineLeastCommonAncestor(vertex1, pairs1));
+            Assert.Throws<ArgumentNullException>(() => graph1.OfflineLeastCommonAncestor(null, pairs1));
+            Assert.Throws<ArgumentNullException>(() => graph1.OfflineLeastCommonAncestor(vertex1, null));
+            Assert.Throws<ArgumentNullException>(() =>
+                ((IVertexListGraph<TestVertex, Edge<TestVertex>>)null).OfflineLeastCommonAncestor(null, pairs1));
+            Assert.Throws<ArgumentNullException>(() =>
+                ((IVertexListGraph<TestVertex, Edge<TestVertex>>)null).OfflineLeastCommonAncestor(vertex1, null));
+            Assert.Throws<ArgumentNullException>(() => graph1.OfflineLeastCommonAncestor(null, null));
+            Assert.Throws<ArgumentNullException>(() =>
+                ((IVertexListGraph<TestVertex, Edge<TestVertex>>)null).OfflineLeastCommonAncestor(null, null));
 
             var pairs2 = new[] { new SEquatableEdge<int>(1, 2) };
             var graph2 = new AdjacencyGraph<int, Edge<int>>();
-            Assert.Throws<ArgumentException>(
-                () => graph2.OfflineLeastCommonAncestor(1, pairs2));
+            Assert.Throws<ArgumentException>(() => graph2.OfflineLeastCommonAncestor(1, pairs2));
 
             var graph3 = new AdjacencyGraph<int, Edge<int>>();
             graph3.AddVertex(1);
-            Assert.Throws<ArgumentException>(
-                () => graph3.OfflineLeastCommonAncestor(1, pairs2));
+            Assert.Throws<ArgumentException>(() => graph3.OfflineLeastCommonAncestor(1, pairs2));
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
         }
@@ -1886,22 +1739,21 @@ namespace QuikGraph.Tests.Extensions
         public void MaximumFlow_Throws()
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVertexRange(new[] { 1, 2 });
+            graph.AddVertexRange([1, 2]);
             Func<Edge<int>, double> capacities = _ => 1.0;
             EdgeFactory<int, Edge<int>> edgeFactory = (source, target) => new Edge<int>(source, target);
             var reverseEdgesAlgorithm = new ReversedEdgeAugmentorAlgorithm<int, Edge<int>>(graph, edgeFactory);
 
-            Assert.Throws<ArgumentException>(
-                () => graph.MaximumFlow(capacities, 1, 1, out _, edgeFactory, reverseEdgesAlgorithm));
+            Assert.Throws<ArgumentException>(() =>
+                graph.MaximumFlow(capacities, 1, 1, out _, edgeFactory, reverseEdgesAlgorithm));
 
-            Assert.Throws<InvalidOperationException>(
-                () => graph.MaximumFlow(capacities, 1, 2, out _, edgeFactory, reverseEdgesAlgorithm));
+            Assert.Throws<InvalidOperationException>(() =>
+                graph.MaximumFlow(capacities, 1, 2, out _, edgeFactory, reverseEdgesAlgorithm));
         }
 
-        [NotNull, ItemNotNull]
+
         private static IEnumerable<TestCaseData> CloneTestCases
         {
-            [UsedImplicitly]
             get
             {
                 yield return new TestCaseData(new AdjacencyGraph<int, EquatableEdge<int>>());
@@ -1910,7 +1762,7 @@ namespace QuikGraph.Tests.Extensions
         }
 
         [TestCaseSource(nameof(CloneTestCases))]
-        public void Clone([NotNull] IMutableVertexAndEdgeSet<int, EquatableEdge<int>> cloned)
+        public void Clone(IMutableVertexAndEdgeSet<int, EquatableEdge<int>> cloned)
         {
             var emptyGraph1 = new AdjacencyGraph<int, EquatableEdge<int>>();
             emptyGraph1.Clone(v => v, (_, v1, v2) => new EquatableEdge<int>(v1, v2), cloned);
@@ -1918,40 +1770,37 @@ namespace QuikGraph.Tests.Extensions
 
             cloned.Clear();
             var notEmptyGraph = new AdjacencyGraph<int, EquatableEdge<int>>();
-            notEmptyGraph.AddVerticesAndEdgeRange(new[]
-            {
+            notEmptyGraph.AddVerticesAndEdgeRange([
                 new EquatableEdge<int>(1, 2),
                 new EquatableEdge<int>(2, 2),
                 new EquatableEdge<int>(2, 3),
                 new EquatableEdge<int>(3, 1)
-            });
+            ]);
             notEmptyGraph.Clone(v => v, (_, v1, v2) => new EquatableEdge<int>(v1, v2), cloned);
-            AssertHasVertices(cloned, new[] { 1, 2, 3 });
+            AssertHasVertices(cloned, [1, 2, 3]);
             AssertHasEdges(
                 cloned,
-                new[]
-                {
+                [
                     new EquatableEdge<int>(1, 2),
                     new EquatableEdge<int>(2, 2),
                     new EquatableEdge<int>(2, 3),
                     new EquatableEdge<int>(3, 1)
-                });
+                ]);
 
             // Clone is not empty
             cloned.Clear();
             cloned.AddVerticesAndEdge(new EquatableEdge<int>(1, 4));
             notEmptyGraph.Clone(v => v, (_, v1, v2) => new EquatableEdge<int>(v1, v2), cloned);
             // Clone has been cleaned and then re-filled
-            AssertHasVertices(cloned, new[] { 1, 2, 3 });
+            AssertHasVertices(cloned, [1, 2, 3]);
             AssertHasEdges(
                 cloned,
-                new[]
-                {
+                [
                     new EquatableEdge<int>(1, 2),
                     new EquatableEdge<int>(2, 2),
                     new EquatableEdge<int>(2, 3),
                     new EquatableEdge<int>(3, 1)
-                });
+                ]);
         }
 
         [Test]
@@ -1961,34 +1810,23 @@ namespace QuikGraph.Tests.Extensions
             var clone = new AdjacencyGraph<int, Edge<int>>();
 
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.Clone(null, v => v, (e, _, _) => e, clone));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.Clone(graph, null, (e, _, _) => e, clone));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.Clone(graph, v => v, null, clone));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.Clone(graph, v => v, (e, _, _) => e, null));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.Clone(null, null, (e, _, _) => e, clone));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.Clone(null, v => v, null, clone));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.Clone<int, Edge<int>>(null, v => v, (e, _, _) => e, null));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.Clone(graph, null, null, clone));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.Clone(graph, null, (e, _, _) => e, null));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.Clone(graph, v => v, null, null));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.Clone(null, null, null, clone));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.Clone<int, Edge<int>>(null, null, (e, _, _) => e, null));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.Clone(graph, null, null, null));
-            Assert.Throws<ArgumentNullException>(
-                () => AlgorithmExtensions.Clone<int, Edge<int>>(null, null, null, null));
+            Assert.Throws<ArgumentNullException>(() => AlgorithmExtensions.Clone(null, v => v, (e, _, _) => e, clone));
+            Assert.Throws<ArgumentNullException>(() => graph.Clone(null, (e, _, _) => e, clone));
+            Assert.Throws<ArgumentNullException>(() => graph.Clone(v => v, null, clone));
+            Assert.Throws<ArgumentNullException>(() => graph.Clone(v => v, (e, _, _) => e, null));
+            Assert.Throws<ArgumentNullException>(() => AlgorithmExtensions.Clone(null, null, (e, _, _) => e, clone));
+            Assert.Throws<ArgumentNullException>(() => AlgorithmExtensions.Clone(null, v => v, null, clone));
+            Assert.Throws<ArgumentNullException>(() =>
+                AlgorithmExtensions.Clone<int, Edge<int>>(null, v => v, (e, _, _) => e, null));
+            Assert.Throws<ArgumentNullException>(() => graph.Clone(null, null, clone));
+            Assert.Throws<ArgumentNullException>(() => graph.Clone(null, (e, _, _) => e, null));
+            Assert.Throws<ArgumentNullException>(() => graph.Clone(v => v, null, null));
+            Assert.Throws<ArgumentNullException>(() => AlgorithmExtensions.Clone(null, null, null, clone));
+            Assert.Throws<ArgumentNullException>(() =>
+                AlgorithmExtensions.Clone<int, Edge<int>>(null, null, (e, _, _) => e, null));
+            Assert.Throws<ArgumentNullException>(() => graph.Clone(null, null, null));
+            Assert.Throws<ArgumentNullException>(() =>
+                AlgorithmExtensions.Clone<int, Edge<int>>(null, null, null, null));
             // ReSharper restore AssignNullToNotNullAttribute
         }
     }

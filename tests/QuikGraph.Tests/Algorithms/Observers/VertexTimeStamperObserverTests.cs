@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using QuikGraph.Algorithms.Observers;
 using QuikGraph.Algorithms.Search;
 
@@ -21,8 +22,8 @@ namespace QuikGraph.Tests.Algorithms.Observers
 
             var discoverTimes = new Dictionary<int, int>();
             recorder = new VertexTimeStamperObserver<int>(discoverTimes);
-            Assert.AreSame(discoverTimes, recorder.DiscoverTimes);
-            Assert.IsNull(recorder.FinishTimes);
+            Assert.That(discoverTimes,Is.SameAs(recorder.DiscoverTimes));
+            Assert.That(recorder.FinishTimes,Is.Null);
 
             discoverTimes = new Dictionary<int, int>
             {
@@ -32,16 +33,16 @@ namespace QuikGraph.Tests.Algorithms.Observers
                 [4] = 2
             };
             recorder = new VertexTimeStamperObserver<int>(discoverTimes);
-            Assert.AreSame(discoverTimes, recorder.DiscoverTimes);
-            Assert.IsNull(recorder.FinishTimes);
+            Assert.That(discoverTimes,Is.SameAs(recorder.DiscoverTimes));
+            Assert.That(recorder.FinishTimes,Is.Null);
 
             discoverTimes = new Dictionary<int, int>();
             var finishTimes = new Dictionary<int, int>();
             recorder = new VertexTimeStamperObserver<int>(
                 discoverTimes,
                 finishTimes);
-            Assert.AreSame(discoverTimes, recorder.DiscoverTimes);
-            Assert.AreSame(finishTimes, recorder.FinishTimes);
+            Assert.That(discoverTimes,Is.SameAs(recorder.DiscoverTimes));
+            Assert.That(finishTimes,Is.SameAs(recorder.FinishTimes));
 
             discoverTimes = new Dictionary<int, int>
             {
@@ -60,8 +61,8 @@ namespace QuikGraph.Tests.Algorithms.Observers
             recorder = new VertexTimeStamperObserver<int>(
                 discoverTimes,
                 finishTimes);
-            CollectionAssert.AreEqual(discoverTimes, recorder.DiscoverTimes);
-            CollectionAssert.AreEqual(finishTimes, recorder.FinishTimes);
+            CollectionAssert.AreEqual(discoverTimes,recorder.DiscoverTimes);
+            CollectionAssert.AreEqual(finishTimes,recorder.FinishTimes);
         }
 
         [Test]
@@ -103,7 +104,7 @@ namespace QuikGraph.Tests.Algorithms.Observers
                 var recorder = new VertexTimeStamperObserver<int>();
 
                 var graph = new AdjacencyGraph<int, Edge<int>>();
-                graph.AddVertexRange(new[] {1, 2});
+                graph.AddVertexRange([1, 2]);
 
                 var dfs = new DepthFirstSearchAlgorithm<int, Edge<int>>(graph);
                 using (recorder.Attach(dfs))
@@ -132,12 +133,11 @@ namespace QuikGraph.Tests.Algorithms.Observers
                 var recorder = new VertexTimeStamperObserver<int>();
 
                 var graph = new AdjacencyGraph<int, Edge<int>>();
-                graph.AddVerticesAndEdgeRange(new[]
-                {
+                graph.AddVerticesAndEdgeRange([
                     new Edge<int>(1, 2),
                     new Edge<int>(2, 2),
                     new Edge<int>(3, 4)
-                });
+                ]);
 
                 var dfs = new DepthFirstSearchAlgorithm<int, Edge<int>>(graph);
                 using (recorder.Attach(dfs))

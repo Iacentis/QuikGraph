@@ -1,5 +1,6 @@
 ﻿using System;
-using JetBrains.Annotations;
+using System.Diagnostics.Contracts;
+
 
 namespace QuikGraph.Serialization.Tests
 {
@@ -12,22 +13,22 @@ namespace QuikGraph.Serialization.Tests
         /// Converts a <see cref="Type"/> into a string representation for easy serialization.
         /// </summary>
         [Pure]
-        [NotNull]
-        public static string TypeToSerializableType([NotNull] Type type)
+
+        public static string TypeToSerializableType( Type type)
         {
             return $"{type.FullName}, {type.Assembly.GetName().Name}";
         }
 
         [Pure]
-        [NotNull]
+
         public static string VertexIdentity_Simple(int vertex)
         {
             return vertex.ToString();
         }
 
         [Pure]
-        [NotNull]
-        public static string VertexIdentity_Complex([NotNull] EquatableTestVertex vertex)
+
+        public static string VertexIdentity_Complex( EquatableTestVertex vertex)
         {
             return vertex.ID;
         }

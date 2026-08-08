@@ -34,9 +34,12 @@ namespace QuikGraph.Tests.Structures
         {
             // ReSharper disable ObjectCreationAsStatement
             // ReSharper disable AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => new EquatableTaggedEdge<TestVertex, TestObject>(null, new TestVertex("v1"), null));
-            Assert.Throws<ArgumentNullException>(() => new EquatableTaggedEdge<TestVertex, TestObject>(new TestVertex("v1"), null, null));
-            Assert.Throws<ArgumentNullException>(() => new EquatableTaggedEdge<TestVertex, TestObject>(null, null, null));
+            Assert.Throws<ArgumentNullException>(() =>
+                new EquatableTaggedEdge<TestVertex, TestObject>(null, new TestVertex("v1"), null));
+            Assert.Throws<ArgumentNullException>(() =>
+                new EquatableTaggedEdge<TestVertex, TestObject>(new TestVertex("v1"), null, null));
+            Assert.Throws<ArgumentNullException>(() =>
+                new EquatableTaggedEdge<TestVertex, TestObject>(null, null, null));
             // ReSharper restore AssignNullToNotNullAttribute
             // ReSharper restore ObjectCreationAsStatement
         }
@@ -53,28 +56,28 @@ namespace QuikGraph.Tests.Structures
             var edge5 = new EquatableTaggedEdge<int, TestObject>(1, 2, null);
             var edge6 = new EquatableTaggedEdge<int, TestObject>(2, 1, null);
 
-            Assert.AreEqual(edge1, edge1);
+            Assert.That(edge1, Is.EqualTo(edge1));
 
-            Assert.AreEqual(edge1, edge2);
-            Assert.AreEqual(edge2, edge1);
-            Assert.IsTrue(edge1.Equals((object)edge2));
-            Assert.IsTrue(edge1.Equals(edge3));  // Tag is not taken into account for equality
-            Assert.IsTrue(edge1.Equals(edge4));  // Tag is not taken into account for equality
+            Assert.That(edge1, Is.EqualTo(edge2));
+            Assert.That(edge2, Is.EqualTo(edge1));
+            Assert.That(edge1.Equals((object)edge2), Is.True);
+            Assert.That(edge1.Equals(edge3), Is.True); // Tag is not taken into account for equality
+            Assert.That(edge1.Equals(edge4), Is.True); // Tag is not taken into account for equality
 
-            Assert.AreEqual(edge4, edge5);
-            Assert.AreEqual(edge5, edge4);
-            Assert.IsTrue(edge4.Equals((object)edge5));
-            Assert.IsTrue(edge4.Equals(edge5));  // Tag is not taken into account for equality
-            Assert.IsTrue(edge5.Equals(edge4));  // Tag is not taken into account for equality
+            Assert.That(edge4, Is.EqualTo(edge5));
+            Assert.That(edge5, Is.EqualTo(edge4));
+            Assert.That(edge4.Equals((object)edge5), Is.True);
+            Assert.That(edge4.Equals(edge5), Is.True); // Tag is not taken into account for equality
+            Assert.That(edge5.Equals(edge4), Is.True); // Tag is not taken into account for equality
 
-            Assert.AreNotEqual(edge4, edge6);
-            Assert.AreNotEqual(edge6, edge4);
-            Assert.IsFalse(edge4.Equals((object)edge6));
-            Assert.IsFalse(edge4.Equals(edge6));
-            Assert.IsFalse(edge6.Equals(edge4));
+            Assert.That(edge4, Is.Not.EqualTo(edge6));
+            Assert.That(edge6, Is.Not.EqualTo(edge4));
+            Assert.That(edge4.Equals((object)edge6), Is.False);
+            Assert.That(edge4.Equals(edge6), Is.False);
+            Assert.That(edge6.Equals(edge4), Is.False);
 
-            Assert.AreNotEqual(null, edge1);
-            Assert.IsFalse(edge1.Equals(null));
+            Assert.That(edge1, Is.Not.EqualTo(null));
+            Assert.That(edge1.Equals(null), Is.False);
         }
 
         [Test]
@@ -86,21 +89,21 @@ namespace QuikGraph.Tests.Structures
             edge.TagChanged += (_, _) => ++changeCount;
 
             edge.Tag = null;
-            Assert.AreEqual(0, changeCount);
+            Assert.That(0, Is.EqualTo(changeCount));
 
             var tag1 = new TestObject(1);
             edge.Tag = tag1;
-            Assert.AreEqual(1, changeCount);
+            Assert.That(1, Is.EqualTo(changeCount));
 
             edge.Tag = tag1;
-            Assert.AreEqual(1, changeCount);
+            Assert.That(1, Is.EqualTo(changeCount));
 
             var tag2 = new TestObject(2);
             edge.Tag = tag2;
-            Assert.AreEqual(2, changeCount);
+            Assert.That(2, Is.EqualTo(changeCount));
 
             edge.Tag = tag1;
-            Assert.AreEqual(3, changeCount);
+            Assert.That(3, Is.EqualTo(changeCount));
         }
 
         [Test]
@@ -113,9 +116,10 @@ namespace QuikGraph.Tests.Structures
             var edge3 = new EquatableTaggedEdge<int, TestObject>(2, 1, null);
             var edge4 = new EquatableTaggedEdge<int, TestObject>(1, 2, tag);
 
-            Assert.AreEqual(edge1.GetHashCode(), edge2.GetHashCode());
-            Assert.AreNotEqual(edge1.GetHashCode(), edge3.GetHashCode());
-            Assert.AreEqual(edge1.GetHashCode(), edge4.GetHashCode());  // Tag is not taken into account for hashcode
+            Assert.That(edge1.GetHashCode(), Is.EqualTo(edge2.GetHashCode()));
+            Assert.That(edge1.GetHashCode(), Is.Not.EqualTo(edge3.GetHashCode()));
+            Assert.That(edge1.GetHashCode(),
+                Is.EqualTo(edge4.GetHashCode())); // Tag is not taken into account for hashcode
         }
 
         [Test]
@@ -125,9 +129,9 @@ namespace QuikGraph.Tests.Structures
             var edge2 = new EquatableTaggedEdge<int, TestObject>(1, 2, new TestObject(25));
             var edge3 = new EquatableTaggedEdge<int, TestObject>(2, 1, null);
 
-            Assert.AreEqual("1 -> 2 (no tag)", edge1.ToString());
-            Assert.AreEqual("1 -> 2 (25)", edge2.ToString());
-            Assert.AreEqual("2 -> 1 (no tag)", edge3.ToString());
+            Assert.That("1 -> 2 (no tag)", Is.EqualTo(edge1.ToString()));
+            Assert.That("1 -> 2 (25)", Is.EqualTo(edge2.ToString()));
+            Assert.That("2 -> 1 (no tag)", Is.EqualTo(edge3.ToString()));
         }
     }
 }

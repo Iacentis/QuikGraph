@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using JetBrains.Annotations;
 using QuikGraph.Algorithms.Search;
 using QuikGraph.Algorithms.Services;
 using QuikGraph.Collections;
@@ -33,9 +32,9 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="costHeuristic"/> is <see langword="null"/>.</exception>
         public AStarShortestPathAlgorithm(
-            [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] Func<TEdge, double> edgeWeights,
-            [NotNull] Func<TVertex, double> costHeuristic)
+             IVertexListGraph<TVertex, TEdge> visitedGraph,
+             Func<TEdge, double> edgeWeights,
+             Func<TVertex, double> costHeuristic)
             : this(visitedGraph, edgeWeights, costHeuristic, DistanceRelaxers.ShortestDistance)
         {
         }
@@ -52,10 +51,10 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <exception cref="T:System.ArgumentNullException"><paramref name="costHeuristic"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceRelaxer"/> is <see langword="null"/>.</exception>
         public AStarShortestPathAlgorithm(
-            [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] Func<TEdge, double> edgeWeights,
-            [NotNull] Func<TVertex, double> costHeuristic,
-            [NotNull] IDistanceRelaxer distanceRelaxer)
+             IVertexListGraph<TVertex, TEdge> visitedGraph,
+             Func<TEdge, double> edgeWeights,
+             Func<TVertex, double> costHeuristic,
+             IDistanceRelaxer distanceRelaxer)
             : this(null, visitedGraph, edgeWeights, costHeuristic, distanceRelaxer)
         {
         }
@@ -73,11 +72,11 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <exception cref="T:System.ArgumentNullException"><paramref name="costHeuristic"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceRelaxer"/> is <see langword="null"/>.</exception>
         public AStarShortestPathAlgorithm(
-            [CanBeNull] IAlgorithmComponent host,
-            [NotNull] IVertexListGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] Func<TEdge, double> edgeWeights,
-            [NotNull] Func<TVertex, double> costHeuristic,
-            [NotNull] IDistanceRelaxer distanceRelaxer)
+             IAlgorithmComponent host,
+             IVertexListGraph<TVertex, TEdge> visitedGraph,
+             Func<TEdge, double> edgeWeights,
+             Func<TVertex, double> costHeuristic,
+             IDistanceRelaxer distanceRelaxer)
             : base(host, visitedGraph, edgeWeights, distanceRelaxer)
         {
             CostHeuristic = costHeuristic ?? throw new ArgumentNullException(nameof(costHeuristic));
@@ -86,7 +85,7 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// <summary>
         /// Function that computes a cost for a given vertex.
         /// </summary>
-        [NotNull]
+
         public Func<TVertex, double> CostHeuristic { get; }
 
         #region Events
@@ -118,14 +117,14 @@ namespace QuikGraph.Algorithms.ShortestPath
         /// </summary>
         public event EdgeAction<TVertex, TEdge> EdgeNotRelaxed;
 
-        private void OnEdgeNotRelaxed([NotNull] TEdge edge)
+        private void OnEdgeNotRelaxed( TEdge edge)
         {
             Debug.Assert(edge != null);
 
             EdgeNotRelaxed?.Invoke(edge);
         }
 
-        private void OnExamineEdge([NotNull] TEdge edge)
+        private void OnExamineEdge( TEdge edge)
         {
             Debug.Assert(edge != null);
 
@@ -133,7 +132,7 @@ namespace QuikGraph.Algorithms.ShortestPath
                 throw new NegativeWeightException();
         }
 
-        private void OnAStarTreeEdge([NotNull] TEdge edge)
+        private void OnAStarTreeEdge( TEdge edge)
         {
             Debug.Assert(edge != null);
 
@@ -152,7 +151,7 @@ namespace QuikGraph.Algorithms.ShortestPath
             }
         }
 
-        private void OnGrayTarget([NotNull] TEdge edge)
+        private void OnGrayTarget( TEdge edge)
         {
             Debug.Assert(edge != null);
 
@@ -172,7 +171,7 @@ namespace QuikGraph.Algorithms.ShortestPath
             }
         }
 
-        private void OnBlackTarget([NotNull] TEdge edge)
+        private void OnBlackTarget( TEdge edge)
         {
             Debug.Assert(edge != null);
 
@@ -239,7 +238,7 @@ namespace QuikGraph.Algorithms.ShortestPath
 
         #endregion
 
-        private void ComputeFromRoot([NotNull] TVertex rootVertex)
+        private void ComputeFromRoot( TVertex rootVertex)
         {
             Debug.Assert(rootVertex != null);
             Debug.Assert(VisitedGraph.ContainsVertex(rootVertex));
@@ -250,7 +249,7 @@ namespace QuikGraph.Algorithms.ShortestPath
             ComputeNoInit(rootVertex);
         }
 
-        private void ComputeNoInit([NotNull] TVertex root)
+        private void ComputeNoInit( TVertex root)
         {
             BreadthFirstSearchAlgorithm<TVertex, TEdge> bfs = null;
 

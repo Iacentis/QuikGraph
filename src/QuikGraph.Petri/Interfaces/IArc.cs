@@ -1,4 +1,4 @@
-using JetBrains.Annotations;
+
 
 namespace QuikGraph.Petri
 {
@@ -28,7 +28,7 @@ namespace QuikGraph.Petri
         /// <value>
         /// The <see cref="IPlace{TToken}"/> attached to the <see cref="IArc{TToken}"/>.
         /// </value>
-        [NotNull]
+
         IPlace<TToken> Place { get; }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace QuikGraph.Petri
         /// <value>
         /// The <see cref="ITransition{TToken}"/> attached to the <see cref="IArc{TToken}"/>.
         /// </value>
-        [NotNull]
+
         ITransition<TToken> Transition { get; }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace QuikGraph.Petri
         /// used to annotate the arc. The expression evaluates over the type
         /// of the arc's associated place.
         /// </remarks>
-        [NotNull]
+
         IExpression<TToken> Annotation { get; set; }
     }
 }

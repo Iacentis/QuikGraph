@@ -1,5 +1,4 @@
 ﻿using BenchmarkDotNet.Attributes;
-using QuikGraph.Petri;
 
 namespace QuikGraph.Petri.Benchmarks
 {
@@ -9,8 +8,7 @@ namespace QuikGraph.Petri.Benchmarks
         private PetriNet<int> _net;
         private PetriNetSimulator<int> _simulator;
 
-        [Params(10, 50)]
-        public int TransitionCount;
+        [Params(10, 50)] public int TransitionCount;
 
         [GlobalSetup]
         public void Setup()

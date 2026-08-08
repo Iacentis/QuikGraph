@@ -1,17 +1,17 @@
 ﻿using System;
-#if SUPPORTS_SERIALIZATION
+
 using System.Runtime.Serialization;
-#endif
-using JetBrains.Annotations;
+
+
 
 namespace QuikGraph
 {
     /// <summary>
     /// Exception raised when an algorithm find a negative capacity in a graph.
     /// </summary>
-#if SUPPORTS_SERIALIZATION
+
     [Serializable]
-#endif
+
     public class NegativeCapacityException : QuikGraphException
     {
         /// <summary>
@@ -25,19 +25,20 @@ namespace QuikGraph
         /// <summary>
         /// Initializes a new instance of <see cref="NegativeCapacityException"/> class.
         /// </summary>
-        public NegativeCapacityException([NotNull] string message, [CanBeNull] Exception innerException = null)
+        public NegativeCapacityException( string message,  Exception innerException = null)
             : base(message, innerException)
         {
         }
 
-#if SUPPORTS_SERIALIZATION
+
         /// <summary>
         /// Constructor used during runtime serialization.
         /// </summary>
+        [Obsolete("Obsolete")]
         protected NegativeCapacityException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }
-#endif
+
     }
 }

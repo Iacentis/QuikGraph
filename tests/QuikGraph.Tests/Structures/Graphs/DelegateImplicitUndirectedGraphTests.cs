@@ -28,9 +28,9 @@ namespace QuikGraph.Tests.Structures
                 bool parallelEdges = true)
                 where TEdge : IEdge<TVertex>
             {
-                Assert.IsFalse(g.IsDirected);
-                Assert.AreEqual(parallelEdges, g.AllowParallelEdges);
-                Assert.IsNotNull(g.EdgeEqualityComparer);
+                Assert.That(g.IsDirected,Is.False);
+                Assert.That(parallelEdges,Is.EqualTo(g.AllowParallelEdges));
+                Assert.That(g.EdgeEqualityComparer,Is.Not.Null);
             }
 
             #endregion

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
-using JetBrains.Annotations;
+using System.Diagnostics.Contracts;
+
 
 namespace QuikGraph.Petri
 {
@@ -20,14 +21,14 @@ namespace QuikGraph.Petri
         /// <summary>
         /// Set of tokens (marking of the place).
         /// </summary>
-        [NotNull, ItemNotNull]
+
         IList<TToken> Marking { get; }
 
         /// <summary>
         /// Converts this <see cref="IPlace{TToken}"/> to string (includes <see cref="Marking"/>).
         /// </summary>
         [Pure]
-        [NotNull]
+
         string ToStringWithMarking();
     }
 }

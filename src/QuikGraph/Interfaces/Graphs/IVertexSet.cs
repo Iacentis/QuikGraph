@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph
 {
@@ -23,7 +23,7 @@ namespace QuikGraph
         /// <summary>
         /// Gets the vertices.
         /// </summary>
-        [NotNull, ItemNotNull]
+
         IEnumerable<TVertex> Vertices { get; }
     }
 }

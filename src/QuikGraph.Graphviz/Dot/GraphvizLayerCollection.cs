@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.Contracts;
 using System.Text;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph.Graphviz.Dot
 {
     /// <summary>
     /// Graphviz layer collection.
     /// </summary>
-#if SUPPORTS_SERIALIZATION
+
     [Serializable]
-#endif
+
     public class GraphvizLayerCollection : Collection<GraphvizLayer>
     {
         /// <summary>
@@ -26,7 +27,7 @@ namespace QuikGraph.Graphviz.Dot
         /// </summary>
         /// <param name="collection">The collection that is wrapped by the new collection.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="collection"/> is <see langword="null"/>.</exception>
-        public GraphvizLayerCollection([NotNull, ItemNotNull] IList<GraphvizLayer> collection)
+        public GraphvizLayerCollection( IList<GraphvizLayer> collection)
             : base(collection)
         {
         }
@@ -36,12 +37,12 @@ namespace QuikGraph.Graphviz.Dot
         /// </summary>
         /// <param name="collection">The collection that is wrapped by the new collection.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="collection"/> is <see langword="null"/>.</exception>
-        public GraphvizLayerCollection([NotNull, ItemNotNull] GraphvizLayerCollection collection)
+        public GraphvizLayerCollection( GraphvizLayerCollection collection)
             : base(collection)
         {
         }
 
-        [NotNull]
+
         private string _separators = ":";
 
         /// <summary>
@@ -49,7 +50,7 @@ namespace QuikGraph.Graphviz.Dot
         /// <see href="https://www.graphviz.org/doc/info/attrs.html#d:layersep">See more</see>
         /// </summary>
         /// <exception cref="T:System.ArgumentException">Set value is <see langword="null"/> or empty.</exception>
-        [NotNull]
+
         public string Separators
         {
             get => _separators;
@@ -67,7 +68,7 @@ namespace QuikGraph.Graphviz.Dot
         /// </summary>
         /// <returns>Collection as DOT.</returns>
         [Pure]
-        [NotNull]
+
         public string ToDot()
         {
             if (Count == 0)

@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations;
+﻿using System.Diagnostics.Contracts;
 
 namespace QuikGraph
 {
@@ -20,7 +20,7 @@ namespace QuikGraph
         /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
         [Pure]
-        [NotNull]
-        TEdge Clone([NotNull] TVertex source, [NotNull] TVertex target);
+
+        TEdge Clone( TVertex source,  TVertex target);
     }
 }

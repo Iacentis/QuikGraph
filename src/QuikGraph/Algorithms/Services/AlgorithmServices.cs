@@ -1,5 +1,5 @@
 ﻿using System;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph.Algorithms.Services
 {
@@ -8,7 +8,7 @@ namespace QuikGraph.Algorithms.Services
     /// </summary>
     internal sealed class AlgorithmServices : IAlgorithmServices
     {
-        [NotNull]
+
         private readonly IAlgorithmComponent _host;
 
         /// <summary>
@@ -16,7 +16,7 @@ namespace QuikGraph.Algorithms.Services
         /// </summary>
         /// <param name="host">Algorithm host.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="host"/> is <see langword="null"/>.</exception>
-        public AlgorithmServices([NotNull] IAlgorithmComponent host)
+        public AlgorithmServices( IAlgorithmComponent host)
         {
             _host = host ?? throw new ArgumentNullException(nameof(host));
         }
@@ -24,7 +24,7 @@ namespace QuikGraph.Algorithms.Services
         private ICancelManager _cancelManager;
 
         /// <inheritdoc />
-        public ICancelManager CancelManager => 
+        public ICancelManager CancelManager =>
             (_cancelManager ?? (_cancelManager = _host.GetService<ICancelManager>())) ?? throw new InvalidOperationException("No cancel manager service registered.");
     }
 }

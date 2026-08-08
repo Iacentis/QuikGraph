@@ -3,8 +3,8 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml.Serialization;
-using JetBrains.Annotations;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace QuikGraph.Serialization.Tests
 {
@@ -14,14 +14,13 @@ namespace QuikGraph.Serialization.Tests
     [TestFixture]
     internal sealed class XmlSerializableStructuresTests
     {
-        [NotNull]
         private const string XmlHeader = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
 
         #region Test helpers
 
         private static void SerializeAndRead<TVertex, TEdge, TGraph>(
-            [NotNull] XmlSerializableGraph<TVertex, TEdge, TGraph> graph,
-            [NotNull, InstantHandle] Action<string> checkSerializedContent)
+            XmlSerializableGraph<TVertex, TEdge, TGraph> graph,
+            Action<string> checkSerializedContent)
             where TEdge : IEdge<TVertex>
             where TGraph : IMutableVertexAndEdgeListGraph<TVertex, TEdge>, new()
         {
@@ -52,14 +51,17 @@ namespace QuikGraph.Serialization.Tests
         [Test]
         public void SerializeToXml_Empty()
         {
-            var emptyGraph = new XmlSerializableGraph<Person, XmlSerializableEdge<Person>, AdjacencyGraph<Person, XmlSerializableEdge<Person>>>();
+            var emptyGraph =
+                new XmlSerializableGraph<Person, XmlSerializableEdge<Person>,
+                    AdjacencyGraph<Person, XmlSerializableEdge<Person>>>();
 
             SerializeAndRead(
                 emptyGraph,
                 content =>
                 {
-                    var regex = new Regex($@"{Regex.Escape(XmlHeader)}\s*<graph\s*.*?\s*>\s*<vertices\s*\/>\s*<edges\s*\/>\s*<\/graph>");
-                    Assert.IsTrue(regex.Match(content).Success);
+                    var regex = new Regex(
+                        $@"{Regex.Escape(XmlHeader)}\s*<graph\s*.*?\s*>\s*<vertices\s*\/>\s*<edges\s*\/>\s*<\/graph>");
+                    Assert.That(regex.Match(content).Success, Is.True);
                 });
         }
 
@@ -67,15 +69,16 @@ namespace QuikGraph.Serialization.Tests
         public void SerializeToXml()
         {
             var wrappedGraph = new AdjacencyGraph<int, XmlSerializableEdge<int>>();
-            wrappedGraph.AddVerticesAndEdgeRange(new[]
-            {
+            wrappedGraph.AddVerticesAndEdgeRange([
                 new XmlSerializableEdge<int> { Source = 1, Target = 2 },
                 new XmlSerializableEdge<int> { Source = 1, Target = 3 },
-                new XmlSerializableEdge<int> { Source = 2, Target = 2 },
-            });
+                new XmlSerializableEdge<int> { Source = 2, Target = 2 }
+            ]);
             wrappedGraph.AddVertex(4);
 
-            var graph = new XmlSerializableGraph<int, XmlSerializableEdge<int>, AdjacencyGraph<int, XmlSerializableEdge<int>>>(wrappedGraph);
+            var graph =
+                new XmlSerializableGraph<int, XmlSerializableEdge<int>, AdjacencyGraph<int, XmlSerializableEdge<int>>>(
+                    wrappedGraph);
             SerializeAndRead(
                 graph,
                 content =>
@@ -88,6 +91,7 @@ namespace QuikGraph.Serialization.Tests
                         graphContent.Append(
                             $@"<vertex>{vertex}<\/vertex>\s*");
                     }
+
                     graphContent.Append(@"<\/vertices>\s*");
 
                     graphContent.Append(@"<edges>\s*");
@@ -96,11 +100,12 @@ namespace QuikGraph.Serialization.Tests
                         graphContent.Append(
                             $@"<edge>\s*<Source>{edge.Source}<\/Source>\s*<Target>{edge.Target}<\/Target>\s*<\/edge>\s*");
                     }
+
                     graphContent.Append(@"<\/edges>");
 
                     var regex = new Regex(
                         $@"{Regex.Escape(XmlHeader)}\s*<graph\s*.*?\s*>\s*{graphContent}\s*<\/graph>");
-                    Assert.IsTrue(regex.Match(content).Success);
+                    Assert.That(regex.Match(content).Success, Is.True);
                 });
         }
 
@@ -113,10 +118,11 @@ namespace QuikGraph.Serialization.Tests
             CollectionAssert.IsEmpty(graph.Vertices);
             CollectionAssert.IsEmpty(graph.Edges);
 
-            var vertices = new XmlSerializableGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>.XmlVertexList(wrappedGraph)
-            {
-                1, 2
-            };
+            var vertices =
+                new XmlSerializableGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>.XmlVertexList(wrappedGraph)
+                {
+                    1, 2
+                };
             graph.Vertices = vertices;
 
             CollectionAssert.AreEqual(
@@ -126,10 +132,11 @@ namespace QuikGraph.Serialization.Tests
 
             var edge12 = new Edge<int>(1, 2);
             var edge22 = new Edge<int>(2, 2);
-            var edges = new XmlSerializableGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>.XmlEdgeList(wrappedGraph)
-            {
-                edge12, edge22
-            };
+            var edges =
+                new XmlSerializableGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>.XmlEdgeList(wrappedGraph)
+                {
+                    edge12, edge22
+                };
             graph.Edges = edges;
 
             CollectionAssert.AreEqual(
@@ -145,28 +152,29 @@ namespace QuikGraph.Serialization.Tests
         {
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(
-                () => new XmlSerializableGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(null));
+            Assert.Throws<ArgumentNullException>(() =>
+                new XmlSerializableGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>(null));
         }
 
         [Test]
         public void XmlVertexList()
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            var vertexList = new XmlSerializableGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>.XmlVertexList(graph);
+            var vertexList =
+                new XmlSerializableGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>.XmlVertexList(graph);
 
             CollectionAssert.IsEmpty(vertexList);
 
             var edge12 = new Edge<int>(1, 2);
             var edge22 = new Edge<int>(2, 2);
-            graph.AddVerticesAndEdgeRange(new[] { edge12, edge22 });
+            graph.AddVerticesAndEdgeRange([edge12, edge22]);
 
             CollectionAssert.AreEqual(
                 new[] { 1, 2 },
                 vertexList);
 
             graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[] { edge12, edge22 });
+            graph.AddVerticesAndEdgeRange([edge12, edge22]);
             vertexList = new XmlSerializableGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>.XmlVertexList(graph);
 
             CollectionAssert.AreEqual(
@@ -179,15 +187,16 @@ namespace QuikGraph.Serialization.Tests
         {
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(
-                () => new XmlSerializableGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>.XmlVertexList(null));
+            Assert.Throws<ArgumentNullException>(() =>
+                new XmlSerializableGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>.XmlVertexList(null));
         }
 
         [Test]
         public void XmlVertexList_Add()
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            var vertexList = new XmlSerializableGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>.XmlVertexList(graph);
+            var vertexList =
+                new XmlSerializableGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>.XmlVertexList(graph);
 
             CollectionAssert.IsEmpty(vertexList);
 
@@ -208,7 +217,9 @@ namespace QuikGraph.Serialization.Tests
         public void XmlVertexList_Add_Throws()
         {
             var graph = new AdjacencyGraph<TestVertex, Edge<TestVertex>>();
-            var vertexList = new XmlSerializableGraph<TestVertex, Edge<TestVertex>, AdjacencyGraph<TestVertex, Edge<TestVertex>>>.XmlVertexList(graph);
+            var vertexList =
+                new XmlSerializableGraph<TestVertex, Edge<TestVertex>, AdjacencyGraph<TestVertex, Edge<TestVertex>>>.
+                    XmlVertexList(graph);
             // ReSharper disable once AssignNullToNotNullAttribute
             Assert.Throws<ArgumentNullException>(() => vertexList.Add(null));
         }
@@ -223,14 +234,14 @@ namespace QuikGraph.Serialization.Tests
 
             var edge12 = new Edge<int>(1, 2);
             var edge22 = new Edge<int>(2, 2);
-            graph.AddVerticesAndEdgeRange(new[] { edge12, edge22 });
+            graph.AddVerticesAndEdgeRange([edge12, edge22]);
 
             CollectionAssert.AreEqual(
                 new[] { edge12, edge22 },
                 edgeList);
 
             graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[] { edge12, edge22 });
+            graph.AddVerticesAndEdgeRange([edge12, edge22]);
             edgeList = new XmlSerializableGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>.XmlEdgeList(graph);
 
             CollectionAssert.AreEqual(
@@ -243,8 +254,8 @@ namespace QuikGraph.Serialization.Tests
         {
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(
-                () => new XmlSerializableGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>.XmlEdgeList(null));
+            Assert.Throws<ArgumentNullException>(() =>
+                new XmlSerializableGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>.XmlEdgeList(null));
         }
 
         [Test]
@@ -252,7 +263,7 @@ namespace QuikGraph.Serialization.Tests
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
             var edgeList = new XmlSerializableGraph<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>.XmlEdgeList(graph);
-            
+
             CollectionAssert.IsEmpty(edgeList);
 
             var edge12 = new Edge<int>(1, 2);

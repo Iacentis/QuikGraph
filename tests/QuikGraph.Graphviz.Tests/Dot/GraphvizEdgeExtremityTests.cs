@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using QuikGraph.Graphviz.Dot;
 
 namespace QuikGraph.Graphviz.Tests
@@ -27,20 +27,20 @@ namespace QuikGraph.Graphviz.Tests
                 GraphvizEdgeExtremity extremity,
                 bool head)
             {
-                Assert.AreEqual(head, extremity.IsHead);
-                Assert.IsTrue(extremity.IsClipped);
-                Assert.IsNull(extremity.Url);
-                Assert.IsFalse(extremity.IsHtmlLabel);
-                Assert.IsNull(extremity.Label);
-                Assert.IsNull(extremity.ToolTip);
-                Assert.IsNull(extremity.Logical);
-                Assert.IsNull(extremity.Same);
+                Assert.That(head,Is.EqualTo(extremity.IsHead));
+                Assert.That(extremity.IsClipped,Is.True);
+                Assert.That(extremity.Url,Is.Null);
+                Assert.That(extremity.IsHtmlLabel,Is.False);
+                Assert.That(extremity.Label,Is.Null);
+                Assert.That(extremity.ToolTip,Is.Null);
+                Assert.That(extremity.Logical,Is.Null);
+                Assert.That(extremity.Same,Is.Null);
             }
 
             #endregion
         }
 
-        [NotNull, ItemNotNull]
+
         private static IEnumerable<TestCaseData> AddParametersTestCases
         {
             get
@@ -163,8 +163,8 @@ namespace QuikGraph.Graphviz.Tests
 
         [TestCaseSource(nameof(AddParametersTestCases))]
         public void AddParameters(
-            [NotNull] GraphvizEdgeExtremity extremity,
-            [NotNull] Dictionary<string, object> expectedParameters)
+             GraphvizEdgeExtremity extremity,
+             Dictionary<string, object> expectedParameters)
         {
             var parameters = new Dictionary<string, object>();
             extremity.AddParameters(parameters);

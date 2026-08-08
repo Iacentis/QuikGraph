@@ -1,13 +1,14 @@
 using System;
 using System.Diagnostics;
-using JetBrains.Annotations;
+using System.Diagnostics.Contracts;
+
 
 namespace QuikGraph.Utils
 {
     /// <summary>
     /// Helpers to work with <see cref="IDisposable"/>.
     /// </summary>
-    internal static class DisposableHelpers
+    public static class DisposableHelpers
     {
         /// <summary>
         /// Calls an action when going out of scope.
@@ -15,8 +16,7 @@ namespace QuikGraph.Utils
         /// <param name="action">The action to call.</param>
         /// <returns>A <see cref="IDisposable"/> object to give to a using clause.</returns>
         [Pure]
-        [NotNull]
-        public static IDisposable Finally([NotNull] Action action)
+        public static IDisposable Finally(Action action)
         {
             return new FinallyScope(action);
         }
@@ -25,7 +25,7 @@ namespace QuikGraph.Utils
         {
             private Action _action;
 
-            public FinallyScope([NotNull] Action action)
+            public FinallyScope(Action action)
             {
                 Debug.Assert(action != null);
 

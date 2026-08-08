@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using QuikGraph.Algorithms;
 using QuikGraph.Algorithms.ConnectedComponents;
 using static QuikGraph.Tests.Algorithms.AlgorithmTestHelpers;
@@ -52,13 +53,13 @@ namespace QuikGraph.Tests.Algorithms.ConnectedComponents
         public void IncrementalConnectedComponent()
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVertexRange(new[] { 0, 1, 2, 3 });
+            graph.AddVertexRange([0, 1, 2, 3]);
 
             var algorithm = new IncrementalConnectedComponentsAlgorithm<int, Edge<int>>(graph);
             algorithm.Compute();
 
-            Assert.AreEqual(4, algorithm.ComponentCount);
-            Assert.AreEqual(4, algorithm.GetComponents().Key);
+            Assert.That(4,Is.EqualTo(algorithm.ComponentCount));
+            Assert.That(4,Is.EqualTo(algorithm.GetComponents().Key));
             CollectionAssert.AreEquivalent(
                 new Dictionary<int, int>
                 {
@@ -70,8 +71,8 @@ namespace QuikGraph.Tests.Algorithms.ConnectedComponents
                 algorithm.GetComponents().Value);
 
             graph.AddEdge(new Edge<int>(0, 1));
-            Assert.AreEqual(3, algorithm.ComponentCount);
-            Assert.AreEqual(3, algorithm.GetComponents().Key);
+            Assert.That(3,Is.EqualTo(algorithm.ComponentCount));
+            Assert.That(3,Is.EqualTo(algorithm.GetComponents().Key));
             CollectionAssert.AreEquivalent(
                 new Dictionary<int, int>
                 {
@@ -83,8 +84,8 @@ namespace QuikGraph.Tests.Algorithms.ConnectedComponents
                 algorithm.GetComponents().Value);
 
             graph.AddEdge(new Edge<int>(2, 3));
-            Assert.AreEqual(2, algorithm.ComponentCount);
-            Assert.AreEqual(2, algorithm.GetComponents().Key);
+            Assert.That(2,Is.EqualTo(algorithm.ComponentCount));
+            Assert.That(2,Is.EqualTo(algorithm.GetComponents().Key));
             CollectionAssert.AreEquivalent(
                 new Dictionary<int, int>
                 {
@@ -96,8 +97,8 @@ namespace QuikGraph.Tests.Algorithms.ConnectedComponents
                 algorithm.GetComponents().Value);
 
             graph.AddEdge(new Edge<int>(1, 3));
-            Assert.AreEqual(1, algorithm.ComponentCount);
-            Assert.AreEqual(1, algorithm.GetComponents().Key);
+            Assert.That(1,Is.EqualTo(algorithm.ComponentCount));
+            Assert.That(1,Is.EqualTo(algorithm.GetComponents().Key));
             CollectionAssert.AreEquivalent(
                 new Dictionary<int, int>
                 {
@@ -109,8 +110,8 @@ namespace QuikGraph.Tests.Algorithms.ConnectedComponents
                 algorithm.GetComponents().Value);
 
             graph.AddVerticesAndEdge(new Edge<int>(4, 5));
-            Assert.AreEqual(2, algorithm.ComponentCount);
-            Assert.AreEqual(2, algorithm.GetComponents().Key);
+            Assert.That(2,Is.EqualTo(algorithm.ComponentCount));
+            Assert.That(2,Is.EqualTo(algorithm.GetComponents().Key));
             CollectionAssert.AreEquivalent(
                 new Dictionary<int, int>
                 {
@@ -124,8 +125,8 @@ namespace QuikGraph.Tests.Algorithms.ConnectedComponents
                 algorithm.GetComponents().Value);
 
             graph.AddVertex(6);
-            Assert.AreEqual(3, algorithm.ComponentCount);
-            Assert.AreEqual(3, algorithm.GetComponents().Key);
+            Assert.That(3,Is.EqualTo(algorithm.ComponentCount));
+            Assert.That(3,Is.EqualTo(algorithm.GetComponents().Key));
             CollectionAssert.AreEquivalent(
                 new Dictionary<int, int>
                 {
@@ -145,12 +146,11 @@ namespace QuikGraph.Tests.Algorithms.ConnectedComponents
         {
             var graph = new AdjacencyGraph<int, Edge<int>>();
             var edge13 = new Edge<int>(1, 3);
-            graph.AddVerticesAndEdgeRange(new[]
-            {
+            graph.AddVerticesAndEdgeRange([
                 new Edge<int>(1, 2),
                 edge13,
                 new Edge<int>(4, 5)
-            });
+            ]);
             graph.AddVertex(6);
 
             using (graph.IncrementalConnectedComponents(out Func<KeyValuePair<int, IDictionary<int, int>>> _))

@@ -1,17 +1,17 @@
 ﻿using System;
-using JetBrains.Annotations;
-#if SUPPORTS_SERIALIZATION
+
+
 using System.Runtime.Serialization;
-#endif
+
 
 namespace QuikGraph
 {
     /// <summary>
     /// Exception raised when an algorithm detected a parallel edge that is not allowed.
     /// </summary>
-#if SUPPORTS_SERIALIZATION
+
     [Serializable]
-#endif
+
     public class ParallelEdgeNotAllowedException : QuikGraphException
     {
         /// <summary>
@@ -25,19 +25,20 @@ namespace QuikGraph
         /// <summary>
         /// Initializes a new instance of <see cref="ParallelEdgeNotAllowedException"/> class.
         /// </summary>
-        public ParallelEdgeNotAllowedException([NotNull] string message, [CanBeNull] Exception innerException = null)
+        public ParallelEdgeNotAllowedException( string message,  Exception innerException = null)
             : base(message, innerException)
         {
         }
 
-#if SUPPORTS_SERIALIZATION
+
         /// <summary>
         /// Constructor used during runtime serialization.
         /// </summary>
+        [Obsolete("Obsolete")]
         protected ParallelEdgeNotAllowedException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }
-#endif
+
     }
 }

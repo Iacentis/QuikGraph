@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using static QuikGraph.Tests.GraphTestHelpers;
 
 namespace QuikGraph.Tests.Structures
@@ -48,16 +48,16 @@ namespace QuikGraph.Tests.Structures
                 ClusteredAdjacencyGraph<int, Edge<int>> parent = null)
                 where TEdge : IEdge<TVertex>
             {
-                Assert.IsTrue(g.IsDirected);
-                Assert.AreEqual(parallelEdges, g.AllowParallelEdges);
+                Assert.That(g.IsDirected, Is.True);
+                Assert.That(parallelEdges, Is.EqualTo(g.AllowParallelEdges));
                 AssertEmptyGraph(g);
-                Assert.AreEqual(edgeCapacity, g.EdgeCapacity);
-                Assert.AreSame(typeof(int), g.VertexType);
-                Assert.AreSame(typeof(Edge<int>), g.EdgeType);
+                Assert.That(edgeCapacity, Is.EqualTo(g.EdgeCapacity));
+                Assert.That(typeof(int), Is.SameAs(g.VertexType));
+                Assert.That(typeof(Edge<int>), Is.SameAs(g.EdgeType));
                 if (parent is null)
-                    Assert.IsNull(g.Parent);
+                    Assert.That(g.Parent, Is.Null);
                 else
-                    Assert.AreSame(parent, g.Parent);
+                    Assert.That(parent, Is.SameAs(g.Parent));
             }
 
             #endregion
@@ -690,29 +690,29 @@ namespace QuikGraph.Tests.Structures
                 // Clear 1 => In graph but no out edges
                 g.AddVertex(1);
                 g.ClearOutEdges(1);
-                AssertHasVertices(g, new[] { 1 });
+                AssertHasVertices(g, [1]);
                 AssertNoEdge(g);
 
                 var edge12 = new Edge<int>(1, 2);
                 var edge23 = new Edge<int>(2, 3);
-                g.AddVerticesAndEdgeRange(new[] { edge12, edge23 });
+                g.AddVerticesAndEdgeRange([edge12, edge23]);
 
                 // Clear 1
                 g.ClearOutEdges(1);
-                AssertHasEdges(g, new[] { edge23 });
+                AssertHasEdges(g, [edge23]);
 
                 var edge13 = new Edge<int>(1, 3);
                 var edge31 = new Edge<int>(3, 1);
                 var edge32 = new Edge<int>(3, 2);
-                g.AddVerticesAndEdgeRange(new[] { edge12, edge13, edge31, edge32 });
+                g.AddVerticesAndEdgeRange([edge12, edge13, edge31, edge32]);
 
                 // Clear 3
                 g.ClearOutEdges(3);
-                AssertHasEdges(g, new[] { edge12, edge13, edge23 });
+                AssertHasEdges(g, [edge12, edge13, edge23]);
 
                 // Clear 1
                 g.ClearOutEdges(1);
-                AssertHasEdges(g, new[] { edge23 });
+                AssertHasEdges(g, [edge23]);
 
                 // Clear 2 = Clear
                 g.ClearOutEdges(2);
@@ -738,20 +738,20 @@ namespace QuikGraph.Tests.Structures
         #region Test helpers
 
         private static void AssertNoCluster(
-            [NotNull] IClusteredGraph graph)
+            IClusteredGraph graph)
         {
-            Assert.AreEqual(0, graph.ClustersCount);
+            Assert.That(0, Is.EqualTo(graph.ClustersCount));
             CollectionAssert.IsEmpty(graph.Clusters);
         }
 
         private static void AssertHasClusters(
-            [NotNull] IClusteredGraph graph,
-            [NotNull, ItemNotNull] IEnumerable<IClusteredGraph> clusters)
+            IClusteredGraph graph,
+            IEnumerable<IClusteredGraph> clusters)
         {
             IClusteredGraph[] clusterArray = clusters.ToArray();
             CollectionAssert.IsNotEmpty(clusterArray);
 
-            Assert.AreEqual(clusterArray.Length, graph.ClustersCount);
+            Assert.That(clusterArray.Length, Is.EqualTo(graph.ClustersCount));
             CollectionAssert.AreEquivalent(clusterArray, graph.Clusters);
         }
 
@@ -765,16 +765,16 @@ namespace QuikGraph.Tests.Structures
             var wrappedGraph = new AdjacencyGraph<int, Edge<int>>();
             var graph = new ClusteredAdjacencyGraph<int, Edge<int>>(wrappedGraph);
 
-            Assert.IsFalse(graph.Collapsed);
+            Assert.That(graph.Collapsed, Is.False);
 
             graph.Collapsed = true;
-            Assert.IsTrue(graph.Collapsed);
+            Assert.That(graph.Collapsed, Is.True);
 
             graph.Collapsed = true;
-            Assert.IsTrue(graph.Collapsed);
+            Assert.That(graph.Collapsed, Is.True);
 
             graph.Collapsed = false;
-            Assert.IsFalse(graph.Collapsed);
+            Assert.That(graph.Collapsed, Is.False);
         }
 
         [Test]
@@ -786,12 +786,12 @@ namespace QuikGraph.Tests.Structures
             AssertNoCluster(graph);
 
             IClusteredGraph cluster = graph.AddCluster();
-            Assert.IsNotNull(cluster);
-            AssertHasClusters(graph, new[] { cluster });
+            Assert.That(cluster, Is.Not.Null);
+            AssertHasClusters(graph, [cluster]);
 
             IClusteredGraph cluster2 = ((IClusteredGraph)graph).AddCluster();
-            Assert.IsNotNull(cluster2);
-            AssertHasClusters(graph, new[] { cluster, cluster2 });
+            Assert.That(cluster2, Is.Not.Null);
+            AssertHasClusters(graph, [cluster, cluster2]);
         }
 
         [Test]
@@ -809,13 +809,13 @@ namespace QuikGraph.Tests.Structures
             var graphNotInClusters = new ClusteredAdjacencyGraph<int, Edge<int>>(wrappedGraph2);
 
             graph.RemoveCluster(graphNotInClusters);
-            AssertHasClusters(graph, new[] { cluster, cluster2, cluster3 });
+            AssertHasClusters(graph, [cluster, cluster2, cluster3]);
 
             graph.RemoveCluster(cluster2);
-            AssertHasClusters(graph, new[] { cluster, cluster3 });
+            AssertHasClusters(graph, [cluster, cluster3]);
 
             graph.RemoveCluster(cluster);
-            AssertHasClusters(graph, new[] { cluster3 });
+            AssertHasClusters(graph, [cluster3]);
 
             graph.RemoveCluster(cluster3);
             AssertNoCluster(graph);

@@ -1,6 +1,6 @@
-#if SUPPORTS_GRAPHS_SERIALIZATION
+using System.Diagnostics.Contracts;
 using System.Reflection;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph.Serialization
 {
@@ -9,29 +9,29 @@ namespace QuikGraph.Serialization
         /// <summary>
         /// Gets the embedded <see cref="PropertyInfo"/>.
         /// </summary>
-        [NotNull]
+
         public PropertyInfo Property { get; }
 
         /// <summary>
         /// Gets the property name.
         /// </summary>
-        [NotNull]
+
         public string Name { get; }
 
         private readonly bool _hasValue;
 
-        [CanBeNull]
+
         private readonly object _value;
 
-        public PropertySerializationInfo([NotNull] PropertyInfo property, [NotNull] string name)
+        public PropertySerializationInfo(PropertyInfo property, string name)
             : this(property, name, null)
         {
         }
 
         public PropertySerializationInfo(
-            [NotNull] PropertyInfo property,
-            [NotNull] string name,
-            [CanBeNull] object value)
+            PropertyInfo property,
+            string name,
+            object value)
         {
             Property = property;
             Name = name;
@@ -47,4 +47,3 @@ namespace QuikGraph.Serialization
         }
     }
 }
-#endif

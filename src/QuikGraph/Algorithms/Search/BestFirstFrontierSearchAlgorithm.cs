@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using JetBrains.Annotations;
+
 using QuikGraph.Algorithms.Services;
 using QuikGraph.Collections;
 
@@ -21,10 +21,10 @@ namespace QuikGraph.Algorithms.Search
         , ITreeBuilderAlgorithm<TVertex, TEdge>
         where TEdge : IEdge<TVertex>
     {
-        [NotNull]
+
         private readonly Func<TEdge, double> _edgeWeights;
 
-        [NotNull]
+
         private readonly IDistanceRelaxer _distanceRelaxer;
 
         /// <summary>
@@ -37,9 +37,9 @@ namespace QuikGraph.Algorithms.Search
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceRelaxer"/> is <see langword="null"/>.</exception>
         public BestFirstFrontierSearchAlgorithm(
-            [NotNull] IBidirectionalIncidenceGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] Func<TEdge, double> edgeWeights,
-            [NotNull] IDistanceRelaxer distanceRelaxer)
+             IBidirectionalIncidenceGraph<TVertex, TEdge> visitedGraph,
+             Func<TEdge, double> edgeWeights,
+             IDistanceRelaxer distanceRelaxer)
             : this(null, visitedGraph, edgeWeights, distanceRelaxer)
         {
         }
@@ -55,10 +55,10 @@ namespace QuikGraph.Algorithms.Search
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeWeights"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="distanceRelaxer"/> is <see langword="null"/>.</exception>
         public BestFirstFrontierSearchAlgorithm(
-            [CanBeNull] IAlgorithmComponent host,
-            [NotNull] IBidirectionalIncidenceGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] Func<TEdge, double> edgeWeights,
-            [NotNull] IDistanceRelaxer distanceRelaxer)
+             IAlgorithmComponent host,
+             IBidirectionalIncidenceGraph<TVertex, TEdge> visitedGraph,
+             Func<TEdge, double> edgeWeights,
+             IDistanceRelaxer distanceRelaxer)
             : base(host, visitedGraph)
         {
             _edgeWeights = edgeWeights ?? throw new ArgumentNullException(nameof(edgeWeights));
@@ -110,9 +110,9 @@ namespace QuikGraph.Algorithms.Search
                 // compute their cost and delete node n
                 ExpandNode(n, operators, cost, open);
 
-#if DEBUG
+
                 OperatorMaxCount = Math.Max(OperatorMaxCount, operators.Count);
-#endif
+
 
                 // (6) In a directed graph, generate each predecessor node n via an unused operator
                 // and create dummy nodes for each with costs of infinity
@@ -129,10 +129,10 @@ namespace QuikGraph.Algorithms.Search
         }
 
         private void ExpandNode(
-            [NotNull] TVertex n,
-            [NotNull] IDictionary<TEdge, GraphColor> operators,
+             TVertex n,
+             IDictionary<TEdge, GraphColor> operators,
             double cost,
-            [NotNull] BinaryHeap<double, TVertex> open)
+             BinaryHeap<double, TVertex> open)
         {
             // Skip self-edges
             foreach (TEdge edge in VisitedGraph.OutEdges(n).Where(e => !e.IsSelfEdge()))
@@ -165,19 +165,19 @@ namespace QuikGraph.Algorithms.Search
 
         #endregion
 
-#if DEBUG
+
         /// <summary>
         /// Gets the maximum number of operators.
         /// </summary>
         public int OperatorMaxCount { get; private set; } = -1;
-#endif
+
 
         #region ITreeBuilderAlgorithm<TVertex,TEdge>
 
         /// <inheritdoc />
         public event EdgeAction<TVertex, TEdge> TreeEdge;
 
-        private void OnTreeEdge([NotNull] TEdge edge)
+        private void OnTreeEdge( TEdge edge)
         {
             Debug.Assert(edge != null);
 

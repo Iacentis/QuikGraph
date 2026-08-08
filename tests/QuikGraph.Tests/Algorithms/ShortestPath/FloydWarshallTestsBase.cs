@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using JetBrains.Annotations;
+using System.Diagnostics.Contracts;
 using QuikGraph.Algorithms.ShortestPath;
 
 namespace QuikGraph.Tests.Algorithms.ShortestPath
@@ -12,8 +12,8 @@ namespace QuikGraph.Tests.Algorithms.ShortestPath
         #region Test helpers
 
         [Pure]
-        [NotNull]
-        protected static AdjacencyGraph<char, Edge<char>> CreateGraph([NotNull] Dictionary<Edge<char>, double> distances)
+
+        protected static AdjacencyGraph<char, Edge<char>> CreateGraph( Dictionary<Edge<char>, double> distances)
         {
             var graph = new AdjacencyGraph<char, Edge<char>>();
 

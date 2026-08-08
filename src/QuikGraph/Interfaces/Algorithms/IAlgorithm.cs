@@ -1,4 +1,4 @@
-using JetBrains.Annotations;
+
 
 namespace QuikGraph.Algorithms
 {
@@ -11,7 +11,7 @@ namespace QuikGraph.Algorithms
         /// <summary>
         /// Gets the graph to visit with this algorithm.
         /// </summary>
-        [NotNull]
+
         TGraph VisitedGraph { get; }
     }
 }

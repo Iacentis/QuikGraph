@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
-using JetBrains.Annotations;
+using System.Diagnostics.Contracts;
+
 
 namespace QuikGraph.Algorithms.RandomWalks
 {
@@ -21,8 +22,7 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         [Pure]
-        [ContractAnnotation("=> true, successor:notnull;=> false, successor:null")]
-        bool TryGetSuccessor([NotNull] IImplicitGraph<TVertex, TEdge> graph, [NotNull] TVertex vertex, out TEdge successor);
+        bool TryGetSuccessor(IImplicitGraph<TVertex, TEdge> graph, TVertex vertex, out TEdge successor);
 
         /// <summary>
         /// Tries to get the successor of the given <paramref name="vertex"/> in the given set of <paramref name="edges"/>.
@@ -34,7 +34,6 @@ namespace QuikGraph.Algorithms.RandomWalks
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edges"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
         [Pure]
-        [ContractAnnotation("=> true, successor:notnull;=> false, successor:null")]
-        bool TryGetSuccessor([NotNull, ItemNotNull] IEnumerable<TEdge> edges, [NotNull] TVertex vertex, out TEdge successor);
+        bool TryGetSuccessor(IEnumerable<TEdge> edges, TVertex vertex, out TEdge successor);
     }
 }

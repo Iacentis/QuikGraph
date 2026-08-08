@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
 using QuikGraph.Algorithms.Services;
 
 namespace QuikGraph.Algorithms.MaximumFlow
@@ -10,7 +9,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
-    public abstract class MaximumFlowAlgorithm<TVertex, TEdge> 
+    public abstract class MaximumFlowAlgorithm<TVertex, TEdge>
         : AlgorithmBase<IMutableVertexAndEdgeListGraph<TVertex, TEdge>>
         , IVertexColorizerAlgorithm<TVertex>
         where TEdge : IEdge<TVertex>
@@ -26,10 +25,10 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <exception cref="T:System.ArgumentNullException"><paramref name="capacities"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/>.</exception>
         protected MaximumFlowAlgorithm(
-            [CanBeNull] IAlgorithmComponent host,
-            [NotNull] IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] Func<TEdge, double> capacities,
-            [NotNull] EdgeFactory<TVertex, TEdge> edgeFactory)
+             IAlgorithmComponent host,
+             IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
+             Func<TEdge, double> capacities,
+             EdgeFactory<TVertex, TEdge> edgeFactory)
             : base(host, visitedGraph)
         {
             Capacities = capacities ?? throw new ArgumentNullException(nameof(capacities));
@@ -41,25 +40,25 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <summary>
         /// Flow vertices predecessors.
         /// </summary>
-        [NotNull]
+
         public Dictionary<TVertex, TEdge> Predecessors { get; } = new Dictionary<TVertex, TEdge>();
 
         /// <summary>
         /// Function that given an edge return the capacity of this edge.
         /// </summary>
-        [NotNull]
+
         public Func<TEdge, double> Capacities { get; }
 
         /// <summary>
         /// Residual capacities per edge.
         /// </summary>
-        [NotNull]
+
         public Dictionary<TEdge, double> ResidualCapacities { get; } = new Dictionary<TEdge, double>();
 
         /// <summary>
         /// Edge factory method.
         /// </summary>
-        [NotNull]
+
         public EdgeFactory<TVertex, TEdge> EdgeFactory { get; }
 
         /// <summary>
@@ -88,7 +87,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <summary>
         /// Stores vertices associated to their colors (treatment state).
         /// </summary>
-        [NotNull]
+
         public IDictionary<TVertex, GraphColor> VerticesColors { get; } = new Dictionary<TVertex, GraphColor>();
 
         #region IVertexColorizerAlgorithm<TVertex>
@@ -116,7 +115,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <exception cref="T:System.InvalidOperationException">Something went wrong when running the algorithm.</exception>
         /// <exception cref="VertexNotFoundException"><paramref name="source"/> is not part of <see cref="AlgorithmBase{TGraph}.VisitedGraph"/>.</exception>
         /// <exception cref="VertexNotFoundException"><paramref name="sink"/> is not part of <see cref="AlgorithmBase{TGraph}.VisitedGraph"/>.</exception>
-        public double Compute([NotNull] TVertex source, [NotNull] TVertex sink)
+        public double Compute( TVertex source,  TVertex sink)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));

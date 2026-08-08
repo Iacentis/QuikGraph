@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
+using System.Diagnostics.Contracts;
+
 
 namespace QuikGraph.Predicates
 {
@@ -20,8 +21,8 @@ namespace QuikGraph.Predicates
         /// <exception cref="T:System.ArgumentNullException"><paramref name="residualCapacities"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="reversedEdges"/> is <see langword="null"/>.</exception>
         public ReversedResidualEdgePredicate(
-            [NotNull] IDictionary<TEdge, double> residualCapacities,
-            [NotNull] IDictionary<TEdge, TEdge> reversedEdges)
+             IDictionary<TEdge, double> residualCapacities,
+             IDictionary<TEdge, TEdge> reversedEdges)
         {
             ResidualCapacities = residualCapacities ?? throw new ArgumentNullException(nameof(residualCapacities));
             ReversedEdges = reversedEdges ?? throw new ArgumentNullException(nameof(reversedEdges));
@@ -30,13 +31,13 @@ namespace QuikGraph.Predicates
         /// <summary>
         /// Residual capacities map.
         /// </summary>
-        [NotNull]
+
         public IDictionary<TEdge, double> ResidualCapacities { get; }
 
         /// <summary>
         /// Reversed edges map.
         /// </summary>
-        [NotNull]
+
         public IDictionary<TEdge, TEdge> ReversedEdges { get; }
 
         /// <summary>
@@ -47,7 +48,7 @@ namespace QuikGraph.Predicates
         /// <returns>True if the reversed edge is residual, false otherwise.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edge"/> is <see langword="null"/>.</exception>
         [Pure]
-        public bool Test([NotNull] TEdge edge)
+        public bool Test( TEdge edge)
         {
             if (edge == null)
                 throw new ArgumentNullException(nameof(edge));

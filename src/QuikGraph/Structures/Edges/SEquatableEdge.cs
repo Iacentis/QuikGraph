@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using JetBrains.Annotations;
+
 using QuikGraph.Constants;
 
 namespace QuikGraph
@@ -11,9 +11,9 @@ namespace QuikGraph
     /// A struct based <see cref="IEdge{TVertex}"/> implementation that supports equality (directed edge).
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
-#if SUPPORTS_SERIALIZATION
+
     [Serializable]
-#endif
+
     [DebuggerDisplay("{" + nameof(Source) + "}->{" + nameof(Target) + "}")]
     [StructLayout(LayoutKind.Auto)]
     public struct SEquatableEdge<TVertex> : IEdge<TVertex>, IEquatable<SEquatableEdge<TVertex>>
@@ -25,7 +25,7 @@ namespace QuikGraph
         /// <param name="target">The target vertex.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
-        public SEquatableEdge([NotNull] TVertex source, [NotNull] TVertex target)
+        public SEquatableEdge( TVertex source,  TVertex target)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));

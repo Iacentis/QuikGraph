@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using JetBrains.Annotations;
 using Microsoft.Msagl.Drawing;
 using QuikGraph.Algorithms;
 
@@ -18,7 +17,7 @@ namespace QuikGraph.MSAGL
         /// </summary>
         /// <param name="visitedGraph">Graph to convert to MSAGL graph.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
-        protected MsaglGraphPopulator([NotNull] IEdgeListGraph<TVertex, TEdge> visitedGraph)
+        protected MsaglGraphPopulator( IEdgeListGraph<TVertex, TEdge> visitedGraph)
             : base(visitedGraph)
         {
         }
@@ -34,12 +33,12 @@ namespace QuikGraph.MSAGL
         /// Fired when a node is added to the graph.
         /// </summary>
         public event MsaglVertexNodeEventHandler<TVertex> NodeAdded;
-        
+
         /// <summary>
         /// Called when a <see cref="T:Microsoft.Msagl.Drawing.Node"/> is added.
         /// </summary>
         /// <param name="args">Event arguments.</param>
-        protected virtual void OnNodeAdded([NotNull] MsaglVertexEventArgs<TVertex> args)
+        protected virtual void OnNodeAdded( MsaglVertexEventArgs<TVertex> args)
         {
             Debug.Assert(args != null);
 
@@ -55,7 +54,7 @@ namespace QuikGraph.MSAGL
         /// Called when an <see cref="T:Microsoft.Msagl.Drawing.Edge"/> is added.
         /// </summary>
         /// <param name="args">Event arguments.</param>
-        protected virtual void OnEdgeAdded([NotNull] MsaglEdgeEventArgs<TVertex, TEdge> args)
+        protected virtual void OnEdgeAdded( MsaglEdgeEventArgs<TVertex, TEdge> args)
         {
             Debug.Assert(args != null);
 
@@ -97,7 +96,7 @@ namespace QuikGraph.MSAGL
         /// <param name="vertex">Vertex to add.</param>
         /// <returns>Added <see cref="T:Microsoft.Msagl.Drawing.Node"/>.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertex"/> is <see langword="null"/>.</exception>
-        protected abstract Node AddNode([NotNull] TVertex vertex);
+        protected abstract Node AddNode( TVertex vertex);
 
         /// <summary>
         /// Called when an <paramref name="edge"/> should be added to the graph.
@@ -105,6 +104,6 @@ namespace QuikGraph.MSAGL
         /// <param name="edge">Edge to add.</param>
         /// <returns>Added <see cref="T:Microsoft.Msagl.Drawing.Edge"/>.</returns>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edge"/> is <see langword="null"/>.</exception>
-        protected abstract Edge AddEdge([NotNull] TEdge edge);
+        protected abstract Edge AddEdge( TEdge edge);
     }
 }

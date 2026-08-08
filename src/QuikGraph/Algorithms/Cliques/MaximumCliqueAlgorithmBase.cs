@@ -1,7 +1,4 @@
-﻿#if SUPPORTS_SERIALIZATION
-using System;
-#endif
-using JetBrains.Annotations;
+﻿using System;
 using QuikGraph.Algorithms.Services;
 
 namespace QuikGraph.Algorithms.Cliques
@@ -11,9 +8,7 @@ namespace QuikGraph.Algorithms.Cliques
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
     /// <typeparam name="TEdge">Edge type.</typeparam>
-#if SUPPORTS_SERIALIZATION
     [Serializable]
-#endif
     public abstract class MaximumCliqueAlgorithmBase<TVertex, TEdge> : AlgorithmBase<IUndirectedGraph<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
     {
@@ -24,8 +19,8 @@ namespace QuikGraph.Algorithms.Cliques
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         protected MaximumCliqueAlgorithmBase(
-            [CanBeNull] IAlgorithmComponent host,
-            [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph)
+            IAlgorithmComponent host,
+            IUndirectedGraph<TVertex, TEdge> visitedGraph)
             : base(host, visitedGraph)
         {
         }
@@ -35,7 +30,7 @@ namespace QuikGraph.Algorithms.Cliques
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
-        protected MaximumCliqueAlgorithmBase([NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph)
+        protected MaximumCliqueAlgorithmBase(IUndirectedGraph<TVertex, TEdge> visitedGraph)
             : base(visitedGraph)
         {
         }

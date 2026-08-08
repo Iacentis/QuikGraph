@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using JetBrains.Annotations;
 using NUnit.Framework;
 using QuikGraph.Graphviz.Dot;
 
@@ -42,12 +41,12 @@ namespace QuikGraph.Data.Tests
                 DataSetGraph treatedGraph,
                 GraphvizImageType imageType = GraphvizImageType.Png)
             {
-                Assert.AreSame(treatedGraph, algo.VisitedGraph);
-                Assert.IsNotNull(algo.GraphFormat);
-                Assert.IsNotNull(algo.CommonVertexFormat);
-                Assert.IsNotNull(algo.CommonEdgeFormat);
-                Assert.AreEqual(imageType, algo.ImageType);
-                Assert.IsNull(algo.Output);
+                Assert.That(treatedGraph,Is.SameAs(algo.VisitedGraph));
+                Assert.That(algo.GraphFormat,Is.Not.Null);
+                Assert.That(algo.CommonVertexFormat,Is.Not.Null);
+                Assert.That(algo.CommonEdgeFormat,Is.Not.Null);
+                Assert.That(imageType,Is.EqualTo(algo.ImageType));
+                Assert.That(algo.Output,Is.Null);
             }
 
             #endregion
@@ -68,10 +67,9 @@ namespace QuikGraph.Data.Tests
             // ReSharper restore ObjectCreationAsStatement
         }
 
-        [NotNull, ItemNotNull]
+
         private static IEnumerable<TestCaseData> GenerateTestCases
         {
-            [UsedImplicitly]
             get
             {
                 // Empty data set
@@ -79,8 +77,8 @@ namespace QuikGraph.Data.Tests
                 {
                     ExpectedResult =
                         @"digraph G {" + Environment.NewLine
-                        + @"node [shape=record, style=solid];" + Environment.NewLine
-                        + @"}"
+                                       + @"node [shape=record, style=solid];" + Environment.NewLine
+                                       + @"}"
                 };
 
                 // Only vertices
@@ -103,11 +101,13 @@ namespace QuikGraph.Data.Tests
                 {
                     ExpectedResult =
                         @"digraph G {" + Environment.NewLine
-                        + @"node [shape=record, style=solid];" + Environment.NewLine
-                        + @"0 [shape=record, label=""Addresses | +\ AddressID\ :\ Int32\ unique""];" + Environment.NewLine
-                        + @"1 [shape=record, label=""Customers | +\ CustomerID\ :\ Int32""];" + Environment.NewLine
-                        + @"2 [shape=record, label=""Orders | ""];" + Environment.NewLine
-                        + @"}"
+                                       + @"node [shape=record, style=solid];" + Environment.NewLine
+                                       + @"0 [shape=record, label=""Addresses | +\ AddressID\ :\ Int32\ unique""];" +
+                                       Environment.NewLine
+                                       + @"1 [shape=record, label=""Customers | +\ CustomerID\ :\ Int32""];" +
+                                       Environment.NewLine
+                                       + @"2 [shape=record, label=""Orders | ""];" + Environment.NewLine
+                                       + @"}"
                 };
 
                 // With relations
@@ -173,29 +173,34 @@ namespace QuikGraph.Data.Tests
                 forumDataSet.Relations.Add(new DataRelation("UsersToTopics", userId, topicBy));
                 forumDataSet.Relations.Add(new DataRelation("UsersToReplies", userId, replyBy));
                 forumDataSet.Relations.Add(new DataRelation("TopicsToReplies", topicId, replyTopic));
-                
+
                 yield return new TestCaseData(forumDataSet)
                 {
                     ExpectedResult =
                         @"digraph G {" + Environment.NewLine
-                        + @"node [shape=record, style=solid];" + Environment.NewLine
-                        + @"0 [shape=record, label=""Tmps | ""];" + Environment.NewLine
-                        + @"1 [shape=record, label=""Rewards | +\ reward_id\ :\ Int32\ unique""];" + Environment.NewLine
-                        + @"2 [shape=record, label=""Categories | +\ cat_id\ :\ Int32\ unique\n+\ cat_name\ :\ String\n+\ cat_description\ :\ String""];" + Environment.NewLine
-                        + @"3 [shape=record, label=""Users | +\ user_id\ :\ Int32\ unique\n+\ user_name\ :\ String\n+\ user_pass\ :\ String\n+\ user_email\ :\ String\n+\ user_date\ :\ DateTime""];" + Environment.NewLine
-                        + @"4 [shape=record, label=""Replies | +\ reply_id\ :\ Int32\ unique\n+\ reply_content\ :\ String\n+\ reply_date\ :\ DateTime\n+\ reply_topic\ :\ Int32\n+\ reply_by\ :\ Int32""];" + Environment.NewLine
-                        + @"5 [shape=record, label=""Topics | +\ topic_id\ :\ Int32\ unique\n+\ topic_subject\ :\ String\n+\ topic_date\ :\ DateTime\n+\ topic_cat\ :\ Int32\n+\ topic_by\ :\ Int32""];" + Environment.NewLine
-                        + @"2 -> 5 [label=""CategoriesToTopics""];" + Environment.NewLine
-                        + @"3 -> 5 [label=""UsersToTopics""];" + Environment.NewLine
-                        + @"3 -> 4 [label=""UsersToReplies""];" + Environment.NewLine
-                        + @"5 -> 4 [label=""TopicsToReplies""];" + Environment.NewLine
-                        + @"}"
+                                       + @"node [shape=record, style=solid];" + Environment.NewLine
+                                       + @"0 [shape=record, label=""Tmps | ""];" + Environment.NewLine
+                                       + @"1 [shape=record, label=""Rewards | +\ reward_id\ :\ Int32\ unique""];" +
+                                       Environment.NewLine
+                                       + @"2 [shape=record, label=""Categories | +\ cat_id\ :\ Int32\ unique\n+\ cat_name\ :\ String\n+\ cat_description\ :\ String""];" +
+                                       Environment.NewLine
+                                       + @"3 [shape=record, label=""Users | +\ user_id\ :\ Int32\ unique\n+\ user_name\ :\ String\n+\ user_pass\ :\ String\n+\ user_email\ :\ String\n+\ user_date\ :\ DateTime""];" +
+                                       Environment.NewLine
+                                       + @"4 [shape=record, label=""Replies | +\ reply_id\ :\ Int32\ unique\n+\ reply_content\ :\ String\n+\ reply_date\ :\ DateTime\n+\ reply_topic\ :\ Int32\n+\ reply_by\ :\ Int32""];" +
+                                       Environment.NewLine
+                                       + @"5 [shape=record, label=""Topics | +\ topic_id\ :\ Int32\ unique\n+\ topic_subject\ :\ String\n+\ topic_date\ :\ DateTime\n+\ topic_cat\ :\ Int32\n+\ topic_by\ :\ Int32""];" +
+                                       Environment.NewLine
+                                       + @"2 -> 5 [label=""CategoriesToTopics""];" + Environment.NewLine
+                                       + @"3 -> 5 [label=""UsersToTopics""];" + Environment.NewLine
+                                       + @"3 -> 4 [label=""UsersToReplies""];" + Environment.NewLine
+                                       + @"5 -> 4 [label=""TopicsToReplies""];" + Environment.NewLine
+                                       + @"}"
                 };
             }
         }
 
         [TestCaseSource(nameof(GenerateTestCases))]
-        public string Generate([NotNull] DataSet dataSet)
+        public string Generate(DataSet dataSet)
         {
             var algorithm = new DataSetGraphvizAlgorithm(dataSet.ToGraph());
             return algorithm.Generate();

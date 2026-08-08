@@ -1,5 +1,4 @@
-﻿using JetBrains.Annotations;
-using QuikGraph.Algorithms.Services;
+﻿using QuikGraph.Algorithms.Services;
 
 namespace QuikGraph.Algorithms.MaximumFlow
 {
@@ -22,9 +21,9 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexFactory"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/>.</exception>
         public MultiSourceSinkGraphAugmentorAlgorithm(
-            [NotNull] IMutableBidirectionalGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] VertexFactory<TVertex> vertexFactory,
-            [NotNull] EdgeFactory<TVertex, TEdge> edgeFactory)
+             IMutableBidirectionalGraph<TVertex, TEdge> visitedGraph,
+             VertexFactory<TVertex> vertexFactory,
+             EdgeFactory<TVertex, TEdge> edgeFactory)
             : this(null, visitedGraph, vertexFactory, edgeFactory)
         {
         }
@@ -40,10 +39,10 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <exception cref="T:System.ArgumentNullException"><paramref name="vertexFactory"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/>.</exception>
         public MultiSourceSinkGraphAugmentorAlgorithm(
-            [CanBeNull] IAlgorithmComponent host,
-            [NotNull] IMutableBidirectionalGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] VertexFactory<TVertex> vertexFactory,
-            [NotNull] EdgeFactory<TVertex, TEdge> edgeFactory)
+             IAlgorithmComponent host,
+             IMutableBidirectionalGraph<TVertex, TEdge> visitedGraph,
+             VertexFactory<TVertex> vertexFactory,
+             EdgeFactory<TVertex, TEdge> edgeFactory)
             : base(host, visitedGraph, vertexFactory, edgeFactory)
         {
         }

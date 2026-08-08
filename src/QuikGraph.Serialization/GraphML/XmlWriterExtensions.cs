@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Xml;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph.Serialization
 {
@@ -14,7 +14,7 @@ namespace QuikGraph.Serialization
         /// </summary>
         /// <param name="xmlWriter">XML writer.</param>
         /// <param name="value">Array to serialize.</param>
-        public static void WriteBooleanArray([NotNull] XmlWriter xmlWriter, [CanBeNull] IList<bool> value)
+        public static void WriteBooleanArray( XmlWriter xmlWriter,  IList<bool> value)
         {
             WriteArray(xmlWriter, value);
         }
@@ -24,7 +24,7 @@ namespace QuikGraph.Serialization
         /// </summary>
         /// <param name="xmlWriter">XML writer.</param>
         /// <param name="value">Array to serialize.</param>
-        public static void WriteInt32Array([NotNull] XmlWriter xmlWriter, [CanBeNull] IList<int> value)
+        public static void WriteInt32Array( XmlWriter xmlWriter,  IList<int> value)
         {
             WriteArray(xmlWriter, value);
         }
@@ -34,7 +34,7 @@ namespace QuikGraph.Serialization
         /// </summary>
         /// <param name="xmlWriter">XML writer.</param>
         /// <param name="value">Array to serialize.</param>
-        public static void WriteInt64Array([NotNull] XmlWriter xmlWriter, [CanBeNull] IList<long> value)
+        public static void WriteInt64Array( XmlWriter xmlWriter,  IList<long> value)
         {
             WriteArray(xmlWriter, value);
         }
@@ -44,7 +44,7 @@ namespace QuikGraph.Serialization
         /// </summary>
         /// <param name="xmlWriter">XML writer.</param>
         /// <param name="value">Array to serialize.</param>
-        public static void WriteSingleArray([NotNull] XmlWriter xmlWriter, [CanBeNull] IList<float> value)
+        public static void WriteSingleArray( XmlWriter xmlWriter,  IList<float> value)
         {
             WriteArray(xmlWriter, value);
         }
@@ -54,7 +54,7 @@ namespace QuikGraph.Serialization
         /// </summary>
         /// <param name="xmlWriter">XML writer.</param>
         /// <param name="value">Array to serialize.</param>
-        public static void WriteDoubleArray([NotNull] XmlWriter xmlWriter, [CanBeNull] IList<double> value)
+        public static void WriteDoubleArray( XmlWriter xmlWriter,  IList<double> value)
         {
             WriteArray(xmlWriter, value);
         }
@@ -64,7 +64,7 @@ namespace QuikGraph.Serialization
         /// </summary>
         /// <param name="xmlWriter">XML writer.</param>
         /// <param name="value">Array to serialize.</param>
-        public static void WriteStringArray([NotNull] XmlWriter xmlWriter, [CanBeNull, ItemNotNull] IList<string> value)
+        public static void WriteStringArray( XmlWriter xmlWriter,  IList<string> value)
         {
             WriteArray(xmlWriter, value);
         }
@@ -78,7 +78,7 @@ namespace QuikGraph.Serialization
         /// <typeparam name="T">Element value.</typeparam>
         /// <param name="xmlWriter">XML writer.</param>
         /// <param name="value">List of values to write.</param>
-        public static void WriteArray<T>([NotNull] XmlWriter xmlWriter, [CanBeNull, ItemNotNull] IList<T> value)
+        public static void WriteArray<T>( XmlWriter xmlWriter,  IList<T> value)
         {
             if (value is null)
             {

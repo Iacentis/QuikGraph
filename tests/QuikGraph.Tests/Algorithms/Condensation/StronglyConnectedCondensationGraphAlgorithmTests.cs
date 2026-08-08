@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using QuikGraph.Algorithms;
 using QuikGraph.Algorithms.Condensation;
 
@@ -16,13 +16,14 @@ namespace QuikGraph.Tests.Algorithms.Condensation
         #region Test helpers
 
         private static void RunStronglyConnectedCondensationAndCheck<TVertex, TEdge>(
-            [NotNull] IVertexAndEdgeListGraph<TVertex, TEdge> graph)
+            IVertexAndEdgeListGraph<TVertex, TEdge> graph)
             where TEdge : IEdge<TVertex>
         {
-            IMutableBidirectionalGraph<AdjacencyGraph<TVertex, TEdge>, CondensedEdge<TVertex, TEdge, AdjacencyGraph<TVertex, TEdge>>> condensedGraph =
+            IMutableBidirectionalGraph<AdjacencyGraph<TVertex, TEdge>,
+                CondensedEdge<TVertex, TEdge, AdjacencyGraph<TVertex, TEdge>>> condensedGraph =
                 graph.CondensateStronglyConnected<TVertex, TEdge, AdjacencyGraph<TVertex, TEdge>>();
 
-            Assert.IsNotNull(condensedGraph);
+            Assert.That(condensedGraph, Is.Not.Null);
             CheckVertexCount(graph, condensedGraph);
             CheckEdgeCount(graph, condensedGraph);
             CheckComponentCount(graph, condensedGraph);
@@ -30,14 +31,14 @@ namespace QuikGraph.Tests.Algorithms.Condensation
         }
 
         private static void CheckComponentCount<TVertex, TEdge>(
-            [NotNull] IVertexListGraph<TVertex, TEdge> graph,
-            [NotNull] IVertexSet<AdjacencyGraph<TVertex, TEdge>> condensedGraph)
+            IVertexListGraph<TVertex, TEdge> graph,
+            IVertexSet<AdjacencyGraph<TVertex, TEdge>> condensedGraph)
             where TEdge : IEdge<TVertex>
         {
             // Check number of vertices = number of strongly connected components
             var components = new Dictionary<TVertex, int>();
             int componentCount = graph.StronglyConnectedComponents(components);
-            Assert.AreEqual(componentCount, condensedGraph.VertexCount, "Component count does not match.");
+            Assert.That(componentCount, Is.EqualTo(condensedGraph.VertexCount), "Component count does not match.");
         }
 
         #endregion
@@ -50,17 +51,17 @@ namespace QuikGraph.Tests.Algorithms.Condensation
             var edge31 = new Edge<int>(3, 1);
 
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[]
-            {
+            graph.AddVerticesAndEdgeRange([
                 edge12, edge23, edge31
-            });
+            ]);
 
-            IMutableBidirectionalGraph<AdjacencyGraph<int, Edge<int>>, CondensedEdge<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>> condensedGraph =
+            IMutableBidirectionalGraph<AdjacencyGraph<int, Edge<int>>,
+                CondensedEdge<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>> condensedGraph =
                 graph.CondensateStronglyConnected<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>();
 
-            Assert.IsNotNull(condensedGraph);
-            Assert.AreEqual(1, condensedGraph.VertexCount);
-            Assert.AreEqual(0, condensedGraph.EdgeCount);
+            Assert.That(condensedGraph, Is.Not.Null);
+            Assert.That(1, Is.EqualTo(condensedGraph.VertexCount));
+            Assert.That(0, Is.EqualTo(condensedGraph.EdgeCount));
             CollectionAssert.AreEquivalent(graph.Vertices, condensedGraph.Vertices.ElementAt(0).Vertices);
             CollectionAssert.AreEquivalent(graph.Edges, condensedGraph.Vertices.ElementAt(0).Edges);
         }
@@ -84,19 +85,19 @@ namespace QuikGraph.Tests.Algorithms.Condensation
             var edge87 = new Edge<int>(8, 7);
 
             var graph = new AdjacencyGraph<int, Edge<int>>();
-            graph.AddVerticesAndEdgeRange(new[]
-            {
+            graph.AddVerticesAndEdgeRange([
                 edge12, edge23, edge24, edge25, edge31, edge34, edge46,
                 edge56, edge57, edge64, edge75, edge78, edge86, edge87
-            });
+            ]);
             graph.AddVertex(10);
 
-            IMutableBidirectionalGraph<AdjacencyGraph<int, Edge<int>>, CondensedEdge<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>> condensedGraph =
+            IMutableBidirectionalGraph<AdjacencyGraph<int, Edge<int>>,
+                CondensedEdge<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>> condensedGraph =
                 graph.CondensateStronglyConnected<int, Edge<int>, AdjacencyGraph<int, Edge<int>>>();
 
-            Assert.IsNotNull(condensedGraph);
-            Assert.AreEqual(4, condensedGraph.VertexCount);
-            Assert.AreEqual(3, condensedGraph.EdgeCount);
+            Assert.That(condensedGraph, Is.Not.Null);
+            Assert.That(4, Is.EqualTo(condensedGraph.VertexCount));
+            Assert.That(3, Is.EqualTo(condensedGraph.EdgeCount));
 
             // Condensed edge
             CollectionAssert.AreEquivalent(

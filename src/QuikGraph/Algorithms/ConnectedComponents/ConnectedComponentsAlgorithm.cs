@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
 using QuikGraph.Algorithms.Search;
 using QuikGraph.Algorithms.Services;
 
@@ -21,7 +20,7 @@ namespace QuikGraph.Algorithms.ConnectedComponents
         /// </summary>
         /// <param name="visitedGraph">Graph to visit.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
-        public ConnectedComponentsAlgorithm([NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph)
+        public ConnectedComponentsAlgorithm( IUndirectedGraph<TVertex, TEdge> visitedGraph)
             : this(visitedGraph, new Dictionary<TVertex, int>())
         {
         }
@@ -34,8 +33,8 @@ namespace QuikGraph.Algorithms.ConnectedComponents
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="components"/> is <see langword="null"/>.</exception>
         public ConnectedComponentsAlgorithm(
-            [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] IDictionary<TVertex, int> components)
+             IUndirectedGraph<TVertex, TEdge> visitedGraph,
+             IDictionary<TVertex, int> components)
             : this(null, visitedGraph, components)
         {
         }
@@ -49,9 +48,9 @@ namespace QuikGraph.Algorithms.ConnectedComponents
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="components"/> is <see langword="null"/>.</exception>
         public ConnectedComponentsAlgorithm(
-            [CanBeNull] IAlgorithmComponent host,
-            [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] IDictionary<TVertex, int> components)
+             IAlgorithmComponent host,
+             IUndirectedGraph<TVertex, TEdge> visitedGraph,
+             IDictionary<TVertex, int> components)
             : base(host, visitedGraph)
         {
             Components = components ?? throw new ArgumentNullException(nameof(components));
@@ -110,12 +109,12 @@ namespace QuikGraph.Algorithms.ConnectedComponents
 
         #endregion
 
-        private void OnStartVertex([NotNull] TVertex vertex)
+        private void OnStartVertex( TVertex vertex)
         {
             ++ComponentCount;
         }
 
-        private void OnVertexDiscovered([NotNull] TVertex vertex)
+        private void OnVertexDiscovered( TVertex vertex)
         {
             Components[vertex] = ComponentCount;
         }

@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Linq;
-using JetBrains.Annotations;
+
 
 namespace QuikGraph.Algorithms.MaximumFlow
 {
     /// <summary>
-    /// Routines to add and remove auxiliary edges when using <see cref="EdmondsKarpMaximumFlowAlgorithm{TVertex, TEdge}"/> 
-    /// or <see cref="MaximumBipartiteMatchingAlgorithm{TVertex,TEdge}.InternalCompute"/>. 
+    /// Routines to add and remove auxiliary edges when using <see cref="EdmondsKarpMaximumFlowAlgorithm{TVertex, TEdge}"/>
+    /// or <see cref="MaximumBipartiteMatchingAlgorithm{TVertex,TEdge}.InternalCompute"/>.
     /// Remember to call <see cref="RemoveReversedEdges()"/> to remove auxiliary edges.
     /// </summary>
     /// <typeparam name="TVertex">Vertex type.</typeparam>
@@ -24,8 +25,8 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="edgeFactory"/> is <see langword="null"/>.</exception>
         public ReversedEdgeAugmentorAlgorithm(
-            [NotNull] IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
-            [NotNull] EdgeFactory<TVertex, TEdge> edgeFactory)
+             IMutableVertexAndEdgeListGraph<TVertex, TEdge> visitedGraph,
+             EdgeFactory<TVertex, TEdge> edgeFactory)
         {
             VisitedGraph = visitedGraph ?? throw new ArgumentNullException(nameof(visitedGraph));
             EdgeFactory = edgeFactory ?? throw new ArgumentNullException(nameof(edgeFactory));
@@ -34,28 +35,28 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <summary>
         /// Gets the graph to visit with this algorithm.
         /// </summary>
-        [NotNull]
+
         public IMutableVertexAndEdgeListGraph<TVertex, TEdge> VisitedGraph { get; }
 
         /// <summary>
         /// Edge factory method.
         /// </summary>
-        [NotNull]
+
         public EdgeFactory<TVertex, TEdge> EdgeFactory { get; }
 
-        [NotNull, ItemNotNull]
+
         private readonly List<TEdge> _augmentedEdges = new List<TEdge>();
 
         /// <summary>
         /// Edges added to the initial graph (augmented ones).
         /// </summary>
-        [NotNull, ItemNotNull]
+
         public IEnumerable<TEdge> AugmentedEdges => _augmentedEdges.AsEnumerable();
 
         /// <summary>
         /// Edges associated to their reversed edges.
         /// </summary>
-        [NotNull]
+
         public IDictionary<TEdge, TEdge> ReversedEdges { get; } = new Dictionary<TEdge, TEdge>();
 
         /// <summary>
@@ -68,7 +69,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// </summary>
         public event EdgeAction<TVertex, TEdge> ReversedEdgeAdded;
 
-        private void OnReservedEdgeAdded([NotNull] TEdge edge)
+        private void OnReservedEdgeAdded( TEdge edge)
         {
             Debug.Assert(edge != null);
 
@@ -82,7 +83,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
         /// <param name="foundReversedEdge">Found reversed edge.</param>
         /// <returns>True if the reversed edge was found, false otherwise.</returns>
         [Pure]
-        private bool FindReversedEdge([NotNull] TEdge edge, out TEdge foundReversedEdge)
+        private bool FindReversedEdge( TEdge edge, out TEdge foundReversedEdge)
         {
             Debug.Assert(edge != null);
 
@@ -100,7 +101,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
         }
 
         [Pure]
-        [NotNull, ItemNotNull]
+
         private IEnumerable<TEdge> FindEdgesToReverse()
         {
             foreach (TEdge edge in VisitedGraph.Edges)
@@ -128,7 +129,7 @@ namespace QuikGraph.Algorithms.MaximumFlow
             }
         }
 
-        private void AddReversedEdges([NotNull, ItemNotNull] IEnumerable<TEdge> notReversedEdges)
+        private void AddReversedEdges( IEnumerable<TEdge> notReversedEdges)
         {
             foreach (TEdge edge in notReversedEdges)
             {

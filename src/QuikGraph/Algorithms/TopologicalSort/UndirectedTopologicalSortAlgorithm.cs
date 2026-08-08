@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
+
 using QuikGraph.Algorithms.Search;
 
 namespace QuikGraph.Algorithms.TopologicalSort
@@ -13,7 +13,7 @@ namespace QuikGraph.Algorithms.TopologicalSort
     public sealed class UndirectedTopologicalSortAlgorithm<TVertex, TEdge> : AlgorithmBase<IUndirectedGraph<TVertex, TEdge>>
         where TEdge : IEdge<TVertex>
     {
-        [NotNull, ItemNotNull]
+
         private readonly IList<TVertex> _sortedVertices;
 
         /// <summary>
@@ -23,7 +23,7 @@ namespace QuikGraph.Algorithms.TopologicalSort
         /// <param name="capacity">Sorted vertices capacity.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="visitedGraph"/> is <see langword="null"/>.</exception>
         public UndirectedTopologicalSortAlgorithm(
-            [NotNull] IUndirectedGraph<TVertex, TEdge> visitedGraph,
+             IUndirectedGraph<TVertex, TEdge> visitedGraph,
             int capacity = -1)
             : base(visitedGraph)
         {
@@ -33,7 +33,7 @@ namespace QuikGraph.Algorithms.TopologicalSort
         /// <summary>
         /// Sorted vertices.
         /// </summary>
-        [ItemNotNull]
+
         public TVertex[] SortedVertices { get; private set; }
 
         /// <summary>
@@ -41,13 +41,13 @@ namespace QuikGraph.Algorithms.TopologicalSort
         /// </summary>
         public bool AllowCyclicGraph { get; set; }
 
-        private void BackEdge([NotNull] object sender, [NotNull] UndirectedEdgeEventArgs<TVertex, TEdge> args)
+        private void BackEdge( object sender,  UndirectedEdgeEventArgs<TVertex, TEdge> args)
         {
             if (!AllowCyclicGraph)
                 throw new NonAcyclicGraphException();
         }
 
-        private void OnVertexFinished([NotNull] TVertex vertex)
+        private void OnVertexFinished( TVertex vertex)
         {
             _sortedVertices.Add(vertex);
         }

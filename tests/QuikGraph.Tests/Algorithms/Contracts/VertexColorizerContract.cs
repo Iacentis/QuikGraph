@@ -1,5 +1,5 @@
 ﻿using System;
-using JetBrains.Annotations;
+using System.Diagnostics.Contracts;
 using NUnit.Framework;
 using QuikGraph.Algorithms;
 using QuikGraph.Algorithms.MaximumFlow;
@@ -23,11 +23,11 @@ namespace QuikGraph.Tests.Algorithms.Contracts
     [TestFixtureSource(typeof(AlgorithmsProvider), nameof(AlgorithmsProvider.VertexColorizers))]
     internal sealed class VertexColorizerContract
     {
-        [NotNull]
+
         private readonly Type _testedAlgorithm;
 
         /// <summary/>
-        public VertexColorizerContract([NotNull] Type algorithmToTest)
+        public VertexColorizerContract( Type algorithmToTest)
         {
             _testedAlgorithm = algorithmToTest;
         }
@@ -46,8 +46,8 @@ namespace QuikGraph.Tests.Algorithms.Contracts
         {
             var scenario = new ContractScenario<int>
             {
-                EdgesInGraph = new[] { new Edge<int>(1, 2) },
-                AccessibleVerticesFromRoot = new[] { 2 },
+                EdgesInGraph = [new Edge<int>(1, 2)],
+                AccessibleVerticesFromRoot = [2],
                 Root = 1,
                 DoComputation = true
             };
@@ -62,9 +62,9 @@ namespace QuikGraph.Tests.Algorithms.Contracts
         {
             var scenario = new ContractScenario<int>
             {
-                EdgesInGraph = new[] { new Edge<int>(1, 2) },
+                EdgesInGraph = [new Edge<int>(1, 2)],
                 SingleVerticesInGraph = new int[0],
-                AccessibleVerticesFromRoot = new[] { 2 },
+                AccessibleVerticesFromRoot = [2],
                 Root = 1,
                 DoComputation = false
             };
@@ -99,15 +99,15 @@ namespace QuikGraph.Tests.Algorithms.Contracts
         {
             var scenario = new ContractScenario<int>
             {
-                EdgesInGraph = new[] { new Edge<int>(1, 2) },
-                AccessibleVerticesFromRoot = new[] { 2 },
+                EdgesInGraph = [new Edge<int>(1, 2)],
+                AccessibleVerticesFromRoot = [2],
                 Root = 1,
                 DoComputation = true
             };
 
             IVertexColorizerAlgorithm<int> algorithm = CreateAlgorithmAndMaybeDoComputation(scenario);
 
-            Assert.IsNotNull(algorithm.GetVertexColor(2));
+            Assert.That(algorithm.GetVertexColor(2),Is.Not.Null);
         }
 
         [Test]
@@ -115,29 +115,29 @@ namespace QuikGraph.Tests.Algorithms.Contracts
         {
             var scenario = new ContractScenario<int>
             {
-                EdgesInGraph = new[] { new Edge<int>(1, 2) },
-                SingleVerticesInGraph = new[] { 3 },
-                AccessibleVerticesFromRoot = new[] { 2 },
+                EdgesInGraph = [new Edge<int>(1, 2)],
+                SingleVerticesInGraph = [3],
+                AccessibleVerticesFromRoot = [2],
                 Root = 1,
                 DoComputation = true
             };
 
             IVertexColorizerAlgorithm<int> algorithm = CreateAlgorithmAndMaybeDoComputation(scenario);
 
-            Assert.IsNotNull(algorithm.GetVertexColor(3));
+            Assert.That(algorithm.GetVertexColor(3),Is.Not.Null);
         }
 
         [Pure]
-        [NotNull]
+
         private IVertexColorizerAlgorithm<T> CreateAlgorithmAndMaybeDoComputation<T>(
-            [NotNull] ContractScenario<T> scenario)
+             ContractScenario<T> scenario)
         {
             var instantiateAlgorithm = GetAlgorithmFactory<T>();
             return instantiateAlgorithm(scenario);
         }
 
         [Pure]
-        [NotNull]
+
         private Func<ContractScenario<T>, IVertexColorizerAlgorithm<T>> GetAlgorithmFactory<T>()
         {
             return _testedAlgorithm switch

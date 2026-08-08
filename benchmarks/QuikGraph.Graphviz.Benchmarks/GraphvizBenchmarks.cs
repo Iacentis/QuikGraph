@@ -1,6 +1,4 @@
 ﻿using BenchmarkDotNet.Attributes;
-using QuikGraph;
-using QuikGraph.Graphviz;
 
 namespace QuikGraph.Graphviz.Benchmarks
 {

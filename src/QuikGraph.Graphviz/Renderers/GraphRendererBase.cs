@@ -1,5 +1,4 @@
 ﻿using System;
-using JetBrains.Annotations;
 using QuikGraph.Graphviz.Dot;
 using QuikGraph.Utils;
 
@@ -18,7 +17,7 @@ namespace QuikGraph.Graphviz
         /// </summary>
         /// <param name="graph">Graph to convert to DOT.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
-        protected GraphRendererBase([NotNull] IEdgeListGraph<TVertex, TEdge> graph)
+        protected GraphRendererBase(IEdgeListGraph<TVertex, TEdge> graph)
         {
             Graphviz = new GraphvizAlgorithm<TVertex, TEdge>(graph);
             InternalInitialize();
@@ -51,14 +50,14 @@ namespace QuikGraph.Graphviz
         /// <summary>
         /// Graph to DOT algorithm.
         /// </summary>
-        [NotNull]
+
         public GraphvizAlgorithm<TVertex, TEdge> Graphviz { get; }
 
         /// <inheritdoc cref="GraphvizAlgorithm{TVertex,TEdge}.VisitedGraph"/>
         public IEdgeListGraph<TVertex, TEdge> VisitedGraph => Graphviz.VisitedGraph;
 
         /// <inheritdoc cref="GraphvizAlgorithm{TVertex,TEdge}.Generate(IDotEngine,string)"/>
-        public string Generate([NotNull] IDotEngine dot, [NotNull] string outputFilePath)
+        public string Generate(IDotEngine dot, string outputFilePath)
         {
             using (GenerationScope())
             {
