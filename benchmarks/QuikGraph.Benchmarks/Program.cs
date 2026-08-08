@@ -6,7 +6,7 @@ namespace QuikGraph.Benchmarks
     {
         public static void Main(string[] args)
         {
-            BenchmarkRunner.Run<AdjacencyGraphBenchmarks>();
+            BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(args);
         }
     }
 }

@@ -124,7 +124,7 @@ namespace QuikGraph.Collections
         /// <param name="value">The value.</param>
         public void Add(TPriority priority, TValue value)
         {
-            Console.WriteLine($"{nameof(Add)}({priority}, {value})");
+            // Console.WriteLine($"{nameof(Add)}({priority}, {value})");
 
             if (priority == null)
                 throw new ArgumentNullException(nameof(priority));
@@ -135,7 +135,7 @@ namespace QuikGraph.Collections
             MinHeapifyUp(Count - 1);
 
 
-            Console.WriteLine($"{nameof(Add)}: {ToString2()}");
+            // Console.WriteLine($"{nameof(Add)}: {ToString2()}");
 
 
             #region Local function
@@ -155,7 +155,7 @@ namespace QuikGraph.Collections
 
         private void MinHeapifyUp(int start)
         {
-            Console.WriteLine(nameof(MinHeapifyUp));
+            // Console.WriteLine(nameof(MinHeapifyUp));
 
             int current = start;
             int parent = (current - 1) / 2;
@@ -186,7 +186,7 @@ namespace QuikGraph.Collections
         /// <exception cref="T:System.InvalidOperationException">The heap is empty.</exception>
         public KeyValuePair<TPriority, TValue> RemoveMinimum()
         {
-            Console.WriteLine(nameof(RemoveMinimum));
+            // Console.WriteLine(nameof(RemoveMinimum));
 
 
             if (Count == 0)
@@ -207,7 +207,7 @@ namespace QuikGraph.Collections
 
         private void MinHeapifyDown(int index)
         {
-            Console.WriteLine(nameof(MinHeapifyDown));
+            // Console.WriteLine(nameof(MinHeapifyDown));
 
 
             while (true)
@@ -257,7 +257,7 @@ namespace QuikGraph.Collections
         /// <param name="value">The value.</param>
         public void Update(TPriority priority, TValue value)
         {
-            Console.WriteLine($"{nameof(Update)}({priority}, {value})");
+            // Console.WriteLine($"{nameof(Update)}({priority}, {value})");
 
 
             // Find index
